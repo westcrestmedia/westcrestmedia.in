@@ -1422,11 +1422,16 @@
   </div>
 
   <!-- IMAGE LIGHTBOX -->
-  <div id="imgLightbox" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.95); align-items:center; justify-content:center; cursor:zoom-out;" onclick="closeLightbox()">
-    <div style="position:relative; max-width:90vw; max-height:90vh;" onclick="event.stopPropagation()">
-      <img id="lightboxImg" src="" alt="" style="max-width:90vw; max-height:85vh; object-fit:contain; display:block;"/>
+  <div id="imgLightbox" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.95); align-items:center; justify-content:center;" onclick="closeLightbox()">
+    <div style="position:relative; max-width:90vw; max-height:90vh; display:flex; flex-direction:column; align-items:center;" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" alt="" style="max-width:85vw; max-height:80vh; object-fit:contain; display:block; transition: opacity 0.3s;"/>
       <div id="lightboxCaption" style="text-align:center; margin-top:16px; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold);"></div>
+      <!-- Close -->
       <button onclick="closeLightbox()" style="position:absolute; top:-48px; right:0; background:transparent; border:1px solid rgba(200,169,110,0.4); color:var(--gold); width:40px; height:40px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+      <!-- Prev -->
+      <button onclick="lbSlide(-1)" style="position:absolute; left:-60px; top:50%; transform:translateY(-50%); background:rgba(200,169,110,0.15); border:1px solid rgba(200,169,110,0.4); color:var(--gold); width:44px; height:44px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">←</button>
+      <!-- Next -->
+      <button onclick="lbSlide(1)" style="position:absolute; right:-60px; top:50%; transform:translateY(-50%); background:rgba(200,169,110,0.15); border:1px solid rgba(200,169,110,0.4); color:var(--gold); width:44px; height:44px; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">→</button>
     </div>
   </div>
 
@@ -1819,30 +1824,67 @@
     // Init
     setTimeout(() => { setupInfiniteSlider(); testimGoTo(0, false); }, 200);
 
-    // ─── IMAGE LIGHTBOX ───
-    function openLightbox(src, caption) {
-      const lb = document.getElementById('imgLightbox');
-      document.getElementById('lightboxImg').src = src;
-      document.getElementById('lightboxCaption').textContent = caption || '';
-      lb.style.display = 'flex';
+    // ─── IMAGE LIGHTBOX WITH CAROUSEL ───
+    let lbSlides = [];
+    let lbIndex = 0;
+    let lbAutoTimer = null;
+
+    function openLightbox(slides, startIndex) {
+      lbSlides = slides;
+      lbIndex = startIndex;
+      document.getElementById('imgLightbox').style.display = 'flex';
       document.body.style.overflow = 'hidden';
+      lbShow();
+      lbStartAuto();
     }
+
+    function lbShow() {
+      const img = document.getElementById('lightboxImg');
+      const cap = document.getElementById('lightboxCaption');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = lbSlides[lbIndex].src;
+        cap.textContent = lbSlides[lbIndex].caption;
+        img.style.opacity = '1';
+      }, 150);
+    }
+
+    function lbSlide(dir) {
+      lbIndex = (lbIndex + dir + lbSlides.length) % lbSlides.length;
+      lbShow();
+      lbStartAuto();
+    }
+
+    function lbStartAuto() {
+      clearInterval(lbAutoTimer);
+      lbAutoTimer = setInterval(() => { lbSlide(1); }, 3000);
+    }
+
     function closeLightbox() {
       document.getElementById('imgLightbox').style.display = 'none';
       document.getElementById('lightboxImg').src = '';
       document.body.style.overflow = '';
+      clearInterval(lbAutoTimer);
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-    // Carousel slides click → lightbox
-    document.querySelectorAll('.carousel-slide').forEach(slide => {
-      slide.style.cursor = 'zoom-in';
-      slide.addEventListener('click', function(e) {
-        // Arrows pe click kiya ho toh lightbox mat kholo
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') lbSlide(1);
+      if (e.key === 'ArrowLeft') lbSlide(-1);
+    });
+
+    // Carousel boxes click → lightbox
+    document.querySelectorAll('.portfolio-carousel-box').forEach(box => {
+      box.style.cursor = 'zoom-in';
+      box.addEventListener('click', function(e) {
         if (e.target.closest('.carousel-arrow')) return;
-        const img = this.querySelector('img');
-        const caption = this.querySelector('.portfolio-name')?.textContent || '';
-        if (img) openLightbox(img.src, caption);
+        const allSlides = Array.from(this.querySelectorAll('.carousel-slide'));
+        const slides = allSlides.map(s => ({
+          src: s.querySelector('img')?.src || '',
+          caption: s.querySelector('.portfolio-name')?.textContent || ''
+        }));
+        const activeIdx = allSlides.findIndex(s => s.classList.contains('active'));
+        openLightbox(slides, activeIdx >= 0 ? activeIdx : 0);
       });
     });
 
