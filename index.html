@@ -60,9 +60,6 @@
   }
   </script>
 
-  <!-- LENIS SMOOTH SCROLL -->
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -1506,6 +1503,9 @@
   <!-- TOAST -->
   <div id="toast" style="position:fixed;bottom:36px;right:36px;z-index:9000;background:var(--gold);color:var(--bg);padding:14px 28px;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(.25,.46,.45,.94);">✓ Added to cart!</div>
 
+  <!-- LENIS SMOOTH SCROLL — placed before JS init to prevent ReferenceError -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
   <script>
     // ─── PORTFOLIO FILTER ───
     function filterPortfolio(btn, cat) {
@@ -2037,5 +2037,6 @@
     });
 
   </script>
+
 </body>
 </html>
