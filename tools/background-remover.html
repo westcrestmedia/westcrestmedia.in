@@ -173,10 +173,9 @@ body {
 .result-label { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
 .result-img-wrap {
   padding:12px;
-  min-height:220px;
   display:flex; align-items:center; justify-content:center;
 }
-.result-img-wrap img { max-width:100%; max-height:280px; object-fit:contain; border-radius:6px; display:block; }
+.result-img-wrap img { max-width:100%; max-height:480px; object-fit:contain; border-radius:6px; display:block; width:100%; }
 
 /* Checkerboard bg for transparent */
 .checker-bg {
@@ -329,9 +328,10 @@ footer p { font-size:12px; color:var(--muted); }
 /* ── DISPLAY CANVAS (replaces result-img) ── */
 #display-canvas {
   max-width: 100%;
-  max-height: 280px;
+  max-height: 480px;
   border-radius: 6px;
   display: block;
+  width: 100%;
   /* cursor set by JS */
 }
 </style>
@@ -658,10 +658,10 @@ async function initEditor(blob) {
 
 // Draw wCanvas → display canvas at correct size
 function renderToDisplay() {
-  // Compute display size: fit inside 100% width, max-height 280px
+  // Compute display size: fit inside 100% width, max-height 480px
   const container = document.getElementById('result-img-wrap');
   const maxW = container.clientWidth - 24;  // 12px padding each side
-  const maxH = 280;
+  const maxH = 480;
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
   const dw = Math.round(wCanvas.width  * ratio);
   const dh = Math.round(wCanvas.height * ratio);
@@ -684,12 +684,15 @@ function attachBrushEvents() {
   dc.addEventListener('mousedown', e => {
     if (!brushMode) return;
     isPainting = true;
-    applyBrush(e.offsetX, e.offsetY);
+    const r = dc.getBoundingClientRect();
+    applyBrush(e.clientX - r.left, e.clientY - r.top);
   });
   dc.addEventListener('mousemove', e => {
     if (!brushMode) return;
-    showCursorRing(e.offsetX, e.offsetY);
-    if (isPainting) applyBrush(e.offsetX, e.offsetY);
+    const r = dc.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    showCursorRing(x, y);
+    if (isPainting) applyBrush(x, y);
   });
   dc.addEventListener('mouseup',   () => { if (isPainting) { isPainting=false; bakeBlob(); } });
   dc.addEventListener('mouseleave',() => { if (isPainting) { isPainting=false; bakeBlob(); } renderToDisplay(); });
@@ -709,9 +712,11 @@ function attachBrushEvents() {
 
 // ─── PAINT LOGIC ────────────────────────────────────────────────────
 function applyBrush(dispX, dispY) {
-  // Scale: display canvas → full-res canvas
-  const sx = wCanvas.width  / dc.width;
-  const sy = wCanvas.height / dc.height;
+  // Scale: display canvas CSS size → full-res canvas
+  // Use getBoundingClientRect to get actual rendered size (accounts for CSS width:100%)
+  const rect = dc.getBoundingClientRect();
+  const sx = wCanvas.width  / rect.width;
+  const sy = wCanvas.height / rect.height;
   const fx = dispX * sx,  fy = dispY * sy;
   const fr = (window.brushSize / 2) * sx;
 
@@ -747,10 +752,11 @@ function applyBrush(dispX, dispY) {
 }
 
 function showCursorRing(x,y) {
-  // Overdraw a circle outline to show brush position
+  // Show brush circle in display-canvas coordinates
+  // brushSize is in display pixels (not full-res pixels)
   dctx.save();
   dctx.beginPath();
-  dctx.arc(x,y,window.brushSize/2,0,Math.PI*2);
+  dctx.arc(x, y, window.brushSize/2, 0, Math.PI*2);
   dctx.strokeStyle = brushMode==='erase' ? 'rgba(255,80,80,.8)' : 'rgba(80,220,80,.8)';
   dctx.lineWidth = 1.5;
   dctx.stroke();
