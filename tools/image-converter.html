@@ -1,1237 +1,931 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Format Converter — Free Online Tool | Westcrest Media</title>
-  <meta name="description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, BMP, TIFF, GIF, AVIF to any format. No upload, no limits, 100% browser-side." />
-  <meta name="keywords" content="image converter, png to jpg, webp to png, heic to jpg, free image converter, online image converter" />
-  <link rel="icon" type="image/svg+xml" href="images/w_logo.svg" />
-  <meta name="theme-color" content="#C9A84C" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
-
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #111118;
-      --bg2: #16161e;
-      --bg3: #1c1c26;
-      --gold: #C9A84C;
-      --gold2: #e8c96a;
-      --gold-dim: rgba(201,168,76,0.15);
-      --gold-border: rgba(201,168,76,0.25);
-      --white: #f0ede8;
-      --white-dim: rgba(240,237,232,0.5);
-      --white-faint: rgba(240,237,232,0.08);
-      --red: #e05555;
-      --green: #5ec98a;
-      --radius: 12px;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: 'Syne', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* NOISE OVERLAY */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 20px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(17,17,24,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--gold-border);
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--white);
-    }
-
-    .nav-logo img {
-      width: 32px;
-      height: 32px;
-      mix-blend-mode: lighten;
-    }
-
-    .nav-logo span {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-
-    .nav-back {
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: opacity 0.2s;
-    }
-    .nav-back:hover { opacity: 0.7; }
-    .nav-back::before { content: '←'; font-size: 1rem; }
-
-    /* HERO */
-    .hero {
-      padding: 140px 48px 60px;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero-glow {
-      position: absolute;
-      top: 60px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse, rgba(201,168,76,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid var(--gold-border);
-      padding: 6px 16px;
-      margin-bottom: 24px;
-      font-family: 'DM Mono', monospace;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 300;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--gold);
-    }
-
-    .hero p {
-      color: var(--white-dim);
-      font-size: 0.9rem;
-      letter-spacing: 0.05em;
-      max-width: 480px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
-    }
-
-    /* BADGES */
-    .badges {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 60px;
-    }
-
-    .badge {
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      font-family: 'DM Mono', monospace;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .badge::before {
-      content: '✦';
-      color: var(--gold);
-      font-size: 0.5rem;
-    }
-
-    /* MAIN TOOL */
-    .tool-wrapper {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 24px 80px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* DROP ZONE */
-    .drop-zone {
-      border: 1.5px dashed var(--gold-border);
-      border-radius: var(--radius);
-      background: var(--bg2);
-      padding: 60px 40px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .drop-zone::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gold-dim);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .drop-zone:hover::before,
-    .drop-zone.dragover::before { opacity: 1; }
-
-    .drop-zone.dragover {
-      border-color: var(--gold);
-      border-style: solid;
-    }
-
-    .drop-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 20px;
-      border: 1.5px solid var(--gold-border);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      transition: all 0.3s;
-    }
-
-    .drop-zone:hover .drop-icon {
-      border-color: var(--gold);
-      transform: scale(1.05);
-    }
-
-    .drop-zone h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-
-    .drop-zone p {
-      color: var(--white-dim);
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      margin-bottom: 24px;
-    }
-
-    .btn-upload {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--bg);
-      padding: 12px 32px;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s;
-      border-radius: 2px;
-    }
-
-    .btn-upload:hover {
-      background: var(--gold2);
-      transform: translateY(-1px);
-    }
-
-    .formats-accepted {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .fmt-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      padding: 3px 10px;
-      border: 1px solid var(--white-faint);
-      color: var(--white-dim);
-      letter-spacing: 0.1em;
-      border-radius: 2px;
-    }
-
-    /* OUTPUT FORMAT SELECTOR */
-    .output-section {
-      margin-top: 32px;
-      background: var(--bg2);
-      border: 1px solid var(--gold-border);
-      border-radius: var(--radius);
-      padding: 28px 32px;
-    }
-
-    .output-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-family: 'DM Mono', monospace;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .format-grid {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .fmt-btn {
-      padding: 10px 22px;
-      border: 1.5px solid var(--white-faint);
-      background: transparent;
-      color: var(--white-dim);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.2s;
-      text-transform: uppercase;
-    }
-
-    .fmt-btn:hover {
-      border-color: var(--gold-border);
-      color: var(--white);
-    }
-
-    .fmt-btn.active {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: var(--gold-dim);
-    }
-
-    /* QUALITY SLIDER */
-    .quality-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--white-faint);
-    }
-
-    .quality-row label {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      font-family: 'DM Mono', monospace;
-      white-space: nowrap;
-    }
-
-    input[type="range"] {
-      flex: 1;
-      appearance: none;
-      height: 2px;
-      background: linear-gradient(to right, var(--gold) var(--pct, 92%), var(--white-faint) var(--pct, 92%));
-      border-radius: 2px;
-      outline: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--gold);
-      cursor: pointer;
-      border: 2px solid var(--bg);
-    }
-
-    .quality-val {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--gold);
-      min-width: 36px;
-      text-align: right;
-    }
-
-    /* FILE LIST */
-    .file-list {
-      margin-top: 28px;
-      display: none;
-    }
-
-    .file-list.show { display: block; }
-
-    .file-list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .file-list-header span {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      font-family: 'DM Mono', monospace;
-    }
-
-    .btn-clear {
-      background: none;
-      border: 1px solid var(--white-faint);
-      color: var(--white-dim);
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-family: 'DM Mono', monospace;
-      padding: 5px 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-radius: 2px;
-    }
-
-    .btn-clear:hover {
-      border-color: var(--red);
-      color: var(--red);
-    }
-
-    .file-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 18px;
-      background: var(--bg3);
-      border: 1px solid var(--white-faint);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      transition: border-color 0.2s;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .file-item.done { border-color: rgba(94,201,138,0.3); }
-    .file-item.error { border-color: rgba(224,85,85,0.3); }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .file-preview {
-      width: 44px;
-      height: 44px;
-      border-radius: 4px;
-      object-fit: cover;
-      background: var(--bg);
-      flex-shrink: 0;
-      border: 1px solid var(--white-faint);
-    }
-
-    .file-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .file-name {
-      font-size: 0.8rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 3px;
-    }
-
-    .file-meta {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--white-dim);
-      letter-spacing: 0.06em;
-    }
-
-    .file-status {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    .file-status.pending { color: var(--white-dim); background: var(--white-faint); }
-    .file-status.converting { color: var(--gold); background: var(--gold-dim); }
-    .file-status.done { color: var(--green); background: rgba(94,201,138,0.1); }
-    .file-status.error { color: var(--red); background: rgba(224,85,85,0.1); }
-
-    .btn-dl {
-      background: none;
-      border: 1px solid var(--gold-border);
-      color: var(--gold);
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-family: 'DM Mono', monospace;
-      padding: 6px 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-radius: 2px;
-      flex-shrink: 0;
-      display: none;
-    }
-
-    .btn-dl.show { display: block; }
-    .btn-dl:hover { background: var(--gold-dim); }
-
-    /* CONVERT BUTTON */
-    .convert-row {
-      margin-top: 28px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn-convert {
-      flex: 1;
-      background: var(--gold);
-      color: var(--bg);
-      border: none;
-      padding: 16px 40px;
-      font-size: 0.75rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-radius: 4px;
-      display: none;
-    }
-
-    .btn-convert.show { display: block; }
-
-    .btn-convert:hover:not(:disabled) {
-      background: var(--gold2);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 32px rgba(201,168,76,0.3);
-    }
-
-    .btn-convert:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-dl-all {
-      background: none;
-      border: 1.5px solid var(--gold);
-      color: var(--gold);
-      padding: 16px 28px;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-radius: 4px;
-      display: none;
-    }
-
-    .btn-dl-all.show { display: block; }
-    .btn-dl-all:hover { background: var(--gold-dim); }
-
-    /* PROGRESS BAR */
-    .progress-bar-wrap {
-      margin-top: 20px;
-      display: none;
-    }
-    .progress-bar-wrap.show { display: block; }
-
-    .progress-bar-track {
-      height: 2px;
-      background: var(--white-faint);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--gold);
-      width: 0%;
-      transition: width 0.3s ease;
-      border-radius: 2px;
-    }
-
-    .progress-text {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--white-dim);
-      letter-spacing: 0.1em;
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    /* HOW IT WORKS */
-    .how-section {
-      max-width: 900px;
-      margin: 0 auto 80px;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .how-section h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 300;
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .how-section h2 em { font-style: italic; color: var(--gold); }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .step-card {
-      background: var(--bg2);
-      border: 1px solid var(--gold-border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      text-align: center;
-    }
-
-    .step-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.5rem;
-      font-weight: 300;
-      color: var(--gold);
-      opacity: 0.4;
-      line-height: 1;
-      margin-bottom: 12px;
-    }
-
-    .step-card h4 {
-      font-size: 0.85rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .step-card p {
-      font-size: 0.75rem;
-      color: var(--white-dim);
-      line-height: 1.6;
-      letter-spacing: 0.03em;
-    }
-
-    /* FAQ */
-    .faq-section {
-      max-width: 700px;
-      margin: 0 auto 80px;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .faq-section h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 300;
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .faq-section h2 em { font-style: italic; color: var(--gold); }
-
-    .faq-item {
-      border-bottom: 1px solid var(--white-faint);
-    }
-
-    .faq-q {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--white);
-      font-family: 'Syne', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      text-align: left;
-      padding: 20px 0;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .faq-q::after {
-      content: '+';
-      color: var(--gold);
-      font-size: 1.2rem;
-      flex-shrink: 0;
-      transition: transform 0.3s;
-    }
-
-    .faq-item.open .faq-q::after { transform: rotate(45deg); }
-
-    .faq-a {
-      font-size: 0.8rem;
-      color: var(--white-dim);
-      line-height: 1.7;
-      letter-spacing: 0.03em;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s;
-    }
-
-    .faq-item.open .faq-a {
-      max-height: 200px;
-      padding-bottom: 18px;
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--gold-border);
-      padding: 40px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .footer-copy {
-      font-size: 0.68rem;
-      color: var(--white-dim);
-      letter-spacing: 0.1em;
-      font-family: 'DM Mono', monospace;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
-
-    .footer-links a {
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover { color: var(--gold); }
-
-    /* HIDDEN FILE INPUT */
-    #fileInput { display: none; }
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      nav { padding: 16px 20px; }
-      .hero { padding: 120px 20px 40px; }
-      .tool-wrapper { padding: 0 16px 60px; }
-      .drop-zone { padding: 40px 20px; }
-      .output-section { padding: 20px; }
-      .steps-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 16px; text-align: center; }
-      .convert-row { flex-direction: column; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Format Converter — Free Online Tool | Westcrest Media</title>
+<meta name="description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, BMP, TIFF, GIF, AVIF to any format. No upload, no limits, 100% browser-side.">
+<meta name="keywords" content="image converter, png to jpg, webp to png, heic to jpg, free image converter, online image converter">
+<meta name="theme-color" content="#C9A84C">
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #e8c96a;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #1a1a1a;
+    --dark4: #222222;
+    --border: rgba(201,168,76,0.18);
+    --text: #f0ede6;
+    --text-muted: rgba(240,237,230,0.5);
+    --radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* NAVBAR */
+  .tool-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 64px;
+    background: rgba(10,10,10,0.95);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .tool-nav .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tool-nav .logo img { height: 28px; }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--gold); }
+  .back-btn svg { width: 14px; height: 14px; }
+
+  /* HERO */
+  .tool-hero {
+    text-align: center;
+    padding: 4rem 2rem 2.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .tool-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+  }
+  .tool-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .tool-hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .tool-hero p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .trust-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .trust-pill {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 99px;
+  }
+
+  /* MAIN CONVERTER */
+  .converter-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* DROP ZONE */
+  .drop-zone {
+    background: var(--dark2);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+  .drop-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(201,168,76,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+  .drop-icon svg { width: 22px; height: 22px; stroke: var(--gold); fill: none; }
+  .drop-title { font-size: 16px; font-weight: 600; margin-bottom: 0.4rem; }
+  .drop-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.2rem; }
+  .browse-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .browse-btn:hover { background: rgba(201,168,76,0.1); }
+  .format-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 1.2rem;
+  }
+  .format-chip {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  #file-input { display: none; }
+
+  /* SETTINGS PANEL */
+  .settings-panel {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  @media (max-width: 520px) { .settings-panel { grid-template-columns: 1fr; } }
+  .setting-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+  .format-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .fmt-btn {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .fmt-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .fmt-btn.active {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .quality-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .quality-row input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--dark4);
+    border-radius: 2px;
+    outline: none;
+  }
+  .quality-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+  }
+  .quality-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* ACTION BAR */
+  .action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .file-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .file-count span { color: var(--gold); font-weight: 600; }
+  .action-btns { display: flex; gap: 8px; }
+  #convert-btn {
+    background: var(--gold);
+    color: #000;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 9px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  #convert-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  #convert-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  #download-all-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  #download-all-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #clear-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  #clear-btn:hover { border-color: rgba(255,80,80,0.4); color: #ff5050; }
+
+  /* FILE LIST */
+  #file-list { display: flex; flex-direction: column; gap: 8px; }
+  .file-item {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s;
+  }
+  .file-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: var(--dark4);
+    flex-shrink: 0;
+  }
+  .file-info { flex: 1; min-width: 0; }
+  .file-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .file-size { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .file-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .status-pending { background: var(--dark4); color: var(--text-muted); }
+  .status-converting { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .status-done { background: rgba(40,200,100,0.1); color: #28c864; }
+  .status-error { background: rgba(255,80,80,0.1); color: #ff5050; }
+  .dl-btn {
+    background: transparent;
+    border: 1px solid rgba(40,200,100,0.3);
+    color: #28c864;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .dl-btn:hover { background: rgba(40,200,100,0.1); }
+
+  /* CONVERTING SPINNER */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(201,168,76,0.3);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .section-heading {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+  .section-heading em { font-style: italic; color: var(--gold); }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 560px) { .steps-grid { grid-template-columns: 1fr; } }
+  .step-card {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .step-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .step-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 0.4rem; }
+  .step-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* FAQ */
+  .faq-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    cursor: pointer;
+  }
+  .faq-q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .faq-q svg { width: 16px; height: 16px; stroke: var(--text-muted); flex-shrink: 0; transition: transform 0.2s; fill: none; }
+  .faq-item.open .faq-q svg { transform: rotate(180deg); }
+  .faq-a {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-top: 0.75rem; }
+
+  /* FOOTER */
+  .tool-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .tool-footer p { font-size: 12px; color: var(--text-muted); }
+  .tool-footer a { color: var(--text-muted); text-decoration: none; font-size: 12px; }
+  .tool-footer a:hover { color: var(--gold); }
+  .footer-links { display: flex; gap: 1.5rem; }
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="index.html" class="nav-logo">
-      <img src="images/w_logo.svg" alt="Westcrest Media" />
-      <span>Westcrest Media</span>
-    </a>
-    <a href="index.html" class="nav-back">Back to Home</a>
-  </nav>
+<!-- NAV -->
+<nav class="tool-nav">
+  <a href="https://westcrestmedia.github.io/" class="logo">
+    <img src="../images/logo.png" alt="Westcrest Media">
+    Westcrest Media
+  </a>
+  <a href="https://westcrestmedia.github.io/" class="back-btn">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Back to Home
+  </a>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-tag">Free Tool · No Upload · No Limits</div>
-    <h1>Image Format <em>Converter</em></h1>
-    <p>Convert any image format instantly — all processing happens in your browser. Your files never leave your device.</p>
-    <div class="badges">
-      <span class="badge">100% Free</span>
-      <span class="badge">No Registration</span>
-      <span class="badge">Batch Convert</span>
-      <span class="badge">Privacy First</span>
-      <span class="badge">No Watermark</span>
+<!-- HERO -->
+<section class="tool-hero">
+  <div class="tool-badge">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+    Free Tool · No Upload · No Limits
+  </div>
+  <h1>Image Format <em>Converter</em></h1>
+  <p>Convert any image format instantly — all processing happens in your browser. Your files never leave your device.</p>
+  <div class="trust-pills">
+    <span class="trust-pill">100% Free</span>
+    <span class="trust-pill">No Registration</span>
+    <span class="trust-pill">Batch Convert</span>
+    <span class="trust-pill">Privacy First</span>
+    <span class="trust-pill">No Watermark</span>
+  </div>
+</section>
+
+<!-- CONVERTER -->
+<div class="converter-wrap">
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="drop-zone">
+    <div class="drop-icon">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+      </svg>
     </div>
-  </section>
-
-  <!-- TOOL -->
-  <div class="tool-wrapper">
-
-    <!-- DROP ZONE -->
-    <div class="drop-zone" id="dropZone">
-      <div class="drop-icon">📁</div>
-      <h3>Drop Images Here</h3>
-      <p>or click to browse your files</p>
-      <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Choose Files</button>
-      <div class="formats-accepted">
-        <span class="fmt-tag">JPG</span>
-        <span class="fmt-tag">PNG</span>
-        <span class="fmt-tag">WEBP</span>
-        <span class="fmt-tag">BMP</span>
-        <span class="fmt-tag">TIFF</span>
-        <span class="fmt-tag">GIF</span>
-        <span class="fmt-tag">AVIF</span>
-        <span class="fmt-tag">SVG</span>
-        <span class="fmt-tag">ICO</span>
-      </div>
+    <p class="drop-title">Drop Images Here</p>
+    <p class="drop-sub">or click to browse your files</p>
+    <button class="browse-btn" onclick="document.getElementById('file-input').click()">Choose Files</button>
+    <div class="format-chips" style="margin-top:1.2rem;">
+      <span class="format-chip">JPG</span>
+      <span class="format-chip">PNG</span>
+      <span class="format-chip">WEBP</span>
+      <span class="format-chip">BMP</span>
+      <span class="format-chip">TIFF</span>
+      <span class="format-chip">GIF</span>
+      <span class="format-chip">AVIF</span>
+      <span class="format-chip">SVG</span>
+      <span class="format-chip">ICO</span>
     </div>
+    <input type="file" id="file-input" multiple accept="image/*">
+  </div>
 
-    <input type="file" id="fileInput" multiple accept="image/*" />
-
-    <!-- OUTPUT FORMAT -->
-    <div class="output-section">
-      <span class="output-label">Convert To</span>
-      <div class="format-grid">
-        <button class="fmt-btn active" data-fmt="jpeg">JPG</button>
+  <!-- SETTINGS -->
+  <div class="settings-panel">
+    <div class="setting-group">
+      <label>Convert To</label>
+      <div class="format-btns">
+        <button class="fmt-btn active" data-fmt="jpg">JPG</button>
         <button class="fmt-btn" data-fmt="png">PNG</button>
         <button class="fmt-btn" data-fmt="webp">WEBP</button>
         <button class="fmt-btn" data-fmt="pdf">PDF</button>
       </div>
-
-      <div class="quality-row" id="qualityRow">
-        <label>Quality</label>
-        <input type="range" id="qualitySlider" min="10" max="100" value="92" oninput="updateQuality(this)" />
-        <span class="quality-val" id="qualityVal">92%</span>
+    </div>
+    <div class="setting-group">
+      <label>Quality</label>
+      <div class="quality-row">
+        <input type="range" id="quality-slider" min="10" max="100" value="92">
+        <span class="quality-val" id="quality-val">92%</span>
       </div>
     </div>
-
-    <!-- FILE LIST -->
-    <div class="file-list" id="fileList">
-      <div class="file-list-header">
-        <span id="fileCount">0 files selected</span>
-        <button class="btn-clear" onclick="clearAll()">Clear All</button>
-      </div>
-      <div id="fileItems"></div>
-    </div>
-
-    <!-- PROGRESS -->
-    <div class="progress-bar-wrap" id="progressWrap">
-      <div class="progress-bar-track">
-        <div class="progress-bar-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-text" id="progressText">Converting...</div>
-    </div>
-
-    <!-- CONVERT BUTTON -->
-    <div class="convert-row">
-      <button class="btn-convert" id="convertBtn" onclick="convertAll()">✦ Convert All</button>
-      <button class="btn-dl-all" id="dlAllBtn" onclick="downloadAll()">↓ Download All</button>
-    </div>
-
   </div>
 
-  <!-- HOW IT WORKS -->
-  <section class="how-section">
-    <h2>How It <em>Works</em></h2>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-num">01</div>
-        <h4>Upload Files</h4>
-        <p>Drag & drop or click to select. Supports batch upload — convert multiple images at once.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">02</div>
-        <h4>Choose Format</h4>
-        <p>Select output format — JPG, PNG, WEBP or PDF. Adjust quality for size vs clarity balance.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">03</div>
-        <h4>Download</h4>
-        <p>Convert and download individually or grab all files as a batch. Instant, no waiting.</p>
-      </div>
+  <!-- ACTION BAR -->
+  <div class="action-bar" id="action-bar" style="display:none;">
+    <div class="file-count"><span id="file-count-num">0</span> files selected</div>
+    <div class="action-btns">
+      <button id="clear-btn" onclick="clearAll()">Clear</button>
+      <button id="download-all-btn" onclick="downloadAll()">↓ Download All</button>
+      <button id="convert-btn" onclick="convertAll()">Convert</button>
     </div>
-  </section>
+  </div>
 
-  <!-- FAQ -->
-  <section class="faq-section">
-    <h2>Common <em>Questions</em></h2>
+  <!-- FILE LIST -->
+  <div id="file-list"></div>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Are my images uploaded to any server?</button>
-      <div class="faq-a">No. All conversion happens entirely in your browser using the Canvas API. Your images never leave your device and are never uploaded to any server.</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <p class="section-tag">Simple Process</p>
+  <h2 class="section-heading">How It <em>Works</em></h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <p class="step-num">01</p>
+      <h4>Upload Files</h4>
+      <p>Drag & drop or click to select. Supports batch upload — convert multiple images at once.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Is there a file size or count limit?</button>
-      <div class="faq-a">No limits at all. Convert as many images as you want, any size. Processing speed depends on your device's performance.</div>
+    <div class="step-card">
+      <p class="step-num">02</p>
+      <h4>Choose Format</h4>
+      <p>Select output format — JPG, PNG, WEBP or PDF. Adjust quality for size vs clarity balance.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">What formats are supported?</button>
-      <div class="faq-a">Input: JPG, PNG, WEBP, BMP, TIFF, GIF, AVIF, SVG, ICO — any format your browser can render. Output: JPG, PNG, WEBP, and PDF.</div>
+    <div class="step-card">
+      <p class="step-num">03</p>
+      <h4>Download</h4>
+      <p>Convert and download individually or grab all files as a batch. Instant, no waiting.</p>
     </div>
+  </div>
+</section>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Will the quality be affected?</button>
-      <div class="faq-a">You can control output quality using the quality slider (10–100%). For lossless formats like PNG, full quality is always preserved.</div>
-    </div>
+<!-- FAQ -->
+<section class="faq-section">
+  <p class="section-tag">Common Questions</p>
+  <h2 class="section-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Are my images uploaded to any server? <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">No. All conversion happens entirely in your browser using the Canvas API. Your images never leave your device and are never uploaded to any server.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Is there a file size or count limit? <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">No limits at all. Convert as many images as you want, any size. Processing speed depends on your device's performance.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">What formats are supported? <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Input: JPG, PNG, WEBP, BMP, TIFF, GIF, AVIF, SVG, ICO — any format your browser can render. Output: JPG, PNG, WEBP, and PDF.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Will the quality be affected? <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">You can control output quality using the quality slider (10–100%). For lossless formats like PNG, full quality is always preserved.</div>
+  </div>
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">Does it work on mobile? <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes, fully optimized for mobile browsers. Upload from your camera roll or files app and convert on the go.</div>
+  </div>
+</section>
 
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Does it work on mobile?</button>
-      <div class="faq-a">Yes, fully optimized for mobile browsers. Upload from your camera roll or files app and convert on the go.</div>
-    </div>
-  </section>
+<!-- FOOTER -->
+<footer class="tool-footer">
+  <p>© 2026 Westcrest Media — Free Tools</p>
+  <div class="footer-links">
+    <a href="https://westcrestmedia.github.io/">Home</a>
+    <a href="https://westcrestmedia.github.io/#tools">All Tools</a>
+    <a href="https://westcrestmedia.github.io/#contact">Contact</a>
+  </div>
+</footer>
 
-  <!-- FOOTER -->
-  <footer>
-    <span class="footer-copy">© 2026 Westcrest Media — Free Tools</span>
-    <div class="footer-links">
-      <a href="index.html">Home</a>
-      <a href="index.html#tools">All Tools</a>
-      <a href="index.html#contact">Contact</a>
-    </div>
-  </footer>
+<script>
+// jsPDF loaded via CDN
+const { jsPDF } = window.jspdf;
 
-  <script>
-    // ─── STATE ───
-    let files = [];
-    let convertedBlobs = [];
-    let outputFormat = 'jpeg';
-    let quality = 0.92;
+let files = [];
+let outputFormat = 'jpg';
+let convertedBlobs = {};
 
-    // ─── DRAG & DROP ───
-    const dropZone = document.getElementById('dropZone');
+// Format buttons
+document.querySelectorAll('.fmt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    outputFormat = btn.dataset.fmt;
+  });
+});
 
-    dropZone.addEventListener('dragover', e => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
+// Quality slider
+const slider = document.getElementById('quality-slider');
+const qualityVal = document.getElementById('quality-val');
+slider.addEventListener('input', () => { qualityVal.textContent = slider.value + '%'; });
 
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+// Drop zone
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  handleFiles([...e.dataTransfer.files]);
+});
+dropZone.addEventListener('click', e => {
+  if (e.target.classList.contains('browse-btn')) return;
+  document.getElementById('file-input').click();
+});
+document.getElementById('file-input').addEventListener('change', e => handleFiles([...e.target.files]));
 
-    dropZone.addEventListener('drop', e => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const dropped = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-      addFiles(dropped);
-    });
+function handleFiles(newFiles) {
+  const imageFiles = newFiles.filter(f => f.type.startsWith('image/'));
+  files = [...files, ...imageFiles];
+  convertedBlobs = {};
+  renderFileList();
+  updateActionBar();
+}
 
-    dropZone.addEventListener('click', e => {
-      if (e.target.classList.contains('btn-upload') || e.target === dropZone || e.target.closest('.drop-zone')) {
-        document.getElementById('fileInput').click();
-      }
-    });
+function updateActionBar() {
+  const bar = document.getElementById('action-bar');
+  const clearBtn = document.getElementById('clear-btn');
+  const dlBtn = document.getElementById('download-all-btn');
+  const convertBtn = document.getElementById('convert-btn');
 
-    document.getElementById('fileInput').addEventListener('change', e => {
-      addFiles(Array.from(e.target.files));
-      e.target.value = '';
-    });
+  if (files.length === 0) {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'flex';
+  clearBtn.style.display = 'block';
+  document.getElementById('file-count-num').textContent = files.length;
 
-    // ─── FORMAT BUTTONS ───
-    document.querySelectorAll('.fmt-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        outputFormat = btn.dataset.fmt;
-        const qualityRow = document.getElementById('qualityRow');
-        qualityRow.style.opacity = (outputFormat === 'png' || outputFormat === 'pdf') ? '0.4' : '1';
-        qualityRow.style.pointerEvents = (outputFormat === 'png' || outputFormat === 'pdf') ? 'none' : 'auto';
-        resetConversions();
-      });
-    });
+  // Smart button text
+  convertBtn.textContent = files.length === 1 ? 'Convert' : 'Convert All';
 
-    // ─── QUALITY SLIDER ───
-    function updateQuality(el) {
-      quality = parseInt(el.value) / 100;
-      document.getElementById('qualityVal').textContent = el.value + '%';
-      el.style.setProperty('--pct', el.value + '%');
-      resetConversions();
+  // Show Download All only if conversions done
+  const doneCount = Object.keys(convertedBlobs).length;
+  dlBtn.style.display = doneCount > 0 ? 'block' : 'none';
+}
+
+function renderFileList() {
+  const list = document.getElementById('file-list');
+  list.innerHTML = '';
+  files.forEach((file, i) => {
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.id = 'item-' + i;
+
+    const img = document.createElement('img');
+    img.className = 'file-thumb';
+    img.src = URL.createObjectURL(file);
+    img.alt = file.name;
+
+    const info = document.createElement('div');
+    info.className = 'file-info';
+    info.innerHTML = `<div class="file-name">${file.name}</div><div class="file-size">${formatSize(file.size)}</div>`;
+
+    const status = document.createElement('span');
+    status.className = 'file-status status-pending';
+    status.id = 'status-' + i;
+    status.textContent = 'Pending';
+
+    item.appendChild(img);
+    item.appendChild(info);
+    item.appendChild(status);
+    list.appendChild(item);
+  });
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+async function convertAll() {
+  if (files.length === 0) return;
+  const btn = document.getElementById('convert-btn');
+  btn.disabled = true;
+  convertedBlobs = {};
+
+  if (outputFormat === 'pdf') {
+    await convertToPDF();
+  } else {
+    for (let i = 0; i < files.length; i++) {
+      await convertImage(files[i], i);
     }
+  }
 
-    // ─── ADD FILES ───
-    function addFiles(newFiles) {
-      newFiles.forEach(file => {
-        if (!files.find(f => f.name === file.name && f.size === file.size)) {
-          files.push(file);
-          convertedBlobs.push(null);
-          renderFileItem(file, files.length - 1);
-        }
-      });
-      updateUI();
-    }
+  btn.disabled = false;
+  updateActionBar();
+}
 
-    function renderFileItem(file, idx) {
-      const container = document.getElementById('fileItems');
-      const div = document.createElement('div');
-      div.className = 'file-item';
-      div.id = `item-${idx}`;
+function convertImage(file, index) {
+  return new Promise((resolve) => {
+    const statusEl = document.getElementById('status-' + index);
+    statusEl.className = 'file-status status-converting';
+    statusEl.innerHTML = '<span class="spinner"></span>Converting';
 
-      const img = document.createElement('img');
-      img.className = 'file-preview';
-      img.alt = file.name;
-      const url = URL.createObjectURL(file);
-      img.src = url;
-      img.onload = () => URL.revokeObjectURL(url);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
 
-      const info = document.createElement('div');
-      info.className = 'file-info';
-      info.innerHTML = `<div class="file-name">${file.name}</div><div class="file-meta">${formatSize(file.size)}</div>`;
-
-      const status = document.createElement('span');
-      status.className = 'file-status pending';
-      status.id = `status-${idx}`;
-      status.textContent = 'Pending';
-
-      const dlBtn = document.createElement('button');
-      dlBtn.className = 'btn-dl';
-      dlBtn.id = `dl-${idx}`;
-      dlBtn.textContent = '↓ Save';
-      dlBtn.onclick = () => downloadSingle(idx, file.name);
-
-      div.appendChild(img);
-      div.appendChild(info);
-      div.appendChild(status);
-      div.appendChild(dlBtn);
-      container.appendChild(div);
-    }
-
-    function updateUI() {
-      const count = files.length;
-      document.getElementById('fileCount').textContent = `${count} file${count !== 1 ? 's' : ''} selected`;
-      const show = count > 0;
-      document.getElementById('fileList').className = `file-list ${show ? 'show' : ''}`;
-      document.getElementById('convertBtn').className = `btn-convert ${show ? 'show' : ''}`;
-    }
-
-    // ─── RESET ───
-    function resetConversions() {
-      convertedBlobs = files.map(() => null);
-      files.forEach((_, idx) => {
-        const s = document.getElementById(`status-${idx}`);
-        const d = document.getElementById(`dl-${idx}`);
-        const item = document.getElementById(`item-${idx}`);
-        if (s) { s.className = 'file-status pending'; s.textContent = 'Pending'; }
-        if (d) d.className = 'btn-dl';
-        if (item) { item.classList.remove('done', 'error'); }
-      });
-      document.getElementById('dlAllBtn').className = 'btn-dl-all';
-      document.getElementById('progressWrap').className = 'progress-bar-wrap';
-    }
-
-    function clearAll() {
-      files = [];
-      convertedBlobs = [];
-      document.getElementById('fileItems').innerHTML = '';
-      document.getElementById('fileList').className = 'file-list';
-      document.getElementById('convertBtn').className = 'btn-convert';
-      document.getElementById('dlAllBtn').className = 'btn-dl-all';
-      document.getElementById('progressWrap').className = 'progress-bar-wrap';
-    }
-
-    // ─── CONVERT ───
-    async function convertAll() {
-      if (!files.length) return;
-      const btn = document.getElementById('convertBtn');
-      btn.disabled = true;
-      btn.textContent = 'Converting...';
-
-      const progressWrap = document.getElementById('progressWrap');
-      const progressFill = document.getElementById('progressFill');
-      const progressText = document.getElementById('progressText');
-      progressWrap.className = 'progress-bar-wrap show';
-
-      let done = 0;
-
-      for (let i = 0; i < files.length; i++) {
-        const s = document.getElementById(`status-${i}`);
-        const item = document.getElementById(`item-${i}`);
-        if (s) { s.className = 'file-status converting'; s.textContent = 'Converting'; }
-
-        try {
-          const blob = await convertFile(files[i]);
-          convertedBlobs[i] = blob;
-          if (s) { s.className = 'file-status done'; s.textContent = 'Done ✓'; }
-          if (item) { item.classList.add('done'); }
-          const d = document.getElementById(`dl-${i}`);
-          if (d) d.className = 'btn-dl show';
-        } catch (err) {
-          if (s) { s.className = 'file-status error'; s.textContent = 'Error'; }
-          if (item) { item.classList.add('error'); }
-        }
-
-        done++;
-        const pct = Math.round((done / files.length) * 100);
-        progressFill.style.width = pct + '%';
-        progressText.textContent = `${done} of ${files.length} converted`;
-      }
-
-      btn.disabled = false;
-      btn.textContent = '✦ Convert Again';
-      document.getElementById('dlAllBtn').className = 'btn-dl-all show';
-    }
-
-    function convertFile(file) {
-      return new Promise((resolve, reject) => {
-        if (outputFormat === 'pdf') {
-          convertToPdf(file).then(resolve).catch(reject);
-          return;
-        }
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = () => {
-          URL.revokeObjectURL(url);
-          const canvas = document.createElement('canvas');
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d');
-          if (outputFormat === 'jpeg') {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-          }
-          ctx.drawImage(img, 0, 0);
-          const mimeType = outputFormat === 'jpeg' ? 'image/jpeg' : `image/${outputFormat}`;
-          canvas.toBlob(blob => {
-            if (blob) resolve(blob);
-            else reject(new Error('Conversion failed'));
-          }, mimeType, quality);
-        };
-        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Load failed')); };
-        img.src = url;
-      });
-    }
-
-    function convertToPdf(file) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = () => {
-          URL.revokeObjectURL(url);
-          const canvas = document.createElement('canvas');
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d');
+        // White background for JPG
+        if (outputFormat === 'jpg') {
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        }
+        ctx.drawImage(img, 0, 0);
 
-          // Simple PDF structure
-          const imgW = img.naturalWidth;
-          const imgH = img.naturalHeight;
-          const pdfW = Math.round(imgW * 72 / 96);
-          const pdfH = Math.round(imgH * 72 / 96);
+        const mimeType = outputFormat === 'jpg' ? 'image/jpeg' : 'image/' + outputFormat;
+        const quality = parseInt(slider.value) / 100;
 
-          const imgData = dataUrl.split(',')[1];
-          const pdfContent = `%PDF-1.4
-1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
-2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
-3 0 obj<</Type/Page/MediaBox[0 0 ${pdfW} ${pdfH}]/Parent 2 0 R/Resources<</XObject<</Im1 4 0 R>>>>/Contents 5 0 R>>endobj
-4 0 obj<</Type/XObject/Subtype/Image/Width ${imgW}/Height ${imgH}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${imgData.length}>>
-stream
-${atob(imgData)}
-endstream
-endobj
-5 0 obj<</Length 32>>
-stream
-${pdfW} 0 0 ${pdfH} 0 0 cm /Im1 Do
-endstream
-endobj
-xref
-0 6
-0000000000 65535 f
-trailer<</Size 6/Root 1 0 R>>
-startxref
-0
-%%EOF`;
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            statusEl.className = 'file-status status-error';
+            statusEl.textContent = 'Error';
+            resolve();
+            return;
+          }
+          convertedBlobs[index] = { blob, name: getOutputName(file.name) };
+          statusEl.className = 'file-status status-done';
+          statusEl.textContent = '✓ Done';
 
-          const blob = new Blob([pdfContent], { type: 'application/pdf' });
-          resolve(blob);
+          // Add download button
+          const item = document.getElementById('item-' + index);
+          let existing = item.querySelector('.dl-btn');
+          if (existing) existing.remove();
+          const dlBtn = document.createElement('button');
+          dlBtn.className = 'dl-btn';
+          dlBtn.textContent = '↓ Save';
+          dlBtn.onclick = () => downloadFile(index);
+          item.appendChild(dlBtn);
+
+          resolve();
+        }, mimeType, quality);
+      };
+      img.onerror = () => {
+        const statusEl = document.getElementById('status-' + index);
+        statusEl.className = 'file-status status-error';
+        statusEl.textContent = 'Error';
+        resolve();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function convertToPDF() {
+  // Set all to converting
+  files.forEach((_, i) => {
+    const s = document.getElementById('status-' + i);
+    s.className = 'file-status status-converting';
+    s.innerHTML = '<span class="spinner"></span>Processing';
+  });
+
+  // Load all images as data URLs
+  const imageDataUrls = await Promise.all(files.map(file => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }));
+
+  // Use jsPDF
+  try {
+    const pdf = new jsPDF({ unit: 'px', compress: true });
+    let firstPage = true;
+
+    for (let i = 0; i < imageDataUrls.length; i++) {
+      const dataUrl = imageDataUrls[i];
+      if (!dataUrl) continue;
+
+      await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const pw = pdf.internal.pageSize.getWidth();
+          const ph = pdf.internal.pageSize.getHeight();
+          const ratio = Math.min(pw / img.naturalWidth, ph / img.naturalHeight);
+          const w = img.naturalWidth * ratio;
+          const h = img.naturalHeight * ratio;
+          const x = (pw - w) / 2;
+          const y = (ph - h) / 2;
+
+          if (!firstPage) pdf.addPage();
+          firstPage = false;
+
+          const fmt = files[i].type.includes('png') ? 'PNG' : 'JPEG';
+          pdf.addImage(dataUrl, fmt, x, y, w, h);
+
+          document.getElementById('status-' + i).className = 'file-status status-done';
+          document.getElementById('status-' + i).textContent = '✓ Added';
+          resolve();
         };
-        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Load failed')); };
-        img.src = url;
+        img.onerror = () => resolve();
+        img.src = dataUrl;
       });
     }
 
-    // ─── DOWNLOAD ───
-    function downloadSingle(idx, originalName) {
-      const blob = convertedBlobs[idx];
-      if (!blob) return;
-      const ext = outputFormat === 'jpeg' ? 'jpg' : outputFormat;
-      const name = originalName.replace(/\.[^.]+$/, '') + '.' + ext;
-      triggerDownload(blob, name);
+    const pdfBlob = pdf.output('blob');
+    convertedBlobs['pdf'] = { blob: pdfBlob, name: 'converted-images.pdf' };
+
+    // Show single download button on first item
+    const item = document.getElementById('item-0');
+    if (item) {
+      let existing = item.querySelector('.dl-btn');
+      if (existing) existing.remove();
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'dl-btn';
+      dlBtn.textContent = '↓ Download PDF';
+      dlBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(pdfBlob);
+        a.download = 'converted-images.pdf';
+        a.click();
+      };
+      item.appendChild(dlBtn);
     }
 
-    async function downloadAll() {
-      const validBlobs = convertedBlobs.filter(b => b);
-      if (!validBlobs.length) return;
+  } catch (err) {
+    console.error('PDF error:', err);
+    files.forEach((_, i) => {
+      const s = document.getElementById('status-' + i);
+      s.className = 'file-status status-error';
+      s.textContent = 'Error';
+    });
+  }
+}
 
-      if (validBlobs.length === 1) {
-        const idx = convertedBlobs.findIndex(b => b);
-        downloadSingle(idx, files[idx].name);
-        return;
-      }
+function getOutputName(originalName) {
+  const base = originalName.replace(/\.[^/.]+$/, '');
+  return base + '.' + outputFormat;
+}
 
-      // Multiple files — download each with small delay
-      for (let i = 0; i < files.length; i++) {
-        if (convertedBlobs[i]) {
-          downloadSingle(i, files[i].name);
-          await new Promise(r => setTimeout(r, 300));
-        }
-      }
-    }
+function downloadFile(index) {
+  const { blob, name } = convertedBlobs[index];
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
 
-    function triggerDownload(blob, filename) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-    }
+function downloadAll() {
+  if (outputFormat === 'pdf' && convertedBlobs['pdf']) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(convertedBlobs['pdf'].blob);
+    a.download = 'converted-images.pdf';
+    a.click();
+    return;
+  }
+  Object.keys(convertedBlobs).forEach(idx => {
+    setTimeout(() => downloadFile(idx), idx * 200);
+  });
+}
 
-    // ─── FAQ ───
-    function toggleFaq(btn) {
-      const item = btn.parentElement;
-      item.classList.toggle('open');
-    }
+function clearAll() {
+  files = [];
+  convertedBlobs = {};
+  document.getElementById('file-list').innerHTML = '';
+  document.getElementById('file-input').value = '';
+  updateActionBar();
+}
 
-    // ─── HELPERS ───
-    function formatSize(bytes) {
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
-  </script>
-
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+</script>
 </body>
 </html>
