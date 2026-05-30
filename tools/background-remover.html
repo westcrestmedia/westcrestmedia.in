@@ -86,7 +86,7 @@ body {
 .pill { background:var(--dark3); border:1px solid var(--faint); color:var(--muted); font-size:11px; padding:4px 13px; border-radius:99px; font-weight:500; }
 
 /* ── MAIN TOOL AREA ── */
-.tool-wrap { max-width:900px; margin:0 auto; padding:0 1.25rem 5rem; }
+.tool-wrap { max-width:1100px; margin:0 auto; padding:0 1.25rem 5rem; }
 
 /* ── UPLOAD ZONE ── */
 .drop-zone {
@@ -157,7 +157,7 @@ body {
   margin-bottom:1.5rem;
 }
 .result-area.active { display:grid; grid-template-columns:1fr 1fr; }
-@media(max-width:580px){ .result-area.active { grid-template-columns:1fr; } }
+@media(max-width:700px){ .result-area.active { grid-template-columns:1fr; } }
 
 .result-card {
   background:var(--dark2);
@@ -172,10 +172,10 @@ body {
 }
 .result-label { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
 .result-img-wrap {
-  padding:12px;
+  padding:0;
   display:flex; align-items:center; justify-content:center;
 }
-.result-img-wrap img { max-width:100%; max-height:480px; object-fit:contain; border-radius:6px; display:block; width:100%; }
+.result-img-wrap img { max-width:100%; max-height:600px; object-fit:contain; border-radius:0 0 var(--radius) var(--radius); display:block; width:100%; }
 
 /* Checkerboard bg for transparent */
 .checker-bg {
@@ -343,8 +343,10 @@ footer p { font-size:12px; color:var(--muted); }
   width: 100%;
   overflow: hidden;
   position: relative;
-  border-radius: 6px;
+  border-radius: 0 0 var(--radius) var(--radius);
   touch-action: none;
+  /* height set by JS based on image */
+  min-height: 300px;
 }
 
 /* ── DISPLAY + CURSOR CANVASES ── */
@@ -720,12 +722,11 @@ async function initEditor(blob) {
 // ─── LAYOUT ─────────────────────────────────────────────────────────
 function computeBaseSize() {
   const container = document.getElementById('result-img-wrap');
-  const maxW = container.clientWidth;
-  const maxH = 500;
+  const maxW = container.clientWidth || viewport.parentElement.clientWidth;
+  const maxH = Math.min(window.innerHeight * 0.72, 650);
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
   baseW = Math.round(wCanvas.width  * ratio);
   baseH = Math.round(wCanvas.height * ratio);
-  // viewport natural size (no zoom)
   viewport.style.height = baseH + 'px';
 }
 
@@ -805,17 +806,25 @@ function attachEvents() {
     renderAll();
   }, { passive: false });
 
-  // Mouse pan (space+drag or middle-click drag)
+  // Mouse: pan when no brush active (hand tool), paint when brush active
   viewport.addEventListener('mousedown', e => {
-    if (spaceDown || e.button === 1) {
+    if (e.button === 1 || spaceDown) {
+      // Middle-click or spacebar = always pan
       isPanning = true;
       panStart = { x: e.clientX - panX, y: e.clientY - panY };
       viewport.style.cursor = 'grabbing';
       e.preventDefault();
       return;
     }
-    // Brush paint — only on display canvas area
-    if (!brushMode) return;
+    if (!brushMode) {
+      // No brush = hand tool: drag to pan
+      isPanning = true;
+      panStart = { x: e.clientX - panX, y: e.clientY - panY };
+      viewport.style.cursor = 'grabbing';
+      e.preventDefault();
+      return;
+    }
+    // Brush mode = paint
     const pos = canvasPos(e);
     if (!pos) return;
     isPainting = true;
@@ -853,21 +862,26 @@ function attachEvents() {
   // Touch: pinch-to-zoom + pan
   let lastTouches = null;
   viewport.addEventListener('touchstart', e => {
+    e.preventDefault();
     if (e.touches.length === 2) {
       lastTouches = e.touches;
-      e.preventDefault();
+      isPainting = false;
       return;
     }
-    if (!brushMode) return;
-    e.preventDefault();
+    if (!brushMode) {
+      // Single finger, no brush = pan
+      isPanning = true;
+      panStart = { x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY };
+      return;
+    }
     isPainting = true;
     const pos = touchPos(e.touches[0]);
     if (pos) applyBrush(pos.x, pos.y);
   }, { passive: false });
 
   viewport.addEventListener('touchmove', e => {
+    e.preventDefault();
     if (e.touches.length === 2 && lastTouches) {
-      e.preventDefault();
       // Pinch zoom
       const d0 = Math.hypot(lastTouches[0].clientX-lastTouches[1].clientX, lastTouches[0].clientY-lastTouches[1].clientY);
       const d1 = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
@@ -882,21 +896,27 @@ function attachEvents() {
       renderAll();
       return;
     }
+    if (isPanning) {
+      panX = e.touches[0].clientX - panStart.x;
+      panY = e.touches[0].clientY - panStart.y;
+      renderAll();
+      return;
+    }
     if (!brushMode || !isPainting) return;
-    e.preventDefault();
     const pos = touchPos(e.touches[0]);
     if (pos) applyBrush(pos.x, pos.y);
   }, { passive: false });
 
   viewport.addEventListener('touchend', e => {
     lastTouches = null;
+    isPanning = false;
     if (isPainting) { isPainting=false; bakeBlob(); }
   });
 }
 
 function updateViewportCursor() {
   if (brushMode) viewport.style.cursor = 'none';
-  else viewport.style.cursor = '';
+  else viewport.style.cursor = 'grab';  // hand tool when no brush
 }
 
 // Convert mouse event → display-canvas local coordinates (or null if outside canvas)
