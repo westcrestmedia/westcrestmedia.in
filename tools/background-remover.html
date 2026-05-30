@@ -331,8 +331,7 @@ footer p { font-size:12px; color:var(--muted); }
   max-height: 480px;
   border-radius: 6px;
   display: block;
-  width: 100%;
-  /* cursor set by JS */
+  /* size and cursor set by JS — do NOT set width:100% here, it breaks coordinate math */
 }
 </style>
 </head>
@@ -564,7 +563,8 @@ async function loadLib() {
 let resultBlob  = null;
 let wCanvas     = null;   // full-res offscreen canvas (source of truth)
 let wCtx        = null;
-let origData    = null;   // snapshot of AI output pixels for Restore brush
+let origData    = null;   // snapshot of ORIGINAL uploaded image pixels for Restore brush
+let origFile    = null;   // original uploaded file kept for restore (so AI-removed areas can come back)
 let brushMode   = null;   // 'erase' | 'restore' | null
 let isPainting  = false;
 window.brushSize = 20;
@@ -589,6 +589,7 @@ dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fil
 
 // ─── MAIN FLOW ──────────────────────────────────────────────────────
 async function start(file) {
+  origFile = file;   // save original for restore brush
   document.getElementById('orig-img').src = URL.createObjectURL(file);
   dropZone.classList.add('hidden');
   setView('processing');
@@ -639,37 +640,46 @@ function loadImg(src) {
 
 async function initEditor(blob) {
   resultBlob = blob;
-  const url  = URL.createObjectURL(blob);
-  const img  = await loadImg(url);
 
-  // Full-res offscreen canvas
+  // ── Working canvas: AI-processed result (what user sees and edits) ──
+  const aiUrl = URL.createObjectURL(blob);
+  const aiImg = await loadImg(aiUrl);
   wCanvas = document.createElement('canvas');
-  wCanvas.width  = img.naturalWidth;
-  wCanvas.height = img.naturalHeight;
+  wCanvas.width  = aiImg.naturalWidth;
+  wCanvas.height = aiImg.naturalHeight;
   wCtx = wCanvas.getContext('2d', { willReadFrequently: true });
-  wCtx.drawImage(img, 0, 0);
-  origData = wCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
+  wCtx.drawImage(aiImg, 0, 0);
 
-  // Size the display canvas to fit within its CSS max constraints
-  // We let CSS do max-width/max-height via style — just set canvas resolution to match
+  // ── origData: ORIGINAL uploaded image pixels (for Restore brush) ──
+  // This lets restore bring back pixels that AI already removed (e.g. 'a' and 'g' in 'abcdefg')
+  const origCanvas = document.createElement('canvas');
+  origCanvas.width  = wCanvas.width;
+  origCanvas.height = wCanvas.height;
+  const origCtx = origCanvas.getContext('2d', { willReadFrequently: true });
+  const origUrl = URL.createObjectURL(origFile);
+  const origImg = await loadImg(origUrl);
+  origCtx.drawImage(origImg, 0, 0, wCanvas.width, wCanvas.height);
+  origData = origCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
+
   renderToDisplay();
   attachBrushEvents();
 }
 
 // Draw wCanvas → display canvas at correct size
 function renderToDisplay() {
-  // Compute display size: fit inside 100% width, max-height 480px
   const container = document.getElementById('result-img-wrap');
-  const maxW = container.clientWidth - 24;  // 12px padding each side
+  const maxW = container.clientWidth - 24;
   const maxH = 480;
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
   const dw = Math.round(wCanvas.width  * ratio);
   const dh = Math.round(wCanvas.height * ratio);
 
+  // Set canvas intrinsic size = display size so offsetX/clientX math is 1:1
   dc.width  = dw;
   dc.height = dh;
-  dc.style.width  = dw + 'px';
-  dc.style.height = dh + 'px';
+  // Remove any inline style override so canvas renders at its natural pixel size
+  dc.style.width  = '';
+  dc.style.height = '';
   dctx.clearRect(0, 0, dw, dh);
   dctx.drawImage(wCanvas, 0, 0, dw, dh);
 }
@@ -684,15 +694,12 @@ function attachBrushEvents() {
   dc.addEventListener('mousedown', e => {
     if (!brushMode) return;
     isPainting = true;
-    const r = dc.getBoundingClientRect();
-    applyBrush(e.clientX - r.left, e.clientY - r.top);
+    applyBrush(e.offsetX, e.offsetY);
   });
   dc.addEventListener('mousemove', e => {
     if (!brushMode) return;
-    const r = dc.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    showCursorRing(x, y);
-    if (isPainting) applyBrush(x, y);
+    showCursorRing(e.offsetX, e.offsetY);
+    if (isPainting) applyBrush(e.offsetX, e.offsetY);
   });
   dc.addEventListener('mouseup',   () => { if (isPainting) { isPainting=false; bakeBlob(); } });
   dc.addEventListener('mouseleave',() => { if (isPainting) { isPainting=false; bakeBlob(); } renderToDisplay(); });
@@ -712,11 +719,9 @@ function attachBrushEvents() {
 
 // ─── PAINT LOGIC ────────────────────────────────────────────────────
 function applyBrush(dispX, dispY) {
-  // Scale: display canvas CSS size → full-res canvas
-  // Use getBoundingClientRect to get actual rendered size (accounts for CSS width:100%)
-  const rect = dc.getBoundingClientRect();
-  const sx = wCanvas.width  / rect.width;
-  const sy = wCanvas.height / rect.height;
+  // Canvas intrinsic size == display size (set by renderToDisplay), so scale directly
+  const sx = wCanvas.width  / dc.width;
+  const sy = wCanvas.height / dc.height;
   const fx = dispX * sx,  fy = dispY * sy;
   const fr = (window.brushSize / 2) * sx;
 
@@ -812,7 +817,7 @@ window.downloadResult = function() {
 
 // ─── TRY ANOTHER ──────────────────────────────────────────────────
 window.tryAnother = function() {
-  resultBlob=null; wCanvas=null; wCtx=null; origData=null;
+  resultBlob=null; wCanvas=null; wCtx=null; origData=null; origFile=null;
   brushMode=null; isPainting=false; eventsReady=false;
   window.brushSize=20;
   fileIn.value='';
