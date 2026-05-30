@@ -210,6 +210,113 @@
       color: var(--white-dim); text-decoration: none;
       transition: color 0.3s; position: relative;
     }
+    /* TOOLS DROPDOWN */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+    .nav-dropdown > a::before {
+      content: '▾';
+      font-size: 0.6rem;
+      color: var(--gold);
+      order: 2;
+      transition: transform 0.3s;
+    }
+    .nav-dropdown:hover > a::before { transform: rotate(180deg); }
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 16px);
+      left: 50%;
+      background: rgba(17,17,24,0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--gold-border);
+      border-radius: 10px;
+      padding: 10px;
+      min-width: 240px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(-8px);
+      transition: all 0.25s ease;
+      z-index: 200;
+    }
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    .dropdown-menu a {
+      display: flex !important;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px !important;
+      border-radius: 6px;
+      font-size: 0.72rem !important;
+      letter-spacing: 0.08em;
+      color: var(--white-dim) !important;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: var(--gold-dim); color: var(--gold) !important; }
+    .dropdown-menu a::after { display: none !important; }
+    .drop-icon-sm { font-size: 0.85rem; width: 22px; text-align: center; }
+    .dropdown-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 6px 14px 2px;
+      font-family: 'DM Mono', monospace;
+    }
+    .dropdown-divider { height: 1px; background: var(--gold-border); margin: 6px 10px; }
+
+    /* TOOLS SECTION */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+    .tool-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+      text-decoration: none;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-dim);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tool-card:hover { border-color: var(--gold-border); transform: translateY(-3px); }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-card-icon { font-size: 1.6rem; }
+    .tool-card-name { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.05em; }
+    .tool-card-desc { font-size: 0.72rem; color: var(--white-dim); line-height: 1.5; }
+    .tool-card-tag {
+      display: inline-block;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      color: var(--gold);
+      border: 1px solid var(--gold-border);
+      padding: 3px 8px;
+      border-radius: 2px;
+      margin-top: auto;
+    }
+    .tool-card.coming-soon { opacity: 0.5; pointer-events: none; }
+    .tool-card.coming-soon .tool-card-tag { color: var(--white-dim); border-color: var(--white-faint); }
+
     .nav-links a::after {
       content: ''; position: absolute; bottom: -4px; left: 0;
       width: 0; height: 1px; background: var(--gold);
@@ -811,6 +918,7 @@
     <button class="mobile-close-btn" onclick="closeMobile()">✕</button>
     <a href="#services" onclick="closeMobile()">Services</a>
     <a href="#portfolio" onclick="closeMobile()">Portfolio</a>
+    <a href="#tools" onclick="closeMobile()">Tools</a>
     <a href="#shop" onclick="closeMobile()">Shop</a>
     <a href="#process" onclick="closeMobile()">Process</a>
     <a href="#contact" onclick="closeMobile()">Contact</a>
@@ -824,6 +932,26 @@
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
+      <li class="nav-dropdown"><a href="#tools">Tools</a>
+        <div class="dropdown-menu">
+          <div class="dropdown-label">Image Tools</div>
+          <a href="tools/image-converter.html"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
+          <a href="tools/background-remover.html"><span class="drop-icon-sm">✂️</span>Background Remover</a>
+          <a href="tools/color-palette.html"><span class="drop-icon-sm">🎨</span>Color Palette Generator</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-label">Video Tools</div>
+          <a href="tools/thumbnail-maker.html"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
+          <a href="tools/lut-preview.html"><span class="drop-icon-sm">🎞️</span>LUT Preview Tool</a>
+          <a href="tools/aspect-ratio.html"><span class="drop-icon-sm">📐</span>Aspect Ratio Calculator</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-label">AI Prompt Tools</div>
+          <a href="tools/image-prompt.html"><span class="drop-icon-sm">✨</span>Image Prompt Generator</a>
+          <a href="tools/video-prompt.html"><span class="drop-icon-sm">🎥</span>Video Prompt Generator</a>
+          <div class="dropdown-divider"></div>
+          <a href="tools/font-pairing.html"><span class="drop-icon-sm">🔤</span>Font Pairing Tool</a>
+          <a href="tools/png-to-pdf.html"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
+        </div>
+      </li>
       <li><a href="#shop">Shop</a></li>
       <li><a href="#process">Process</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -956,6 +1084,90 @@
       </div>
     </div>
   </div>
+
+  <!-- TOOLS -->
+  <section id="tools" class="padded" style="background: var(--bg2);">
+    <div class="container">
+      <div class="section-header reveal" style="text-align:center;">
+        <div class="section-index" style="display:none">03 — Tools</div>
+        <h2 class="section-title">Free Creative <em>Tools</em></h2>
+        <p style="color:var(--white-dim);font-size:0.85rem;letter-spacing:0.08em;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto;">Browser-based tools for creators — no signup, no upload, completely free</p>
+      </div>
+      <div class="tools-grid reveal">
+
+        <a href="tools/image-converter.html" class="tool-card">
+          <div class="tool-card-icon">🖼️</div>
+          <div class="tool-card-name">Image Converter</div>
+          <div class="tool-card-desc">Convert JPG, PNG, WEBP, HEIC, BMP & more to any format. Batch support.</div>
+          <span class="tool-card-tag">Live ✦</span>
+        </a>
+
+        <a href="tools/background-remover.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">✂️</div>
+          <div class="tool-card-name">Background Remover</div>
+          <div class="tool-card-desc">Remove image backgrounds instantly with AI. No green screen needed.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/color-palette.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">🎨</div>
+          <div class="tool-card-name">Color Palette Generator</div>
+          <div class="tool-card-desc">Extract beautiful palettes from any image or generate from scratch.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/thumbnail-maker.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">🎬</div>
+          <div class="tool-card-name">Video Thumbnail Maker</div>
+          <div class="tool-card-desc">Create eye-catching YouTube & social media thumbnails in seconds.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/lut-preview.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">🎞️</div>
+          <div class="tool-card-name">LUT Preview Tool</div>
+          <div class="tool-card-desc">Preview .cube LUT files on your footage before buying or applying.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/aspect-ratio.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">📐</div>
+          <div class="tool-card-name">Aspect Ratio Calculator</div>
+          <div class="tool-card-desc">Calculate perfect dimensions for any platform — YouTube, Instagram, TikTok.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/image-prompt.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">✨</div>
+          <div class="tool-card-name">Image Prompt Generator</div>
+          <div class="tool-card-desc">Generate detailed AI image prompts for Midjourney, DALL·E & more.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/video-prompt.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">🎥</div>
+          <div class="tool-card-name">Video Prompt Generator</div>
+          <div class="tool-card-desc">Craft cinematic AI video prompts for Sora, Runway & Kling.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/font-pairing.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">🔤</div>
+          <div class="tool-card-name">Font Pairing Tool</div>
+          <div class="tool-card-desc">Find perfect font combinations for your brand or video projects.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+        <a href="tools/png-to-pdf.html" class="tool-card coming-soon">
+          <div class="tool-card-icon">📄</div>
+          <div class="tool-card-name">PNG to PDF</div>
+          <div class="tool-card-desc">Combine multiple images into a single PDF document instantly.</div>
+          <span class="tool-card-tag">Coming Soon</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
 
   <!-- PORTFOLIO -->
   <section id="portfolio" class="padded">
