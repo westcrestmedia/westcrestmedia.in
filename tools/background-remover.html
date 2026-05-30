@@ -464,10 +464,17 @@ footer p { font-size:12px; color:var(--muted); }
     <div class="brush-size-wrap">
       <span class="brush-label">Size:</span>
       <input type="range" id="brush-size" min="4" max="80" value="20"
-             oninput="brushSize=+this.value; document.getElementById('brush-size-val').textContent=this.value+'px'">
+             oninput="window.brushSize=+this.value; document.getElementById('brush-size-val').textContent=this.value+'px'">
       <span class="brush-size-val" id="brush-size-val">20px</span>
     </div>
-    <div class="brush-hint">💡 Select a mode then paint on the image</div>
+    <div class="zoom-group">
+      <span class="brush-label">Zoom:</span>
+      <button class="zoom-btn" onclick="adjustZoom(-0.25)">−</button>
+      <span class="zoom-level" id="zoom-level">100%</span>
+      <button class="zoom-btn" onclick="adjustZoom(+0.25)">+</button>
+      <button class="zoom-btn" onclick="resetZoom()" style="width:auto;padding:0 8px;font-size:10px;">Fit</button>
+    </div>
+    <div class="brush-hint">💡 Select mode → paint &nbsp;|&nbsp; Scroll to zoom &nbsp;|&nbsp; Space+drag to pan</div>
   </div>
 
   <!-- ACTION BUTTONS -->
