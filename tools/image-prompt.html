@@ -370,6 +370,16 @@
     <p class="subtitle">Midjourney · DALL·E · Stable Diffusion · Firefly</p>
   </div>
 
+  <!-- API Key Input -->
+  <div class="card" id="apiKeyCard">
+    <div class="card-label">Anthropic API Key</div>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="flex:1;background:#0d0d14;border:1px solid #2a2a38;border-radius:10px;color:#e8e4d8;font-family:'DM Mono',monospace;font-size:13px;padding:0.7rem 1rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='#c8a96e66'" onblur="this.style.borderColor='#2a2a38'">
+      <button onclick="saveKey()" style="padding:0.7rem 1.2rem;background:#c8a96e18;border:1px solid #c8a96e;border-radius:10px;color:#c8a96e;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;white-space:nowrap;" id="saveKeyBtn">Save</button>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#4a4a60;margin-top:0.5rem;">Key is saved in your browser only. Never shared with anyone.</div>
+  </div>
+
   <!-- Idea Input -->
   <div class="card">
     <div class="card-label">Your Idea / Scene Description</div>
@@ -497,6 +507,27 @@
 <script>
   let numVariations = 1;
 
+  // Load saved API key
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('wc_api_key');
+    if (saved) {
+      document.getElementById('apiKeyInput').value = saved;
+      document.getElementById('saveKeyBtn').textContent = '✓ Saved';
+      document.getElementById('saveKeyBtn').style.color = '#4caf7d';
+      document.getElementById('saveKeyBtn').style.borderColor = '#4caf7d';
+    }
+  });
+
+  function saveKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key.startsWith('sk-ant-')) { alert('Invalid key — must start with sk-ant-'); return; }
+    localStorage.setItem('wc_api_key', key);
+    const btn = document.getElementById('saveKeyBtn');
+    btn.textContent = '✓ Saved';
+    btn.style.color = '#4caf7d';
+    btn.style.borderColor = '#4caf7d';
+  }
+
   document.querySelectorAll('#moodChips .chip').forEach(c => {
     c.addEventListener('click', () => c.classList.toggle('active'));
   });
@@ -587,9 +618,17 @@ Settings:
 ${numVariations > 1 ? `Create ${numVariations} distinct variations — each with a different creative angle or interpretation of the idea.` : 'Create one highly optimized, detailed prompt.'}`;
 
     try {
+      const apiKey = localStorage.getItem('wc_api_key');
+      if (!apiKey) { showError('Please enter your Anthropic API key above first!'); btn.disabled=false; btn.textContent='✦ Generate Image Prompts'; loading.classList.remove('active'); return; }
+
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-request-allowlist': 'allow-unauthenticated-requests'
+        },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 1500,
