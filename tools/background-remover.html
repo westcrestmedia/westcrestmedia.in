@@ -544,7 +544,7 @@ async function startRemoval(file) {
   try {
     const rbFn = await loadLib();
     const blob = await rbFn(file, {
-      publicPath: `https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/dist/`,
+      publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
       progress: (key, current, total) => {
         const pct = total > 0 ? Math.round((current / total) * 100) : 0;
         pctEl.textContent = pct + '%';
