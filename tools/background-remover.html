@@ -485,7 +485,16 @@ footer p { font-size:12px; color:var(--muted); }
 
 <!-- @imgly/background-removal via CDN (ESM) -->
 <script type="module">
-import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/+esm';
+const LIB_VERSION = '1.5.5';
+let removeBackground = null;
+
+// Lazy-load the library so drag/drop works immediately
+async function loadLib() {
+  if (removeBackground) return removeBackground;
+  const mod = await import(`https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/+esm`);
+  removeBackground = mod.removeBackground;
+  return removeBackground;
+}
 
 let resultBlob = null;
 let currentBg = 'transparent';
@@ -498,16 +507,18 @@ fileIn.addEventListener('change', e => {
 
 // ── DRAG & DROP ──
 const dropZone = document.getElementById('drop-zone');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', e => { e.stopPropagation(); dropZone.classList.remove('drag-over'); });
 dropZone.addEventListener('drop', e => {
-  e.preventDefault();
+  e.preventDefault(); e.stopPropagation();
   dropZone.classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
   if (file && file.type.startsWith('image/')) startRemoval(file);
 });
+// Click on drop zone (but NOT on the button — button has its own onclick)
 dropZone.addEventListener('click', e => {
-  if (!e.target.classList.contains('upload-btn')) fileIn.click();
+  if (e.target.tagName === 'BUTTON') return;
+  fileIn.click();
 });
 
 // ── MAIN REMOVAL FLOW ──
@@ -531,8 +542,9 @@ async function startRemoval(file) {
   subEl.textContent   = 'First run downloads ~50MB model. Cached for future use.';
 
   try {
-    const blob = await removeBackground(file, {
-      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/',
+    const rbFn = await loadLib();
+    const blob = await rbFn(file, {
+      publicPath: `https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/dist/`,
       progress: (key, current, total) => {
         const pct = total > 0 ? Math.round((current / total) * 100) : 0;
         pctEl.textContent = pct + '%';
@@ -544,7 +556,7 @@ async function startRemoval(file) {
           subEl.textContent   = 'Detecting edges and removing background';
         }
       },
-      model: 'isnet_quint8',
+      model: 'small',
     });
 
     resultBlob = blob;
