@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Prompt Generator — Westcrest</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap');
+
+  :root {
+    --bg:       #060810;
+    --surface:  #0d1120;
+    --surface2: #111828;
+    --border:   #1e2a40;
+    --border2:  #2a3a55;
+    --accent:   #00d4ff;
+    --accent2:  #0099cc;
+    --gold:     #f0a500;
+    --text:     #d8e4f0;
+    --muted:    #5a7090;
+    --danger:   #ff4d4d;
+    --success:  #00d48a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,212,255,0.015) 2px,
+      rgba(0,212,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* HEADER */
+  .header { margin-bottom: 2.5rem; }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .rec-dot {
+    width: 10px; height: 10px;
+    background: var(--danger);
+    border-radius: 50%;
+    animation: blink 1.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.2; }
+  }
+
+  .header-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 12px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    letter-spacing: 0.06em;
+    color: #fff;
+    line-height: 0.95;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 .cyan { color: var(--accent); }
+
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin: 1.5rem 0;
+    opacity: 0.4;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.375rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    border-radius: 4px 0 0 4px;
+    opacity: 0.6;
+  }
+
+  .card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 0.875rem 1rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: #2a3a55; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+  /* SELECT */
+  .sel-wrap { position: relative; }
+  .sel-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 0.55rem 2rem 0.55rem 0.75rem;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  /* CHIPS */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 4px 11px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    letter-spacing: 0.05em;
+  }
+
+  .chip:hover  { border-color: var(--accent); color: var(--accent); }
+  .chip.active { border-color: var(--accent); background: rgba(0,212,255,0.1); color: var(--accent); }
+
+  /* TOGGLE */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 13px; color: #8aa0bc; }
+
+  .toggle {
+    width: 36px; height: 20px;
+    background: var(--border);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle.on { background: var(--accent2); }
+
+  .toggle-dot {
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on .toggle-dot { transform: translateX(16px); }
+
+  /* VAR TOGGLE */
+  .var-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+  .var-btn {
+    flex: 1;
+    padding: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    border-radius: 3px;
+  }
+
+  .var-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,255,0.08); }
+
+  /* GENERATE BUTTON */
+  .gen-btn {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gen-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .gen-btn:hover::before { opacity: 0.1; }
+  .gen-btn:hover { box-shadow: 0 0 20px rgba(0,212,255,0.2); }
+  .gen-btn:active { transform: scale(0.99); }
+  .gen-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+  .gen-btn span { position: relative; z-index: 1; }
+
+  /* LOADING */
+  .loading-bar {
+    width: 100%; height: 2px;
+    background: var(--border);
+    margin-bottom: 1.25rem;
+    display: none;
+    overflow: hidden;
+  }
+
+  .loading-bar.active { display: block; }
+
+  .loading-fill {
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scan 1.4s linear infinite;
+    width: 50%;
+  }
+
+  @keyframes scan {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  /* ERROR */
+  .error-msg {
+    background: rgba(255,77,77,0.08);
+    border: 1px solid rgba(255,77,77,0.4);
+    padding: 0.875rem 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--danger);
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .error-msg.visible { display: block; }
+
+  /* RESULTS */
+  .results-area { display: none; }
+  .results-area.visible { display: block; }
+
+  .results-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    position: relative;
+    border-radius: 3px;
+    transition: border-color 0.2s;
+  }
+
+  .result-card:hover { border-color: var(--border2); }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.875rem;
+  }
+
+  .result-platform {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .result-platform::before {
+    content: '▶';
+    font-size: 8px;
+    color: var(--accent);
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .copy-btn:hover  { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--success); color: var(--success); }
+
+  .result-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #9ab8d4;
+  }
+
+  .result-section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin: 0.875rem 0 0.4rem;
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-neg   { color: #cc5555; }
+  .section-cam   { color: var(--gold); }
+  .section-tip   { color: var(--success); }
+
+  .section-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .neg-text  { color: #7a5555; }
+  .cam-text  { color: #9a8045; }
+  .tip-text  { color: #4a9a70; }
+
+  /* SHOT TYPES VISUAL */
+  .shot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .shot-item {
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 3px;
+  }
+
+  .shot-item:hover  { border-color: var(--accent); }
+  .shot-item.active { border-color: var(--accent); background: rgba(0,212,255,0.08); }
+
+  .shot-icon {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .shot-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .shot-item.active .shot-label { color: var(--accent); }
+
+  @media (max-width: 560px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="rec-dot"></div>
+      <div class="header-badge">AI Powered · Video Tools</div>
+    </div>
+    <h1>VIDEO<br><span class="cyan">PROMPT</span><br>GENERATOR</h1>
+    <p class="subtitle">Sora · Runway · Pika · Kling · Luma Dream Machine</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SCENE DESCRIPTION -->
+  <div class="card">
+    <div class="card-label">// Scene Description</div>
+    <textarea id="userIdea" rows="4" placeholder="e.g. A time-lapse of a storm building over a desert canyon, dust swirling, lightning in the distance, cinematic wide angle..."></textarea>
+  </div>
+
+  <!-- PLATFORM + STYLE -->
+  <div class="grid-2">
+    <div class="card" style="margin:0">
+      <div class="card-label">// Platform</div>
+      <div class="sel-wrap">
+        <select id="platform">
+          <option value="sora">OpenAI Sora</option>
+          <option value="runway">Runway Gen-3</option>
+          <option value="pika">Pika Labs</option>
+          <option value="kling">Kling AI</option>
+          <option value="luma">Luma Dream Machine</option>
+          <option value="stable-video">Stable Video Diffusion</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-label">// Visual Style</div>
+      <div class="sel-wrap">
+        <select id="style">
+          <option value="cinematic">Cinematic</option>
+          <option value="documentary">Documentary</option>
+          <option value="animation">3D Animation</option>
+          <option value="anime">Anime</option>
+          <option value="photorealistic">Photorealistic</option>
+          <option value="surreal">Surreal / Abstract</option>
+          <option value="vintage film">Vintage Film</option>
+          <option value="music video">Music Video</option>
+          <option value="commercial">Commercial / Ad</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOT TYPE -->
+  <div class="card">
+    <div class="card-label">// Shot Type</div>
+    <div class="shot-grid" id="shotGrid">
+      <div class="shot-item active" data-val="wide shot">
+        <span class="shot-icon">🌄</span>
+        <div class="shot-label">Wide Shot</div>
+      </div>
+      <div class="shot-item" data-val="close-up">
+        <span class="shot-icon">🔍</span>
+        <div class="shot-label">Close-Up</div>
+      </div>
+      <div class="shot-item" data-val="aerial drone">
+        <span class="shot-icon">🚁</span>
+        <div class="shot-label">Aerial</div>
+      </div>
+      <div class="shot-item" data-val="tracking shot">
+        <span class="shot-icon">🎬</span>
+        <div class="shot-label">Tracking</div>
+      </div>
+      <div class="shot-item" data-val="POV">
+        <span class="shot-icon">👁</span>
+        <div class="shot-label">POV</div>
+      </div>
+      <div class="shot-item" data-val="time-lapse">
+        <span class="shot-icon">⏩</span>
+        <div class="shot-label">Time-lapse</div>
+      </div>
+      <div class="shot-item" data-val="slow motion">
+        <span class="shot-icon">🐌</span>
+        <div class="shot-label">Slow-Mo</div>
+      </div>
+      <div class="shot-item" data-val="handheld">
+        <span class="shot-icon">📷</span>
+        <div class="shot-label">Handheld</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOOD + LIGHTING -->
+  <div class="card">
+    <div class="card-label">// Mood</div>
+    <div class="chip-group" id="moodChips">
+      <div class="chip active" data-val="dramatic">Dramatic</div>
+      <div class="chip" data-val="tense">Tense</div>
+      <div class="chip" data-val="ethereal">Ethereal</div>
+      <div class="chip" data-val="melancholic">Melancholic</div>
+      <div class="chip" data-val="epic">Epic</div>
+      <div class="chip" data-val="mysterious">Mysterious</div>
+      <div class="chip" data-val="serene">Serene</div>
+      <div class="chip" data-val="energetic">Energetic</div>
+      <div class="chip" data-val="horror">Horror</div>
+      <div class="chip" data-val="romantic">Romantic</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">// Lighting &amp; Time of Day</div>
+    <div class="chip-group" id="lightChips">
+      <div class="chip active" data-val="golden hour">Golden Hour</div>
+      <div class="chip" data-val="blue hour">Blue Hour</div>
+      <div class="chip" data-val="midnight">Midnight</div>
+      <div class="chip" data-val="overcast">Overcast</div>
+      <div class="chip" data-val="neon-lit">Neon-Lit</div>
+      <div class="chip" data-val="harsh midday sun">Harsh Sun</div>
+      <div class="chip" data-val="storm light">Storm Light</div>
+      <div class="chip" data-val="candlelight">Candlelight</div>
+    </div>
+  </div>
+
+  <!-- DURATION + RATIO + MOTION -->
+  <div class="grid-3">
+    <div class="card" style="margin:0">
+      <div class="card-label">// Duration</div>
+      <div class="sel-wrap">
+        <select id="duration">
+          <option value="4 seconds">4 sec</option>
+          <option value="8 seconds" selected>8 sec</option>
+          <option value="15 seconds">15 sec</option>
+          <option value="30 seconds">30 sec</option>
+          <option value="60 seconds">60 sec</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-label">// Aspect Ratio</div>
+      <div class="sel-wrap">
+        <select id="ratio">
+          <option value="16:9">16:9 Landscape</option>
+          <option value="9:16">9:16 Portrait</option>
+          <option value="1:1">1:1 Square</option>
+          <option value="21:9">21:9 Cinematic</option>
+          <option value="4:5">4:5 Social</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="card-label">// Camera Motion</div>
+      <div class="sel-wrap">
+        <select id="motion">
+          <option value="static">Static</option>
+          <option value="slow pan">Slow Pan</option>
+          <option value="dolly in">Dolly In</option>
+          <option value="dolly out">Dolly Out</option>
+          <option value="orbit">Orbit</option>
+          <option value="handheld shake">Handheld</option>
+          <option value="whip pan">Whip Pan</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="card">
+    <div class="card-label">// Advanced Options</div>
+    <div class="toggle-row">
+      <span class="toggle-label">Include camera & lens specs</span>
+      <div class="toggle on" id="camToggle"><div class="toggle-dot"></div></div>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">Add negative prompt (what to avoid)</span>
+      <div class="toggle on" id="negToggle"><div class="toggle-dot"></div></div>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">Include director / film references</span>
+      <div class="toggle" id="refToggle"><div class="toggle-dot"></div></div>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-label">Add sound design suggestions</span>
+      <div class="toggle" id="soundToggle"><div class="toggle-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- VARIATIONS -->
+  <div class="var-row">
+    <div class="var-btn active" data-n="1">1 Prompt</div>
+    <div class="var-btn" data-n="2">2 Variations</div>
+    <div class="var-btn" data-n="3">3 Variations</div>
+  </div>
+
+  <button class="gen-btn" id="genBtn" onclick="generatePrompts()">
+    <span>▶ GENERATE VIDEO PROMPTS</span>
+  </button>
+
+  <div class="loading-bar" id="loadingBar"><div class="loading-fill"></div></div>
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="results-area" id="resultsArea">
+    <div class="results-header">// Generated Prompts</div>
+  </div>
+
+</div>
+
+<script>
+  let numVariations = 1;
+
+  // Shot type — single select
+  document.querySelectorAll('#shotGrid .shot-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#shotGrid .shot-item').forEach(x => x.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Chips — multi select
+  document.querySelectorAll('#moodChips .chip, #lightChips .chip').forEach(c => {
+    c.addEventListener('click', () => c.classList.toggle('active'));
+  });
+
+  // Toggles
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('on'));
+  });
+
+  // Variations
+  document.querySelectorAll('.var-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.var-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      numVariations = parseInt(b.dataset.n);
+    });
+  });
+
+  function getSelected(groupId) {
+    return Array.from(document.querySelectorAll(`#${groupId} .chip.active`)).map(c => c.dataset.val);
+  }
+
+  function getShot() {
+    const el = document.querySelector('#shotGrid .shot-item.active');
+    return el ? el.dataset.val : 'wide shot';
+  }
+
+  async function generatePrompts() {
+    const idea = document.getElementById('userIdea').value.trim();
+    if (!idea) { showError('// ERROR: Scene description required'); return; }
+
+    const platform  = document.getElementById('platform').value;
+    const style     = document.getElementById('style').value;
+    const duration  = document.getElementById('duration').value;
+    const ratio     = document.getElementById('ratio').value;
+    const motion    = document.getElementById('motion').value;
+    const shot      = getShot();
+    const moods     = getSelected('moodChips');
+    const lights    = getSelected('lightChips');
+    const inclCam   = document.getElementById('camToggle').classList.contains('on');
+    const inclNeg   = document.getElementById('negToggle').classList.contains('on');
+    const inclRef   = document.getElementById('refToggle').classList.contains('on');
+    const inclSound = document.getElementById('soundToggle').classList.contains('on');
+
+    const btn     = document.getElementById('genBtn');
+    const loading = document.getElementById('loadingBar');
+    const errDiv  = document.getElementById('errorMsg');
+    const results = document.getElementById('resultsArea');
+
+    btn.disabled = true;
+    btn.querySelector('span').textContent = '⟳ PROCESSING...';
+    loading.classList.add('active');
+    errDiv.classList.remove('visible');
+
+    // Clear previous results but keep header
+    const oldCards = results.querySelectorAll('.result-card');
+    oldCards.forEach(c => c.remove());
+    results.classList.add('visible');
+
+    const systemPrompt = `You are an expert AI video prompt engineer specializing in text-to-video AI tools.
+
+Return ONLY valid JSON — no markdown, no explanation, no code fences.
+
+Platform-specific rules:
+- Sora: Rich descriptive natural language, focus on motion physics, temporal progression
+- Runway Gen-3: Precise motion descriptors, camera movement keywords, Cinematic language
+- Pika Labs: Concise prompts with motion keywords, use "zoom in:", "pan left:", style tags
+- Kling AI: Detailed scene descriptions with subject/background/action structure
+- Luma Dream Machine: Natural prose with emphasis on lighting and camera motion
+- Stable Video Diffusion: Short, focused prompts (under 77 tokens preferred)
+
+JSON format (return ONLY this):
+{
+  "prompts": [
+    {
+      "platform": "platform name",
+      "main_prompt": "full optimized video prompt",
+      "negative_prompt": "what to avoid (comma separated)",
+      "camera_specs": "specific camera, lens, and movement technical details",
+      "director_ref": "film/director reference and why it applies",
+      "sound_design": "ambient sound, music tone, and audio atmosphere suggestions",
+      "tips": "one platform-specific pro tip"
+    }
+  ]
+}`;
+
+    const userMsg = `Generate ${numVariations} video prompt variation(s) for ${platform}.
+
+Scene: "${idea}"
+
+Technical specs:
+- Visual style: ${style}
+- Shot type: ${shot}
+- Camera motion: ${motion}
+- Duration: ${duration}
+- Aspect ratio: ${ratio}
+- Mood: ${moods.length ? moods.join(', ') : 'neutral'}
+- Lighting: ${lights.length ? lights.join(', ') : 'natural'}
+- Include camera/lens specs: ${inclCam}
+- Include negative prompt: ${inclNeg}
+- Include director/film references: ${inclRef}
+- Include sound design: ${inclSound}
+
+${numVariations > 1 ? `Create ${numVariations} distinct variations with different creative interpretations — vary the camera angle, mood emphasis, or narrative approach for each.` : 'Create one highly detailed, platform-optimized prompt.'}`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMsg }]
+        })
+      });
+
+      if (!response.ok) throw new Error(`API ${response.status}`);
+
+      const data   = await response.json();
+      const text   = data.content.map(i => i.text || '').join('');
+      const clean  = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      parsed.prompts.forEach((p, i) => {
+        const varLabel = numVariations > 1 ? ` · VAR ${i + 1}` : '';
+
+        let extras = '';
+
+        if (inclNeg && p.negative_prompt) {
+          extras += `<div class="result-section-label section-neg">// Negative Prompt</div>
+            <div class="section-text neg-text">${esc(p.negative_prompt)}</div>`;
+        }
+        if (inclCam && p.camera_specs) {
+          extras += `<div class="result-section-label section-cam">// Camera &amp; Lens</div>
+            <div class="section-text cam-text">${esc(p.camera_specs)}</div>`;
+        }
+        if (inclRef && p.director_ref) {
+          extras += `<div class="result-section-label section-cam">// Director Reference</div>
+            <div class="section-text cam-text">${esc(p.director_ref)}</div>`;
+        }
+        if (inclSound && p.sound_design) {
+          extras += `<div class="result-section-label section-tip">// Sound Design</div>
+            <div class="section-text tip-text">${esc(p.sound_design)}</div>`;
+        }
+        if (p.tips) {
+          extras += `<div class="result-section-label section-tip">// Pro Tip</div>
+            <div class="section-text tip-text">${esc(p.tips)}</div>`;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.innerHTML = `
+          <div class="result-header">
+            <div class="result-platform">${esc(p.platform || platform)}${esc(varLabel)}</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">[ COPY ]</button>
+          </div>
+          <div class="result-text" data-prompt="${escAttr(p.main_prompt)}">${esc(p.main_prompt)}</div>
+          ${extras}`;
+
+        results.appendChild(card);
+      });
+
+    } catch (err) {
+      showError('// ERROR: ' + (err.message || 'Generation failed. Please retry.'));
+    } finally {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = '▶ GENERATE VIDEO PROMPTS';
+      loading.classList.remove('active');
+    }
+  }
+
+  function showError(msg) {
+    const e = document.getElementById('errorMsg');
+    e.textContent = msg;
+    e.classList.add('visible');
+  }
+
+  function copyPrompt(btn) {
+    const text = btn.closest('.result-card').querySelector('.result-text').dataset.prompt;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '[ COPIED! ]';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '[ COPY ]'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function escAttr(str) {
+    return String(str).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+</script>
+</body>
+</html>
