@@ -5,28 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Font Pairing Tool — Westcrest</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
 
   :root {
-    --bg:        #faf8f4;
-    --surface:   #ffffff;
-    --surface2:  #f2ede6;
-    --border:    #e4ddd3;
-    --border2:   #cfc7bb;
-    --text:      #1a1714;
-    --muted:     #8a8279;
-    --accent:    #2d4a3e;
-    --accent2:   #4a7c68;
-    --gold:      #c4933a;
-    --gold2:     #e8b86d;
-    --danger:    #c0392b;
-    --success:   #27ae60;
+    --bg:        #111118;
+    --bg2:       #16161e;
+    --bg3:       #1c1c26;
+    --surface:   #1e1e28;
+    --border:    rgba(255,255,255,0.10);
+    --border2:   rgba(200,169,110,0.25);
+    --text:      #f5f0e8;
+    --muted:     rgba(245,240,232,0.55);
+    --gold:      #c8a96e;
+    --gold2:     #e8c98e;
+    --gold-dim:  rgba(200,169,110,0.15);
+    --accent:    #c8a96e;
+    --accent2:   #e8c98e;
+    --danger:    #e05555;
+    --success:   #4caf80;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-sans: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-sans);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -64,7 +69,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.8rem, 7vw, 4.5rem);
     font-weight: 400;
-    color: var(--accent);
+    color: var(--text);
     line-height: 1.05;
     margin-bottom: 0.75rem;
     letter-spacing: -0.01em;
@@ -115,7 +120,7 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-sans);
     font-size: 13px;
     padding: 0.55rem 0.875rem;
     outline: none;
@@ -124,7 +129,7 @@
     margin-bottom: 1rem;
   }
 
-  select:focus, input:focus { border-color: var(--accent); }
+  select:focus, input:focus { border-color: var(--text); }
 
   .chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
 
@@ -141,18 +146,18 @@
     user-select: none;
   }
 
-  .chip:hover  { border-color: var(--accent); color: var(--accent); }
-  .chip.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .chip:hover  { border-color: var(--gold); color: var(--gold); }
+  .chip.active { border-color: var(--gold); background: var(--gold); color: var(--bg); }
 
   /* GEN BUTTON */
   .gen-btn {
     width: 100%;
     padding: 0.875rem;
-    background: var(--accent);
+    background: var(--gold);
     border: none;
     border-radius: 8px;
     color: #fff;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.05em;
@@ -161,7 +166,7 @@
     margin-top: 0.5rem;
   }
 
-  .gen-btn:hover   { background: var(--accent2); transform: translateY(-1px); }
+  .gen-btn:hover   { background: var(--gold2); transform: translateY(-1px); }
   .gen-btn:active  { transform: translateY(0); }
   .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -191,8 +196,8 @@
 
   /* ERROR */
   .error-msg {
-    background: #fdf2f2;
-    border: 1px solid #f5c6c6;
+    background: rgba(224,85,85,0.1);
+    border: 1px solid rgba(224,85,85,0.3);
     border-radius: 6px;
     padding: 0.75rem 1rem;
     font-size: 12px;
@@ -224,8 +229,8 @@
     background: var(--surface);
   }
 
-  .pair-tab.active { border-color: var(--accent); background: var(--accent); color: #fff; }
-  .pair-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  .pair-tab.active { border-color: var(--gold); background: var(--gold); color: var(--bg); }
+  .pair-tab:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
 
   /* FONT PREVIEW CARD */
   .preview-card {
@@ -297,13 +302,13 @@
 
   .font-meta-val {
     font-size: 12px;
-    color: var(--accent);
+    color: var(--text);
     font-weight: 500;
   }
 
   /* PAIRING INFO */
   .pair-info {
-    background: var(--surface2);
+    background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1.25rem;
@@ -318,7 +323,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--text);
     margin-bottom: 0.625rem;
   }
 
@@ -335,14 +340,14 @@
     border: 1px solid var(--border2);
     border-radius: 8px;
     color: var(--muted);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     cursor: pointer;
     transition: all 0.15s;
     margin-top: 0.5rem;
   }
 
-  .copy-css-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-css-btn:hover { border-color: var(--gold); color: var(--gold); }
   .copy-css-btn.copied { border-color: var(--success); color: var(--success); }
 
   /* EMPTY STATE */
@@ -394,13 +399,13 @@
     appearance: none;
     width: 14px; height: 14px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--gold);
     cursor: pointer;
   }
 
   .slider-val {
     font-size: 11px;
-    color: var(--accent);
+    color: var(--text);
     font-weight: 500;
     min-width: 32px;
     text-align: right;
@@ -413,14 +418,14 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     padding: 0.5rem 0.75rem;
     outline: none;
     margin-bottom: 0;
   }
 
-  .custom-text-input:focus { border-color: var(--accent); }
+  .custom-text-input:focus { border-color: var(--text); }
 
   @media (max-width: 700px) {
     .layout { grid-template-columns: 1fr; }
@@ -430,7 +435,12 @@
 </head>
 <body>
 
-<div class="container">
+<nav style="position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.95);border-bottom:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);">
+  <a href="index.html" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;letter-spacing:0.25em;font-weight:300;color:#f5f0e8;text-decoration:none;">WEST<span style="color:#c8a96e;">CREST</span></a>
+  <a href="index.html" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,240,232,0.55);text-decoration:none;display:flex;align-items:center;gap:6px;">← Back to Tools</a>
+</nav>
+
+<div class="container" style="padding-top:5rem;">
 
   <div class="header">
     <div class="header-eyebrow">AI Powered</div>
@@ -763,8 +773,8 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       <div class="pair-info-title">Use cases</div>
       <div class="pair-info-text" style="margin-bottom:0.875rem">${escHtml(p.use_cases)}</div>
       <div class="pair-info-title" style="margin-bottom:0.4rem">CSS Import</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:monospace;font-size:11px;color:var(--accent2);line-height:1.6;word-break:break-all;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:monospace;font-size:11px;color:var(--accent2);line-height:1.6;word-break:break-all;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
       <button class="copy-css-btn" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy CSS</button>`;
 
     container.appendChild(info);

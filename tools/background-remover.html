@@ -11,20 +11,21 @@
 <meta property="og:description" content="Remove backgrounds from images instantly with AI. Free, private, browser-based.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #C9A84C;
-  --gold-dim: rgba(201,168,76,0.15);
-  --gold-border: rgba(201,168,76,0.22);
-  --dark:  #080808;
-  --dark2: #101010;
-  --dark3: #181818;
-  --dark4: #202020;
-  --dark5: #2a2a2a;
-  --text:  #ede9e0;
-  --muted: rgba(237,233,224,0.45);
-  --faint: rgba(237,233,224,0.12);
+  --gold: #c8a96e;
+  --gold2: #e8c98e;
+  --gold-dim: rgba(200,169,110,0.15);
+  --gold-border: rgba(200,169,110,0.22);
+  --dark:  #111118;
+  --dark2: #16161e;
+  --dark3: #1c1c26;
+  --dark4: #1e1e28;
+  --dark5: #222230;
+  --text:  #f5f0e8;
+  --muted: rgba(245,240,232,0.55);
+  --faint: rgba(245,240,232,0.12);
   --radius: 14px;
   --radius-sm: 8px;
 }
@@ -35,7 +36,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--dark);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Syne', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -45,13 +46,13 @@ body {
   position: sticky; top: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2rem; height: 60px;
-  background: rgba(8,8,8,0.92);
+  background: rgba(8,8,8,0.97);
   border-bottom: 1px solid var(--gold-border);
   backdrop-filter: blur(14px);
 }
-.nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); font-size:14px; font-weight:600; letter-spacing:.02em; }
+.nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:300; letter-spacing:0.25em; }
 .nav-logo img { height:26px; }
-.nav-back { display:flex; align-items:center; gap:5px; color:var(--muted); text-decoration:none; font-size:13px; transition:color .2s; }
+.nav-back { display:flex; align-items:center; gap:5px; color:var(--muted); text-decoration:none; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; transition:color .2s; }
 .nav-back:hover { color:var(--gold); }
 .nav-back svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
@@ -74,7 +75,7 @@ body {
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
 
 .hero h1 {
-  font-family: 'DM Serif Display', serif;
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.2rem, 6vw, 3.6rem);
   line-height: 1.05;
   letter-spacing: -.02em;
@@ -99,7 +100,7 @@ body {
   transition: border-color .25s, background .25s;
   margin-bottom: 1.5rem;
 }
-.drop-zone.drag-over { border-color: var(--gold); background: rgba(201,168,76,.04); }
+.drop-zone.drag-over { border-color: var(--gold); background: rgba(200,169,110,.04); }
 .drop-zone.hidden { display:none; }
 .upload-icon {
   width:54px; height:54px;

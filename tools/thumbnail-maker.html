@@ -5,30 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thumbnail Maker — Westcrest</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Rajdhani:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Rajdhani:wght@600;700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0d0d0f;
-    --bg2: #17171b;
-    --bg3: #1e1e24;
-    --bg4: #26262e;
-    --border: #2e2e38;
-    --border2: #3a3a48;
-    --text: #f0f0f5;
-    --text2: #9898b0;
-    --text3: #5c5c72;
-    --accent: #6c63ff;
-    --accent2: #ff6b6b;
-    --accent3: #43e97b;
-    --accent4: #f7971e;
+    --bg: #111118;
+    --bg2: #16161e;
+    --bg3: #1c1c26;
+    --bg4: #1e1e28;
+    --border: rgba(255,255,255,0.10);
+    --border2: rgba(200,169,110,0.25);
+    --text: #f5f0e8;
+    --text2: rgba(245,240,232,0.55);
+    --text3: rgba(245,240,232,0.28);
+    --gold: #c8a96e;
+    --gold2: #e8c98e;
+    --gold-dim: rgba(200,169,110,0.15);
+    --accent: #c8a96e;
+    --accent2: #e8c98e;
+    --accent3: #c8a96e;
+    --accent4: #e8c98e;
     --radius: 8px;
     --radius-lg: 12px;
   }
 
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Syne', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -50,12 +53,13 @@
     z-index: 100;
   }
   .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--accent);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--text);
   }
-  .logo span { color: var(--text2); font-size: 13px; font-family: 'Inter', sans-serif; letter-spacing: 0; margin-left: 8px; font-weight: 400; }
+  .logo span { color: var(--text2); font-size: 13px; font-family: 'Syne', sans-serif; letter-spacing: 0; margin-left: 8px; font-weight: 400; }
   .header-actions { margin-left: auto; display: flex; gap: 8px; }
   .btn {
     padding: 7px 16px;
@@ -70,10 +74,10 @@
     display: flex; align-items: center; gap: 6px;
   }
   .btn:hover { background: var(--bg4); border-color: var(--border2); }
-  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #5a52e0; border-color: #5a52e0; }
-  .btn-success { background: #1a3a2a; border-color: #2a6645; color: var(--accent3); }
-  .btn-success:hover { background: #1e4532; }
+  .btn-primary { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+  .btn-primary:hover { background: var(--gold2); border-color: var(--gold2); }
+  .btn-success { background: rgba(200,169,110,0.12); border-color: rgba(200,169,110,0.3); color: var(--gold); }
+  .btn-success:hover { background: rgba(200,169,110,0.2); }
 
   /* PLATFORM SELECTOR */
   .platform-bar {
@@ -208,7 +212,7 @@
     background: transparent; color: var(--text2); font-size: 11px; font-weight: 600;
     cursor: pointer; text-align: center; transition: all 0.15s; letter-spacing: 0.3px;
   }
-  .add-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.06); }
+  .add-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.06); }
   .add-btn .icon { display: block; font-size: 20px; margin-bottom: 4px; }
 
   /* CANVAS AREA */
@@ -305,7 +309,7 @@
     padding: 18px; text-align: center; cursor: pointer;
     transition: all 0.15s; margin-bottom: 10px;
   }
-  .upload-zone:hover { border-color: var(--accent); background: rgba(108,99,255,0.05); }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(200,169,110,0.05); }
   .upload-zone p { font-size: 12px; color: var(--text3); margin-top: 6px; }
   .upload-zone .u-icon { font-size: 28px; }
   #fileInput { display: none; }
@@ -519,7 +523,7 @@
         <div class="section-title">Custom Gradient</div>
         <div class="form-row">
           <label class="form-label">Color 1</label>
-          <input type="color" id="grad1" value="#6c63ff" oninput="applyGradient()">
+          <input type="color" id="grad1" value="#c8a96e" oninput="applyGradient()">
         </div>
         <div class="form-row">
           <label class="form-label">Color 2</label>
@@ -617,8 +621,8 @@
       <div id="shapeColorRow" class="form-row">
         <label class="form-label">Fill Color</label>
         <div class="color-row">
-          <input type="color" id="shapeFill" value="#6c63ff" oninput="updateShapeFill()">
-          <input class="form-input" type="text" id="shapeFillHex" value="#6c63ff" oninput="syncShapeFill()">
+          <input type="color" id="shapeFill" value="#c8a96e" oninput="updateShapeFill()">
+          <input class="form-input" type="text" id="shapeFillHex" value="#c8a96e" oninput="syncShapeFill()">
         </div>
       </div>
       <div id="shapeBorderRow" class="form-row">
@@ -653,14 +657,14 @@ let selectedIndex = -1;
 let history = [];
 let bgType = 'solid';
 let bgSolidColor = '#1a1a2e';
-let bgGradient = { c1:'#6c63ff', c2:'#ff6b6b', dir:'to bottom right' };
+let bgGradient = { c1:'#c8a96e', c2:'#ff6b6b', dir:'to bottom right' };
 let bgImage = null;
 let isDragging = false, dragOffX = 0, dragOffY = 0;
 let isResizing = false, resizeHandle = '';
 let canvasW = 1280, canvasH = 720;
 
 const GRADIENTS = [
-  ['#0f2027','#203a43','#2c5364'],['#6c63ff','#ff6b6b'],['#43e97b','#38f9d7'],
+  ['#0f2027','#203a43','#2c5364'],['#c8a96e','#ff6b6b'],['#43e97b','#38f9d7'],
   ['#f7971e','#ffd200'],['#ee0979','#ff6a00'],['#1a1a2e','#16213e'],
   ['#000000','#434343'],['#870000','#190a05'],['#00c6ff','#0072ff'],
   ['#f953c6','#b91d73'],['#11998e','#38ef7d'],['#fc4a1a','#f7b733']
@@ -668,7 +672,7 @@ const GRADIENTS = [
 
 const TEMPLATES = [
   { name:'Dark Drama', bg:['#0d0d0d','#1a0533'], txt:'YOUR TITLE', txtColor:'#ffffff', font:'Bebas Neue', size:96 },
-  { name:'Neon Pop', bg:['#000000','#1a0a2e'], txt:'CLICK NOW', txtColor:'#6c63ff', font:'Impact', size:100 },
+  { name:'Neon Pop', bg:['#000000','#1a0a2e'], txt:'CLICK NOW', txtColor:'#c8a96e', font:'Impact', size:100 },
   { name:'Fire Red', bg:['#870000','#fc4a1a'], txt:'AMAZING', txtColor:'#ffffff', font:'Bebas Neue', size:110 },
   { name:'Ocean', bg:['#00c6ff','#0072ff'], txt:'EXPLORE', txtColor:'#ffffff', font:'Montserrat', size:80 },
   { name:'Gold', bg:['#f7971e','#ffd200'], txt:'EPIC', txtColor:'#1a1000', font:'Bebas Neue', size:120 },
@@ -823,7 +827,7 @@ function drawImage(layer) {
 }
 
 function drawShape(layer) {
-  ctx.fillStyle = layer.fill || '#6c63ff';
+  ctx.fillStyle = layer.fill || '#c8a96e';
   if (layer.borderWidth > 0) {
     ctx.strokeStyle = layer.borderColor || '#ffffff';
     ctx.lineWidth = layer.borderWidth || 0;
@@ -904,7 +908,7 @@ function drawSelection(layer) {
   ctx.translate(cx,cy);
   if(layer.rotation) ctx.rotate(layer.rotation*Math.PI/180);
   ctx.translate(-cx,-cy);
-  ctx.strokeStyle = '#6c63ff';
+  ctx.strokeStyle = '#c8a96e';
   ctx.lineWidth = 2;
   ctx.setLineDash([6,3]);
   ctx.strokeRect(layer.x-2, layer.y-2, layer.w+4, layer.h+4);
@@ -912,7 +916,7 @@ function drawSelection(layer) {
   const handles = getHandles(layer);
   handles.forEach(h => {
     ctx.fillStyle = '#fff';
-    ctx.strokeStyle = '#6c63ff';
+    ctx.strokeStyle = '#c8a96e';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(h.x, h.y, 6, 0, Math.PI*2);
@@ -1056,7 +1060,7 @@ function addShape(shape, name) {
   layers.push({
     type:'shape', shape, name,
     x:canvasW/2-w/2, y:canvasH/2-h/2, w, h,
-    fill:'#6c63ff', borderColor:'#ffffff', borderWidth:0,
+    fill:'#c8a96e', borderColor:'#ffffff', borderWidth:0,
     opacity:100, rotation:0, visible:true
   });
   selectedIndex = layers.length-1;
@@ -1185,8 +1189,8 @@ function updateRightPanel() {
   const borderRow = document.getElementById('shapeBorderRow');
   if (l.type==='shape') {
     shapeRows.style.display='block'; borderRow.style.display='block';
-    document.getElementById('shapeFill').value = l.fill||'#6c63ff';
-    document.getElementById('shapeFillHex').value = l.fill||'#6c63ff';
+    document.getElementById('shapeFill').value = l.fill||'#c8a96e';
+    document.getElementById('shapeFillHex').value = l.fill||'#c8a96e';
     document.getElementById('shapeBorder').value = l.borderColor||'#ffffff';
     document.getElementById('shapeBorderW').value = l.borderWidth||0;
   } else if (l.type==='text') {

@@ -8,16 +8,17 @@
 <meta name="keywords" content="image converter, png to jpg, webp to png, heic to jpg, free image converter, online image converter">
 <meta name="theme-color" content="#C9A84C">
 <link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
-    --gold: #C9A84C;
-    --gold-light: #e8c96a;
-    --dark: #0a0a0a;
-    --dark2: #111111;
-    --dark3: #1a1a1a;
-    --dark4: #222222;
-    --border: rgba(201,168,76,0.18);
+    --gold: #c8a96e;
+    --gold-light: #e8c98e;
+    --dark: #111118;
+    --dark2: #16161e;
+    --dark3: #1c1c26;
+    --dark4: #1e1e28;
+    --border: rgba(255,255,255,0.10);
     --text: #f0ede6;
     --text-muted: rgba(240,237,230,0.5);
     --radius: 12px;
@@ -27,7 +28,7 @@
   body {
     background: var(--dark);
     color: var(--text);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Syne', sans-serif;
     min-height: 100vh;
   }
 
@@ -38,7 +39,7 @@
     justify-content: space-between;
     padding: 0 2rem;
     height: 64px;
-    background: rgba(10,10,10,0.95);
+    background: rgba(8,8,8,0.97);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -51,9 +52,10 @@
     gap: 10px;
     text-decoration: none;
     color: var(--text);
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
   }
   .tool-nav .logo img { height: 28px; }
   .back-btn {
@@ -62,7 +64,10 @@
     gap: 6px;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     transition: color 0.2s;
   }
   .back-btn:hover { color: var(--gold); }
@@ -91,10 +96,11 @@
     margin-bottom: 1.5rem;
   }
   .tool-hero h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
     margin-bottom: 1rem;
   }
   .tool-hero h1 em {
@@ -114,7 +120,7 @@
     gap: 8px;
   }
   .trust-pill {
-    background: var(--dark3);
+    background: rgba(28,28,38,0.8);
     border: 1px solid var(--border);
     color: var(--text-muted);
     font-size: 11px;
@@ -178,7 +184,7 @@
     margin-top: 1.2rem;
   }
   .format-chip {
-    background: var(--dark3);
+    background: rgba(28,28,38,0.8);
     border: 1px solid rgba(255,255,255,0.06);
     color: var(--text-muted);
     font-size: 10px;
@@ -216,7 +222,7 @@
     flex-wrap: wrap;
   }
   .fmt-btn {
-    background: var(--dark3);
+    background: rgba(28,28,38,0.8);
     border: 1px solid rgba(255,255,255,0.08);
     color: var(--text-muted);
     font-size: 12px;

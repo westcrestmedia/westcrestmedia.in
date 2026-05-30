@@ -5,28 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUT Preview Tool — Westcrest</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --bg:#080a0e;
-  --bg2:#0d1017;
-  --bg3:#111520;
-  --bg4:#161c2c;
-  --bg5:#1c2438;
-  --border:#1e2840;
-  --border2:#263050;
-  --text:#e8edf5;
-  --text2:#7a8aaa;
-  --text3:#3a4560;
-  --accent:#00d4ff;
-  --accent2:#ff6b35;
-  --accent3:#a8ff3e;
+  --bg:#111118;
+  --bg2:#16161e;
+  --bg3:#1c1c26;
+  --bg4:#1e1e28;
+  --bg5:#222230;
+  --border:rgba(255,255,255,0.10);
+  --border2:rgba(200,169,110,0.25);
+  --text:#f5f0e8;
+  --text2:rgba(245,240,232,0.55);
+  --text3:rgba(245,240,232,0.28);
+  --accent:#c8a96e;
+  --accent2:#e8c98e;
+  --accent3:#c8a96e;
+  --gold:#c8a96e;
+  --gold2:#e8c98e;
+  --gold-dim:rgba(200,169,110,0.15);
   --radius:6px;
-  --mono:'Share Tech Mono',monospace;
-  --display:'Barlow Condensed',sans-serif;
-  --body:'Barlow',sans-serif;
+  --mono:'DM Mono',monospace;
+  --display:'Syne',sans-serif;
+  --body:'Syne',sans-serif;
 }
 
 body{
@@ -53,14 +56,17 @@ body{
   font-size:20px;
   font-weight:900;
   letter-spacing:3px;
-  color:var(--accent);
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  letter-spacing:0.25em;
+  color:var(--text);
   text-transform:uppercase;
 }
 .logo em{color:var(--text2);font-style:normal;font-size:11px;font-family:var(--mono);letter-spacing:1px;margin-left:8px}
 .header-mid{flex:1;display:flex;align-items:center;gap:8px;justify-content:center}
 .view-toggle{display:flex;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
 .vt-btn{padding:5px 14px;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;background:transparent;color:var(--text3);border:none;transition:all .15s}
-.vt-btn.active{background:var(--bg5);color:var(--accent)}
+.vt-btn.active{background:var(--bg5);color:var(--gold)}
 .vt-btn:hover:not(.active){color:var(--text2)}
 .header-right{display:flex;gap:8px;align-items:center}
 .btn{
@@ -70,10 +76,10 @@ body{
   transition:all .15s;text-transform:uppercase;
 }
 .btn:hover{background:var(--bg5);border-color:var(--border2)}
-.btn-accent{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:var(--accent)}
-.btn-accent:hover{background:rgba(0,212,255,.2)}
-.btn-orange{background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.4);color:var(--accent2)}
-.btn-orange:hover{background:rgba(255,107,53,.2)}
+.btn-accent{background:rgba(200,169,110,0.1);border-color:rgba(200,169,110,0.3);color:var(--accent)}
+.btn-accent:hover{background:rgba(200,169,110,0.2)}
+.btn-orange{background:rgba(200,169,110,0.1);border-color:rgba(200,169,110,0.25);color:var(--accent2)}
+.btn-orange:hover{background:rgba(200,169,110,0.15)}
 
 /* BODY LAYOUT */
 .body{display:flex;flex:1;overflow:hidden;height:calc(100vh - 52px)}
@@ -128,7 +134,7 @@ body{
   border:1px solid transparent;margin-bottom:3px;
 }
 .lut-item:hover{background:var(--bg4);border-color:var(--border)}
-.lut-item.active{background:var(--bg5);border-color:rgba(0,212,255,.4)}
+.lut-item.active{background:var(--bg5);border-color:rgba(200,169,110,0.3)}
 .lut-swatch{
   width:32px;height:22px;border-radius:4px;flex-shrink:0;
   border:1px solid rgba(255,255,255,.08);
@@ -879,7 +885,7 @@ function drawSplitView(){
   ctx.drawImage(offscreenOrig,0,0,sp,h, 0,0,sp,h);
   if(offscreenLUT) ctx.drawImage(offscreenLUT,sp,0,w-sp,h, sp,0,w-sp,h);
   // Draw split line
-  ctx.strokeStyle='rgba(0,212,255,0.9)';
+  ctx.strokeStyle='rgba(200,169,110,0.9)';
   ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(sp,0); ctx.lineTo(sp,h); ctx.stroke();
   updateSplitPos();
