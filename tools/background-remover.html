@@ -666,6 +666,11 @@ async function start(file) {
     await initEditor(blob);
     setView('result');
     setBgByValue('transparent');
+    // Wait one frame so result-area is visible and has real clientWidth
+    requestAnimationFrame(() => {
+      computeBaseSize();
+      renderAll();
+    });
 
   } catch (err) {
     console.error(err);
@@ -708,9 +713,8 @@ async function initEditor(blob) {
   origData = origCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
 
   zoom = 1; panX = 0; panY = 0;
-  computeBaseSize();
-  renderAll();
   attachEvents();
+  // computeBaseSize + renderAll called AFTER setView('result') makes container visible
 }
 
 // ─── LAYOUT ─────────────────────────────────────────────────────────
