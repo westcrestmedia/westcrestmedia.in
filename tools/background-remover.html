@@ -286,9 +286,100 @@ footer p { font-size:12px; color:var(--muted); }
 
 /* ── SPINNER ── */
 @keyframes spin { to{transform:rotate(360deg)} }
+
+/* ── BRUSH TOOLBAR ── */
+.brush-toolbar {
+  display: none;
+  background: var(--dark2);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 1rem;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.brush-toolbar.active { display: flex; }
+
+.brush-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted);
+  white-space: nowrap;
+}
+
+.brush-mode-group { display: flex; gap: 6px; }
+
+.brush-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--dark4);
+  border: 1.5px solid var(--faint);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: all .2s;
+}
+.brush-btn:hover { border-color: var(--gold-border); color: var(--text); }
+.brush-btn.active-erase { border-color: #e55; color: #ff7070; background: rgba(220,50,50,0.1); }
+.brush-btn.active-restore { border-color: #5a5; color: #7ddb7d; background: rgba(50,180,50,0.1); }
+
+.brush-dot-erase { width: 8px; height: 8px; border-radius: 50%; background: #e55; flex-shrink: 0; }
+.brush-dot-restore { width: 8px; height: 8px; border-radius: 50%; background: #5a5; flex-shrink: 0; }
+
+.brush-size-wrap {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1; min-width: 140px;
+}
+.brush-size-wrap input[type=range] {
+  flex: 1; height: 3px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--dark5);
+  border-radius: 99px; outline: none; cursor: pointer;
+}
+.brush-size-wrap input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%; background: var(--gold);
+  cursor: pointer; border: none;
+}
+.brush-size-val {
+  font-size: 11px; color: var(--muted); min-width: 28px; text-align: right;
+}
+
+.brush-hint {
+  font-size: 11px; color: var(--muted); opacity: .6;
+  width: 100%; padding-top: 2px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── EDITOR CANVAS OVERLAY ── */
+.editor-wrap {
+  position: relative; display: inline-block;
+  max-width: 100%; max-height: 280px;
+}
+.editor-wrap canvas {
+  position: absolute; inset: 0;
+  border-radius: 6px;
+  cursor: crosshair;
+}
+#result-img { display: block; max-width: 100%; max-height: 280px; border-radius: 6px; }
+
+/* Cursor indicator */
+.brush-cursor {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  transform: translate(-50%,-50%);
+  z-index: 9999;
+  display: none;
+}
 </style>
 </head>
 <body>
+
+<!-- Brush cursor indicator -->
+<div class="brush-cursor" id="brush-cursor"></div>
 
 <!-- NAV -->
 <nav class="nav">
@@ -374,8 +465,32 @@ footer p { font-size:12px; color:var(--muted); }
         </div>
       </div>
       <div class="result-img-wrap checker-bg" id="result-img-wrap">
-        <img id="result-img" src="" alt="Result">
+        <div class="editor-wrap" id="editor-wrap">
+          <img id="result-img" src="" alt="Result">
+          <canvas id="brush-canvas"></canvas>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- BRUSH TOOLBAR -->
+  <div class="brush-toolbar" id="brush-toolbar">
+    <span class="brush-label">Touchup:</span>
+    <div class="brush-mode-group">
+      <button class="brush-btn" id="btn-erase" onclick="setBrushMode('erase')">
+        <span class="brush-dot-erase"></span> Erase
+      </button>
+      <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')">
+        <span class="brush-dot-restore"></span> Restore
+      </button>
+    </div>
+    <div class="brush-size-wrap">
+      <span class="brush-label">Size:</span>
+      <input type="range" id="brush-size" min="4" max="80" value="20" oninput="updateBrushSize(this.value)">
+      <span class="brush-size-val" id="brush-size-val">20px</span>
+    </div>
+    <div class="brush-hint">
+      💡 Paint over image to erase or restore parts
     </div>
   </div>
 
@@ -492,7 +607,6 @@ let removeBackground = null;
 async function loadLib() {
   if (removeBackground) return removeBackground;
   const mod = await import(`https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/+esm`);
-  // Handle both named export and default export
   removeBackground = mod.removeBackground || mod.default || Object.values(mod).find(v => typeof v === 'function');
   if (!removeBackground) throw new Error('Could not load removeBackground function');
   return removeBackground;
@@ -500,6 +614,14 @@ async function loadLib() {
 
 let resultBlob = null;
 let currentBg = 'transparent';
+
+// ── BRUSH STATE ──
+let brushMode = null; // 'erase' | 'restore'
+let brushSize = 20;
+let isPainting = false;
+let resultImageData = null; // original AI result pixel data
+let workingCanvas = null;   // offscreen canvas with edits
+let workingCtx = null;
 
 // ── FILE INPUT ──
 const fileIn = document.getElementById('file-in');
@@ -517,7 +639,6 @@ dropZone.addEventListener('drop', e => {
   const file = e.dataTransfer.files[0];
   if (file && file.type.startsWith('image/')) startRemoval(file);
 });
-// Click on drop zone (but NOT on the button — button has its own onclick)
 dropZone.addEventListener('click', e => {
   if (e.target.tagName === 'BUTTON') return;
   fileIn.click();
@@ -525,21 +646,19 @@ dropZone.addEventListener('click', e => {
 
 // ── MAIN REMOVAL FLOW ──
 async function startRemoval(file) {
-  // Show original preview
   const origUrl = URL.createObjectURL(file);
   document.getElementById('orig-img').src = origUrl;
 
-  // Hide drop zone, show processing
   dropZone.classList.add('hidden');
   document.getElementById('proc-state').classList.add('active');
   document.getElementById('result-area').classList.remove('active');
   document.getElementById('action-row').classList.remove('active');
+  document.getElementById('brush-toolbar').classList.remove('active');
 
-  const titleEl  = document.getElementById('proc-title');
-  const subEl    = document.getElementById('proc-sub');
-  const pctEl    = document.getElementById('proc-pct');
+  const titleEl = document.getElementById('proc-title');
+  const subEl   = document.getElementById('proc-sub');
+  const pctEl   = document.getElementById('proc-pct');
 
-  // Simulate stage labels
   titleEl.textContent = 'Loading AI model…';
   subEl.textContent   = 'First run downloads ~80MB model. Cached after this — subsequent runs are instant.';
 
@@ -563,31 +682,229 @@ async function startRemoval(file) {
     });
 
     resultBlob = blob;
-    const resultUrl = URL.createObjectURL(blob);
-    document.getElementById('result-img').src = resultUrl;
+    await initEditor(blob);
 
-    // Hide processing, show result
     document.getElementById('proc-state').classList.remove('active');
     document.getElementById('result-area').classList.add('active');
     document.getElementById('action-row').classList.add('active');
+    document.getElementById('brush-toolbar').classList.add('active');
 
-    // Reset bg swatches — transparent default
     setBgByValue('transparent');
 
   } catch (err) {
     console.error('Background removal failed:', err);
     document.getElementById('proc-state').classList.remove('active');
-    titleEl.textContent = 'Error processing image';
-    subEl.textContent   = err.message || 'Please try a different image.';
-    alert('Background removal failed: ' + (err.message || 'Unknown error') + '\n\nTry a different image or check your connection for the first model download.');
+    alert('Background removal failed: ' + (err.message || 'Unknown error'));
     tryAnother();
   }
 }
 
-// ── BG SWAP ──
-window.setBg = function(el, color) {
-  setBgByValue(color);
+// ── INIT EDITOR (load blob → offscreen canvas) ──
+async function initEditor(blob) {
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  await new Promise(res => { img.onload = res; img.src = url; });
+
+  // Create offscreen working canvas at full image resolution
+  workingCanvas = document.createElement('canvas');
+  workingCanvas.width  = img.naturalWidth;
+  workingCanvas.height = img.naturalHeight;
+  workingCtx = workingCanvas.getContext('2d');
+  workingCtx.drawImage(img, 0, 0);
+
+  // Store original pixel data for restore brush
+  resultImageData = workingCtx.getImageData(0, 0, workingCanvas.width, workingCanvas.height);
+
+  // Display result
+  const resultImg = document.getElementById('result-img');
+  resultImg.src = url;
+
+  // Setup display canvas on top of image
+  await new Promise(res => {
+    if (resultImg.complete && resultImg.naturalWidth > 0) res();
+    else resultImg.onload = res;
+  });
+  setupDisplayCanvas();
+}
+
+function setupDisplayCanvas() {
+  const resultImg = document.getElementById('result-img');
+  const canvas    = document.getElementById('brush-canvas');
+  const wrap      = document.getElementById('editor-wrap');
+
+  const w = resultImg.offsetWidth  || resultImg.naturalWidth;
+  const h = resultImg.offsetHeight || resultImg.naturalHeight;
+
+  wrap.style.width  = w + 'px';
+  wrap.style.height = h + 'px';
+  canvas.width  = w;
+  canvas.height = h;
+
+  setupBrushEvents(canvas);
+}
+
+// ── BRUSH EVENTS ──
+function setupBrushEvents(canvas) {
+  // Remove old listeners by cloning
+  const newCanvas = canvas.cloneNode(true);
+  canvas.parentNode.replaceChild(newCanvas, canvas);
+  const c = newCanvas;
+
+  const cursor = document.getElementById('brush-cursor');
+
+  // Mouse
+  c.addEventListener('mousedown', e => { if (brushMode) { isPainting = true; paint(c, e.offsetX, e.offsetY); }});
+  c.addEventListener('mousemove', e => {
+    if (brushMode) {
+      updateCursor(e.clientX, e.clientY);
+      if (isPainting) paint(c, e.offsetX, e.offsetY);
+    }
+  });
+  c.addEventListener('mouseup',   () => { isPainting = false; if (brushMode) flushToImage(); });
+  c.addEventListener('mouseleave', () => { isPainting = false; cursor.style.display = 'none'; });
+  c.addEventListener('mouseenter', () => { if (brushMode) cursor.style.display = 'block'; });
+
+  // Touch
+  c.addEventListener('touchstart', e => {
+    if (!brushMode) return;
+    e.preventDefault();
+    isPainting = true;
+    const t = e.touches[0];
+    const r = c.getBoundingClientRect();
+    paint(c, t.clientX - r.left, t.clientY - r.top);
+  }, {passive: false});
+  c.addEventListener('touchmove', e => {
+    if (!brushMode || !isPainting) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    const r = c.getBoundingClientRect();
+    paint(c, t.clientX - r.left, t.clientY - r.top);
+  }, {passive: false});
+  c.addEventListener('touchend', () => { isPainting = false; if (brushMode) flushToImage(); });
+}
+
+function updateCursor(cx, cy) {
+  const cursor = document.getElementById('brush-cursor');
+  cursor.style.display = 'block';
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  cursor.style.width  = brushSize + 'px';
+  cursor.style.height = brushSize + 'px';
+  cursor.style.borderColor = brushMode === 'erase' ? 'rgba(255,80,80,0.8)' : 'rgba(80,220,80,0.8)';
+}
+
+// Scale factor: display canvas coords → full-res canvas coords
+function scaleXY(canvas, dx, dy) {
+  const sx = workingCanvas.width  / canvas.width;
+  const sy = workingCanvas.height / canvas.height;
+  return { x: dx * sx, y: dy * sy, r: (brushSize / 2) * sx };
+}
+
+function paint(canvas, dx, dy) {
+  const { x, y, r } = scaleXY(canvas, dx, dy);
+
+  if (brushMode === 'erase') {
+    // Make pixels transparent
+    workingCtx.save();
+    workingCtx.globalCompositeOperation = 'destination-out';
+    workingCtx.beginPath();
+    workingCtx.arc(x, y, r, 0, Math.PI * 2);
+    workingCtx.fillStyle = 'rgba(0,0,0,1)';
+    workingCtx.fill();
+    workingCtx.restore();
+  } else if (brushMode === 'restore') {
+    // Restore original pixels in circular area
+    const orig = resultImageData;
+    const cur  = workingCtx.getImageData(
+      Math.max(0, Math.floor(x - r)), Math.max(0, Math.floor(y - r)),
+      Math.min(workingCanvas.width,  Math.ceil(r * 2)),
+      Math.min(workingCanvas.height, Math.ceil(r * 2))
+    );
+    const startX = Math.max(0, Math.floor(x - r));
+    const startY = Math.max(0, Math.floor(y - r));
+    const endX   = Math.min(workingCanvas.width,  Math.ceil(x + r));
+    const endY   = Math.min(workingCanvas.height, Math.ceil(y + r));
+
+    const patchData = workingCtx.getImageData(startX, startY, endX - startX, endY - startY);
+
+    for (let py = startY; py < endY; py++) {
+      for (let px = startX; px < endX; px++) {
+        const dist = Math.sqrt((px - x) ** 2 + (py - y) ** 2);
+        if (dist > r) continue;
+        const i = ((py - startY) * (endX - startX) + (px - startX)) * 4;
+        const oi = (py * orig.width + px) * 4;
+        patchData.data[i]     = orig.data[oi];
+        patchData.data[i + 1] = orig.data[oi + 1];
+        patchData.data[i + 2] = orig.data[oi + 2];
+        patchData.data[i + 3] = orig.data[oi + 3];
+      }
+    }
+    workingCtx.putImageData(patchData, startX, startY);
+  }
+
+  // Live preview: update display canvas with a scaled version
+  const dispCtx = document.getElementById('brush-canvas').getContext('2d');
+  dispCtx.clearRect(0, 0, canvas.width, canvas.height);
+  dispCtx.drawImage(workingCanvas, 0, 0, canvas.width, canvas.height);
+
+  // Draw brush cursor on display canvas
+  dispCtx.save();
+  dispCtx.globalCompositeOperation = 'source-over';
+  dispCtx.beginPath();
+  dispCtx.arc(dx, dy, brushSize / 2, 0, Math.PI * 2);
+  dispCtx.strokeStyle = brushMode === 'erase' ? 'rgba(255,80,80,0.6)' : 'rgba(80,220,80,0.6)';
+  dispCtx.lineWidth = 1.5;
+  dispCtx.stroke();
+  dispCtx.restore();
+}
+
+// After stroke ends, bake working canvas into result-img and update resultBlob
+function flushToImage() {
+  workingCanvas.toBlob(blob => {
+    resultBlob = blob;
+    const url = URL.createObjectURL(blob);
+    const img = document.getElementById('result-img');
+    img.onload = () => {
+      // clear the display canvas paint strokes (image already updated)
+      const dispCanvas = document.getElementById('brush-canvas');
+      const ctx = dispCanvas.getContext('2d');
+      ctx.clearRect(0, 0, dispCanvas.width, dispCanvas.height);
+    };
+    img.src = url;
+  }, 'image/png');
+}
+
+// ── BRUSH MODE TOGGLE ──
+window.setBrushMode = function(mode) {
+  const canvas = document.getElementById('brush-canvas');
+  const cursor = document.getElementById('brush-cursor');
+  if (brushMode === mode) {
+    // Toggle off
+    brushMode = null;
+    canvas.style.pointerEvents = 'none';
+    cursor.style.display = 'none';
+    document.getElementById('btn-erase').classList.remove('active-erase');
+    document.getElementById('btn-restore').classList.remove('active-restore');
+  } else {
+    brushMode = mode;
+    canvas.style.pointerEvents = 'auto';
+    if (mode === 'erase') {
+      document.getElementById('btn-erase').classList.add('active-erase');
+      document.getElementById('btn-restore').classList.remove('active-restore');
+    } else {
+      document.getElementById('btn-restore').classList.add('active-restore');
+      document.getElementById('btn-erase').classList.remove('active-erase');
+    }
+  }
 };
+
+window.updateBrushSize = function(val) {
+  brushSize = parseInt(val);
+  document.getElementById('brush-size-val').textContent = val + 'px';
+};
+
+// ── BG SWAP ──
+window.setBg = function(el, color) { setBgByValue(color); };
 
 function setBgByValue(color) {
   currentBg = color;
@@ -617,12 +934,21 @@ window.downloadResult = function() {
 // ── TRY ANOTHER ──
 window.tryAnother = function() {
   resultBlob = null;
+  resultImageData = null;
+  workingCanvas = null;
+  workingCtx = null;
+  brushMode = null;
   fileIn.value = '';
   document.getElementById('orig-img').src = '';
   document.getElementById('result-img').src = '';
   document.getElementById('result-area').classList.remove('active');
   document.getElementById('action-row').classList.remove('active');
+  document.getElementById('brush-toolbar').classList.remove('active');
   document.getElementById('proc-state').classList.remove('active');
+  document.getElementById('btn-erase').classList.remove('active-erase');
+  document.getElementById('btn-restore').classList.remove('active-restore');
+  document.getElementById('brush-canvas').style.pointerEvents = 'none';
+  document.getElementById('brush-cursor').style.display = 'none';
   dropZone.classList.remove('hidden');
 };
 </script>
