@@ -325,13 +325,38 @@ footer p { font-size:12px; color:var(--muted); }
 .brush-size-val { font-size:11px; color:var(--muted); min-width:28px; text-align:right; }
 .brush-hint { font-size:11px; color:var(--muted); opacity:.6; width:100%; padding-top:2px; }
 
-/* ── DISPLAY CANVAS (replaces result-img) ── */
-#display-canvas {
-  max-width: 100%;
-  max-height: 480px;
+/* ── ZOOM CONTROLS ── */
+.zoom-group { display:flex; align-items:center; gap:6px; }
+.zoom-btn {
+  background:var(--dark4); border:1.5px solid var(--faint);
+  color:var(--muted); font-family:'DM Sans',sans-serif;
+  font-size:14px; font-weight:700; width:28px; height:28px;
+  border-radius:var(--radius-sm); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s; line-height:1;
+}
+.zoom-btn:hover { border-color:var(--gold-border); color:var(--text); }
+.zoom-level { font-size:11px; color:var(--muted); min-width:36px; text-align:center; font-weight:600; letter-spacing:.03em; }
+
+/* ── CANVAS VIEWPORT (zoom/pan container) ── */
+#canvas-viewport {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
   border-radius: 6px;
+  touch-action: none;
+}
+
+/* ── DISPLAY + CURSOR CANVASES ── */
+#display-canvas, #cursor-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  border-radius: 4px;
   display: block;
-  /* size and cursor set by JS — do NOT set width:100% here, it breaks coordinate math */
+  transform-origin: 0 0;
+}
+#cursor-canvas {
+  pointer-events: none;
 }
 </style>
 </head>
@@ -420,8 +445,11 @@ footer p { font-size:12px; color:var(--muted); }
           <div class="bg-swatch" style="background:#1e3a5f;" data-bg="#1e3a5f" onclick="setBg(this,'#1e3a5f')" title="Blue"></div>
         </div>
       </div>
-      <div class="result-img-wrap checker-bg" id="result-img-wrap">
-        <canvas id="display-canvas"></canvas>
+      <div class="result-img-wrap checker-bg" id="result-img-wrap" style="padding:0;overflow:hidden;">
+        <div id="canvas-viewport">
+          <canvas id="display-canvas"></canvas>
+          <canvas id="cursor-canvas"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -561,17 +589,31 @@ async function loadLib() {
 
 // ─── STATE ──────────────────────────────────────────────────────────
 let resultBlob  = null;
-let wCanvas     = null;   // full-res offscreen canvas (source of truth)
+let wCanvas     = null;   // full-res offscreen working canvas
 let wCtx        = null;
-let origData    = null;   // snapshot of ORIGINAL uploaded image pixels for Restore brush
-let origFile    = null;   // original uploaded file kept for restore (so AI-removed areas can come back)
+let origData    = null;   // original uploaded image pixels (for Restore)
+let origFile    = null;
 let brushMode   = null;   // 'erase' | 'restore' | null
 let isPainting  = false;
 window.brushSize = 20;
 
-// display canvas element (shown to user)
-const dc  = document.getElementById('display-canvas');
-const dctx = dc.getContext('2d', { willReadFrequently: true });
+// ─── ZOOM / PAN STATE ───────────────────────────────────────────────
+let zoom        = 1;
+let panX        = 0;
+let panY        = 0;
+let isPanning   = false;
+let panStart    = { x:0, y:0 };
+let spaceDown   = false;
+// Natural canvas size (fit-to-container, no zoom)
+let baseW       = 0;
+let baseH       = 0;
+
+// ─── CANVAS ELEMENTS ────────────────────────────────────────────────
+const viewport  = document.getElementById('canvas-viewport');
+const dc        = document.getElementById('display-canvas');
+const dctx      = dc.getContext('2d', { willReadFrequently: true });
+const cc        = document.getElementById('cursor-canvas');  // cursor overlay only
+const cctx      = cc.getContext('2d');
 
 // ─── FILE INPUT / DROP ──────────────────────────────────────────────
 const fileIn   = document.getElementById('file-in');
@@ -589,7 +631,7 @@ dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fil
 
 // ─── MAIN FLOW ──────────────────────────────────────────────────────
 async function start(file) {
-  origFile = file;   // save original for restore brush
+  origFile = file;
   document.getElementById('orig-img').src = URL.createObjectURL(file);
   dropZone.classList.add('hidden');
   setView('processing');
@@ -641,193 +683,363 @@ function loadImg(src) {
 async function initEditor(blob) {
   resultBlob = blob;
 
-  // ── Working canvas: AI-processed result (what user sees and edits) ──
-  const aiUrl = URL.createObjectURL(blob);
-  const aiImg = await loadImg(aiUrl);
+  // Working canvas: AI result
+  const aiImg = await loadImg(URL.createObjectURL(blob));
   wCanvas = document.createElement('canvas');
   wCanvas.width  = aiImg.naturalWidth;
   wCanvas.height = aiImg.naturalHeight;
   wCtx = wCanvas.getContext('2d', { willReadFrequently: true });
   wCtx.drawImage(aiImg, 0, 0);
 
-  // ── origData: ORIGINAL uploaded image pixels (for Restore brush) ──
-  // This lets restore bring back pixels that AI already removed (e.g. 'a' and 'g' in 'abcdefg')
+  // origData: original uploaded image pixels for Restore brush
   const origCanvas = document.createElement('canvas');
   origCanvas.width  = wCanvas.width;
   origCanvas.height = wCanvas.height;
   const origCtx = origCanvas.getContext('2d', { willReadFrequently: true });
-  const origUrl = URL.createObjectURL(origFile);
-  const origImg = await loadImg(origUrl);
+  const origImg = await loadImg(URL.createObjectURL(origFile));
   origCtx.drawImage(origImg, 0, 0, wCanvas.width, wCanvas.height);
   origData = origCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
 
-  renderToDisplay();
-  attachBrushEvents();
+  zoom = 1; panX = 0; panY = 0;
+  computeBaseSize();
+  renderAll();
+  attachEvents();
 }
 
-// Draw wCanvas → display canvas at correct size
-function renderToDisplay() {
+// ─── LAYOUT ─────────────────────────────────────────────────────────
+function computeBaseSize() {
   const container = document.getElementById('result-img-wrap');
-  const maxW = container.clientWidth - 24;
-  const maxH = 480;
+  const maxW = container.clientWidth;
+  const maxH = 500;
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
-  const dw = Math.round(wCanvas.width  * ratio);
-  const dh = Math.round(wCanvas.height * ratio);
+  baseW = Math.round(wCanvas.width  * ratio);
+  baseH = Math.round(wCanvas.height * ratio);
+  // viewport natural size (no zoom)
+  viewport.style.height = baseH + 'px';
+}
 
-  // Set canvas intrinsic size = display size so offsetX/clientX math is 1:1
+// Draw wCanvas scaled+panned onto dc; sync cursor canvas size
+function renderAll() {
+  const dw = Math.round(baseW * zoom);
+  const dh = Math.round(baseH * zoom);
+
+  // Keep panX/panY in bounds
+  const vpW = viewport.clientWidth;
+  const vpH = viewport.clientHeight;
+  panX = Math.min(0, Math.max(vpW - dw, panX));
+  panY = Math.min(0, Math.max(vpH - dh, panY));
+  if (dw <= vpW) panX = Math.round((vpW - dw) / 2);
+  if (dh <= vpH) panY = Math.round((vpH - dh) / 2);
+
+  // Resize and position display canvas
   dc.width  = dw;
   dc.height = dh;
-  // Remove any inline style override so canvas renders at its natural pixel size
-  dc.style.width  = '';
-  dc.style.height = '';
+  dc.style.width  = dw + 'px';
+  dc.style.height = dh + 'px';
+  dc.style.transform = `translate(${panX}px,${panY}px)`;
+
   dctx.clearRect(0, 0, dw, dh);
   dctx.drawImage(wCanvas, 0, 0, dw, dh);
+
+  // Cursor canvas matches display canvas exactly
+  cc.width  = dw;
+  cc.height = dh;
+  cc.style.width  = dw + 'px';
+  cc.style.height = dh + 'px';
+  cc.style.transform = `translate(${panX}px,${panY}px)`;
+
+  document.getElementById('zoom-level').textContent = Math.round(zoom*100) + '%';
 }
 
-// ─── BRUSH EVENTS ───────────────────────────────────────────────────
+// ─── ZOOM HELPERS ───────────────────────────────────────────────────
+window.adjustZoom = function(delta) {
+  const newZoom = Math.min(8, Math.max(0.25, zoom + delta));
+  // Zoom toward center of viewport
+  const vpW = viewport.clientWidth;
+  const vpH = viewport.clientHeight;
+  const cx = vpW / 2, cy = vpH / 2;
+  panX = cx - (cx - panX) * (newZoom / zoom);
+  panY = cy - (cy - panY) * (newZoom / zoom);
+  zoom = newZoom;
+  renderAll();
+};
+
+window.resetZoom = function() {
+  zoom = 1; panX = 0; panY = 0;
+  renderAll();
+};
+
+// ─── EVENTS ─────────────────────────────────────────────────────────
 let eventsReady = false;
 
-function attachBrushEvents() {
+function attachEvents() {
   if (eventsReady) return;
   eventsReady = true;
 
-  dc.addEventListener('mousedown', e => {
-    if (!brushMode) return;
-    isPainting = true;
-    applyBrush(e.offsetX, e.offsetY);
-  });
-  dc.addEventListener('mousemove', e => {
-    if (!brushMode) return;
-    showCursorRing(e.offsetX, e.offsetY);
-    if (isPainting) applyBrush(e.offsetX, e.offsetY);
-  });
-  dc.addEventListener('mouseup',   () => { if (isPainting) { isPainting=false; bakeBlob(); } });
-  dc.addEventListener('mouseleave',() => { if (isPainting) { isPainting=false; bakeBlob(); } renderToDisplay(); });
+  // Space key for pan mode
+  window.addEventListener('keydown', e => { if (e.code==='Space') { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); } });
+  window.addEventListener('keyup',   e => { if (e.code==='Space') { spaceDown=false; viewport.style.cursor=''; updateViewportCursor(); } });
 
-  dc.addEventListener('touchstart', e => {
-    if (!brushMode) return; e.preventDefault(); isPainting=true;
-    const r=dc.getBoundingClientRect(), t=e.touches[0];
-    applyBrush(t.clientX-r.left, t.clientY-r.top);
-  }, {passive:false});
-  dc.addEventListener('touchmove', e => {
-    if (!brushMode||!isPainting) return; e.preventDefault();
-    const r=dc.getBoundingClientRect(), t=e.touches[0];
-    applyBrush(t.clientX-r.left, t.clientY-r.top);
-  }, {passive:false});
-  dc.addEventListener('touchend', () => { if (isPainting) { isPainting=false; bakeBlob(); } });
+  // Scroll to zoom (on viewport)
+  viewport.addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left - panX;
+    const my = e.clientY - rect.top  - panY;
+    const delta = e.deltaY < 0 ? 0.15 : -0.15;
+    const newZoom = Math.min(8, Math.max(0.25, zoom + delta));
+    panX -= mx * (newZoom/zoom - 1);
+    panY -= my * (newZoom/zoom - 1);
+    zoom = newZoom;
+    renderAll();
+  }, { passive: false });
+
+  // Mouse pan (space+drag or middle-click drag)
+  viewport.addEventListener('mousedown', e => {
+    if (spaceDown || e.button === 1) {
+      isPanning = true;
+      panStart = { x: e.clientX - panX, y: e.clientY - panY };
+      viewport.style.cursor = 'grabbing';
+      e.preventDefault();
+      return;
+    }
+    // Brush paint — only on display canvas area
+    if (!brushMode) return;
+    const pos = canvasPos(e);
+    if (!pos) return;
+    isPainting = true;
+    applyBrush(pos.x, pos.y);
+  });
+
+  viewport.addEventListener('mousemove', e => {
+    if (isPanning) {
+      panX = e.clientX - panStart.x;
+      panY = e.clientY - panStart.y;
+      renderAll();
+      clearCursor();
+      return;
+    }
+    const pos = canvasPos(e);
+    if (pos) {
+      drawCursorRing(pos.x, pos.y);
+      if (isPainting && brushMode) applyBrush(pos.x, pos.y);
+    } else {
+      clearCursor();
+    }
+  });
+
+  viewport.addEventListener('mouseup', e => {
+    if (isPanning) { isPanning=false; viewport.style.cursor=''; updateViewportCursor(); return; }
+    if (isPainting) { isPainting=false; bakeBlob(); }
+  });
+
+  viewport.addEventListener('mouseleave', () => {
+    if (isPanning) { isPanning=false; }
+    if (isPainting) { isPainting=false; bakeBlob(); }
+    clearCursor();
+  });
+
+  // Touch: pinch-to-zoom + pan
+  let lastTouches = null;
+  viewport.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      lastTouches = e.touches;
+      e.preventDefault();
+      return;
+    }
+    if (!brushMode) return;
+    e.preventDefault();
+    isPainting = true;
+    const pos = touchPos(e.touches[0]);
+    if (pos) applyBrush(pos.x, pos.y);
+  }, { passive: false });
+
+  viewport.addEventListener('touchmove', e => {
+    if (e.touches.length === 2 && lastTouches) {
+      e.preventDefault();
+      // Pinch zoom
+      const d0 = Math.hypot(lastTouches[0].clientX-lastTouches[1].clientX, lastTouches[0].clientY-lastTouches[1].clientY);
+      const d1 = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      const ratio = d1 / d0;
+      const cx = (e.touches[0].clientX + e.touches[1].clientX)/2 - viewport.getBoundingClientRect().left;
+      const cy = (e.touches[0].clientY + e.touches[1].clientY)/2 - viewport.getBoundingClientRect().top;
+      const newZoom = Math.min(8, Math.max(0.25, zoom * ratio));
+      panX -= (cx - panX) * (newZoom/zoom - 1);
+      panY -= (cy - panY) * (newZoom/zoom - 1);
+      zoom = newZoom;
+      lastTouches = e.touches;
+      renderAll();
+      return;
+    }
+    if (!brushMode || !isPainting) return;
+    e.preventDefault();
+    const pos = touchPos(e.touches[0]);
+    if (pos) applyBrush(pos.x, pos.y);
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', e => {
+    lastTouches = null;
+    if (isPainting) { isPainting=false; bakeBlob(); }
+  });
+}
+
+function updateViewportCursor() {
+  if (brushMode) viewport.style.cursor = 'none';
+  else viewport.style.cursor = '';
+}
+
+// Convert mouse event → display-canvas local coordinates (or null if outside canvas)
+function canvasPos(e) {
+  const vr = viewport.getBoundingClientRect();
+  const cx = e.clientX - vr.left - panX;
+  const cy = e.clientY - vr.top  - panY;
+  if (cx < 0 || cy < 0 || cx > dc.width || cy > dc.height) return null;
+  return { x: cx, y: cy };
+}
+
+function touchPos(touch) {
+  const vr = viewport.getBoundingClientRect();
+  const cx = touch.clientX - vr.left - panX;
+  const cy = touch.clientY - vr.top  - panY;
+  if (cx < 0 || cy < 0 || cx > dc.width || cy > dc.height) return null;
+  return { x: cx, y: cy };
+}
+
+// ─── CURSOR OVERLAY ─────────────────────────────────────────────────
+function clearCursor() {
+  cctx.clearRect(0, 0, cc.width, cc.height);
+}
+
+function drawCursorRing(x, y) {
+  cctx.clearRect(0, 0, cc.width, cc.height);
+  if (!brushMode) return;
+  cctx.save();
+  cctx.beginPath();
+  cctx.arc(x, y, window.brushSize / 2, 0, Math.PI * 2);
+  cctx.strokeStyle = brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
+  cctx.lineWidth = 1.5;
+  cctx.stroke();
+  // crosshair dot
+  cctx.beginPath();
+  cctx.arc(x, y, 1.5, 0, Math.PI * 2);
+  cctx.fillStyle = brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
+  cctx.fill();
+  cctx.restore();
 }
 
 // ─── PAINT LOGIC ────────────────────────────────────────────────────
 function applyBrush(dispX, dispY) {
-  // Canvas intrinsic size == display size (set by renderToDisplay), so scale directly
+  // dispX/dispY are in display-canvas pixel space
+  // Scale to full-res working canvas
   const sx = wCanvas.width  / dc.width;
   const sy = wCanvas.height / dc.height;
-  const fx = dispX * sx,  fy = dispY * sy;
+  const fx = dispX * sx;
+  const fy = dispY * sy;
   const fr = (window.brushSize / 2) * sx;
 
   if (brushMode === 'erase') {
     wCtx.save();
     wCtx.globalCompositeOperation = 'destination-out';
     wCtx.beginPath();
-    wCtx.arc(fx, fy, fr, 0, Math.PI*2);
+    wCtx.arc(fx, fy, fr, 0, Math.PI * 2);
     wCtx.fillStyle = 'rgba(0,0,0,1)';
     wCtx.fill();
     wCtx.restore();
 
-  } else { // restore
-    const x0=Math.max(0,Math.floor(fx-fr)), y0=Math.max(0,Math.floor(fy-fr));
-    const x1=Math.min(wCanvas.width, Math.ceil(fx+fr));
-    const y1=Math.min(wCanvas.height,Math.ceil(fy+fr));
-    const pw=x1-x0, ph=y1-y0;
-    if (pw<=0||ph<=0) return;
-    const patch=wCtx.getImageData(x0,y0,pw,ph);
-    const d=patch.data, od=origData.data, W=origData.width;
-    for (let py=0;py<ph;py++) for (let px=0;px<pw;px++) {
-      if ((x0+px-fx)**2+(y0+py-fy)**2>fr*fr) continue;
-      const i=(py*pw+px)*4, oi=((y0+py)*W+(x0+px))*4;
-      d[i]=od[oi]; d[i+1]=od[oi+1]; d[i+2]=od[oi+2]; d[i+3]=od[oi+3];
+  } else { // restore — copy from original uploaded image
+    const x0 = Math.max(0, Math.floor(fx - fr));
+    const y0 = Math.max(0, Math.floor(fy - fr));
+    const x1 = Math.min(wCanvas.width,  Math.ceil(fx + fr));
+    const y1 = Math.min(wCanvas.height, Math.ceil(fy + fr));
+    const pw = x1 - x0, ph = y1 - y0;
+    if (pw <= 0 || ph <= 0) return;
+    const patch = wCtx.getImageData(x0, y0, pw, ph);
+    const d = patch.data, od = origData.data, W = origData.width;
+    for (let py = 0; py < ph; py++) {
+      for (let px = 0; px < pw; px++) {
+        if ((x0+px-fx)**2 + (y0+py-fy)**2 > fr*fr) continue;
+        const i  = (py * pw + px) * 4;
+        const oi = ((y0+py) * W + (x0+px)) * 4;
+        d[i]=od[oi]; d[i+1]=od[oi+1]; d[i+2]=od[oi+2]; d[i+3]=od[oi+3];
+      }
     }
-    wCtx.putImageData(patch,x0,y0);
+    wCtx.putImageData(patch, x0, y0);
   }
 
-  // Live: redraw display canvas from working canvas + cursor ring
-  dctx.clearRect(0,0,dc.width,dc.height);
-  dctx.drawImage(wCanvas,0,0,dc.width,dc.height);
-  showCursorRing(dispX,dispY);
+  // Sync display canvas (cursor stays on cc overlay — no trail!)
+  dctx.clearRect(0, 0, dc.width, dc.height);
+  dctx.drawImage(wCanvas, 0, 0, dc.width, dc.height);
+  drawCursorRing(dispX, dispY);
 }
 
-function showCursorRing(x,y) {
-  // Show brush circle in display-canvas coordinates
-  // brushSize is in display pixels (not full-res pixels)
-  dctx.save();
-  dctx.beginPath();
-  dctx.arc(x, y, window.brushSize/2, 0, Math.PI*2);
-  dctx.strokeStyle = brushMode==='erase' ? 'rgba(255,80,80,.8)' : 'rgba(80,220,80,.8)';
-  dctx.lineWidth = 1.5;
-  dctx.stroke();
-  dctx.restore();
-}
-
-// After stroke: update resultBlob for download
 function bakeBlob() {
   wCanvas.toBlob(b => { resultBlob = b; }, 'image/png');
-  renderToDisplay(); // clean redraw (no cursor ring)
+  // Re-render clean (cursor ring clears naturally on next mousemove outside)
+  dctx.clearRect(0, 0, dc.width, dc.height);
+  dctx.drawImage(wCanvas, 0, 0, dc.width, dc.height);
 }
 
 // ─── BRUSH MODE TOGGLE ──────────────────────────────────────────────
 window.setBrushMode = function(mode) {
   if (brushMode === mode) {
     brushMode = null;
-    dc.style.cursor = 'default';
+    updateViewportCursor();
     document.getElementById('btn-erase').classList.remove('mode-erase');
     document.getElementById('btn-restore').classList.remove('mode-restore');
   } else {
     brushMode = mode;
-    dc.style.cursor = 'crosshair';
-    document.getElementById('btn-erase').classList.toggle('mode-erase',   mode==='erase');
-    document.getElementById('btn-restore').classList.toggle('mode-restore',mode==='restore');
-    document.getElementById('btn-erase').classList.toggle('mode-restore', false);
-    document.getElementById('btn-restore').classList.toggle('mode-erase', false);
+    viewport.style.cursor = 'none';
+    document.getElementById('btn-erase').classList.toggle('mode-erase',    mode==='erase');
+    document.getElementById('btn-restore').classList.toggle('mode-restore', mode==='restore');
+    document.getElementById('btn-erase').classList.toggle('mode-restore',  false);
+    document.getElementById('btn-restore').classList.toggle('mode-erase',  false);
   }
 };
 
-// ─── BG SWAP ───────────────────────────────────────────────────────
+// ─── BG SWAP ────────────────────────────────────────────────────────
 window.setBg = function(el, color) { setBgByValue(color); };
 
 function setBgByValue(color) {
   const wrap = document.getElementById('result-img-wrap');
-  document.querySelectorAll('.bg-swatch').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
   const m = document.querySelector(`.bg-swatch[data-bg="${CSS.escape(color)}"]`);
   if (m) m.classList.add('active');
-  if (color==='transparent') { wrap.style.background=''; wrap.className='result-img-wrap checker-bg'; }
-  else { wrap.className='result-img-wrap'; wrap.style.background=color; }
+  if (color === 'transparent') {
+    wrap.style.background = '';
+    wrap.className = 'result-img-wrap checker-bg';
+  } else {
+    wrap.className = 'result-img-wrap';
+    wrap.style.background = color;
+  }
 }
 
-// ─── DOWNLOAD ──────────────────────────────────────────────────────
+// ─── DOWNLOAD ───────────────────────────────────────────────────────
 window.downloadResult = function() {
-  if (!resultBlob) return;
-  // Always export from working canvas for latest edits
+  if (!wCanvas) return;
   wCanvas.toBlob(b => {
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(b);
-    a.download='westcrest-removed-bg.png';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = 'westcrest-removed-bg.png';
     a.click();
-  },'image/png');
+  }, 'image/png');
 };
 
-// ─── TRY ANOTHER ──────────────────────────────────────────────────
+// ─── TRY ANOTHER ────────────────────────────────────────────────────
 window.tryAnother = function() {
   resultBlob=null; wCanvas=null; wCtx=null; origData=null; origFile=null;
-  brushMode=null; isPainting=false; eventsReady=false;
-  window.brushSize=20;
-  fileIn.value='';
-  document.getElementById('orig-img').src='';
-  dctx.clearRect(0,0,dc.width,dc.height);
-  dc.style.cursor='default';
+  brushMode=null; isPainting=false; isPanning=false; eventsReady=false;
+  zoom=1; panX=0; panY=0; baseW=0; baseH=0;
+  window.brushSize = 20;
+  fileIn.value = '';
+  document.getElementById('orig-img').src = '';
+  dctx.clearRect(0, 0, dc.width, dc.height);
+  cctx.clearRect(0, 0, cc.width, cc.height);
+  viewport.style.cursor = '';
   document.getElementById('btn-erase').classList.remove('mode-erase');
   document.getElementById('btn-restore').classList.remove('mode-restore');
-  document.getElementById('brush-size').value=20;
-  document.getElementById('brush-size-val').textContent='20px';
+  document.getElementById('brush-size').value = 20;
+  document.getElementById('brush-size-val').textContent = '20px';
+  document.getElementById('zoom-level').textContent = '100%';
   setView('none');
   dropZone.classList.remove('hidden');
 };
