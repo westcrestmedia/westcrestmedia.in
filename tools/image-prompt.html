@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Image Prompt Generator — Westcrest</title>
+<link rel="icon" type="image/svg+xml" href="../images/w_logo.svg" />
+<link rel="apple-touch-icon" href="../images/w_logo.svg" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
 
@@ -597,7 +599,7 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations — each with
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-5',
           max_tokens: 1500,
           system: systemPrompt,
           messages: [{ role: 'user', content: userMsg }]
