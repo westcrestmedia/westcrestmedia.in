@@ -7,6 +7,8 @@
 <meta name="description" content="Remove image backgrounds instantly with AI. Free, no upload, 100% browser-side. Works on people, products, logos and more. No green screen needed.">
 <meta name="keywords" content="background remover, remove background, ai background remover, free background remover, transparent background, png background remove">
 <meta name="theme-color" content="#C9A84C">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="shortcut icon" href="../images/favicon.png">
 <meta property="og:title" content="AI Background Remover — Free Tool | Westcrest Media">
 <meta property="og:description" content="Remove backgrounds from images instantly with AI. Free, private, browser-based.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1029,9 +1031,12 @@ window.setBrushMode = function(mode) {
 };
 
 // ─── BG SWAP ────────────────────────────────────────────────────────
+let currentBgColor = 'transparent'; // track selected bg color
+
 window.setBg = function(el, color) { setBgByValue(color); };
 
 function setBgByValue(color) {
+  currentBgColor = color;
   const wrap = document.getElementById('result-img-wrap');
   document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
   const m = document.querySelector(`.bg-swatch[data-bg="${CSS.escape(color)}"]`);
@@ -1048,7 +1053,32 @@ function setBgByValue(color) {
 // ─── DOWNLOAD ───────────────────────────────────────────────────────
 window.downloadResult = function() {
   if (!wCanvas) return;
-  wCanvas.toBlob(b => {
+
+  // If transparent, download as-is
+  if (currentBgColor === 'transparent') {
+    wCanvas.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = 'westcrest-removed-bg.png';
+      a.click();
+    }, 'image/png');
+    return;
+  }
+
+  // Bake background color into a new canvas, then download
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width  = wCanvas.width;
+  exportCanvas.height = wCanvas.height;
+  const ectx = exportCanvas.getContext('2d');
+
+  // Fill background color first
+  ectx.fillStyle = currentBgColor;
+  ectx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+  // Draw the transparent-bg image on top
+  ectx.drawImage(wCanvas, 0, 0);
+
+  exportCanvas.toBlob(b => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(b);
     a.download = 'westcrest-removed-bg.png';
@@ -1060,6 +1090,7 @@ window.downloadResult = function() {
 window.tryAnother = function() {
   resultBlob=null; wCanvas=null; wCtx=null; origData=null; origFile=null;
   brushMode=null; isPainting=false; isPanning=false; eventsReady=false;
+  currentBgColor = 'transparent';
   zoom=1; panX=0; panY=0; baseW=0; baseH=0;
   window.brushSize = 20;
   fileIn.value = '';
