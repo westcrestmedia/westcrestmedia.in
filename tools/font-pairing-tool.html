@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Font Pairing Tool — Westcrest</title>
+<link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
+<link rel="shortcut icon" href="../images/w_logo.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
 
@@ -431,13 +433,46 @@
     .layout { grid-template-columns: 1fr; }
     .preview-area { position: static; }
   }
+
+/* ── COMMON NAV ── */
+.wc-nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(8,8,8,0.97);
+  border-bottom: 1px solid rgba(200,169,110,0.22);
+  backdrop-filter: blur(14px);
+}
+.wc-nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: #f5f0e8;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 300; letter-spacing: 0.25em;
+}
+.wc-nav-logo img { height: 26px; width: auto; }
+.wc-nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(245,240,232,0.55); text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  transition: color .2s;
+}
+.wc-nav-back:hover { color: #c8a96e; }
+.wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 </style>
 </head>
 <body>
 
-<nav style="position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.95);border-bottom:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);">
-  <a href="index.html" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;letter-spacing:0.25em;font-weight:300;color:#f5f0e8;text-decoration:none;">WEST<span style="color:#c8a96e;">CREST</span></a>
-  <a href="index.html" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,240,232,0.55);text-decoration:none;display:flex;align-items:center;gap:6px;">← Back to Tools</a>
+<nav class="wc-nav">
+  <a href="https://westcrestmedia.github.io/" class="wc-nav-logo">
+    <img src="../images/w_logo.svg" alt="Westcrest Media">
+    Westcrest Media
+  </a>
+  <a href="https://westcrestmedia.github.io/" class="wc-nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Back to Home
+  </a>
 </nav>
 
 <div class="container" style="padding-top:5rem;">

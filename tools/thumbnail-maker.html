@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thumbnail Maker — Westcrest</title>
+<link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
+<link rel="shortcut icon" href="../images/w_logo.svg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Rajdhani:wght@600;700&display=swap');
 
@@ -345,9 +347,46 @@
 
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
+
+/* ── COMMON NAV ── */
+.wc-nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: rgba(8,8,8,0.97);
+  border-bottom: 1px solid rgba(200,169,110,0.22);
+  backdrop-filter: blur(14px);
+}
+.wc-nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: #f5f0e8;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 300; letter-spacing: 0.25em;
+}
+.wc-nav-logo img { height: 26px; width: auto; }
+.wc-nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(245,240,232,0.55); text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  transition: color .2s;
+}
+.wc-nav-back:hover { color: #c8a96e; }
+.wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 </style>
 </head>
 <body>
+<nav class="wc-nav">
+  <a href="https://westcrestmedia.github.io/" class="wc-nav-logo">
+    <img src="../images/w_logo.svg" alt="Westcrest Media">
+    Westcrest Media
+  </a>
+  <a href="https://westcrestmedia.github.io/" class="wc-nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Back to Home
+  </a>
+</nav>
 
 <!-- HEADER -->
 <div class="header">
