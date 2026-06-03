@@ -1,0 +1,7 @@
+# Westcrest Media — GitHub Pages Config
+title: Westcrest Media
+url: "https://westcrestmedia.in"
+permalink: pretty
+
+exclude:
+  - README.md
