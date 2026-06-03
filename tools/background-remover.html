@@ -4,13 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Background Remover — Free Online Tool | Westcrest Media</title>
+<meta name="description" content="Remove image backgrounds instantly in your browser. Free, private, no upload to servers.">
+<meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
 <link rel="shortcut icon" href="../images/w_logo.svg">
-<meta name="description" content="Remove image backgrounds instantly with AI. Free, no upload, 100% browser-side. Works on people, products, logos and more. No green screen needed.">
+<link rel="canonical" href="https://westcrestmedia.in/tools/background-remover">
+<!-- Hreflang for UK, US, Canada targeting -->
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/background-remover">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/background-remover">
+<meta property="og:title"       content="Background Remover — Westcrest Media">
+<meta property="og:description" content="Remove image backgrounds instantly in your browser. Free, private, no upload to servers.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Background Remover — Westcrest Media">
+<meta name="twitter:description" content="Remove image backgrounds instantly in your browser. Free, private, no upload to servers.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta name="keywords" content="background remover, remove background, ai background remover, free background remover, transparent background, png background remove">
 <meta name="theme-color" content="#C9A84C">
-<meta property="og:title" content="AI Background Remover — Free Tool | Westcrest Media">
-<meta property="og:description" content="Remove backgrounds from images instantly with AI. Free, private, browser-based.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -363,17 +383,65 @@ footer p { font-size:12px; color:var(--muted); }
 #cursor-canvas {
   pointer-events: none;
 }
+
+/* ── BOTTOM NAV BAR ── */
+.wc-bottom-nav {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(12,12,16,0.92);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 99px;
+  padding: 6px 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.wc-bottom-nav a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(220,210,195,0.7);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.wc-bottom-nav a:hover {
+  color: #c8a96e;
+  background: rgba(200,169,110,0.1);
+}
+.wc-bottom-nav .wc-bn-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(200,169,110,0.2);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+}
+
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="nav">
-  <a href="https://westcrestmedia.github.io/" class="nav-logo">
+  <a href="https://westcrestmedia.in/" class="nav-logo">
     <img src="../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
     Westcrest Media
   </a>
-  <a href="https://westcrestmedia.github.io/" class="nav-back">
+  <a href="https://westcrestmedia.in/" class="nav-back">
     <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     Back to Home
   </a>
@@ -577,12 +645,12 @@ footer p { font-size:12px; color:var(--muted); }
   </div>
 </section>
 
-<footer>
-  <p>© 2026 Westcrest Media — Free Tools</p>
-  <div class="footer-links">
-    <a href="https://westcrestmedia.github.io/">Home</a>
-    <a href="https://westcrestmedia.github.io/#tools">All Tools</a>
-    <a href="https://westcrestmedia.github.io/#contact">Contact</a>
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
   </div>
 </footer>
 

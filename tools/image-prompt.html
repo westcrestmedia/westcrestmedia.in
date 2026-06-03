@@ -4,7 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Image Prompt Generator — Westcrest</title>
-<link rel="icon" type="image/svg+xml" href="../images/w_logo.svg" />
+<meta name="description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
+<link rel="shortcut icon" href="../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-prompt">
+<!-- Hreflang for UK, US, Canada targeting -->
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-prompt">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-prompt">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-prompt">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-prompt">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-prompt">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/image-prompt">
+<meta property="og:title"       content="AI Image Prompt Generator — Westcrest Media">
+<meta property="og:description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="AI Image Prompt Generator — Westcrest Media">
+<meta name="twitter:description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <link rel="apple-touch-icon" href="../images/w_logo.svg" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
@@ -360,17 +384,65 @@
   @media (max-width: 560px) {
     .grid-2 { grid-template-columns: 1fr; }
   }
+
+/* ── BOTTOM NAV BAR ── */
+.wc-bottom-nav {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(12,12,16,0.92);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 99px;
+  padding: 6px 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.wc-bottom-nav a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(220,210,195,0.7);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.wc-bottom-nav a:hover {
+  color: #c8a96e;
+  background: rgba(200,169,110,0.1);
+}
+.wc-bottom-nav .wc-bn-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(200,169,110,0.2);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+}
+
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav style="position:fixed;top:0;left:0;right:0;z-index:999;background:#0a0a0f;border-bottom:1px solid #1e1e28;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;">
-  <a href="https://westcrestmedia.github.io/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+  <a href="https://westcrestmedia.in/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
     <img src="../images/w_logo.svg" alt="Westcrest" style="width:28px;height:28px;">
     <span style="font-family:'Syne',sans-serif;font-size:14px;color:#e8e4d8;letter-spacing:0.04em;">Westcrest Media</span>
   </a>
-  <a href="https://westcrestmedia.github.io/" style="font-family:'DM Mono',monospace;font-size:10px;color:#6e6b62;letter-spacing:0.15em;text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6e6b62'">‹ Back to Home</a>
+  <a href="https://westcrestmedia.in/" style="font-family:'DM Mono',monospace;font-size:10px;color:#6e6b62;letter-spacing:0.15em;text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6e6b62'">‹ Back to Home</a>
 </nav>
 
 <div class="container" style="padding-top:72px;">

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://westcrestmedia.github.io/sitemap.xml
+Sitemap: https://westcrestmedia.in/sitemap.xml

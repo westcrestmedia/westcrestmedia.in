@@ -4,8 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LUT Preview Tool — Westcrest</title>
+<meta name="description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
 <link rel="shortcut icon" href="../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/lut-preview">
+<!-- Hreflang for UK, US, Canada targeting -->
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/lut-preview">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/lut-preview">
+<meta property="og:title"       content="LUT Preview Tool — Westcrest Media">
+<meta property="og:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="LUT Preview Tool — Westcrest Media">
+<meta name="twitter:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
 
@@ -320,15 +343,114 @@ input[type=file]{display:none}
 .wc-nav-back:hover { color: #c8a96e; }
 .wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+
+/* ── BOTTOM NAV BAR ── */
+.wc-bottom-nav {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(12,12,16,0.92);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 99px;
+  padding: 6px 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.wc-bottom-nav a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(220,210,195,0.7);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.wc-bottom-nav a:hover {
+  color: #c8a96e;
+  background: rgba(200,169,110,0.1);
+}
+.wc-bottom-nav .wc-bn-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(200,169,110,0.2);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+}
+
+
+/* ── LUT PREVIEW MOBILE FIX ── */
+@media (max-width: 768px) {
+  html, body { overflow-x: hidden; }
+  .body {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .lut-list { max-height: 220px !important; overflow-y: auto !important; }
+  .canvas-area {
+    width: 100% !important;
+    min-height: 260px !important;
+    height: 55vw !important;
+    overflow: hidden !important;
+  }
+  .canvas-top { flex-wrap: wrap; gap: 6px; padding: 6px !important; }
+  .view-toggle { flex-wrap: wrap; }
+  .vt-btn { font-size: 9px !important; padding: 4px 8px !important; }
+  .preview-area { flex-direction: column !important; }
+  .preview-panel canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  #splitCanvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 55vw !important;
+  }
+  .header-right { flex-wrap: wrap; gap: 4px !important; }
+  .header-right .btn { font-size: 10px !important; padding: 5px 10px !important; }
+  .lut-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .wc-bottom-nav { bottom: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .canvas-area { height: 60vw !important; }
+  .lut-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .header { padding: 0 10px !important; }
+}
+
 </style>
 </head>
 <body>
 <nav class="wc-nav">
-  <a href="https://westcrestmedia.github.io/" class="wc-nav-logo">
+  <a href="https://westcrestmedia.in/" class="wc-nav-logo">
     <img src="../images/w_logo.svg" alt="Westcrest Media">
     Westcrest Media
   </a>
-  <a href="https://westcrestmedia.github.io/" class="wc-nav-back">
+  <a href="https://westcrestmedia.in/" class="wc-nav-back">
     <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     Back to Home
   </a>

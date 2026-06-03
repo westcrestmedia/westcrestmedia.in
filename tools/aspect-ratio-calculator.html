@@ -4,8 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aspect Ratio Calculator</title>
+<meta name="description" content="Calculate and convert aspect ratios for video, photo and social media formats instantly.">
+<meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
 <link rel="shortcut icon" href="../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<!-- Hreflang for UK, US, Canada targeting -->
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<meta property="og:title"       content="Aspect Ratio Calculator — Westcrest Media">
+<meta property="og:description" content="Calculate and convert aspect ratios for video, photo and social media formats instantly.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Aspect Ratio Calculator — Westcrest Media">
+<meta name="twitter:description" content="Calculate and convert aspect ratios for video, photo and social media formats instantly.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -622,15 +645,63 @@
 .wc-nav-back:hover { color: #c8a96e; }
 .wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+
+/* ── BOTTOM NAV BAR ── */
+.wc-bottom-nav {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(12,12,16,0.92);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 99px;
+  padding: 6px 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.wc-bottom-nav a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(220,210,195,0.7);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.wc-bottom-nav a:hover {
+  color: #c8a96e;
+  background: rgba(200,169,110,0.1);
+}
+.wc-bottom-nav .wc-bn-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(200,169,110,0.2);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+}
+
 </style>
 </head>
 <body>
 <nav class="wc-nav">
-  <a href="https://westcrestmedia.github.io/" class="wc-nav-logo">
+  <a href="https://westcrestmedia.in/" class="wc-nav-logo">
     <img src="../images/w_logo.svg" alt="Westcrest Media">
     Westcrest Media
   </a>
-  <a href="https://westcrestmedia.github.io/" class="wc-nav-back">
+  <a href="https://westcrestmedia.in/" class="wc-nav-back">
     <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     Back to Home
   </a>

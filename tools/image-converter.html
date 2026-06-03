@@ -4,9 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Image Format Converter — Free Online Tool | Westcrest Media</title>
+<meta name="description" content="Convert images between JPG, PNG, WEBP, AVIF and more formats instantly in your browser. Free & private.">
+<meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
 <link rel="shortcut icon" href="../images/w_logo.svg">
-<meta name="description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, BMP, TIFF, GIF, AVIF to any format. No upload, no limits, 100% browser-side.">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-converter">
+<!-- Hreflang for UK, US, Canada targeting -->
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-converter">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-converter">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-converter">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-converter">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-converter">
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/image-converter">
+<meta property="og:title"       content="Image Format Converter — Westcrest Media">
+<meta property="og:description" content="Convert images between JPG, PNG, WEBP, AVIF and more formats instantly in your browser. Free & private.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Image Format Converter — Westcrest Media">
+<meta name="twitter:description" content="Convert images between JPG, PNG, WEBP, AVIF and more formats instantly in your browser. Free & private.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta name="keywords" content="image converter, png to jpg, webp to png, heic to jpg, free image converter, online image converter">
 <meta name="theme-color" content="#C9A84C">
 <link rel="stylesheet" href="../css/style.css">
@@ -479,17 +501,65 @@
   .tool-footer a { color: var(--text-muted); text-decoration: none; font-size: 12px; }
   .tool-footer a:hover { color: var(--gold); }
   .footer-links { display: flex; gap: 1.5rem; }
+
+/* ── BOTTOM NAV BAR ── */
+.wc-bottom-nav {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(12,12,16,0.92);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 99px;
+  padding: 6px 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.wc-bottom-nav a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(220,210,195,0.7);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.wc-bottom-nav a:hover {
+  color: #c8a96e;
+  background: rgba(200,169,110,0.1);
+}
+.wc-bottom-nav .wc-bn-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(200,169,110,0.2);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+}
+
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="tool-nav">
-  <a href="https://westcrestmedia.github.io/" class="logo">
+  <a href="https://westcrestmedia.in/" class="logo">
     <img src="../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
     Westcrest Media
   </a>
-  <a href="https://westcrestmedia.github.io/" class="back-btn">
+  <a href="https://westcrestmedia.in/" class="back-btn">
     <svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Back to Home
   </a>
@@ -627,9 +697,9 @@
 <footer class="tool-footer">
   <p>© 2026 Westcrest Media — Free Tools</p>
   <div class="footer-links">
-    <a href="https://westcrestmedia.github.io/">Home</a>
-    <a href="https://westcrestmedia.github.io/#tools">All Tools</a>
-    <a href="https://westcrestmedia.github.io/#contact">Contact</a>
+    <a href="https://westcrestmedia.in/">Home</a>
+    <a href="https://westcrestmedia.in/#tools">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact">Contact</a>
   </div>
 </footer>
 
