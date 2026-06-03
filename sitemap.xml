@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
     <loc>https://westcrestmedia.in/</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/"/>
     <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/"/>
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/"/>
   </url>
+
   <url>
     <loc>https://westcrestmedia.in/tools/color-palette</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/color-palette"/>
@@ -22,19 +23,21 @@
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/color-palette"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/color-palette"/>
   </url>
+
   <url>
-    <loc>https://westcrestmedia.in/tools/font-pairing-tool</loc>
-    <lastmod>2026-05-28</lastmod>
+    <loc>https://westcrestmedia.in/tools/background-remover</loc>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
-    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
-    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
+    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/background-remover"/>
+    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/background-remover"/>
+    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/background-remover"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/background-remover"/>
   </url>
+
   <url>
     <loc>https://westcrestmedia.in/tools/image-converter</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-converter"/>
@@ -42,9 +45,21 @@
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-converter"/>
   </url>
+
+  <url>
+    <loc>https://westcrestmedia.in/tools/font-pairing-tool</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
+    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
+    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/font-pairing-tool"/>
+  </url>
+
   <url>
     <loc>https://westcrestmedia.in/tools/image-prompt</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-prompt"/>
@@ -52,29 +67,10 @@
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-prompt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-prompt"/>
   </url>
-  <url>
-    <loc>https://westcrestmedia.in/tools/lut-preview</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/lut-preview"/>
-    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/lut-preview"/>
-    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/lut-preview"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/lut-preview"/>
-  </url>
-  <url>
-    <loc>https://westcrestmedia.in/tools/thumbnail-maker</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
-    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
-    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
-  </url>
+
   <url>
     <loc>https://westcrestmedia.in/tools/video-prompt</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/video-prompt"/>
@@ -82,25 +78,38 @@
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/video-prompt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/video-prompt"/>
   </url>
+
+  <url>
+    <loc>https://westcrestmedia.in/tools/lut-preview</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/lut-preview"/>
+    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/lut-preview"/>
+    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/lut-preview"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/lut-preview"/>
+  </url>
+
+  <url>
+    <loc>https://westcrestmedia.in/tools/thumbnail-maker</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
+    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
+    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/thumbnail-maker"/>
+  </url>
+
   <url>
     <loc>https://westcrestmedia.in/tools/aspect-ratio-calculator</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/aspect-ratio-calculator"/>
-  </url>
-  <url>
-    <loc>https://westcrestmedia.in/tools/background-remover</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/background-remover"/>
-    <xhtml:link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/background-remover"/>
-    <xhtml:link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/background-remover"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/background-remover"/>
   </url>
 
 </urlset>
