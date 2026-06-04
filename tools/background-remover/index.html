@@ -359,6 +359,18 @@ footer p { font-size:12px; color:var(--muted); }
 .brush-size-val { font-size:11px; color:var(--muted); min-width:28px; text-align:right; }
 .brush-hint { font-size:11px; color:var(--muted); opacity:.6; width:100%; padding-top:2px; }
 
+/* ── UNDO/REDO BUTTONS ── */
+.undo-group { display:flex; gap:5px; }
+.undo-btn {
+  display:flex; align-items:center; gap:5px;
+  background:var(--dark4); border:1.5px solid var(--faint);
+  color:var(--muted); font-family:'DM Sans',sans-serif;
+  font-size:12px; font-weight:600; padding:7px 12px;
+  border-radius:var(--radius-sm); cursor:pointer; transition:all .2s;
+}
+.undo-btn:hover:not(:disabled) { border-color:var(--gold-border); color:var(--text); }
+.undo-btn:disabled { opacity:.3; cursor:not-allowed; }
+
 /* ── ZOOM CONTROLS ── */
 .zoom-group { display:flex; align-items:center; gap:6px; }
 .zoom-btn {
@@ -579,7 +591,11 @@ footer p { font-size:12px; color:var(--muted); }
       <button class="zoom-btn" onclick="adjustZoom(+0.25)">+</button>
       <button class="zoom-btn" onclick="resetZoom()" style="width:auto;padding:0 8px;font-size:10px;">Fit</button>
     </div>
-    <div class="brush-hint">💡 Select mode → paint &nbsp;|&nbsp; Scroll to zoom &nbsp;|&nbsp; Space+drag to pan</div>
+    <div class="undo-group">
+      <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
+      <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
+    </div>
+    <div class="brush-hint">💡 Select mode → paint &nbsp;|&nbsp; Ctrl+Z undo &nbsp;|&nbsp; Scroll to zoom &nbsp;|&nbsp; Space+drag to pan</div>
   </div>
 
   <!-- ACTION BUTTONS -->
@@ -708,6 +724,64 @@ let origFile    = null;
 let brushMode   = null;   // 'erase' | 'restore' | null
 let isPainting  = false;
 window.brushSize = 20;
+
+// ─── UNDO / REDO ────────────────────────────────────────────────────
+const MAX_UNDO = 30;
+let undoStack = [];
+let redoStack = [];
+
+function saveSnapshot() {
+  // Save current wCanvas state before a stroke begins
+  const snap = document.createElement('canvas');
+  snap.width  = wCanvas.width;
+  snap.height = wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas, 0, 0);
+  undoStack.push(snap);
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+  redoStack = []; // new action clears redo
+  updateUndoUI();
+}
+
+function updateUndoUI() {
+  const u = document.getElementById('btn-undo');
+  const r = document.getElementById('btn-redo');
+  if (u) u.disabled = undoStack.length === 0;
+  if (r) r.disabled = redoStack.length === 0;
+}
+
+window.undoStroke = function() {
+  if (!undoStack.length) return;
+  // Save current to redo
+  const snap = document.createElement('canvas');
+  snap.width  = wCanvas.width;
+  snap.height = wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas, 0, 0);
+  redoStack.push(snap);
+  // Restore last undo
+  const prev = undoStack.pop();
+  wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
+  wCtx.drawImage(prev, 0, 0);
+  dctx.clearRect(0, 0, dc.width, dc.height);
+  dctx.drawImage(wCanvas, 0, 0, dc.width, dc.height);
+  wCanvas.toBlob(b => { resultBlob = b; }, 'image/png');
+  updateUndoUI();
+};
+
+window.redoStroke = function() {
+  if (!redoStack.length) return;
+  const snap = document.createElement('canvas');
+  snap.width  = wCanvas.width;
+  snap.height = wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas, 0, 0);
+  undoStack.push(snap);
+  const next = redoStack.pop();
+  wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
+  wCtx.drawImage(next, 0, 0);
+  dctx.clearRect(0, 0, dc.width, dc.height);
+  dctx.drawImage(wCanvas, 0, 0, dc.width, dc.height);
+  wCanvas.toBlob(b => { resultBlob = b; }, 'image/png');
+  updateUndoUI();
+};
 
 // ─── ZOOM / PAN STATE ───────────────────────────────────────────────
 let zoom        = 1;
@@ -892,7 +966,11 @@ function attachEvents() {
   eventsReady = true;
 
   // Space key for pan mode
-  window.addEventListener('keydown', e => { if (e.code==='Space') { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); } });
+  window.addEventListener('keydown', e => {
+    if (e.code==='Space') { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); }
+    if ((e.ctrlKey||e.metaKey) && e.code==='KeyZ' && !e.shiftKey) { e.preventDefault(); undoStroke(); }
+    if ((e.ctrlKey||e.metaKey) && (e.code==='KeyY' || (e.code==='KeyZ' && e.shiftKey))) { e.preventDefault(); redoStroke(); }
+  });
   window.addEventListener('keyup',   e => { if (e.code==='Space') { spaceDown=false; viewport.style.cursor=''; updateViewportCursor(); } });
 
   // Scroll to zoom (on viewport)
@@ -931,6 +1009,7 @@ function attachEvents() {
     const pos = canvasPos(e);
     if (!pos) return;
     isPainting = true;
+    saveSnapshot(); // save before stroke
     applyBrush(pos.x, pos.y);
   });
 
@@ -978,6 +1057,7 @@ function attachEvents() {
       return;
     }
     isPainting = true;
+    saveSnapshot(); // save before touch stroke
     const pos = touchPos(e.touches[0]);
     if (pos) applyBrush(pos.x, pos.y);
   }, { passive: false });
@@ -1193,6 +1273,7 @@ window.tryAnother = function() {
   currentBgColor = 'transparent';
   zoom=1; panX=0; panY=0; baseW=0; baseH=0;
   window.brushSize = 20;
+  undoStack = []; redoStack = []; updateUndoUI();
   fileIn.value = '';
   document.getElementById('orig-img').src = '';
   dctx.clearRect(0, 0, dc.width, dc.height);
