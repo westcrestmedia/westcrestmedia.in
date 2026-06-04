@@ -317,8 +317,158 @@ footer p { font-size:12px; color:var(--muted); }
 .footer-links a { color:var(--muted); text-decoration:none; font-size:12px; transition:color .2s; }
 .footer-links a:hover { color:var(--gold); }
 
-/* ── SPINNER ── */
-@keyframes spin { to{transform:rotate(360deg)} }
+/* ── BATCH QUEUE ── */
+.batch-queue {
+  background: var(--dark2);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+.batch-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;
+}
+.batch-title { font-size: 14px; font-weight: 700; margin-right: 8px; }
+.batch-count { font-size: 12px; color: var(--gold); font-weight: 600; background: var(--gold-dim); border: 1px solid var(--gold-border); padding: 2px 10px; border-radius: 99px; }
+.batch-actions-top { display: flex; gap: 8px; align-items: center; }
+.btn-download-zip {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--gold); color: #000;
+  border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700; padding: 9px 20px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: opacity .2s, transform .15s;
+}
+.btn-download-zip:hover { opacity: .85; transform: translateY(-1px); }
+.batch-progress-bar {
+  height: 3px; background: var(--dark5);
+  border-radius: 99px; overflow: hidden; margin-bottom: 1.2rem;
+}
+.batch-progress-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 99px; width: 0%;
+  transition: width .4s ease;
+}
+.batch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.batch-item {
+  background: var(--dark3);
+  border: 1px solid var(--faint);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.batch-item.done { border-color: var(--gold-border); }
+.batch-item.error { border-color: rgba(220,80,80,.4); }
+.batch-item-thumb {
+  width: 100%; aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+  background-image:
+    linear-gradient(45deg,#2a2a2a 25%,transparent 25%),
+    linear-gradient(-45deg,#2a2a2a 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#2a2a2a 75%),
+    linear-gradient(-45deg,transparent 75%,#2a2a2a 75%);
+  background-size: 12px 12px;
+  background-position: 0 0,0 6px,6px -6px,-6px 0;
+  background-color: #1a1a1a;
+}
+.batch-item-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.batch-item-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: rgba(17,17,24,.7);
+  gap: 8px;
+}
+.batch-item-overlay.hidden { display: none; }
+.batch-spin {
+  width: 28px; height: 28px;
+  border: 2.5px solid var(--dark5);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+.batch-item-label {
+  font-size: 10px; color: var(--muted); letter-spacing: .04em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 90%; text-align: center;
+}
+.batch-item-status {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.batch-item-status.pending  { color: var(--muted); }
+.batch-item-status.running  { color: var(--gold); }
+.batch-item-status.done     { color: #6ddb6d; }
+.batch-item-status.error    { color: #e56d6d; }
+.batch-item-footer {
+  padding: 8px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6px;
+}
+.batch-item-name {
+  font-size: 10px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1;
+}
+.batch-dl-btn {
+  display: flex; align-items: center; gap: 4px;
+  background: transparent; border: 1px solid var(--gold-border);
+  color: var(--gold); font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 5px; cursor: pointer;
+  white-space: nowrap; transition: background .15s;
+  flex-shrink: 0;
+}
+.batch-dl-btn:hover { background: var(--gold-dim); }
+.batch-dl-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ── OTHER TOOLS SECTION ── */
+.other-tools-section {
+  max-width: 1100px; margin: 0 auto; padding: 0 1.25rem 4rem;
+}
+.other-tools-header { margin-bottom: 1.5rem; }
+.other-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.tool-card {
+  background: var(--dark2);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  text-decoration: none;
+  color: var(--text);
+  display: flex; flex-direction: column; gap: .7rem;
+  transition: border-color .2s, transform .2s, background .2s;
+  cursor: pointer;
+}
+.tool-card:hover { border-color: var(--gold); background: rgba(200,169,110,.04); transform: translateY(-2px); }
+.tool-card-icon {
+  width: 42px; height: 42px;
+  background: var(--gold-dim);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.tool-card-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold);
+}
+.tool-card h3 { font-size: 15px; font-weight: 700; margin: 0; }
+.tool-card p { font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 300; margin: 0; }
+.tool-card-arrow {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--gold); font-weight: 600;
+  letter-spacing: .05em; margin-top: auto;
+}
+
+
 
 /* ── BRUSH TOOLBAR ── */
 .brush-toolbar {
@@ -499,9 +649,9 @@ footer p { font-size:12px; color:var(--muted); }
   <div class="pills">
     <span class="pill">No Upload</span>
     <span class="pill">No Signup</span>
-    <span class="pill">PNG Output</span>
+    <span class="pill">Batch Processing</span>
     <span class="pill">Privacy First</span>
-    <span class="pill">HD Quality</span>
+    <span class="pill">ZIP Download</span>
   </div>
 </section>
 
@@ -513,17 +663,18 @@ footer p { font-size:12px; color:var(--muted); }
     <div class="upload-icon">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </div>
-    <p class="drop-title">Drop your image here</p>
-    <p class="drop-sub">JPG, PNG, WEBP, AVIF — any format</p>
-    <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Image</button>
+    <p class="drop-title">Drop your images here</p>
+    <p class="drop-sub">Select up to 20 images at once — JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF &amp; more</p>
+    <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
     <div class="format-tags" style="margin-top:1rem;">
       <span class="format-tag">PEOPLE</span>
       <span class="format-tag">PRODUCTS</span>
       <span class="format-tag">LOGOS</span>
       <span class="format-tag">ANIMALS</span>
       <span class="format-tag">OBJECTS</span>
+      <span class="format-tag">BATCH</span>
     </div>
-    <input type="file" id="file-in" accept="image/*">
+    <input type="file" id="file-in" accept="image/*" multiple>
   </div>
 
   <!-- PROCESSING -->
@@ -538,6 +689,25 @@ footer p { font-size:12px; color:var(--muted); }
     <p class="proc-title" id="proc-title">Loading AI model…</p>
     <p class="proc-sub" id="proc-sub">First run downloads ~80MB model. Cached after this — subsequent runs are instant.</p>
     <p class="proc-note">Processing happens 100% in your browser — no upload</p>
+  </div>
+
+  <!-- BATCH QUEUE -->
+  <div class="batch-queue" id="batch-queue" style="display:none;">
+    <div class="batch-header">
+      <div>
+        <span class="batch-title" id="batch-title">Processing Images</span>
+        <span class="batch-count" id="batch-count">0 / 0</span>
+      </div>
+      <div class="batch-actions-top">
+        <button class="btn-download-zip" id="btn-download-zip" style="display:none;" onclick="downloadAllZip()">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Download All (ZIP)
+        </button>
+        <button class="btn-secondary" onclick="resetAll()" style="font-size:12px;padding:7px 16px;">+ Add More</button>
+      </div>
+    </div>
+    <div class="batch-progress-bar"><div class="batch-progress-fill" id="batch-progress-fill"></div></div>
+    <div class="batch-grid" id="batch-grid"></div>
   </div>
 
   <!-- RESULT -->
@@ -693,6 +863,44 @@ footer p { font-size:12px; color:var(--muted); }
   </div>
 </section>
 
+<!-- OTHER TOOLS -->
+<section class="other-tools-section">
+  <div class="other-tools-header">
+    <p class="sec-tag">More Free Tools</p>
+    <h2 class="sec-heading">Explore <em>All Tools</em></h2>
+  </div>
+  <div class="other-tools-grid">
+    <a href="https://westcrestmedia.in/tools/image-converter/" class="tool-card">
+      <div class="tool-card-icon">🔄</div>
+      <span class="tool-card-tag">Image Tool</span>
+      <h3>Image Converter</h3>
+      <p>Convert images between JPG, PNG, WEBP, AVIF, BMP and more — instantly in your browser. Batch convert multiple files at once.</p>
+      <span class="tool-card-arrow">Try Now →</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/lut-preview/" class="tool-card">
+      <div class="tool-card-icon">✨</div>
+      <span class="tool-card-tag">AI Tool</span>
+      <h3>Image Prompt Generator</h3>
+      <p>Generate detailed AI image prompts for Midjourney, DALL·E, Stable Diffusion and more. Describe your vision, get the perfect prompt.</p>
+      <span class="tool-card-arrow">Try Now →</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="tool-card">
+      <div class="tool-card-icon">⚡</div>
+      <span class="tool-card-tag">Image Tool</span>
+      <h3>Image Compressor</h3>
+      <p>Compress and optimise images without losing quality. Reduce file sizes by up to 80% — perfect for web, email and social media.</p>
+      <span class="tool-card-arrow">Try Now →</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" class="tool-card">
+      <div class="tool-card-icon">📐</div>
+      <span class="tool-card-tag">Image Tool</span>
+      <h3>Image Resizer</h3>
+      <p>Resize images to any custom dimensions or preset sizes for social media platforms. Maintain aspect ratio or crop to fit.</p>
+      <span class="tool-card-arrow">Try Now →</span>
+    </a>
+  </div>
+</section>
+
 <footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
   <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
   <div style="display:flex;gap:1.5rem;">
@@ -714,6 +922,11 @@ async function loadLib() {
   if (!removeBackground) throw new Error('removeBackground not found');
   return removeBackground;
 }
+
+// ─── BATCH STATE ────────────────────────────────────────────────────
+let batchFiles   = [];   // Array of { file, status, resultBlob, outputMime, outputExt, itemEl }
+let batchDone    = 0;
+let isBatchMode  = false;
 
 // ─── STATE ──────────────────────────────────────────────────────────
 let resultBlob  = null;
@@ -805,15 +1018,250 @@ const cctx      = cc.getContext('2d');
 const fileIn   = document.getElementById('file-in');
 const dropZone = document.getElementById('drop-zone');
 
-fileIn.addEventListener('change', e => { if (e.target.files[0]) start(e.target.files[0]); });
+fileIn.addEventListener('change', e => {
+  const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  if (files.length === 1) {
+    startSingle(files[0]);
+  } else {
+    startBatch(files);
+  }
+});
+
 dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
   e.preventDefault(); dropZone.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) start(f);
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  if (files.length === 1) {
+    startSingle(files[0]);
+  } else {
+    startBatch(files);
+  }
 });
 dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
+
+// ─── OUTPUT FORMAT HELPER ───────────────────────────────────────────
+function getOutputFormat(file) {
+  const type = file.type.toLowerCase();
+  // If input is jpeg/jpg → output jpeg, otherwise PNG for everything else
+  if (type === 'image/jpeg' || type === 'image/jpg') {
+    return { mime: 'image/jpeg', ext: 'jpg' };
+  }
+  return { mime: 'image/png', ext: 'png' };
+}
+
+// ─── BATCH MODE ─────────────────────────────────────────────────────
+async function startBatch(files) {
+  isBatchMode = true;
+  batchFiles = files.map(f => ({ file: f, status: 'pending', resultBlob: null, outputMime: null, outputExt: null, itemEl: null }));
+  batchDone = 0;
+
+  dropZone.classList.add('hidden');
+  const batchQ = document.getElementById('batch-queue');
+  batchQ.style.display = 'block';
+  document.getElementById('batch-title').textContent = 'Processing Images';
+  document.getElementById('batch-count').textContent = `0 / ${batchFiles.length}`;
+  document.getElementById('batch-progress-fill').style.width = '0%';
+  document.getElementById('btn-download-zip').style.display = 'none';
+
+  // Build grid items
+  const grid = document.getElementById('batch-grid');
+  grid.innerHTML = '';
+  batchFiles.forEach((item, idx) => {
+    const el = buildBatchItem(item.file, idx);
+    item.itemEl = el;
+    grid.appendChild(el);
+  });
+
+  // Load lib first (show a loading state on first item)
+  try {
+    const titleEl = document.getElementById('proc-title');
+    const subEl   = document.getElementById('proc-sub');
+    const pctEl   = document.getElementById('proc-pct');
+
+    // Show a brief loading state overlay only if first load
+    let rbFn;
+    try { rbFn = await loadLib(); } catch(e) {
+      document.getElementById('proc-state').classList.add('active');
+      titleEl.textContent = 'Loading AI model…';
+      subEl.textContent   = 'First run downloads ~80 MB model — cached after this.';
+      rbFn = await loadLib();
+      document.getElementById('proc-state').classList.remove('active');
+    }
+
+    // Process queue one by one
+    for (let idx = 0; idx < batchFiles.length; idx++) {
+      await processBatchItem(idx, rbFn);
+    }
+
+    // All done
+    document.getElementById('batch-title').textContent = 'All Done!';
+    document.getElementById('btn-download-zip').style.display = 'flex';
+
+  } catch(err) {
+    console.error(err);
+    alert('Batch processing error: ' + (err.message||'Unknown'));
+  }
+}
+
+function buildBatchItem(file, idx) {
+  const wrap = document.createElement('div');
+  wrap.className = 'batch-item';
+  wrap.id = `batch-item-${idx}`;
+
+  const previewUrl = URL.createObjectURL(file);
+  const shortName  = file.name.length > 18 ? file.name.slice(0, 15) + '…' : file.name;
+
+  wrap.innerHTML = `
+    <div class="batch-item-thumb">
+      <img src="${previewUrl}" alt="" id="batch-thumb-${idx}">
+      <div class="batch-item-overlay" id="batch-overlay-${idx}">
+        <div class="batch-spin"></div>
+        <span class="batch-item-label">Waiting…</span>
+      </div>
+    </div>
+    <div class="batch-item-footer">
+      <span class="batch-item-name" title="${file.name}">${shortName}</span>
+      <button class="batch-dl-btn" id="batch-dl-${idx}" disabled onclick="downloadBatchItem(${idx})">↓</button>
+    </div>
+  `;
+  return wrap;
+}
+
+async function processBatchItem(idx, rbFn) {
+  const item   = batchFiles[idx];
+  const overlay = document.getElementById(`batch-overlay-${idx}`);
+  const wrap   = document.getElementById(`batch-item-${idx}`);
+  const dlBtn  = document.getElementById(`batch-dl-${idx}`);
+
+  // Mark running
+  item.status = 'running';
+  overlay.innerHTML = `<div class="batch-spin"></div><span class="batch-item-label">Processing…</span>`;
+
+  const fmt = getOutputFormat(item.file);
+  item.outputMime = fmt.mime;
+  item.outputExt  = fmt.ext;
+
+  try {
+    const blob = await rbFn(item.file, {
+      publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
+      model: 'medium',
+      output: { format: 'image/png', quality: 1 },
+    });
+
+    // If output should be jpeg, convert from the transparent PNG
+    let finalBlob = blob;
+    if (fmt.mime === 'image/jpeg') {
+      finalBlob = await convertBlobToJpeg(blob);
+    }
+
+    item.resultBlob = finalBlob;
+    item.status = 'done';
+    batchDone++;
+
+    // Update thumbnail to result
+    const resultUrl = URL.createObjectURL(finalBlob);
+    const thumbImg  = document.getElementById(`batch-thumb-${idx}`);
+    thumbImg.src = resultUrl;
+    overlay.classList.add('hidden');
+    wrap.classList.add('done');
+    dlBtn.disabled = false;
+
+  } catch(err) {
+    item.status = 'error';
+    overlay.innerHTML = `<span style="font-size:20px;">⚠️</span><span class="batch-item-label" style="color:#e57070;">Failed</span>`;
+    wrap.classList.add('error');
+  }
+
+  // Update progress
+  const total   = batchFiles.length;
+  const counted = batchFiles.filter(f => f.status === 'done' || f.status === 'error').length;
+  document.getElementById('batch-count').textContent = `${counted} / ${total}`;
+  document.getElementById('batch-progress-fill').style.width = `${Math.round(counted/total*100)}%`;
+}
+
+async function convertBlobToJpeg(pngBlob) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width  = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      // White background for JPEG (no transparency)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0);
+      c.toBlob(b => resolve(b), 'image/jpeg', 0.95);
+    };
+    img.src = URL.createObjectURL(pngBlob);
+  });
+}
+
+window.downloadBatchItem = function(idx) {
+  const item = batchFiles[idx];
+  if (!item || !item.resultBlob) return;
+  const base = item.file.name.replace(/\.[^.]+$/, '');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(item.resultBlob);
+  a.download = `${base}-bg-removed.${item.outputExt}`;
+  a.click();
+};
+
+window.downloadAllZip = async function() {
+  const btn = document.getElementById('btn-download-zip');
+  btn.textContent = 'Preparing ZIP…';
+  btn.disabled = true;
+
+  try {
+    // Load JSZip from CDN
+    if (!window.JSZip) {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+    const zip = new JSZip();
+    const done = batchFiles.filter(f => f.status === 'done' && f.resultBlob);
+    for (const item of done) {
+      const base = item.file.name.replace(/\.[^.]+$/, '');
+      const filename = `${base}-bg-removed.${item.outputExt}`;
+      const arrBuf = await item.resultBlob.arrayBuffer();
+      zip.file(filename, arrBuf);
+    }
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = 'westcrest-bg-removed.zip';
+    a.click();
+  } catch(err) {
+    alert('ZIP error: ' + err.message);
+  }
+
+  btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Download All (ZIP)`;
+  btn.disabled = false;
+};
+
+window.resetAll = function() {
+  isBatchMode = false;
+  batchFiles = []; batchDone = 0;
+  document.getElementById('batch-queue').style.display = 'none';
+  document.getElementById('batch-grid').innerHTML = '';
+  fileIn.value = '';
+  dropZone.classList.remove('hidden');
+  // also reset single-image state if needed
+  tryAnother();
+};
+
+// ─── SINGLE IMAGE MODE ──────────────────────────────────────────────
+async function startSingle(file) {
+  isBatchMode = false;
+  start(file);
+}
 
 // ─── MAIN FLOW ──────────────────────────────────────────────────────
 async function start(file) {
@@ -842,10 +1290,12 @@ async function start(file) {
       output: { format: 'image/png', quality: 1 },
     });
 
+    // Track output format for single-image download
+    window._singleOutputFmt = getOutputFormat(file);
+
     await initEditor(blob);
     setView('result');
     setBgByValue('transparent');
-    // Wait one frame so result-area is visible and has real clientWidth
     requestAnimationFrame(() => {
       computeBaseSize();
       renderAll();
@@ -1233,15 +1683,16 @@ function setBgByValue(color) {
 // ─── DOWNLOAD ───────────────────────────────────────────────────────
 window.downloadResult = function() {
   if (!wCanvas) return;
+  const fmt = window._singleOutputFmt || { mime: 'image/png', ext: 'png' };
+  const baseName = origFile ? origFile.name.replace(/\.[^.]+$/, '') : 'westcrest-removed-bg';
 
-  // If transparent, download as-is
-  if (currentBgColor === 'transparent') {
+  if (currentBgColor === 'transparent' || fmt.mime === 'image/png') {
     wCanvas.toBlob(b => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(b);
-      a.download = 'westcrest-removed-bg.png';
+      a.download = `${baseName}-bg-removed.${fmt.ext}`;
       a.click();
-    }, 'image/png');
+    }, fmt.mime === 'image/jpeg' ? 'image/jpeg' : 'image/png', 0.95);
     return;
   }
 
@@ -1251,19 +1702,22 @@ window.downloadResult = function() {
   exportCanvas.height = wCanvas.height;
   const ectx = exportCanvas.getContext('2d');
 
-  // Fill background color first
-  ectx.fillStyle = currentBgColor;
-  ectx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+  if (fmt.mime !== 'image/png') {
+    ectx.fillStyle = currentBgColor || '#ffffff';
+    ectx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+  } else if (currentBgColor !== 'transparent') {
+    ectx.fillStyle = currentBgColor;
+    ectx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+  }
 
-  // Draw the transparent-bg image on top
   ectx.drawImage(wCanvas, 0, 0);
 
   exportCanvas.toBlob(b => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(b);
-    a.download = 'westcrest-removed-bg.png';
+    a.download = `${baseName}-bg-removed.${fmt.ext}`;
     a.click();
-  }, 'image/png');
+  }, fmt.mime, 0.95);
 };
 
 // ─── TRY ANOTHER ────────────────────────────────────────────────────
