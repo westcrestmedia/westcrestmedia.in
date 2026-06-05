@@ -111,6 +111,28 @@
     .lenis.lenis-stopped { overflow: hidden; }
     .lenis.lenis-scrolling iframe { pointer-events: none; }
 
+    /* ─── HERO TOOL PILLS ─── */
+    .hero-tool-pills {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center;
+      margin-top: 32px;
+      opacity: 0; animation: fadeInUp 1s 2.8s ease forwards;
+    }
+    .hero-pill {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--white-dim);
+      border: 1px solid rgba(200,169,110,0.2);
+      background: rgba(200,169,110,0.05);
+      padding: 7px 14px;
+      border-radius: 2px;
+      transition: color 0.3s, border-color 0.3s, background 0.3s;
+      cursor: default;
+    }
+    .hero-pill:hover { color: var(--gold); border-color: rgba(200,169,110,0.5); background: rgba(200,169,110,0.1); }
+    @media(max-width:600px) { .hero-pill { font-size: 0.58rem; padding: 6px 10px; } }
+
     /* ─── HERO CREATOR TAGLINE ─── */
     .hero-creator-tagline {
       display: flex;
@@ -1115,17 +1137,20 @@
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
     <div class="hero-content">
-      <div class="hero-tag">Premium Motion Studio · Est. 2020</div>
-      <h1 class="hero-title">We Craft<br /><em>Visual</em><br />Masterpieces</h1>
-      <div class="hero-creator-tagline">
-        <span class="creator-line-left"></span>
-        <span class="creator-tagline-text">Built by a Creator, for Creators</span>
-        <span class="creator-line-right"></span>
-      </div>
-      <p class="hero-sub">Free browser tools · Professional editing · Plugins & LUTs<br />Serving USA, UK, Canada & Beyond</p>
+      <div class="hero-tag">Westcrest Media · Free Tools for Creators</div>
+      <h1 class="hero-title"><em>Built</em> by a Creator,<br />for <em>Creators</em></h1>
+      <p class="hero-sub">10 free browser-based tools for video editors, designers & content creators<br />No signup. No limits. Just open and use.</p>
       <div class="hero-actions">
         <a href="#tools" class="btn-primary">Explore Free Tools</a>
-        <a href="#contact" class="btn-ghost">Start a Project</a>
+        <a href="#contact" class="btn-ghost">Hire Us</a>
+      </div>
+      <div class="hero-tool-pills">
+        <span class="hero-pill">🖼️ Image Converter</span>
+        <span class="hero-pill">✂️ BG Remover</span>
+        <span class="hero-pill">🎬 Thumbnail Maker</span>
+        <span class="hero-pill">🎨 Color Palette</span>
+        <span class="hero-pill">🎥 AI Prompts</span>
+        <span class="hero-pill">+ 5 More →</span>
       </div>
     </div>
     <div class="hero-scroll">
@@ -1171,81 +1196,6 @@
       </div>
     </div>
   </div>
-
-  <!-- SERVICES -->
-  <section id="services" class="padded">
-    <div class="container">
-      <div class="section-header reveal">
-        <div class="section-index" style="display:none">01 — Services</div>
-        <h2 class="section-title">What We <em>Create</em></h2>
-        <p style="color:var(--white-dim);font-size:0.85rem;letter-spacing:0.08em;text-align:center;margin-top:8px;">Professional video editing & motion graphics services for creators and brands in USA, UK, Canada & worldwide</p>
-        <p class="section-desc">From concept to final cut, we deliver world-class visual content that captivates, converts, and endures.</p>
-      </div>
-      <div class="services-grid">
-        <div class="service-card reveal reveal-delay-1">
-          <div class="service-icon">🎬</div>
-          <h3 class="service-name">Video Editing</h3>
-          <p class="service-desc">Professional editing for commercials, short films, YouTube channels, social reels, and corporate content. Every cut is deliberate, every moment crafted.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-        <div class="service-card reveal reveal-delay-2">
-          <div class="service-icon">✦</div>
-          <h3 class="service-name">Motion Graphics</h3>
-          <p class="service-desc">Animated logos, kinetic typography, explainer animations, and broadcast-ready graphics. We turn your ideas into fluid, breathtaking motion.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-        <div class="service-card reveal reveal-delay-3">
-          <div class="service-icon">🎨</div>
-          <h3 class="service-name">Color Grading</h3>
-          <p class="service-desc">Cinematic color grading and LUT creation to give your footage a signature look. DaVinci Resolve specialist with a trained colorist's eye.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-        <div class="service-card reveal reveal-delay-1">
-          <div class="service-icon">⚡</div>
-          <h3 class="service-name">After Effects VFX</h3>
-          <p class="service-desc">Visual effects, compositing, and dynamic animations built in After Effects. From subtle enhancements to full cinematic VFX sequences.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-        <div class="service-card reveal reveal-delay-2">
-          <div class="service-icon">🔊</div>
-          <h3 class="service-name">Sound Design</h3>
-          <p class="service-desc">Audio mixing, SFX layering, and music synchronization to give your video the emotional depth it deserves. Sound is half the experience.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-        <div class="service-card reveal reveal-delay-3">
-          <div class="service-icon">📦</div>
-          <h3 class="service-name">Brand Video Packages</h3>
-          <p class="service-desc">Complete video branding suites including intro/outro animations, lower thirds, overlays, and reusable template kits for your brand identity.</p>
-          <a href="#contact" class="service-link">Enquire Now</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <div class="stats-band">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item reveal">
-          <div class="stat-num" data-target="350">0</div>
-          <div class="stat-label">Projects Delivered</div>
-        </div>
-        <div class="stat-item reveal reveal-delay-1">
-          <div class="stat-num" data-target="120">0</div>
-          <div class="stat-label">Happy Clients</div>
-        </div>
-        <div class="stat-item reveal reveal-delay-2">
-          <div class="stat-num" data-target="4">0</div>
-          <div class="stat-label">Years of Excellence</div>
-        </div>
-        <div class="stat-item reveal reveal-delay-3">
-          <div class="stat-num" data-target="98">0</div>
-          <div class="stat-label">Client Satisfaction %</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- TOOLS — Main Feature Section -->
   <section id="tools" class="padded" style="background: var(--bg2);">
     <div class="container">
@@ -1363,6 +1313,30 @@
     </div>
   </section>
 
+  <!-- STATS -->
+  <div class="stats-band">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal">
+          <div class="stat-num" data-target="350">0</div>
+          <div class="stat-label">Projects Delivered</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-1">
+          <div class="stat-num" data-target="120">0</div>
+          <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-2">
+          <div class="stat-num" data-target="4">0</div>
+          <div class="stat-label">Years of Excellence</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-3">
+          <div class="stat-num" data-target="98">0</div>
+          <div class="stat-label">Client Satisfaction %</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PORTFOLIO — Mini -->
   <section id="portfolio" class="padded">
     <div class="container">
@@ -1436,6 +1410,55 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- SERVICES — Secondary Section -->
+  <section id="services" class="padded" style="background: var(--bg3);">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-index" style="display:none">— Services</div>
+        <h2 class="section-title" style="font-size:clamp(2rem,4vw,3.2rem);">Professional <em>Services</em></h2>
+        <p style="color:var(--white-dim);font-size:0.82rem;letter-spacing:0.08em;text-align:center;margin-top:8px;">Video editing & motion graphics — USA, UK, Canada & worldwide</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">🎬</div>
+          <h3 class="service-name">Video Editing</h3>
+          <p class="service-desc">Professional editing for commercials, short films, YouTube channels, social reels, and corporate content. Every cut is deliberate, every moment crafted.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">✦</div>
+          <h3 class="service-name">Motion Graphics</h3>
+          <p class="service-desc">Animated logos, kinetic typography, explainer animations, and broadcast-ready graphics. We turn your ideas into fluid, breathtaking motion.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">🎨</div>
+          <h3 class="service-name">Color Grading</h3>
+          <p class="service-desc">Cinematic color grading and LUT creation to give your footage a signature look. DaVinci Resolve specialist with a trained colorist's eye.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">⚡</div>
+          <h3 class="service-name">After Effects VFX</h3>
+          <p class="service-desc">Visual effects, compositing, and dynamic animations built in After Effects. From subtle enhancements to full cinematic VFX sequences.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">🔊</div>
+          <h3 class="service-name">Sound Design</h3>
+          <p class="service-desc">Audio mixing, SFX layering, and music synchronization to give your video the emotional depth it deserves. Sound is half the experience.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">📦</div>
+          <h3 class="service-name">Brand Video Packages</h3>
+          <p class="service-desc">Complete video branding suites including intro/outro animations, lower thirds, overlays, and reusable template kits for your brand identity.</p>
+          <a href="#contact" class="service-link">Enquire Now</a>
+        </div>
+      </div>
     </div>
   </section>
 
