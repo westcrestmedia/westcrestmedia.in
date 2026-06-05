@@ -906,6 +906,10 @@
       padding-top: 32px; border-top: 1px solid var(--border);
     }
     .footer-copy { font-size: 0.65rem; color: var(--white-dim); letter-spacing: 0.08em; }
+    .footer-legal { display: flex; align-items: center; gap: 10px; }
+    .footer-legal a { font-size: 0.62rem; color: var(--white-dim); text-decoration: none; letter-spacing: 0.08em; transition: color 0.3s; }
+    .footer-legal a:hover { color: var(--gold); }
+    .footer-legal-sep { font-size: 0.55rem; color: rgba(245,240,232,0.25); }
     .social-links { display: flex; gap: 16px; }
     .social-link {
       width: 36px; height: 36px; border: 1px solid var(--border);
@@ -1064,6 +1068,9 @@
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .process-list { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 18px; text-align: center; }
+      .footer-legal { justify-content: center; flex-wrap: wrap; }
+      .social-links { justify-content: center; }
     }
   </style>
 </head>
@@ -1804,6 +1811,13 @@
       </div>
       <div class="footer-bottom">
         <div class="footer-copy">© 2025 Westcrest Media. All rights reserved.</div>
+        <div class="footer-legal">
+          <a href="/privacy-policy/">Privacy Policy</a>
+          <span class="footer-legal-sep">|</span>
+          <a href="/terms/">Terms &amp; Conditions</a>
+          <span class="footer-legal-sep">|</span>
+          <a href="/disclaimer/">Disclaimer</a>
+        </div>
         <div class="social-links">
           <!-- Instagram -->
           <a class="social-link" href="https://www.instagram.com/westcrestmedia/" target="_blank" title="Instagram">
