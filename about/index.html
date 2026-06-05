@@ -134,13 +134,84 @@
     .about-story-text p:last-child { margin-bottom:0; }
     .about-visual {
       position:relative; aspect-ratio:4/5; background:var(--surface);
-      border:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden;
+      border:1px solid rgba(200,169,110,0.25); display:flex; align-items:center; justify-content:center; overflow:hidden;
     }
-    .about-visual-placeholder { text-align:center; }
-    .about-visual-placeholder .logo-mark { font-family:var(--font-display); font-size:6rem; font-weight:300; color:var(--gold); opacity:0.15; line-height:1; }
-    .about-visual-placeholder p { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--white-dim); opacity:0.4; margin-top:8px; }
-    .about-visual::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(200,169,110,0.04) 0%, transparent 60%); }
-    @media(max-width:900px) { .about-story { grid-template-columns:1fr; gap:48px; } .about-visual { aspect-ratio:16/9; } }
+    .about-visual img {
+      width:100%; height:100%; object-fit:cover; object-position:center top;
+      display:block; transition:transform 0.8s cubic-bezier(0.22,1,0.36,1);
+      filter: brightness(0.92) contrast(1.05);
+    }
+    .about-visual:hover img { transform:scale(1.03); }
+    /* gold corner accents */
+    .about-visual::before {
+      content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 65%, rgba(0,0,0,0.55) 100%);
+    }
+    .about-visual::after {
+      content:''; position:absolute; inset:0; z-index:3; pointer-events:none;
+      background:
+        linear-gradient(135deg, rgba(200,169,110,0.12) 0%, transparent 40%),
+        linear-gradient(315deg, rgba(200,169,110,0.08) 0%, transparent 40%);
+    }
+    /* corner frame lines */
+    .about-visual-frame {
+      position:absolute; inset:0; z-index:4; pointer-events:none;
+    }
+    .about-visual-frame::before,
+    .about-visual-frame::after {
+      content:'';
+      position:absolute;
+      width:28px; height:28px;
+    }
+    .about-visual-frame::before {
+      top:14px; left:14px;
+      border-top:1px solid var(--gold); border-left:1px solid var(--gold);
+    }
+    .about-visual-frame::after {
+      bottom:14px; right:14px;
+      border-bottom:1px solid var(--gold); border-right:1px solid var(--gold);
+    }
+    /* name caption at bottom */
+    .about-visual-caption {
+      position:absolute; bottom:0; left:0; right:0; z-index:5;
+      padding:20px 24px;
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .about-visual-caption-name {
+      font-family:var(--font-display); font-size:1.2rem; font-weight:300;
+      color:var(--white); letter-spacing:0.04em;
+    }
+    .about-visual-caption-role {
+      font-family:var(--font-mono); font-size:0.58rem; letter-spacing:0.22em;
+      text-transform:uppercase; color:var(--gold); opacity:0.85;
+    }
+    @media(max-width:900px) { .about-story { grid-template-columns:1fr; gap:48px; } .about-visual { aspect-ratio:3/4; max-width:400px; margin:0 auto; } }
+
+    /* ABOUT PRINCIPLES LIST */
+    .about-principles {
+      margin-top:32px; padding:28px 28px 28px 24px;
+      border-left:2px solid rgba(200,169,110,0.35);
+      background:rgba(200,169,110,0.03);
+    }
+    .about-principle-title {
+      font-family:var(--font-mono); font-size:0.62rem;
+      letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:16px; opacity:0.8;
+    }
+    .about-principles-list {
+      list-style:none; display:flex; flex-direction:column; gap:10px;
+    }
+    .about-principles-list li {
+      font-size:0.82rem; color:var(--white-dim);
+      display:flex; align-items:center; gap:12px;
+      letter-spacing:0.03em; line-height:1.5;
+    }
+    .ap-dot { color:var(--gold); font-size:0.6rem; flex-shrink:0; }
+    .about-closing-line {
+      font-size:0.9rem; line-height:1.8; color:var(--white-dim);
+      margin-top:24px !important;
+    }
 
     /* VALUES */
     .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin-top:60px; }
@@ -275,18 +346,45 @@
   <section class="padded">
     <div class="container">
       <div class="about-story reveal">
+
+        <!-- TEXT -->
         <div class="about-story-text">
           <h2>The Studio Behind<br />the <em>Tools</em></h2>
-          <p>[Your story goes here — how Westcrest Media started, what drove you to build this, your background in video editing and motion graphics.]</p>
-          <p>[Talk about your journey — from editing videos for clients to realizing creators needed better, free, browser-based tools that just work without signup walls or complicated installs.]</p>
-          <p>[This is your chance to connect with your audience. Be personal. Be real. Creators trust other creators.]</p>
+
+          <p>Westcrest Media started with a simple frustration. As a video editor and motion graphics artist, I spent years working with creators, businesses, and content teams. Every day, I found myself jumping between different websites just to complete small tasks — removing backgrounds, converting files, checking aspect ratios, generating color palettes, previewing LUTs, and much more.</p>
+
+          <p>Most tools were either expensive, filled with ads, locked behind subscriptions, or required creating an account just to use a basic feature. I kept asking myself a simple question: <em style="color:var(--gold); font-style:italic; font-family:var(--font-display); font-size:1.05em;">Why should creators waste time fighting with tools when they should be creating?</em></p>
+
+          <p>That question became the foundation of Westcrest Media. What started as a video editing and motion graphics studio gradually evolved into something bigger — a growing collection of free, browser-based tools built specifically for creators, editors, designers, and digital professionals.</p>
+
+          <p>Many of these tools were originally built to solve problems I personally faced while working on client projects. Over time, I realized that thousands of other creators were dealing with the same challenges. Instead of keeping those solutions to myself, I decided to make them available to everyone.</p>
+
+          <div class="about-principles">
+            <div class="about-principle-title">Every tool here is built with one mindset:</div>
+            <ul class="about-principles-list">
+              <li><span class="ap-dot">✦</span> No unnecessary complexity</li>
+              <li><span class="ap-dot">✦</span> No software installation</li>
+              <li><span class="ap-dot">✦</span> No signup walls</li>
+              <li><span class="ap-dot">✦</span> Privacy focused, whenever possible</li>
+              <li><span class="ap-dot">✦</span> Fast, practical, and easy to use</li>
+            </ul>
+          </div>
+
+          <p style="margin-top:28px;">Westcrest Media is still growing, and this is only the beginning. New tools, resources, templates, and creator-focused solutions are constantly being developed — with one goal in mind: helping creators spend less time on technical hurdles and more time creating amazing work.</p>
+
+          <p class="about-closing-line">Because at the end of the day — <em style="color:var(--gold); font-family:var(--font-display); font-style:italic;">Built by a Creator. Built for Creators.</em></p>
         </div>
+
+        <!-- PHOTO -->
         <div class="about-visual">
-          <div class="about-visual-placeholder">
-            <div class="logo-mark">W</div>
-            <p>Your photo / team photo here</p>
+          <img src="../images/wcm about photo.png" alt="Westcrest Media — Founder" loading="eager" />
+          <div class="about-visual-frame"></div>
+          <div class="about-visual-caption">
+            <span class="about-visual-caption-name">Westcrest Media</span>
+            <span class="about-visual-caption-role">Founder · Video Editor · Creator</span>
           </div>
         </div>
+
       </div>
     </div>
   </section>
