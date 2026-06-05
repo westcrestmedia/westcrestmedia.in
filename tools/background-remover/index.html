@@ -256,12 +256,56 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .other-tool-card:hover .other-tool-arrow{transform:translateX(3px);}
 
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* UPLOAD ANIMATION OVERLAY */
+.upload-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(11,11,18,0.92);align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(6px);}
+.upload-overlay.active{display:flex;}
+.upload-anim-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.upload-file-icon{position:relative;width:80px;height:80px;}
+.upload-file-icon svg{width:80px;height:80px;filter:drop-shadow(0 0 14px rgba(200,169,110,0.3));}
+.upload-arrow-anim{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:uploadArrow 1s ease-in-out infinite;}
+@keyframes uploadArrow{0%,100%{transform:translate(-50%,-40%);opacity:0.3}50%{transform:translate(-50%,-60%);opacity:1}}
+.upload-dots{display:flex;gap:7px;margin-top:4px;}
+.upload-dots span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:dotBounce 1.2s ease-in-out infinite;}
+.upload-dots span:nth-child(2){animation-delay:.2s;}
+.upload-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotBounce{0%,80%,100%{opacity:.25;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+.upload-overlay-title{font-size:16px;font-weight:600;color:var(--text);letter-spacing:.04em;}
+.upload-overlay-sub{font-size:12px;color:var(--muted);font-weight:300;}
+.upload-progress-track{width:220px;height:3px;background:var(--dark5);border-radius:99px;overflow:hidden;}
+.upload-progress-fill{height:100%;background:var(--gold);border-radius:99px;width:0%;transition:width .2s;}
+
+/* BATCH CARD PROCESSING SPINNER */
+.card-proc-overlay{display:none;position:absolute;inset:0;background:rgba(17,17,24,.7);z-index:5;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.card-proc-overlay.active{display:flex;}
+.card-spinner{width:28px;height:28px;border:2.5px solid var(--dark5);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite;}
+.card-proc-label{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Background Remover","url":"https://westcrestmedia.in/tools/background-remover","description":"Remove image backgrounds instantly and download with custom colors. Free tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
 </script>
 </head>
 <body>
+
+<!-- UPLOAD ANIMATION OVERLAY -->
+<div class="upload-overlay" id="upload-overlay">
+  <div class="upload-anim-wrap">
+    <div class="upload-file-icon">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="16" width="48" height="58" rx="5" fill="rgba(200,169,110,0.08)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <path d="M32 16V6L56 16" fill="rgba(200,169,110,0.15)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <g class="upload-arrow-anim">
+          <path d="M40 52v-16M34 42l6-6 6 6" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>
+    <div style="text-align:center;">
+      <p class="upload-overlay-title" id="upload-overlay-title">Reading Images…</p>
+      <p class="upload-overlay-sub" id="upload-overlay-sub">Preparing your files</p>
+    </div>
+    <div class="upload-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
 
 <nav class="nav">
   <a href="https://westcrestmedia.in/" class="nav-logo">
@@ -510,6 +554,17 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 
 </div>
 
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Simple Process</p>
+  <h2 class="sec-heading">How It <em>Works</em></h2>
+  <div class="steps">
+    <div class="step"><p class="step-n">01</p><h4>Upload Images</h4><p>Drop or select multiple images at once — up to 20 at a time. People, products, logos, objects.</p></div>
+    <div class="step"><p class="step-n">02</p><h4>AI Removes BG</h4><p>Each image is processed in your browser using on-device AI. No upload, no server, completely private.</p></div>
+    <div class="step"><p class="step-n">03</p><h4>Customise & Download</h4><p>Add shadows, custom backgrounds or photo backgrounds, then download individually or as a ZIP.</p></div>
+  </div>
+</section>
+
 <!-- OTHER TOOLS -->
 <section class="section" style="padding-bottom:2rem;">
   <p class="sec-tag">More Free Tools</p>
@@ -549,17 +604,6 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
     </a>
   </div>
   <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="section" style="padding-top:0;">
-  <p class="sec-tag">Simple Process</p>
-  <h2 class="sec-heading">How It <em>Works</em></h2>
-  <div class="steps">
-    <div class="step"><p class="step-n">01</p><h4>Upload Images</h4><p>Drop or select multiple images at once — up to 20 at a time. People, products, logos, objects.</p></div>
-    <div class="step"><p class="step-n">02</p><h4>AI Removes BG</h4><p>Each image is processed in your browser using on-device AI. No upload, no server, completely private.</p></div>
-    <div class="step"><p class="step-n">03</p><h4>Customise & Download</h4><p>Add shadows, custom backgrounds or photo backgrounds, then download individually or as a ZIP.</p></div>
-  </div>
 </section>
 
 <!-- FAQ -->
@@ -657,15 +701,62 @@ dropZone.addEventListener('drop', e => {
 dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
 
 // ─── ADD FILES ──────────────────────────────────────────────────────
-function addFiles(files) {
+function showUploadOverlay(title, sub) {
+  document.getElementById('upload-overlay-title').textContent = title;
+  document.getElementById('upload-overlay-sub').textContent = sub;
+  document.getElementById('upload-overlay').classList.add('active');
+}
+function hideUploadOverlay() {
+  document.getElementById('upload-overlay').classList.remove('active');
+}
+
+async function addFiles(files) {
   files = files.slice(0, MAX_BATCH - items.length);
   if (!files.length) return;
+
+  const isSingle = files.length === 1;
+
+  // Show upload reading animation
+  showUploadOverlay(
+    isSingle ? 'Loading Image…' : `Loading ${files.length} Images…`,
+    isSingle ? 'Getting ready to process' : 'Queuing all images for processing'
+  );
+
+  // Brief delay so user sees the upload state
+  await new Promise(r => setTimeout(r, 600));
+
   files.forEach(f => {
     items.push({ id: Date.now()+Math.random(), file:f, resultCanvas:null, status:'queued', name:f.name });
   });
   dropZone.classList.add('hidden');
   renderBatchGrid();
   updateBatchHeader();
+
+  hideUploadOverlay();
+
+  // Auto-process: single → direct, multi → sequential
+  if (isSingle) {
+    // Single photo: go straight to processing
+    document.getElementById('btn-process-all').disabled = true;
+    const item = items[items.length - 1];
+    await processItem(item);
+    document.getElementById('btn-process-all').disabled = false;
+    updateBatchHeader();
+    if (item.status === 'done') openEditor(item.id);
+  } else {
+    // Multiple photos: auto-start processing all queued
+    const toProcess = items.filter(i => i.status === 'queued');
+    document.getElementById('btn-process-all').disabled = true;
+    for (const item of toProcess) {
+      await processItem(item);
+    }
+    document.getElementById('btn-process-all').disabled = false;
+    updateBatchHeader();
+    if (!activeId) {
+      const firstDone = items.find(i => i.status === 'done');
+      if (firstDone) openEditor(firstDone.id);
+    }
+  }
 }
 
 function renderBatchGrid() {
@@ -681,6 +772,10 @@ function renderBatchGrid() {
         ${item.resultCanvas ? `<canvas width="${item.resultCanvas.width}" height="${item.resultCanvas.height}" style="max-width:100%;max-height:100%;"></canvas>` : ''}
         <span class="batch-status ${item.status}">${item.status==='queued'?'Queued':item.status==='processing'?'Processing…':item.status==='done'?'Done':'Error'}</span>
         <div class="batch-progress-bar"><div class="batch-progress-fill" id="prog-${item.id}"></div></div>
+        <div class="card-proc-overlay${item.status==='processing'?' active':''}">
+          <div class="card-spinner"></div>
+          <div class="card-proc-label">AI Processing</div>
+        </div>
       </div>
       <div class="batch-card-footer">
         <span class="batch-name" title="${item.name}">${item.name}</span>
@@ -731,16 +826,37 @@ window.processAll = async function() {
 async function processItem(item) {
   item.status = 'processing';
   renderBatchGrid();
-  const procEl = document.getElementById(`prog-${item.id}`);
+
+  // Show proc overlay with upload-style animation first
+  const procOverlay = document.getElementById('proc-overlay');
+  const procTitle = document.getElementById('proc-title');
+  const procSub = document.getElementById('proc-sub');
+  const procPct = document.getElementById('proc-pct');
+  procTitle.textContent = 'Preparing…';
+  procSub.textContent = 'Loading image into AI engine';
+  procPct.textContent = 'AI';
+  procOverlay.classList.add('active');
 
   try {
     const rbFn = await loadLib();
+
+    procTitle.textContent = 'AI Working…';
+    procSub.textContent = 'Detecting & removing background';
+
     const blob = await rbFn(item.file, {
       publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
       progress: (key, cur, tot) => {
         const p = tot > 0 ? Math.round(cur/tot*100) : 0;
         const el = document.getElementById(`prog-${item.id}`);
         if (el) el.style.width = p+'%';
+        if (p > 0) procPct.textContent = p+'%';
+        if (key && key.includes('fetch')) {
+          procTitle.textContent = 'Loading AI Model…';
+          procSub.textContent = 'First run downloads ~80MB — cached after';
+        } else if (p > 0) {
+          procTitle.textContent = 'AI Working…';
+          procSub.textContent = `Processing ${item.name.slice(0,20)}…`;
+        }
       },
       model: 'medium',
       output: { format:'image/png', quality:1 },
@@ -752,10 +868,18 @@ async function processItem(item) {
     cvs.getContext('2d').drawImage(img, 0, 0);
     item.resultCanvas = cvs;
     item.status = 'done';
+    procPct.textContent = '✓';
+    procTitle.textContent = 'Done!';
+    procSub.textContent = 'Background removed successfully';
+    await new Promise(r => setTimeout(r, 400));
   } catch(err) {
     item.status = 'error';
     console.error(err);
+    procTitle.textContent = 'Error';
+    procSub.textContent = 'Something went wrong. Please try again.';
+    await new Promise(r => setTimeout(r, 800));
   }
+  procOverlay.classList.remove('active');
   renderBatchGrid();
 }
 
@@ -1112,18 +1236,32 @@ window.searchPhotos = async function(){
       grid.appendChild(img);
     });
   } catch(e) {
-    // Fallback: use Unsplash source directly (no key, just random images)
-    grid.innerHTML = '';
-    const q2 = document.getElementById('photo-query').value.trim() || 'studio';
-    const queries = [q2, q2, q2, q2, q2, q2];
-    queries.forEach((term, i) => {
-      const img = document.createElement('img');
-      img.className = 'photo-thumb';
-      img.crossOrigin = 'anonymous';
-      img.src = `https://source.unsplash.com/300x200/?${encodeURIComponent(term)}&sig=${i}`;
-      img.addEventListener('click', () => applyPhotoBg(img, `https://source.unsplash.com/1600x900/?${encodeURIComponent(term)}&sig=${i}`));
-      grid.appendChild(img);
-    });
+    // Fallback: Pexels API (free, no key needed for curated)
+    try {
+      const q2 = document.getElementById('photo-query').value.trim() || 'studio';
+      const pRes = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q2)}&per_page=12&orientation=landscape`, {
+        headers: { Authorization: 'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC' }
+      });
+      if (!pRes.ok) throw new Error('pexels error');
+      const pData = await pRes.json();
+      grid.innerHTML = '';
+      const photos2 = pData.photos || [];
+      if (!photos2.length) { grid.innerHTML = '<div class="photo-loading">No results. Try another keyword.</div>'; return; }
+      photos2.forEach(photo => {
+        const img = document.createElement('img');
+        img.className = 'photo-thumb';
+        img.crossOrigin = 'anonymous';
+        img.src = photo.src.small;
+        img.title = photo.photographer || '';
+        img.addEventListener('click', () => applyPhotoBg(img, photo.src.large));
+        grid.appendChild(img);
+      });
+      // Update attribution
+      const attr = document.querySelector('.photo-attribution');
+      if (attr) attr.innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
+    } catch(e2) {
+      grid.innerHTML = '<div class="photo-loading">Could not load photos. Check your connection.</div>';
+    }
   }
 };
 
