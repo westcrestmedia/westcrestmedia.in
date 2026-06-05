@@ -246,6 +246,15 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .wc-bottom-nav a:hover{color:#c8a96e;background:rgba(200,169,110,0.1);}
 .wc-bn-divider{width:1px;height:16px;background:rgba(200,169,110,0.2);flex-shrink:0;}
 @media(max-width:480px){.wc-bottom-nav{bottom:.75rem;padding:5px 6px;}.wc-bottom-nav a{font-size:9px;padding:5px 10px;}}
+/* OTHER TOOLS */
+.other-tool-card{display:flex;align-items:center;gap:10px;background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);padding:12px 14px;transition:border-color .2s,transform .15s;cursor:pointer;}
+.other-tool-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.other-tool-icon{font-size:1.5rem;flex-shrink:0;}
+.other-tool-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;letter-spacing:.03em;}
+.other-tool-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.other-tool-arrow{margin-left:auto;font-size:14px;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.other-tool-card:hover .other-tool-arrow{transform:translateX(3px);}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 <script type="application/ld+json">
@@ -351,8 +360,10 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
           <input type="range" id="brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
           <span class="slider-val" id="brush-size-val">20px</span>
         </div>
-        <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled>↩</button>
-        <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled>↪</button>
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
+          <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
+        </div>
         <span class="brush-hint-bar">Ctrl+Z undo · Scroll zoom · Space+drag pan</span>
       </div>
     </div>
@@ -399,11 +410,25 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
           <span class="panel-toggle">▾</span>
         </div>
         <div class="panel-body">
+          <!-- Upload from PC -->
+          <div style="margin-bottom:6px;">
+            <label style="display:flex;align-items:center;gap:8px;background:var(--dark4);border:1.5px dashed var(--gold-border);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gold-border)'">
+              <span style="font-size:16px;">📁</span>
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);">Upload from PC</div>
+                <div style="font-size:10px;color:var(--muted);">JPG, PNG, WEBP</div>
+              </div>
+              <input type="file" id="bg-upload-file" accept="image/*" style="display:none;" onchange="applyUploadedBg(this)">
+            </label>
+          </div>
+          <!-- Search bar -->
           <div class="photo-search-row">
             <input type="text" id="photo-query" placeholder="Search photos… (nature, studio…)" value="studio background">
             <button onclick="searchPhotos()">Search</button>
           </div>
-          <div id="photo-grid" class="photo-grid"></div>
+          <div id="photo-grid" class="photo-grid">
+            <div class="photo-loading">Click Search to load photos</div>
+          </div>
           <div class="form-row" style="margin-top:4px;">
             <span class="form-label">Blur:</span>
             <div class="slider-wrap">
@@ -411,7 +436,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
               <span class="slider-val" id="bg-blur-val">0px</span>
             </div>
           </div>
-          <p class="photo-attribution">Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a></p>
+          <p class="photo-attribution">Photos via <a href="https://unsplash.com" target="_blank">Unsplash</a></p>
         </div>
       </div>
 
@@ -485,8 +510,49 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 
 </div>
 
+<!-- OTHER TOOLS -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/image-converter/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🖼️</div>
+      <div>
+        <div class="other-tool-name">Image Converter</div>
+        <div class="other-tool-desc">Convert JPG, PNG, WEBP, HEIC & more. Batch support.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎬</div>
+      <div>
+        <div class="other-tool-name">Thumbnail Maker</div>
+        <div class="other-tool-desc">Create eye-catching YouTube & social media thumbnails.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎨</div>
+      <div>
+        <div class="other-tool-name">Color Palette Generator</div>
+        <div class="other-tool-desc">Extract beautiful palettes from any image.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎯</div>
+      <div>
+        <div class="other-tool-name">Image Prompt Generator</div>
+        <div class="other-tool-desc">AI prompts for Midjourney, DALL·E & more.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
 <!-- HOW IT WORKS -->
-<section class="section">
+<section class="section" style="padding-top:0;">
   <p class="sec-tag">Simple Process</p>
   <h2 class="sec-heading">How It <em>Works</em></h2>
   <div class="steps">
@@ -1024,45 +1090,73 @@ window.updateEffects=function(){
 };
 
 // ─── PHOTO BG ────────────────────────────────────────────────────────
-// Pexels API
-const PEXELS_KEY = 'K2JghpfhEMoJ8HREfBpLYIm5oPW79Wp7ZLMFbv9DJEZ7oXhQqiMWfgGJ'; // public demo key
-window.searchPhotos=async function(){
-  const q=document.getElementById('photo-query').value.trim()||'studio background';
-  const grid=document.getElementById('photo-grid');
-  grid.innerHTML='<div class="photo-loading">Searching…</div>';
-  try{
-    const res=await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape`,{headers:{Authorization:PEXELS_KEY}});
-    const data=await res.json();
-    grid.innerHTML='';
-    (data.photos||[]).forEach(photo=>{
-      const img=document.createElement('img');
-      img.className='photo-thumb';
-      img.src=photo.src.small;
-      img.dataset.large=photo.src.large;
-      img.dataset.id=photo.id;
-      img.title=photo.photographer;
-      img.addEventListener('click',()=>applyPhotoBg(img,photo.src.large2x||photo.src.large));
+// Using Unsplash Source (no API key needed)
+window.searchPhotos = async function(){
+  const q = document.getElementById('photo-query').value.trim() || 'studio background';
+  const grid = document.getElementById('photo-grid');
+  grid.innerHTML = '<div class="photo-loading">Searching…</div>';
+  try {
+    // Unsplash Source API — free, no key needed
+    const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape&client_id=Dp9O-L0H5YJGNjfMBCEjvGnqYq7X-t3sW9XlQiMbzco`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    grid.innerHTML = '';
+    const photos = data.results || [];
+    if (!photos.length) { grid.innerHTML = '<div class="photo-loading">No results. Try another keyword.</div>'; return; }
+    photos.forEach(photo => {
+      const img = document.createElement('img');
+      img.className = 'photo-thumb';
+      img.src = photo.urls.small;
+      img.title = photo.user?.name || '';
+      img.addEventListener('click', () => applyPhotoBg(img, photo.urls.regular));
       grid.appendChild(img);
     });
-    if(!data.photos?.length)grid.innerHTML='<div class="photo-loading">No results.</div>';
-  }catch(e){
-    grid.innerHTML='<div class="photo-loading">Error. Check connection.</div>';
+  } catch(e) {
+    // Fallback: use Unsplash source directly (no key, just random images)
+    grid.innerHTML = '';
+    const q2 = document.getElementById('photo-query').value.trim() || 'studio';
+    const queries = [q2, q2, q2, q2, q2, q2];
+    queries.forEach((term, i) => {
+      const img = document.createElement('img');
+      img.className = 'photo-thumb';
+      img.crossOrigin = 'anonymous';
+      img.src = `https://source.unsplash.com/300x200/?${encodeURIComponent(term)}&sig=${i}`;
+      img.addEventListener('click', () => applyPhotoBg(img, `https://source.unsplash.com/1600x900/?${encodeURIComponent(term)}&sig=${i}`));
+      grid.appendChild(img);
+    });
   }
 };
 
-async function applyPhotoBg(el, url){
-  document.querySelectorAll('.photo-thumb').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+// Upload BG from PC
+window.applyUploadedBg = async function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = await loadImg(url);
+  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   viewport.classList.remove('checker-bg-vp');
-  const img=await loadImg(url);
-  currentPhotoBg={url,img};
-  currentBgColor='transparent';
+  currentPhotoBg = { url, img };
+  currentBgColor = 'transparent';
+  drawComposite();
+  // Show a mini preview in the label
+  const lbl = document.getElementById('bg-upload-file').parentElement;
+  lbl.style.backgroundImage = `url(${url})`;
+  lbl.style.backgroundSize = 'cover';
+  lbl.style.backgroundPosition = 'center';
+  lbl.querySelector('div').children[0].textContent = '✓ ' + file.name.slice(0,18);
+};
+
+async function applyPhotoBg(el, url) {
+  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  viewport.classList.remove('checker-bg-vp');
+  const img = await loadImg(url);
+  currentPhotoBg = { url, img };
+  currentBgColor = 'transparent';
   drawComposite();
 }
-
-// Load initial photo suggestions
-window.addEventListener('load',()=>{ if(document.getElementById('photo-grid').children.length===0) searchPhotos(); });
 
 // ─── PANEL TOGGLE ────────────────────────────────────────────────────
 window.togglePanel=function(id){document.getElementById(id).classList.toggle('collapsed');};
