@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Compressor — Free Online Tool | Westcrest Media</title>
+<meta name="description" content="Compress JPG, PNG, WEBP images instantly in your browser. Batch compress, quality control, real-time preview. Free, private, no upload.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-compressor">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a96e;
+  --gold2: #e8c98e;
+  --gold-dim: rgba(200,169,110,0.12);
+  --gold-border: rgba(200,169,110,0.22);
+  --dark: #111118;
+  --dark2: #16161e;
+  --dark3: #1c1c26;
+  --dark4: #1e1e28;
+  --dark5: #222230;
+  --text: #f5f0e8;
+  --muted: rgba(245,240,232,0.55);
+  --faint: rgba(245,240,232,0.12);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --green: #6fbf6f;
+  --green-dim: rgba(111,191,111,0.12);
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; overflow-x:hidden; }
+
+/* NAV */
+.nav{ position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:60px; background:rgba(8,8,8,0.97); border-bottom:1px solid var(--gold-border); backdrop-filter:blur(14px); }
+.nav-logo{ display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:300; letter-spacing:0.25em; }
+.nav-logo img{ height:26px; }
+.nav-back{ display:flex; align-items:center; gap:5px; color:var(--muted); text-decoration:none; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; transition:color .2s; }
+.nav-back:hover{ color:var(--gold); }
+.nav-back svg{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+
+/* HERO */
+.hero{ text-align:center; padding:3.5rem 1.5rem 2.5rem; max-width:640px; margin:0 auto; }
+.hero-badge{ display:inline-flex; align-items:center; gap:7px; background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:5px 15px; border-radius:99px; margin-bottom:1.4rem; }
+.pulse{ width:7px; height:7px; background:var(--gold); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.4; transform:scale(.7); } }
+.hero h1{ font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,5vw,3.2rem); line-height:1.05; letter-spacing:-.02em; margin-bottom:.8rem; }
+.hero h1 em{ font-style:italic; color:var(--gold); }
+.hero p{ color:var(--muted); font-size:14px; line-height:1.65; margin-bottom:1.2rem; font-weight:300; }
+.pills{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
+.pill{ background:var(--dark3); border:1px solid var(--faint); color:var(--muted); font-size:10px; padding:3px 11px; border-radius:99px; font-weight:500; }
+
+/* TOOL WRAP */
+.tool-wrap{ max-width:1200px; margin:0 auto; padding:0 1.25rem 3rem; }
+
+/* DROP ZONE */
+.drop-zone{ background:var(--dark2); border:2px dashed var(--gold-border); border-radius:var(--radius); padding:3rem 2rem; text-align:center; cursor:pointer; transition:all .2s; margin-bottom:1.5rem; }
+.drop-zone.drag-over{ border-color:var(--gold); background:rgba(200,169,110,.04); }
+.upload-icon{ width:54px; height:54px; background:var(--gold-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; }
+.upload-icon svg{ width:24px; height:24px; fill:none; stroke:var(--gold); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.drop-title{ font-size:16px; font-weight:600; margin-bottom:.4rem; }
+.drop-sub{ font-size:13px; color:var(--muted); margin-bottom:1.3rem; font-weight:300; }
+.upload-btn{ background:transparent; border:1.5px solid var(--gold); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; padding:9px 26px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; }
+.upload-btn:hover{ background:var(--gold-dim); }
+.format-tags{ display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin-top:1rem; }
+.format-tag{ background:var(--dark4); border:1px solid var(--faint); color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.05em; padding:3px 9px; border-radius:4px; }
+#file-in{ display:none; }
+
+/* QUALITY PANEL */
+.quality-panel{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
+.quality-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
+.quality-slider{ flex:1; min-width:180px; display:flex; align-items:center; gap:10px; }
+.quality-slider span{ font-size:10px; color:var(--muted); }
+input[type=range]{ 
+  flex:1; 
+  height:3px; 
+  -webkit-appearance: none; 
+  appearance: none; 
+  background:var(--dark5); 
+  border-radius:99px; 
+  outline: none; 
+}
+input[type=range]::-webkit-slider-thumb{ 
+  -webkit-appearance: none; 
+  appearance: none; 
+  width:14px; 
+  height:14px; 
+  background:var(--gold); 
+  border-radius:50%; 
+  cursor:pointer; 
+  border: none;
+}
+.quality-value{ font-family:'DM Mono',monospace; font-size:12px; color:var(--gold); background:var(--dark3); padding:3px 9px; border-radius:20px; }
+
+/* BATCH HEADER */
+.batch-header{ display:none; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:.5rem; }
+.batch-header.active{ display:flex; }
+.batch-title{ font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+.batch-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.btn-sm{ font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; padding:7px 16px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; border:1.5px solid; }
+.btn-sm.gold{ background:var(--gold); color:#000; border-color:var(--gold); }
+.btn-sm.gold:hover{ opacity:.88; transform:translateY(-1px); }
+.btn-sm.outline{ background:transparent; border-color:var(--faint); color:var(--muted); }
+.btn-sm.outline:hover{ border-color:var(--gold-border); color:var(--text); }
+.btn-sm.danger{ background:transparent; border-color:rgba(220,50,50,.3); color:#e55; }
+.btn-sm.danger:hover{ background:rgba(220,50,50,.1); }
+
+/* BATCH GRID */
+.batch-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-bottom:1rem; }
+.compress-card{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); overflow:hidden; transition:all .2s; }
+.compress-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.card-preview{ display:flex; gap:12px; padding:12px; border-bottom:1px solid var(--faint); }
+.preview-img{ width:70px; height:70px; background:var(--dark3); border-radius:8px; object-fit:cover; }
+.card-info{ flex:1; }
+.file-name{ font-size:11px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+.size-info{ font-size:10px; color:var(--muted); display:flex; gap:12px; margin-bottom:4px; }
+.compression-badge{ background:var(--green-dim); color:var(--green); padding:2px 6px; border-radius:12px; font-size:8px; font-weight:700; display:inline-block; }
+.card-actions{ padding:10px 12px; display:flex; justify-content:space-between; align-items:center; }
+.status-badge{ font-size:9px; padding:3px 8px; border-radius:20px; background:var(--dark3); color:var(--muted); font-weight:600; }
+.status-badge.compressing{ color:var(--gold); animation:pulseText 1s ease infinite; }
+.status-badge.done{ color:var(--green); }
+@keyframes pulseText{ 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+.btn-download{ background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); padding:4px 12px; border-radius:20px; font-size:10px; font-weight:600; cursor:pointer; transition:all .2s; }
+.btn-download:hover{ background:var(--gold); color:#000; }
+
+/* ANIMATION OVERLAY */
+.upload-overlay{ display:none; position:fixed; inset:0; z-index:999; background:rgba(11,11,18,0.96); align-items:center; justify-content:center; flex-direction:column; gap:16px; backdrop-filter:blur(8px); }
+.upload-overlay.active{ display:flex; }
+.upload-anim-wrap{ display:flex; flex-direction:column; align-items:center; gap:20px; }
+.upload-file-icon{ position:relative; width:80px; height:80px; }
+.upload-file-icon svg{ width:80px; height:80px; filter:drop-shadow(0 0 14px rgba(200,169,110,0.3)); }
+.upload-arrow-anim{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); animation:uploadArrow 1s ease-in-out infinite; }
+@keyframes uploadArrow{ 0%,100%{ transform:translate(-50%,-40%); opacity:0.3; } 50%{ transform:translate(-50%,-60%); opacity:1; } }
+.upload-dots{ display:flex; gap:7px; margin-top:4px; }
+.upload-dots span{ width:7px; height:7px; border-radius:50%; background:var(--gold); animation:dotBounce 1.2s ease-in-out infinite; }
+.upload-dots span:nth-child(2){ animation-delay:.2s; }
+.upload-dots span:nth-child(3){ animation-delay:.4s; }
+@keyframes dotBounce{ 0%,80%,100%{ opacity:.25; transform:scale(.7); } 40%{ opacity:1; transform:scale(1); } }
+.upload-overlay-title{ font-size:16px; font-weight:600; color:var(--text); letter-spacing:.04em; }
+.upload-overlay-sub{ font-size:12px; color:var(--muted); font-weight:300; }
+.compression-result-number{ font-size:52px; font-weight:800; font-family:'DM Mono',monospace; background:linear-gradient(135deg,var(--gold),var(--gold2)); -webkit-background-clip:text; background-clip:text; color:transparent; margin:0.5rem 0; opacity:0; transform:scale(0.5); transition:all 0.5s cubic-bezier(0.34,1.2,0.64,1); }
+.compression-result-number.reveal{ opacity:1; transform:scale(1); }
+.progress-track{ width:220px; height:3px; background:var(--dark5); border-radius:99px; overflow:hidden; margin-top:0.5rem; }
+.progress-fill{ height:100%; background:var(--gold); width:0%; transition:width 0.2s ease; }
+
+/* SECTIONS */
+.section{ max-width:900px; margin:0 auto; padding:0 1.25rem 4rem; }
+.sec-tag{ font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
+.sec-heading{ font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; }
+.sec-heading em{ font-style:italic; color:var(--gold); }
+.steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media(max-width:580px){ .steps{ grid-template-columns:1fr; } }
+.step{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1.4rem; }
+.step-n{ font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--gold); margin-bottom:.6rem; }
+.step h4{ font-size:14px; font-weight:600; margin-bottom:.4rem; color:var(--text); }
+.step p{ font-size:13px; color:var(--muted); line-height:1.55; font-weight:300; }
+
+/* OTHER TOOLS */
+.other-tool-card{ display:flex; align-items:center; gap:10px; background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:12px 14px; transition:border-color .2s,transform .15s; cursor:pointer; text-decoration:none; }
+.other-tool-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.other-tool-icon{ font-size:1.5rem; flex-shrink:0; }
+.other-tool-name{ font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; letter-spacing:.03em; }
+.other-tool-desc{ font-size:11px; color:var(--muted); line-height:1.4; }
+.other-tool-arrow{ margin-left:auto; font-size:14px; color:var(--gold); flex-shrink:0; transition:transform .2s; }
+.other-tool-card:hover .other-tool-arrow{ transform:translateX(3px); }
+
+/* FAQ */
+.faq-item{ border-bottom:1px solid var(--faint); }
+.faq-q{ display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; font-size:14px; font-weight:500; gap:1rem; color:var(--text); }
+.faq-q svg{ width:15px; height:15px; fill:none; stroke:var(--muted); stroke-width:2; stroke-linecap:round; flex-shrink:0; transition:transform .2s; }
+.faq-item.open .faq-q svg{ transform:rotate(180deg); }
+.faq-a{ font-size:13px; color:var(--muted); line-height:1.6; font-weight:300; max-height:0; overflow:hidden; transition:max-height .3s ease,padding .2s; }
+.faq-item.open .faq-a{ max-height:160px; padding-bottom:.9rem; }
+
+/* BOTTOM NAV */
+.wc-bottom-nav{ position:fixed; bottom:1.25rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; align-items:center; gap:.25rem; background:rgba(12,12,16,0.92); border:1px solid rgba(200,169,110,0.3); border-radius:99px; padding:6px 8px; backdrop-filter:blur(16px); box-shadow:0 4px 24px rgba(0,0,0,0.4); }
+.wc-bottom-nav a{ display:flex; align-items:center; gap:5px; color:rgba(220,210,195,0.7); text-decoration:none; font-family:'DM Mono',monospace,sans-serif; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:99px; transition:all 0.18s; white-space:nowrap; }
+.wc-bottom-nav a:hover{ color:#c8a96e; background:rgba(200,169,110,0.1); }
+.wc-bn-divider{ width:1px; height:16px; background:rgba(200,169,110,0.2); flex-shrink:0; }
+
+footer{ border-top:1px solid rgba(200,169,110,0.15); padding:1.25rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-top:2rem; }
+footer a{ color:#6a6258; text-decoration:none; font-size:12px; transition:color .2s; }
+footer a:hover{ color:var(--gold); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="https://westcrestmedia.in/" class="nav-logo">
+    <img src="../../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
+    Westcrest Media
+  </a>
+  <a href="https://westcrestmedia.in/" class="nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Back to Home
+  </a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><div class="pulse"></div>Smart Compression · Batch Mode · 100% Free</div>
+  <h1>Compress <em>Images</em><br>Without Losing Quality</h1>
+  <p>Reduce file size up to 80% while keeping great quality. Batch compress JPG, PNG, WEBP — all inside your browser. Private & instant.</p>
+  <div class="pills">
+    <span class="pill">Batch Mode</span>
+    <span class="pill">Smart Quality</span>
+    <span class="pill">Real Preview</span>
+    <span class="pill">ZIP Download</span>
+    <span class="pill">Privacy First</span>
+    <span class="pill">Up to 80% smaller</span>
+  </div>
+</section>
+
+<div class="tool-wrap">
+  <div class="drop-zone" id="drop-zone">
+    <div class="upload-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <p class="drop-title">Drop your images here</p>
+    <p class="drop-sub">Select multiple images at once — JPG, PNG, WEBP</p>
+    <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
+    <div class="format-tags">
+      <span class="format-tag">PHOTOS</span>
+      <span class="format-tag">PRODUCTS</span>
+      <span class="format-tag">SCREENSHOTS</span>
+      <span class="format-tag">WEB IMAGES</span>
+      <span class="format-tag">BATCH UP TO 20</span>
+    </div>
+    <input type="file" id="file-in" accept="image/jpeg,image/png,image/webp" multiple>
+  </div>
+
+  <div class="quality-panel">
+    <span class="quality-label">🎚️ Compression Quality</span>
+    <div class="quality-slider">
+      <span>Smaller</span>
+      <input type="range" id="quality-slider" min="30" max="100" value="75">
+      <span>Better</span>
+    </div>
+    <span class="quality-value" id="quality-value">75%</span>
+  </div>
+
+  <div class="batch-header" id="batch-header">
+    <span class="batch-title" id="batch-title-text">0 images</span>
+    <div class="batch-actions">
+      <button class="btn-sm outline" onclick="document.getElementById('file-in').click()">+ Add More</button>
+      <button class="btn-sm gold" id="btn-compress-all" onclick="compressAll()">⚡ Compress All</button>
+      <button class="btn-sm gold" id="btn-dl-all" onclick="downloadAllZip()" style="display:none">📦 Download All ZIP</button>
+      <button class="btn-sm danger" onclick="clearAll()">✕ Clear All</button>
+    </div>
+  </div>
+
+  <div class="batch-grid" id="batch-grid"></div>
+</div>
+
+<!-- UPLOAD ANIMATION OVERLAY -->
+<div class="upload-overlay" id="upload-overlay">
+  <div class="upload-anim-wrap">
+    <div class="upload-file-icon">
+      <svg viewBox="0 0 80 80" fill="none">
+        <rect x="8" y="16" width="48" height="58" rx="5" fill="rgba(200,169,110,0.08)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <path d="M32 16V6L56 16" fill="rgba(200,169,110,0.15)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <g class="upload-arrow-anim"><path d="M40 52v-16M34 42l6-6 6 6" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+      </svg>
+    </div>
+    <div style="text-align:center;">
+      <p class="upload-overlay-title" id="upload-overlay-title">Compressing Image…</p>
+      <p class="upload-overlay-sub" id="upload-overlay-sub">Optimizing file size</p>
+    </div>
+    <div id="compression-result" class="compression-result-number">0%</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="upload-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- HOW COMPRESSION WORKS SECTION -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">How Compression Works</p>
+  <h2 class="sec-heading">Smart <em>Compression</em> Technology</h2>
+  <div class="steps">
+    <div class="step">
+      <p class="step-n">01</p>
+      <h4>Upload Your Images</h4>
+      <p>Drag & drop or select multiple images at once — up to 20 files. Supports JPG, PNG, WEBP formats.</p>
+    </div>
+    <div class="step">
+      <p class="step-n">02</p>
+      <h4>Adjust Quality Level</h4>
+      <p>Use the slider to balance between file size and image quality. Lower quality = smaller file.</p>
+    </div>
+    <div class="step">
+      <p class="step-n">03</p>
+      <h4>Download Optimized Images</h4>
+      <p>Get your compressed images instantly. Download individually or as a ZIP file. See exact savings!</p>
+    </div>
+  </div>
+</section>
+
+<!-- OTHER TOOLS SECTION -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="#" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🖼️</div>
+      <div>
+        <div class="other-tool-name">Background Remover</div>
+        <div class="other-tool-desc">Remove image backgrounds with AI. Free & private.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="#" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎬</div>
+      <div>
+        <div class="other-tool-name">Thumbnail Maker</div>
+        <div class="other-tool-desc">Create eye-catching YouTube & social media thumbnails.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="#" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎨</div>
+      <div>
+        <div class="other-tool-name">Color Palette Generator</div>
+        <div class="other-tool-desc">Extract beautiful palettes from any image.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="#" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎯</div>
+      <div>
+        <div class="other-tool-name">Image Prompt Generator</div>
+        <div class="other-tool-desc">AI prompts for Midjourney, DALL·E & more.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Is my image uploaded to any server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">No. The compression happens entirely inside your browser using JavaScript. Your image never leaves your device and is never sent to any server.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">How much can I compress my images? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Depending on the image and quality setting, you can reduce file size by 50-80% while maintaining good visual quality.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Which formats are supported? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">JPG, JPEG, PNG, and WEBP. PNG compression works best for photos; for logos/art with transparency, we convert to high-quality JPG.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I compress multiple images at once? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes! Batch compress up to 20 images at once. After compression, download them individually or as a single ZIP file.</div>
+  </div>
+</section>
+
+<footer>
+  <p style="font-size:12px; margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex; gap:1.5rem;">
+    <a href="#">Home</a>
+    <a href="#">All Tools</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<nav class="wc-bottom-nav">
+  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// IMAGE COMPRESSOR STATE
+let items = [];
+let currentQuality = 75;
+
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-in');
+const batchGrid = document.getElementById('batch-grid');
+const batchHeader = document.getElementById('batch-header');
+const qualitySlider = document.getElementById('quality-slider');
+const qualityValue = document.getElementById('quality-value');
+const uploadOverlay = document.getElementById('upload-overlay');
+const overlayTitle = document.getElementById('upload-overlay-title');
+const overlaySub = document.getElementById('upload-overlay-sub');
+const progressFill = document.getElementById('progress-fill');
+const compressionResultSpan = document.getElementById('compression-result');
+
+qualitySlider.addEventListener('input', (e) => {
+  currentQuality = e.target.value;
+  qualityValue.innerText = currentQuality + '%';
+});
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function compressImage(file, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      let mime = 'image/jpeg';
+      if (file.type === 'image/png') mime = 'image/jpeg';
+      else if (file.type === 'image/webp') mime = 'image/webp';
+      canvas.toBlob((blob) => {
+        resolve({ blob, width: img.width, height: img.height });
+      }, mime, quality / 100);
+      img.onerror = reject;
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function addFiles(files) {
+  const newFiles = files.slice(0, 20 - items.length);
+  for (let f of newFiles) {
+    const previewUrl = URL.createObjectURL(f);
+    items.push({
+      id: crypto.randomUUID(),
+      file: f,
+      originalSize: f.size,
+      compressedBlob: null,
+      compressedSize: null,
+      status: 'pending',
+      previewUrl,
+      name: f.name
+    });
+  }
+  renderBatch();
+  if (items.length > 0) batchHeader.classList.add('active');
+  updateBatchHeader();
+  
+  if (items.length === 1 && items[0].status === 'pending') {
+    await compressSingle(items[0]);
+  }
+}
+
+async function compressSingle(item, showAnim = true) {
+  if (item.status === 'compressing') return;
+  item.status = 'compressing';
+  renderBatch();
+
+  if (showAnim) {
+    uploadOverlay.classList.add('active');
+    overlayTitle.innerText = 'Compressing Image...';
+    overlaySub.innerText = `Optimizing ${item.name.slice(0, 25)}`;
+    progressFill.style.width = '0%';
+    compressionResultSpan.classList.remove('reveal');
+    compressionResultSpan.innerText = '0%';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress = Math.min(90, progress + Math.random() * 12);
+      progressFill.style.width = progress + '%';
+    }, 100);
+    
+    try {
+      const compressed = await compressImage(item.file, currentQuality);
+      item.compressedBlob = compressed.blob;
+      item.compressedSize = compressed.blob.size;
+      item.status = 'done';
+      clearInterval(interval);
+      progressFill.style.width = '100%';
+      const reduction = ((1 - item.compressedSize / item.originalSize) * 100).toFixed(1);
+      overlayTitle.innerText = `✨ Saved ${reduction}%!`;
+      overlaySub.innerText = `${formatBytes(item.originalSize)} → ${formatBytes(item.compressedSize)}`;
+      compressionResultSpan.innerText = `${reduction}% smaller`;
+      compressionResultSpan.classList.add('reveal');
+      await new Promise(r => setTimeout(r, 1000));
+    } catch (err) {
+      clearInterval(interval);
+      item.status = 'error';
+      overlayTitle.innerText = 'Compression Failed';
+      overlaySub.innerText = 'Please try again';
+      await new Promise(r => setTimeout(r, 800));
+    }
+    uploadOverlay.classList.remove('active');
+  } else {
+    try {
+      const compressed = await compressImage(item.file, currentQuality);
+      item.compressedBlob = compressed.blob;
+      item.compressedSize = compressed.blob.size;
+      item.status = 'done';
+    } catch (err) {
+      item.status = 'error';
+    }
+  }
+  renderBatch();
+  updateBatchHeader();
+}
+
+async function compressAll() {
+  const pending = items.filter(i => i.status === 'pending');
+  for (let item of pending) {
+    await compressSingle(item, true);
+  }
+}
+
+function renderBatch() {
+  if (items.length === 0) {
+    batchGrid.innerHTML = '';
+    return;
+  }
+  batchGrid.innerHTML = items.map(item => `
+    <div class="compress-card" data-id="${item.id}">
+      <div class="card-preview">
+        <img class="preview-img" src="${item.previewUrl}" alt="preview">
+        <div class="card-info">
+          <div class="file-name" title="${item.name}">${item.name.length > 28 ? item.name.slice(0, 25) + '...' : item.name}</div>
+          <div class="size-info">
+            <span>📁 ${formatBytes(item.originalSize)}</span>
+            ${item.compressedSize ? `<span>⚡ ${formatBytes(item.compressedSize)}</span>` : ''}
+          </div>
+          ${item.compressedSize ? `<div class="compression-badge">↓ ${((1 - item.compressedSize / item.originalSize) * 100).toFixed(1)}%</div>` : ''}
+        </div>
+      </div>
+      <div class="card-actions">
+        <span class="status-badge ${item.status}">${item.status === 'pending' ? '⏳ Pending' : item.status === 'compressing' ? '🔄 Compressing...' : item.status === 'done' ? '✅ Done' : '❌ Error'}</span>
+        ${item.status === 'done' ? `<button class="btn-download" onclick="downloadSingle('${item.id}')">⬇ Download</button>` : `<button class="btn-download" style="opacity:0.4;" disabled>Compress first</button>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateBatchHeader() {
+  const doneCount = items.filter(i => i.status === 'done').length;
+  const total = items.length;
+  document.getElementById('batch-title-text').innerText = `${doneCount}/${total} compressed`;
+  const zipBtn = document.getElementById('btn-dl-all');
+  if (doneCount > 0) {
+    zipBtn.style.display = '';
+  } else {
+    zipBtn.style.display = 'none';
+  }
+}
+
+window.downloadSingle = (id) => {
+  const item = items.find(i => i.id === id);
+  if (item && item.compressedBlob) {
+    const url = URL.createObjectURL(item.compressedBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `compressed_${item.name.replace(/\.[^.]+$/, '')}.jpg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+};
+
+window.downloadAllZip = async () => {
+  const done = items.filter(i => i.status === 'done');
+  if (!done.length) return;
+  const JSZip = window.JSZip;
+  const zip = new JSZip();
+  for (let item of done) {
+    zip.file(`compressed_${item.name.replace(/\.[^.]+$/, '')}.jpg`, item.compressedBlob);
+  }
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(zipBlob);
+  a.download = 'westcrest_compressed_images.zip';
+  a.click();
+};
+
+window.clearAll = () => {
+  items.forEach(i => {
+    if (i.previewUrl) URL.revokeObjectURL(i.previewUrl);
+  });
+  items = [];
+  renderBatch();
+  batchHeader.classList.remove('active');
+  document.getElementById('btn-dl-all').style.display = 'none';
+};
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('drag-over');
+});
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (files.length) addFiles(files);
+});
+dropZone.addEventListener('click', () => {
+  fileInput.click();
+});
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) addFiles(Array.from(e.target.files));
+  fileInput.value = '';
+});
+
+window.compressAll = compressAll;
+</script>
+</body>
+</html>
