@@ -159,20 +159,23 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .slider-val{font-size:11px;color:var(--muted);min-width:34px;text-align:right;font-family:'DM Mono',monospace;}
 
 /* BRUSH TOOLBAR */
-.brush-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--faint);}
-.brush-btn{display:flex;align-items:center;gap:5px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
+.brush-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--faint);row-gap:8px;}
+.brush-btn{display:flex;align-items:center;gap:5px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
 .brush-btn:hover{border-color:var(--gold-border);color:var(--text);}
 .brush-btn.mode-erase{border-color:#e55;color:#ff7070;background:rgba(220,50,50,.12);}
 .brush-btn.mode-restore{border-color:#5b5;color:#7ddb7d;background:rgba(50,180,50,.12);}
 .dot-e{width:7px;height:7px;border-radius:50%;background:#e55;flex-shrink:0;}
 .dot-r{width:7px;height:7px;border-radius:50%;background:#5b5;flex-shrink:0;}
-.undo-btn{display:flex;align-items:center;gap:4px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
+.undo-btn{display:flex;align-items:center;gap:4px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
 .undo-btn:hover:not(:disabled){border-color:var(--gold-border);color:var(--text);}
 .undo-btn:disabled{opacity:.3;cursor:not-allowed;}
+.brush-size-group{display:flex;align-items:center;gap:6px;flex:1;min-width:160px;}
+.brush-size-group span{font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.brush-undo-group{display:flex;gap:4px;flex-shrink:0;}
+.brush-hint-bar{font-size:10px;color:var(--muted);opacity:.55;width:100%;}
 .zoom-btn{background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-size:13px;font-weight:700;width:26px;height:26px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .zoom-btn:hover{border-color:var(--gold-border);color:var(--text);}
 .zoom-level{font-size:10px;color:var(--muted);min-width:34px;text-align:center;font-weight:600;font-family:'DM Mono',monospace;}
-.brush-hint-bar{font-size:10px;color:var(--muted);opacity:.55;width:100%;}
 
 /* BG SWATCHES */
 .swatch-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
@@ -396,15 +399,15 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
       </div>
       <!-- Brush bar -->
       <div class="brush-bar">
-        <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;">Touchup:</span>
+        <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;flex-shrink:0;">Touchup:</span>
         <button class="brush-btn" id="btn-erase"   onclick="setBrushMode('erase')"><span class="dot-e"></span> Erase</button>
         <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')"><span class="dot-r"></span> Restore</button>
-        <div class="slider-wrap" style="max-width:130px;">
-          <span style="font-size:10px;color:var(--muted);">Size</span>
-          <input type="range" id="brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
-          <span class="slider-val" id="brush-size-val">20px</span>
+        <div class="brush-size-group">
+          <span>Size</span>
+          <input type="range" id="brush-size" min="4" max="80" value="20" style="flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
+          <span class="slider-val" id="brush-size-val" style="min-width:34px;text-align:right;">20px</span>
         </div>
-        <div style="display:flex;gap:4px;flex-shrink:0;">
+        <div class="brush-undo-group">
           <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
           <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
         </div>
@@ -660,7 +663,7 @@ async function loadLib() {
 
 // ─── BATCH STATE ────────────────────────────────────────────────────
 const MAX_BATCH = 20;
-let items = []; // { id, file, origBlob, resultCanvas, status, name }
+let items = []; // { id, file, origBlob, resultCanvas, status, name, bgSnapshot }
 let activeId = null;
 
 // ─── EDITOR STATE ───────────────────────────────────────────────────
@@ -969,10 +972,8 @@ function drawComposite() {
 
   // 1. Background
   if (currentPhotoBg && currentPhotoBg.img) {
-    // draw photo bg with blur
     dctx.save();
     if (bgBlur > 0) dctx.filter = `blur(${bgBlur}px)`;
-    // cover-fit
     const imgW = currentPhotoBg.img.naturalWidth, imgH = currentPhotoBg.img.naturalHeight;
     const scale = Math.max(dw/imgW, dh/imgH);
     const sw = imgW*scale, sh = imgH*scale;
@@ -1006,6 +1007,22 @@ function drawComposite() {
 
   // 3. Subject
   dctx.drawImage(wCanvas, 0, 0, dw, dh);
+
+  // Save bg state into active item for multi-image export
+  const activeItem = items.find(i=>i.id==activeId);
+  if (activeItem) {
+    activeItem.bgSnapshot = {
+      photoBg: currentPhotoBg,
+      bgColor: currentBgColor,
+      bgBlur,
+      shadowEnabled,
+      shadowColor,
+      shadowOpacity,
+      shadowBlur,
+      shadowDistance,
+      shadowAngle
+    };
+  }
 }
 
 function getGradient(color, w, h) {
@@ -1214,55 +1231,75 @@ window.updateEffects=function(){
 };
 
 // ─── PHOTO BG ────────────────────────────────────────────────────────
-// Using Unsplash Source (no API key needed)
 window.searchPhotos = async function(){
   const q = document.getElementById('photo-query').value.trim() || 'studio background';
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
+
+  // Try Pexels first
   try {
-    // Unsplash Source API — free, no key needed
-    const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape&client_id=Dp9O-L0H5YJGNjfMBCEjvGnqYq7X-t3sW9XlQiMbzco`);
-    if (!res.ok) throw new Error('API error');
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape`, {
+      headers: { Authorization: 'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC' }
+    });
+    if (!res.ok) throw new Error('pexels error');
     const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) throw new Error('no results');
     grid.innerHTML = '';
-    const photos = data.results || [];
-    if (!photos.length) { grid.innerHTML = '<div class="photo-loading">No results. Try another keyword.</div>'; return; }
     photos.forEach(photo => {
       const img = document.createElement('img');
       img.className = 'photo-thumb';
-      img.src = photo.urls.small;
-      img.title = photo.user?.name || '';
-      img.addEventListener('click', () => applyPhotoBg(img, photo.urls.regular));
+      img.crossOrigin = 'anonymous';
+      img.src = photo.src.small;
+      img.title = photo.photographer || '';
+      img.addEventListener('click', () => applyPhotoBg(img, photo.src.large));
       grid.appendChild(img);
     });
-  } catch(e) {
-    // Fallback: Pexels API (free, no key needed for curated)
-    try {
-      const q2 = document.getElementById('photo-query').value.trim() || 'studio';
-      const pRes = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q2)}&per_page=12&orientation=landscape`, {
-        headers: { Authorization: 'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC' }
-      });
-      if (!pRes.ok) throw new Error('pexels error');
-      const pData = await pRes.json();
-      grid.innerHTML = '';
-      const photos2 = pData.photos || [];
-      if (!photos2.length) { grid.innerHTML = '<div class="photo-loading">No results. Try another keyword.</div>'; return; }
-      photos2.forEach(photo => {
-        const img = document.createElement('img');
-        img.className = 'photo-thumb';
-        img.crossOrigin = 'anonymous';
-        img.src = photo.src.small;
-        img.title = photo.photographer || '';
-        img.addEventListener('click', () => applyPhotoBg(img, photo.src.large));
-        grid.appendChild(img);
-      });
-      // Update attribution
-      const attr = document.querySelector('.photo-attribution');
-      if (attr) attr.innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
-    } catch(e2) {
-      grid.innerHTML = '<div class="photo-loading">Could not load photos. Check your connection.</div>';
-    }
-  }
+    document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
+    return;
+  } catch(e1) {}
+
+  // Fallback: Pixabay (free, no key needed for basic)
+  try {
+    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(q)}&image_type=photo&orientation=horizontal&per_page=12`);
+    if (!res.ok) throw new Error('pixabay error');
+    const data = await res.json();
+    const hits = data.hits || [];
+    if (!hits.length) throw new Error('no results');
+    grid.innerHTML = '';
+    hits.forEach(photo => {
+      const img = document.createElement('img');
+      img.className = 'photo-thumb';
+      img.crossOrigin = 'anonymous';
+      img.src = photo.previewURL;
+      img.title = photo.user || '';
+      img.addEventListener('click', () => applyPhotoBg(img, photo.largeImageURL));
+      grid.appendChild(img);
+    });
+    document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a>';
+    return;
+  } catch(e2) {}
+
+  // Final fallback: curated static backgrounds
+  grid.innerHTML = '';
+  const fallbacks = [
+    { thumb:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Abstract' },
+    { thumb:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Studio' },
+    { thumb:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Nature' },
+    { thumb:'https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Night Sky' },
+    { thumb:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Dark' },
+    { thumb:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Bokeh' },
+  ];
+  fallbacks.forEach(p => {
+    const img = document.createElement('img');
+    img.className = 'photo-thumb';
+    img.crossOrigin = 'anonymous';
+    img.src = p.thumb;
+    img.title = p.label;
+    img.addEventListener('click', () => applyPhotoBg(img, p.full));
+    grid.appendChild(img);
+  });
+  document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
 };
 
 // Upload BG from PC
@@ -1300,84 +1337,61 @@ async function applyPhotoBg(el, url) {
 window.togglePanel=function(id){document.getElementById(id).classList.toggle('collapsed');};
 
 // ─── DOWNLOAD ────────────────────────────────────────────────────────
-function buildExportCanvas(item){
-  // Build final composite for a given item using current editor settings
-  const w=item.resultCanvas.width, h=item.resultCanvas.height;
-  const exp=document.createElement('canvas'); exp.width=w; exp.height=h;
-  const ectx=exp.getContext('2d');
+// Builds export canvas for ANY item using its saved bgSnapshot
+function buildExportCanvasForItem(item) {
+  const subject = item.resultCanvas;
+  const w = subject.width, h = subject.height;
+  const exp = document.createElement('canvas'); exp.width=w; exp.height=h;
+  const ectx = exp.getContext('2d');
+  const bg = item.bgSnapshot || {};
+  const gradients = {'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
 
   // BG
-  if(currentPhotoBg&&currentPhotoBg.img&&item.id==activeId){
+  if (bg.photoBg && bg.photoBg.img) {
     ectx.save();
-    if(bgBlur>0)ectx.filter=`blur(${bgBlur}px)`;
-    const imgW=currentPhotoBg.img.naturalWidth,imgH=currentPhotoBg.img.naturalHeight;
+    if (bg.bgBlur>0) ectx.filter=`blur(${bg.bgBlur}px)`;
+    const imgW=bg.photoBg.img.naturalWidth, imgH=bg.photoBg.img.naturalHeight;
     const scale=Math.max(w/imgW,h/imgH);
-    ectx.drawImage(currentPhotoBg.img,(w-imgW*scale)/2,(h-imgH*scale)/2,imgW*scale,imgH*scale);
+    ectx.drawImage(bg.photoBg.img,(w-imgW*scale)/2,(h-imgH*scale)/2,imgW*scale,imgH*scale);
     ectx.filter='none'; ectx.restore();
-  } else if(currentBgColor!=='transparent'&&item.id==activeId){
-    const gradients={'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
-    if(gradients[currentBgColor]){
-      const g=ectx.createLinearGradient(0,0,w,h);g.addColorStop(0,gradients[currentBgColor][0]);g.addColorStop(1,gradients[currentBgColor][1]);ectx.fillStyle=g;
-    } else ectx.fillStyle=currentBgColor;
+  } else if (bg.bgColor && bg.bgColor!=='transparent') {
+    if (gradients[bg.bgColor]) {
+      const g=ectx.createLinearGradient(0,0,w,h);g.addColorStop(0,gradients[bg.bgColor][0]);g.addColorStop(1,gradients[bg.bgColor][1]);ectx.fillStyle=g;
+    } else ectx.fillStyle=bg.bgColor;
     ectx.fillRect(0,0,w,h);
   }
 
   // Shadow
-  if(shadowEnabled&&item.id==activeId){
-    const rad=shadowAngle*Math.PI/180;
-    const dx=Math.cos(rad)*shadowDistance,dy=Math.sin(rad)*shadowDistance;
-    const hex=shadowColor;const a=shadowOpacity/100;
+  if (bg.shadowEnabled) {
+    const rad=bg.shadowAngle*Math.PI/180;
+    const dx=Math.cos(rad)*bg.shadowDistance, dy=Math.sin(rad)*bg.shadowDistance;
+    const hex=bg.shadowColor, a=bg.shadowOpacity/100;
     const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-    ectx.save(); ectx.shadowColor=`rgba(${r},${g},${b},${a})`; ectx.shadowBlur=shadowBlur; ectx.shadowOffsetX=dx; ectx.shadowOffsetY=dy;
-    ectx.drawImage(item.resultCanvas,0,0); ectx.restore();
+    ectx.save();ectx.shadowColor=`rgba(${r},${g},${b},${a})`;ectx.shadowBlur=bg.shadowBlur;ectx.shadowOffsetX=dx;ectx.shadowOffsetY=dy;
+    ectx.drawImage(subject,0,0);ectx.restore();
   }
 
-  ectx.drawImage(item.resultCanvas,0,0);
+  // Subject
+  ectx.drawImage(subject,0,0);
   return exp;
 }
 
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
-  // Use wCanvas (live edits) not item.resultCanvas
-  const exp=buildExportCanvas(item);
-  // override subject with live wCanvas if active
-  if(item.id==activeId&&wCanvas){
-    const ectx2=exp.getContext('2d');
-    // redraw subject from wCanvas
-    ectx2.clearRect(0,0,exp.width,exp.height);
-    // redo full composite with wCanvas
-    const tmp=document.createElement('canvas');tmp.width=exp.width;tmp.height=exp.height;
-    const tctx=tmp.getContext('2d');
-    // BG
-    if(currentPhotoBg&&currentPhotoBg.img){
-      tctx.save();if(bgBlur>0)tctx.filter=`blur(${bgBlur}px)`;
-      const imgW=currentPhotoBg.img.naturalWidth,imgH=currentPhotoBg.img.naturalHeight;
-      const scale=Math.max(tmp.width/imgW,tmp.height/imgH);
-      tctx.drawImage(currentPhotoBg.img,(tmp.width-imgW*scale)/2,(tmp.height-imgH*scale)/2,imgW*scale,imgH*scale);
-      tctx.filter='none';tctx.restore();
-    } else if(currentBgColor!=='transparent'){
-      const gradients={'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
-      if(gradients[currentBgColor]){const g=tctx.createLinearGradient(0,0,tmp.width,tmp.height);g.addColorStop(0,gradients[currentBgColor][0]);g.addColorStop(1,gradients[currentBgColor][1]);tctx.fillStyle=g;}
-      else tctx.fillStyle=currentBgColor;
-      tctx.fillRect(0,0,tmp.width,tmp.height);
-    }
-    if(shadowEnabled){
-      const rad=shadowAngle*Math.PI/180;const dx=Math.cos(rad)*shadowDistance,dy=Math.sin(rad)*shadowDistance;
-      const hex=shadowColor;const a=shadowOpacity/100;
-      const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-      tctx.save();tctx.shadowColor=`rgba(${r},${g},${b},${a})`;tctx.shadowBlur=shadowBlur;tctx.shadowOffsetX=dx;tctx.shadowOffsetY=dy;
-      tctx.drawImage(wCanvas,0,0);tctx.restore();
-    }
-    tctx.drawImage(wCanvas,0,0);
-    tmp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-bg-removed.png';a.click();},'image/png');
-    return;
+  // Sync wCanvas back to item before export
+  if(wCanvas){
+    const cvs=document.createElement('canvas');cvs.width=wCanvas.width;cvs.height=wCanvas.height;
+    cvs.getContext('2d').drawImage(wCanvas,0,0);
+    item.resultCanvas=cvs;
   }
+  const exp=buildExportCanvasForItem(item);
   exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-bg-removed.png';a.click();},'image/png');
 };
 
 window.downloadItem=async function(id){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
-  item.resultCanvas.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png';a.click();},'image/png');
+  const exp=buildExportCanvasForItem(item);
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png';a.click();},'image/png');
 };
 
 window.downloadAll=async function(){
@@ -1386,7 +1400,8 @@ window.downloadAll=async function(){
   if(!JSZip){alert('JSZip not loaded. Please try again.');return;}
   const zip=new JSZip();
   for(const item of done){
-    const blob=await new Promise(res=>item.resultCanvas.toBlob(res,'image/png'));
+    const exp=buildExportCanvasForItem(item);
+    const blob=await new Promise(res=>exp.toBlob(res,'image/png'));
     zip.file('wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png',blob);
   }
   const zipBlob=await zip.generateAsync({type:'blob'});
