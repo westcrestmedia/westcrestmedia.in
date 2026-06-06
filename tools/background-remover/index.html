@@ -1510,7 +1510,9 @@ function drawComposite() {
       shadowAngle,
       subjectScale,
       subjectX,
-      subjectY
+      subjectY,
+      dcWidth: dc.width,
+      dcHeight: dc.height
     };
   }
 }
@@ -2020,9 +2022,21 @@ function buildExportCanvasForItem(item) {
   }
 
   // Subject with transform
+  // subjectX/Y are in display-canvas pixels — must scale to export canvas size
+  // Display canvas size when this was set = baseW/baseH (not available here),
+  // but dc.width at time of save was proportional to wCanvas via same aspect.
+  // We use the ratio: export canvas / display canvas at time of snapshot.
+  // Since bgSnapshot is saved in drawComposite which uses dc.width/dc.height,
+  // we derive the scale from the fact that wCanvas and dc share same aspect ratio.
+  // The correct scale = w / dc.width at time of last draw.
+  // We store dcWidth/dcHeight in bgSnapshot to avoid this ambiguity.
   const sScale = bg.subjectScale || 1;
-  const sX = bg.subjectX || 0;
-  const sY = bg.subjectY || 0;
+  const dcW = bg.dcWidth || dc.width || w;   // display canvas width when saved
+  const dcH = bg.dcHeight || dc.height || h;  // display canvas height when saved
+  const scaleX = w / dcW;
+  const scaleY = h / dcH;
+  const sX = (bg.subjectX || 0) * scaleX;
+  const sY = (bg.subjectY || 0) * scaleY;
   const sw = w * sScale, sh = h * sScale;
   const sx = (w - sw) / 2 + sX;
   const sy = (h - sh) / 2 + sY;
