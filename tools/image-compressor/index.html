@@ -54,6 +54,7 @@ body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; 
 .nav-logo img{ height:26px; }
 .nav-back{ display:flex; align-items:center; gap:5px; color:var(--muted); text-decoration:none; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; transition:color .2s; }
 .nav-back:hover{ color:var(--gold); }
+.nav-back svg{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
 .hero{ text-align:center; padding:3.5rem 1.5rem 2.5rem; max-width:720px; margin:0 auto; }
 .hero-badge{ display:inline-flex; align-items:center; gap:7px; background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:5px 15px; border-radius:99px; margin-bottom:1.4rem; }
@@ -180,7 +181,7 @@ footer a:hover{ color:var(--gold); }
 
 <nav class="nav">
   <a href="https://westcrestmedia.in/" class="nav-logo"><img src="../../images/w_logo.svg" alt="Westcrest Media"> Westcrest Media</a>
-  <a href="https://westcrestmedia.in/#tools" class="nav-back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg> All Tools</a>
+  <a href="https://westcrestmedia.in/" class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg> Back to Home</a>
 </nav>
 
 <section class="hero">
@@ -296,7 +297,14 @@ footer a:hover{ color:var(--gold); }
   <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I batch compress different formats? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Absolutely! Mix any formats — upload JPG, PNG, RAW, HEIC all together. They all get compressed to your chosen output format.</div></div>
 </section>
 
-<footer><p style="font-size:12px;">© 2025 Westcrest Media. All rights reserved.</p><div style="display:flex; gap:1.5rem; flex-wrap:wrap;"><a href="https://westcrestmedia.in/">Home</a><a href="https://westcrestmedia.in/#tools">All Tools</a><a href="https://westcrestmedia.in/about/">About</a><a href="https://westcrestmedia.in/blog/">Blog</a><a href="https://westcrestmedia.in/#contact">Contact</a><a href="https://westcrestmedia.in/privacy-policy/">Privacy Policy</a><a href="https://westcrestmedia.in/terms/">Terms</a></div></footer>
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
 
 <nav class="wc-bottom-nav"><a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a><div class="wc-bn-divider"></div><a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a><div class="wc-bn-divider"></div><a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a></nav>
 
