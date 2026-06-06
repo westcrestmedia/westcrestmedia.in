@@ -202,7 +202,7 @@ footer a:hover{ color:var(--gold); }
     <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
     <p class="drop-title">Drop any image here</p>
     <p class="drop-sub">All formats accepted — JPG, PNG, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW, PSD, JP2 & more</p>
-    <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
+    <button class="upload-btn" onclick="event.stopPropagation(); document.getElementById('file-in').click()">Choose Images</button>
     <div class="format-tags"><span class="format-tag">📸 JPG</span><span class="format-tag">🖼️ PNG</span><span class="format-tag">🌐 WEBP</span><span class="format-tag">🎞️ GIF</span><span class="format-tag">📷 BMP</span><span class="format-tag">🎨 TIFF</span><span class="format-tag">⚡ AVIF</span><span class="format-tag">🍎 HEIC</span><span class="format-tag">📁 RAW</span><span class="format-tag">🎯 PSD</span><span class="format-tag">✨ SVG</span><span class="format-tag">📦 BATCH 20</span></div>
     <input type="file" id="file-in" accept="image/*" multiple>
   </div>
@@ -540,6 +540,7 @@ dropZone.addEventListener('drop', (e) => {
 });
 dropZone.addEventListener('click', (e) => {
   if (e.target === fileInput) return;
+  if (e.target.closest('button')) return;
   fileInput.click();
 });
 fileInput.addEventListener('change', (e) => { if(e.target.files.length) addFiles(Array.from(e.target.files)); fileInput.value = ''; });
