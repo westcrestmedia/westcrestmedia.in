@@ -2006,51 +2006,60 @@ function buildExportCanvasForItem(item) {
   const bg = item.bgSnapshot || {};
   const gradients = {'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
 
-  // BG — full canvas
+  // 1. Background
   if (bg.photoBg && bg.photoBg.img) {
     ectx.save();
-    if (bg.bgBlur>0) ectx.filter=`blur(${bg.bgBlur}px)`;
-    const imgW=bg.photoBg.img.naturalWidth, imgH=bg.photoBg.img.naturalHeight;
-    const scale=Math.max(w/imgW,h/imgH);
-    ectx.drawImage(bg.photoBg.img,(w-imgW*scale)/2,(h-imgH*scale)/2,imgW*scale,imgH*scale);
-    ectx.filter='none'; ectx.restore();
-  } else if (bg.bgColor && bg.bgColor!=='transparent') {
+    if (bg.bgBlur > 0) ectx.filter = "blur(" + bg.bgBlur + "px)";
+    const imgW = bg.photoBg.img.naturalWidth, imgH = bg.photoBg.img.naturalHeight;
+    const sc = Math.max(w/imgW, h/imgH);
+    ectx.drawImage(bg.photoBg.img, (w-imgW*sc)/2, (h-imgH*sc)/2, imgW*sc, imgH*sc);
+    ectx.filter = 'none'; ectx.restore();
+  } else if (bg.bgColor && bg.bgColor !== 'transparent') {
     if (gradients[bg.bgColor]) {
-      const g=ectx.createLinearGradient(0,0,w,h);g.addColorStop(0,gradients[bg.bgColor][0]);g.addColorStop(1,gradients[bg.bgColor][1]);ectx.fillStyle=g;
-    } else ectx.fillStyle=bg.bgColor;
+      const g = ectx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0, gradients[bg.bgColor][0]);
+      g.addColorStop(1, gradients[bg.bgColor][1]);
+      ectx.fillStyle = g;
+    } else {
+      ectx.fillStyle = bg.bgColor;
+    }
     ectx.fillRect(0,0,w,h);
   }
 
-  // Subject with transform
-  // subjectX/Y are in display-canvas pixels — must scale to export canvas size
-  // Display canvas size when this was set = baseW/baseH (not available here),
-  // but dc.width at time of save was proportional to wCanvas via same aspect.
-  // We use the ratio: export canvas / display canvas at time of snapshot.
-  // Since bgSnapshot is saved in drawComposite which uses dc.width/dc.height,
-  // we derive the scale from the fact that wCanvas and dc share same aspect ratio.
-  // The correct scale = w / dc.width at time of last draw.
-  // We store dcWidth/dcHeight in bgSnapshot to avoid this ambiguity.
-  const sScale = bg.subjectScale || 1;
-  const dcW = bg.dcWidth || dc.width || w;   // display canvas width when saved
-  const dcH = bg.dcHeight || dc.height || h;  // display canvas height when saved
-  const scaleX = w / dcW;
-  const scaleY = h / dcH;
-  const sX = (bg.subjectX || 0) * scaleX;
-  const sY = (bg.subjectY || 0) * scaleY;
-  const sw = w * sScale, sh = h * sScale;
-  const sx = (w - sw) / 2 + sX;
-  const sy = (h - sh) / 2 + sY;
+  // 2. Subject — mirror exactly what drawComposite does on dc, scaled up to full res
+  // drawComposite uses dc (dcW x dcH) with subjectScale and subjectX/Y in dc-pixels.
+  // Export canvas is (w x h). ratio = w/dcW converts dc-pixels → export-pixels.
+  const sScale = bg.subjectScale != null ? bg.subjectScale : 1;
+  const dcW    = bg.dcWidth  || w;
+  const dcH    = bg.dcHeight || h;
+  const ratio  = w / dcW;
+
+  const drawnW_dc  = dcW * sScale;
+  const drawnH_dc  = dcH * sScale;
+  const originX_dc = (dcW - drawnW_dc) / 2 + (bg.subjectX || 0);
+  const originY_dc = (dcH - drawnH_dc) / 2 + (bg.subjectY || 0);
+
+  const eSW = drawnW_dc  * ratio;
+  const eSH = drawnH_dc  * ratio;
+  const eSX = originX_dc * ratio;
+  const eSY = originY_dc * ratio;
 
   if (bg.shadowEnabled) {
-    const rad=bg.shadowAngle*Math.PI/180;
-    const dx=Math.cos(rad)*bg.shadowDistance, dy=Math.sin(rad)*bg.shadowDistance;
-    const hex=bg.shadowColor, a=bg.shadowOpacity/100;
-    const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-    ectx.save();ectx.shadowColor=`rgba(${r},${g},${b},${a})`;ectx.shadowBlur=bg.shadowBlur;ectx.shadowOffsetX=dx;ectx.shadowOffsetY=dy;
-    ectx.drawImage(subject,sx,sy,sw,sh);ectx.restore();
+    const rad = bg.shadowAngle * Math.PI / 180;
+    const dx  = Math.cos(rad) * bg.shadowDistance * ratio;
+    const dy  = Math.sin(rad) * bg.shadowDistance * ratio;
+    const hex = bg.shadowColor, a = bg.shadowOpacity / 100;
+    const r = parseInt(hex.slice(1,3),16), gv = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    ectx.save();
+    ectx.shadowColor   = "rgba(" + r + "," + gv + "," + b + "," + a + ")";
+    ectx.shadowBlur    = bg.shadowBlur * ratio;
+    ectx.shadowOffsetX = dx;
+    ectx.shadowOffsetY = dy;
+    ectx.drawImage(subject, eSX, eSY, eSW, eSH);
+    ectx.restore();
   }
 
-  ectx.drawImage(subject,sx,sy,sw,sh);
+  ectx.drawImage(subject, eSX, eSY, eSW, eSH);
   return exp;
 }
 
