@@ -363,9 +363,10 @@ async function compressImage(file, quality, outputMime) {
 
 async function addFiles(files) {
   const newFiles = files.slice(0, 20 - items.length);
+  const newItems = [];
   for (let f of newFiles) {
     const previewUrl = URL.createObjectURL(f);
-    items.push({
+    const item = {
       id: crypto.randomUUID(),
       file: f,
       originalSize: f.size,
@@ -375,15 +376,32 @@ async function addFiles(files) {
       status: 'pending',
       previewUrl,
       name: f.name
-    });
+    };
+    items.push(item);
+    newItems.push(item);
   }
   renderBatch();
   if (items.length > 0) document.getElementById('batch-header').classList.add('active');
   updateBatchHeader();
-  
-  if (items.length === 1 && items[0].status === 'pending') {
-    await compressSingle(items[0]);
+
+  if (newItems.length === 1) {
+    // Single image added — auto compress it
+    await compressSingle(newItems[0]);
+  } else if (newItems.length > 1) {
+    // Bulk upload — show hint to press Compress All
+    showBulkHint();
   }
+}
+
+function showBulkHint() {
+  const existing = document.getElementById('bulk-hint');
+  if (existing) return;
+  const hint = document.createElement('div');
+  hint.id = 'bulk-hint';
+  hint.style.cssText = 'display:flex;align-items:center;gap:10px;background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.22);border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:rgba(245,240,232,0.7);';
+  hint.innerHTML = `<span style="font-size:15px;">⚡</span><span>Multiple images detected — click <strong style="color:#c8a96e;">Compress All</strong> to compress them together.</span><button onclick="document.getElementById('bulk-hint').remove()" style="margin-left:auto;background:none;border:none;color:rgba(245,240,232,0.35);cursor:pointer;font-size:16px;line-height:1;">×</button>`;
+  const batchHeader = document.getElementById('batch-header');
+  batchHeader.insertAdjacentElement('afterend', hint);
 }
 
 async function compressSingle(item, showAnim = true) {
@@ -519,6 +537,8 @@ window.clearAll = () => {
   renderBatch();
   document.getElementById('batch-header').classList.remove('active');
   document.getElementById('btn-dl-all').style.display = 'none';
+  const hint = document.getElementById('bulk-hint');
+  if (hint) hint.remove();
 };
 
 let isDragging = false;
