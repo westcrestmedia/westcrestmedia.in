@@ -1641,8 +1641,19 @@ function drawCursorRing(x,y){
 
 // ─── BRUSH ───────────────────────────────────────────────────────────
 function applyBrush(dispX,dispY){
-  const sx=wCanvas.width/dc.width, sy=wCanvas.height/dc.height;
-  const fx=dispX*sx, fy=dispY*sy, fr=(window.brushSize/2)*sx;
+  // dc coords → wCanvas coords, accounting for subjectScale+offset
+  const dw=dc.width, dh=dc.height;
+  // Subject is drawn on dc at: origin=(dw-dw*subjectScale)/2+subjectX, size=dw*subjectScale
+  const drawnW = dw * subjectScale;
+  const drawnH = dh * subjectScale;
+  const originX = (dw - drawnW) / 2 + subjectX;
+  const originY = (dh - drawnH) / 2 + subjectY;
+  // Map dispX/Y back into wCanvas pixel space
+  const fx = ((dispX - originX) / drawnW) * wCanvas.width;
+  const fy = ((dispY - originY) / drawnH) * wCanvas.height;
+  // Brush radius in wCanvas pixels (screen px / subjectScale / zoom → wCanvas px)
+  const sx = wCanvas.width / drawnW;
+  const fr = (window.brushSize / 2) * sx;
   if (brushMode==='erase'){
     wCtx.save(); wCtx.globalCompositeOperation='destination-out';
     wCtx.beginPath(); wCtx.arc(fx,fy,fr,0,Math.PI*2); wCtx.fillStyle='rgba(0,0,0,1)'; wCtx.fill(); wCtx.restore();
