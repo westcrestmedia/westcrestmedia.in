@@ -1627,8 +1627,8 @@ function attachEvents() {
 }
 
 function updateViewportCursor(){viewport.style.cursor=brushMode?'none':'move';}
-function canvasPos(e){const vr=viewport.getBoundingClientRect();const cx=e.clientX-vr.left-panX,cy=e.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
-function touchPos(t){const vr=viewport.getBoundingClientRect();const cx=t.clientX-vr.left-panX,cy=t.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
+function canvasPos(e){const dr=dc.getBoundingClientRect();const cx=e.clientX-dr.left,cy=e.clientY-dr.top;if(cx<0||cy<0||cx>dr.width||cy>dr.height)return null;return{x:cx,y:cy};}
+function touchPos(t){const dr=dc.getBoundingClientRect();const cx=t.clientX-dr.left,cy=t.clientY-dr.top;if(cx<0||cy<0||cx>dr.width||cy>dr.height)return null;return{x:cx,y:cy};}
 
 // ─── CURSOR ──────────────────────────────────────────────────────────
 function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);}
