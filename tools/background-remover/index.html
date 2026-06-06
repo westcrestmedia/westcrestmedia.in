@@ -1325,23 +1325,71 @@ async function openEditor(id) {
   brushMode = null; isPainting = false; isPanning = false;
   zoom = 1; panX = 0; panY = 0; baseW = 0; baseH = 0;
   undoStack = []; redoStack = []; updateUndoUI();
-  currentBgColor = 'transparent'; currentPhotoBg = null;
-  subjectScale = 1; subjectX = 0; subjectY = 0;
   isDraggingSubject = false;
-  // Reset sliders if present
+
+  // Restore saved state from bgSnapshot, or defaults if first time
+  const snap = item.bgSnapshot || {};
+  currentBgColor  = snap.bgColor    || 'transparent';
+  currentPhotoBg  = snap.photoBg    || null;
+  subjectScale    = snap.subjectScale != null ? snap.subjectScale : 1;
+  subjectX        = snap.subjectX    || 0;
+  subjectY        = snap.subjectY    || 0;
+  shadowEnabled   = snap.shadowEnabled || false;
+  shadowColor     = snap.shadowColor   || '#000000';
+  shadowOpacity   = snap.shadowOpacity != null ? snap.shadowOpacity : 60;
+  shadowBlur      = snap.shadowBlur    != null ? snap.shadowBlur    : 20;
+  shadowDistance  = snap.shadowDistance!= null ? snap.shadowDistance: 10;
+  shadowAngle     = snap.shadowAngle   != null ? snap.shadowAngle   : 135;
+  bgBlur          = snap.bgBlur        != null ? snap.bgBlur        : 0;
+
+  // Sync all UI controls to restored state
+  // Subject sliders
   const ssEl = document.getElementById('subject-scale');
-  if (ssEl) { ssEl.value = 100; document.getElementById('subject-scale-val').textContent = '100%'; }
+  if (ssEl) { ssEl.value = Math.round(subjectScale*100); document.getElementById('subject-scale-val').textContent = Math.round(subjectScale*100)+'%'; }
   const sxEl = document.getElementById('subject-x');
-  if (sxEl) { sxEl.value = 0; document.getElementById('subject-x-val').textContent = '0'; }
+  if (sxEl) { sxEl.value = subjectX; document.getElementById('subject-x-val').textContent = subjectX; }
   const syEl = document.getElementById('subject-y');
-  if (syEl) { syEl.value = 0; document.getElementById('subject-y-val').textContent = '0'; }
-  document.getElementById('shadow-enable').checked = false;
-  shadowEnabled = false; document.getElementById('shadow-controls').style.display = 'none';
-  document.getElementById('bg-blur').value = 0; bgBlur = 0;
-  document.getElementById('bg-blur-val').textContent = '0px';
-  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-  document.querySelector('.swatch[data-bg="transparent"]').classList.add('active');
-  document.querySelectorAll('.photo-thumb').forEach(t=>t.classList.remove('active'));
+  if (syEl) { syEl.value = subjectY; document.getElementById('subject-y-val').textContent = subjectY; }
+  // Mobile subject sliders
+  const mssEl = document.getElementById('mob-subject-scale');
+  if (mssEl) { mssEl.value = Math.round(subjectScale*100); document.getElementById('mob-subject-scale-val').textContent = Math.round(subjectScale*100)+'%'; }
+  const msxEl = document.getElementById('mob-subject-x');
+  if (msxEl) { msxEl.value = subjectX; document.getElementById('mob-subject-x-val').textContent = subjectX; }
+  const msyEl = document.getElementById('mob-subject-y');
+  if (msyEl) { msyEl.value = subjectY; document.getElementById('mob-subject-y-val').textContent = subjectY; }
+  // Shadow
+  document.getElementById('shadow-enable').checked = shadowEnabled;
+  document.getElementById('shadow-controls').style.display = shadowEnabled ? 'flex' : 'none';
+  document.getElementById('shadow-color').value   = shadowColor;
+  document.getElementById('shadow-opacity').value = shadowOpacity; document.getElementById('shadow-opacity-val').textContent = shadowOpacity+'%';
+  document.getElementById('shadow-blur').value    = shadowBlur;    document.getElementById('shadow-blur-val').textContent    = shadowBlur+'px';
+  document.getElementById('shadow-distance').value= shadowDistance; document.getElementById('shadow-distance-val').textContent= shadowDistance+'px';
+  document.getElementById('shadow-angle').value   = shadowAngle;   document.getElementById('shadow-angle-val').textContent   = shadowAngle+'°';
+  // Mobile shadow
+  const mse = document.getElementById('mob-shadow-enable'); if(mse) { mse.checked = shadowEnabled; document.getElementById('mob-shadow-controls').style.display = shadowEnabled?'flex':'none'; }
+  const msc = document.getElementById('mob-shadow-color');    if(msc) msc.value = shadowColor;
+  const mso = document.getElementById('mob-shadow-opacity');  if(mso) { mso.value = shadowOpacity; document.getElementById('mob-shadow-opacity-val').textContent = shadowOpacity+'%'; }
+  const msb = document.getElementById('mob-shadow-blur');     if(msb) { msb.value = shadowBlur;    document.getElementById('mob-shadow-blur-val').textContent    = shadowBlur+'px'; }
+  const msd = document.getElementById('mob-shadow-distance'); if(msd) { msd.value = shadowDistance; document.getElementById('mob-shadow-distance-val').textContent= shadowDistance+'px'; }
+  const msa = document.getElementById('mob-shadow-angle');    if(msa) { msa.value = shadowAngle;   document.getElementById('mob-shadow-angle-val').textContent   = shadowAngle+'°'; }
+  // BG blur
+  document.getElementById('bg-blur').value = bgBlur; document.getElementById('bg-blur-val').textContent = bgBlur+'px';
+  const mbgb = document.getElementById('mob-bg-blur'); if(mbgb) { mbgb.value = bgBlur; document.getElementById('mob-bg-blur-val').textContent = bgBlur+'px'; }
+  // BG color swatches
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  if (currentPhotoBg) {
+    // Photo bg was active — highlight matching thumb if visible
+    document.querySelectorAll('.photo-thumb').forEach(t => { if (t.src === currentPhotoBg.url || t._fullUrl === currentPhotoBg.url) t.classList.add('active'); });
+    viewport.classList.remove('checker-bg-vp');
+  } else if (currentBgColor === 'transparent') {
+    const ts = document.querySelector('.swatch[data-bg="transparent"]'); if(ts) ts.classList.add('active');
+    viewport.classList.add('checker-bg-vp');
+  } else {
+    const match = document.querySelector(`.swatch[data-bg="${currentBgColor}"]`);
+    if (match) match.classList.add('active');
+    viewport.classList.remove('checker-bg-vp');
+  }
 
   // Set up wCanvas from item's resultCanvas
   wCanvas = document.createElement('canvas');
