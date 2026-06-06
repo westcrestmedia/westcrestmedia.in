@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GQ0X1DD0DP', { 'send_page_view': true, 'cookie_flags': 'SameSite=None;Secure' });
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Background Remover — Free Online Tool | Westcrest Media</title>
+<meta name="description" content="Remove image backgrounds instantly in your browser. Batch remove, add shadows, photo backgrounds. Free, private, no upload to servers.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
+<link rel="shortcut icon" href="../../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/background-remover">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/background-remover">
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/background-remover">
+<meta property="og:title"       content="Background Remover — Westcrest Media">
+<meta property="og:description" content="Remove image backgrounds instantly in your browser. Free, private, no upload to servers.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Background Remover — Westcrest Media">
+<meta name="twitter:description" content="Remove image backgrounds instantly in your browser. Free, private, no upload to servers.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta name="keywords" content="background remover, remove background, ai background remover, free background remover, transparent background, png background remove, batch background remover">
+<meta name="theme-color" content="#C9A84C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a96e; --gold2: #e8c98e;
+  --gold-dim: rgba(200,169,110,0.15); --gold-border: rgba(200,169,110,0.22);
+  --dark: #111118; --dark2: #16161e; --dark3: #1c1c26; --dark4: #1e1e28; --dark5: #222230;
+  --text: #f5f0e8; --muted: rgba(245,240,232,0.55); --faint: rgba(245,240,232,0.12);
+  --radius: 14px; --radius-sm: 8px;
+  --red: #e55; --green: #5b5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;background:rgba(8,8,8,0.97);border-bottom:1px solid var(--gold-border);backdrop-filter:blur(14px);}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:0.25em;}
+.nav-logo img{height:26px;}
+.nav-back{display:flex;align-items:center;gap:5px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;transition:color .2s;}
+.nav-back:hover{color:var(--gold);}
+.nav-back svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* HERO */
+.hero{text-align:center;padding:3.5rem 1.5rem 2.5rem;max-width:640px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 15px;border-radius:99px;margin-bottom:1.4rem;}
+.pulse{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:.8rem;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero p{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:1.2rem;font-weight:300;}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+.pill{background:var(--dark3);border:1px solid var(--faint);color:var(--muted);font-size:10px;padding:3px 11px;border-radius:99px;font-weight:500;}
+
+/* TOOL WRAP */
+.tool-wrap{max-width:1200px;margin:0 auto;padding:0 1.25rem 5rem;}
+
+/* DROP ZONE */
+.drop-zone{background:var(--dark2);border:2px dashed var(--gold-border);border-radius:var(--radius);padding:3rem 2rem;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;margin-bottom:1.5rem;}
+.drop-zone.drag-over{border-color:var(--gold);background:rgba(200,169,110,.04);}
+.drop-zone.hidden{display:none;}
+.upload-icon{width:54px;height:54px;background:var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;}
+.upload-icon svg{width:24px;height:24px;fill:none;stroke:var(--gold);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.drop-title{font-size:16px;font-weight:600;margin-bottom:.4rem;}
+.drop-sub{font-size:13px;color:var(--muted);margin-bottom:1.3rem;font-weight:300;}
+.upload-btn{background:transparent;border:1.5px solid var(--gold);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:9px 26px;border-radius:var(--radius-sm);cursor:pointer;transition:background .2s;}
+.upload-btn:hover{background:var(--gold-dim);}
+.format-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:1rem;}
+.format-tag{background:var(--dark4);border:1px solid var(--faint);color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.05em;padding:3px 9px;border-radius:4px;}
+#file-in{display:none;}
+
+/* BATCH QUEUE */
+.batch-header{display:none;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;}
+.batch-header.active{display:flex;}
+.batch-title{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.batch-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-sm{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;border:1.5px solid;}
+.btn-sm.gold{background:var(--gold);color:#000;border-color:var(--gold);}
+.btn-sm.gold:hover{opacity:.88;}
+.btn-sm.outline{background:transparent;border-color:var(--faint);color:var(--muted);}
+.btn-sm.outline:hover{border-color:var(--gold-border);color:var(--text);}
+.btn-sm.danger{background:transparent;border-color:rgba(220,50,50,.3);color:#e55;}
+.btn-sm.danger:hover{background:rgba(220,50,50,.1);}
+
+/* BATCH GRID */
+.batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:1rem;}
+.batch-card{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;}
+.batch-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.batch-card.active-edit{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-dim);}
+.batch-thumb{width:100%;aspect-ratio:1;object-fit:contain;background:var(--dark3);display:block;}
+.batch-thumb-wrap{width:100%;aspect-ratio:1;background:var(--dark3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.batch-thumb-wrap canvas{max-width:100%;max-height:100%;object-fit:contain;}
+.batch-status{position:absolute;top:6px;right:6px;font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:99px;}
+.batch-status.queued{background:rgba(100,100,120,.6);color:var(--muted);}
+.batch-status.processing{background:rgba(200,169,110,.2);color:var(--gold);}
+.batch-status.done{background:rgba(50,180,50,.2);color:#7ddb7d;}
+.batch-status.error{background:rgba(220,50,50,.2);color:#e55;}
+.batch-card-footer{padding:7px 10px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--faint);}
+.batch-name{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;}
+.batch-dl-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s;}
+.batch-dl-btn:hover{color:var(--gold);}
+.batch-dl-btn:disabled{opacity:.3;cursor:not-allowed;}
+.batch-remove-btn{position:absolute;top:5px;left:5px;background:rgba(17,17,24,.75);border:1px solid rgba(220,50,50,.35);color:#e55;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;opacity:0;transition:opacity .15s,background .15s;z-index:6;}
+.batch-card:hover .batch-remove-btn{opacity:1;}
+.batch-remove-btn:hover{background:rgba(220,50,50,.25);}
+.batch-remove-btn:disabled{opacity:.3;cursor:not-allowed;}
+.batch-progress-bar{height:3px;background:var(--dark5);}
+.batch-progress-fill{height:100%;background:var(--gold);width:0%;transition:width .3s;}
+.batch-add-more{border:2px dashed var(--faint);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;min-height:160px;color:var(--muted);font-size:12px;transition:border-color .2s,color .2s;}
+.batch-add-more:hover{border-color:var(--gold-border);color:var(--gold);}
+.batch-add-more svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;}
+
+/* EDITOR AREA */
+.editor-wrap{display:none;gap:1rem;margin-bottom:1rem;}
+.editor-wrap.active{display:grid;grid-template-columns:1fr 300px;}
+@media(max-width:900px){.editor-wrap.active{grid-template-columns:1fr;}}
+
+/* CANVAS CARD */
+.canvas-card{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);overflow:hidden;}
+.canvas-card-header{padding:10px 14px;border-bottom:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.canvas-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+#canvas-viewport{width:100%;overflow:hidden;position:relative;touch-action:none;min-height:300px;}
+#display-canvas,#cursor-canvas{position:absolute;top:0;left:0;border-radius:4px;display:block;transform-origin:0 0;}
+#cursor-canvas{pointer-events:none;}
+.checker-bg-vp{background-image:linear-gradient(45deg,#2a2a2a 25%,transparent 25%),linear-gradient(-45deg,#2a2a2a 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#2a2a2a 75%),linear-gradient(-45deg,transparent 75%,#2a2a2a 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0;background-color:#1a1a1a;}
+
+/* SIDEBAR PANELS */
+.sidebar{display:flex;flex-direction:column;gap:.75rem;}
+.panel{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);overflow:hidden;}
+.panel-header{padding:10px 14px;border-bottom:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.panel-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.panel-toggle{font-size:13px;color:var(--muted);transition:transform .2s;}
+.panel.collapsed .panel-toggle{transform:rotate(-90deg);}
+.panel-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.panel.collapsed .panel-body{display:none;}
+
+/* FORM ROWS */
+.form-row{display:flex;align-items:center;gap:8px;}
+.form-label{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--muted);white-space:nowrap;min-width:52px;}
+.form-label.wide{min-width:68px;}
+.slider-wrap{display:flex;align-items:center;gap:6px;flex:1;}
+.slider-wrap input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer;border:none;}
+.slider-val{font-size:11px;color:var(--muted);min-width:34px;text-align:right;font-family:'DM Mono',monospace;}
+
+/* BRUSH TOOLBAR */
+.brush-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--faint);row-gap:8px;}
+.brush-btn{display:flex;align-items:center;gap:5px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.brush-btn:hover{border-color:var(--gold-border);color:var(--text);}
+.brush-btn.mode-erase{border-color:#e55;color:#ff7070;background:rgba(220,50,50,.12);}
+.brush-btn.mode-restore{border-color:#5b5;color:#7ddb7d;background:rgba(50,180,50,.12);}
+.dot-e{width:7px;height:7px;border-radius:50%;background:#e55;flex-shrink:0;}
+.dot-r{width:7px;height:7px;border-radius:50%;background:#5b5;flex-shrink:0;}
+.undo-btn{display:flex;align-items:center;gap:4px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.undo-btn:hover:not(:disabled){border-color:var(--gold-border);color:var(--text);}
+.undo-btn:disabled{opacity:.3;cursor:not-allowed;}
+.brush-size-group{display:flex;align-items:center;gap:6px;flex:1;min-width:160px;}
+.brush-size-group span{font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.brush-undo-group{display:flex;gap:4px;flex-shrink:0;}
+.brush-hint-bar{font-size:10px;color:var(--muted);opacity:.55;width:100%;}
+.zoom-btn{background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-size:13px;font-weight:700;width:26px;height:26px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.zoom-btn:hover{border-color:var(--gold-border);color:var(--text);}
+.zoom-level{font-size:10px;color:var(--muted);min-width:34px;text-align:center;font-weight:600;font-family:'DM Mono',monospace;}
+
+/* BG SWATCHES */
+.swatch-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.swatch{width:22px;height:22px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;flex-shrink:0;}
+.swatch.active{border-color:var(--gold);}
+.swatch.transparent-swatch{background-image:linear-gradient(45deg,#555 25%,transparent 25%),linear-gradient(-45deg,#555 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#555 75%),linear-gradient(-45deg,transparent 75%,#555 75%);background-size:6px 6px;background-position:0 0,0 3px,3px -3px,-3px 0;background-color:#333;}
+.color-input-wrap{display:flex;align-items:center;gap:5px;}
+.color-input-wrap input[type=color]{width:26px;height:26px;border:2px solid var(--faint);border-radius:5px;cursor:pointer;padding:0;background:none;}
+.color-input-wrap input[type=color]::-webkit-color-swatch-wrapper{padding:2px;}
+.color-input-wrap input[type=color]::-webkit-color-swatch{border:none;border-radius:3px;}
+.hex-input{width:72px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:4px 7px;border-radius:var(--radius-sm);outline:none;}
+.hex-input:focus{border-color:var(--gold-border);}
+
+/* PHOTO BG */
+.photo-search-row{display:flex;gap:6px;}
+.photo-search-row input{flex:1;background:var(--dark4);border:1.5px solid var(--faint);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 10px;border-radius:var(--radius-sm);outline:none;}
+.photo-search-row input:focus{border-color:var(--gold-border);}
+.photo-search-row button{background:var(--gold-dim);border:1.5px solid var(--gold-border);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow-y:auto;margin-top:4px;}
+.photo-grid::-webkit-scrollbar{width:4px;}
+.photo-grid::-webkit-scrollbar-track{background:var(--dark3);}
+.photo-grid::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:2px;}
+.photo-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+.photo-thumb:hover{border-color:var(--gold-border);}
+.photo-thumb.active{border-color:var(--gold);}
+.photo-loading{text-align:center;padding:1rem;font-size:12px;color:var(--muted);}
+.photo-attribution{font-size:10px;color:var(--muted);opacity:.5;text-align:right;}
+.photo-attribution a{color:var(--gold);text-decoration:none;}
+
+/* PROCESSING overlay */
+.proc-overlay{display:none;position:absolute;inset:0;background:rgba(17,17,24,.85);z-index:10;align-items:center;justify-content:center;flex-direction:column;gap:10px;border-radius:var(--radius);}
+.proc-overlay.active{display:flex;}
+.ai-ring{width:64px;height:64px;position:relative;}
+.ai-ring svg{width:64px;height:64px;}
+.ring-track{fill:none;stroke:var(--dark5);stroke-width:4;}
+.ring-fill{fill:none;stroke:var(--gold);stroke-width:4;stroke-linecap:round;stroke-dasharray:188;stroke-dashoffset:188;transform-origin:center;transform:rotate(-90deg);animation:fillRing 2.5s ease-in-out infinite;}
+@keyframes fillRing{0%{stroke-dashoffset:188}60%{stroke-dashoffset:0}100%{stroke-dashoffset:0;opacity:0}}
+.ai-ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.06em;}
+.proc-text{font-size:13px;font-weight:600;color:var(--text);}
+.proc-sub{font-size:11px;color:var(--muted);text-align:center;max-width:200px;}
+
+/* ACTION ROW */
+.action-row{display:none;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.action-row.active{display:flex;}
+.btn-primary{background:var(--gold);color:#000;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.03em;padding:10px 28px;border-radius:var(--radius-sm);cursor:pointer;transition:opacity .2s,transform .15s;}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);}
+.btn-secondary{background:transparent;border:1px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:10px 22px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--gold-border);color:var(--text);}
+
+/* SECTIONS / FAQ */
+.section{max-width:900px;margin:0 auto;padding:0 1.25rem 4rem;}
+.sec-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.sec-heading{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;margin-bottom:2rem;}
+.sec-heading em{font-style:italic;color:var(--gold);}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+@media(max-width:580px){.steps{grid-template-columns:1fr;}}
+.step{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);padding:1.4rem;}
+.step-n{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;}
+.step h4{font-size:14px;font-weight:600;margin-bottom:.4rem;}
+.step p{font-size:13px;color:var(--muted);line-height:1.55;font-weight:300;}
+.faq-item{border-bottom:1px solid var(--faint);}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;cursor:pointer;font-size:14px;font-weight:500;gap:1rem;}
+.faq-q svg{width:15px;height:15px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .2s;}
+.faq-item.open .faq-q svg{transform:rotate(180deg);}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s;}
+.faq-item.open .faq-a{max-height:160px;padding-bottom:.9rem;}
+
+/* BOTTOM NAV */
+.wc-bottom-nav{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:.25rem;background:rgba(12,12,16,0.92);border:1px solid rgba(200,169,110,0.3);border-radius:99px;padding:6px 8px;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+.wc-bottom-nav a{display:flex;align-items:center;gap:5px;color:rgba(220,210,195,0.7);text-decoration:none;font-family:'DM Mono',monospace,sans-serif;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;border-radius:99px;transition:all 0.18s;white-space:nowrap;}
+.wc-bottom-nav a:hover{color:#c8a96e;background:rgba(200,169,110,0.1);}
+.wc-bn-divider{width:1px;height:16px;background:rgba(200,169,110,0.2);flex-shrink:0;}
+@media(max-width:480px){.wc-bottom-nav{bottom:.75rem;padding:5px 6px;}.wc-bottom-nav a{font-size:9px;padding:5px 10px;}}
+/* OTHER TOOLS */
+.other-tool-card{display:flex;align-items:center;gap:10px;background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);padding:12px 14px;transition:border-color .2s,transform .15s;cursor:pointer;}
+.other-tool-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.other-tool-icon{font-size:1.5rem;flex-shrink:0;}
+.other-tool-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;letter-spacing:.03em;}
+.other-tool-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.other-tool-arrow{margin-left:auto;font-size:14px;color:var(--gold);flex-shrink:0;transition:transform .2s;}
+.other-tool-card:hover .other-tool-arrow{transform:translateX(3px);}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══════════════════════════════════════════════
+   MOBILE UI  (≤768px)  — desktop untouched above
+   ═══════════════════════════════════════════════ */
+@media(max-width:768px){
+
+  /* Hide desktop bottom nav on mobile (we have our own) */
+  .wc-bottom-nav{display:none;}
+
+  /* ── Hero tighten ── */
+  .hero{padding:2rem 1rem 1.5rem;}
+  .hero h1{font-size:clamp(1.6rem,8vw,2.4rem);}
+  .pills{gap:4px;}
+  .pill{font-size:9px;padding:2px 8px;}
+
+  /* ── Tool wrap ── */
+  .tool-wrap{padding:0 .75rem 7rem;}
+
+  /* ── Drop zone ── */
+  .drop-zone{padding:2rem 1rem;}
+
+  /* ── Batch grid 2 cols ── */
+  .batch-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
+  .batch-header{flex-direction:column;align-items:flex-start;gap:.5rem;}
+  .batch-actions{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
+  .batch-actions .btn-sm{flex:1;min-width:calc(50% - 3px);text-align:center;justify-content:center;}
+  /* Remove button always visible on touch devices */
+  .batch-remove-btn{opacity:1 !important;}
+
+  /* ── Editor: single column, canvas full width ── */
+  .editor-wrap.active{
+    display:flex !important;
+    flex-direction:column;
+    gap:.6rem;
+  }
+
+  /* Canvas card: full width, viewport taller */
+  #canvas-viewport{min-height:55vw !important;max-height:62vw;}
+
+  /* Hide desktop sidebar entirely on mobile */
+  .sidebar{display:none !important;}
+
+  /* ── MOBILE BOTTOM TOOLBAR ── */
+  .mob-toolbar{
+    display:none;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    z-index:300;
+    background:rgba(14,14,20,0.97);
+    border-top:1px solid var(--gold-border);
+    backdrop-filter:blur(16px);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .mob-toolbar.active{display:flex;}
+  .mob-toolbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    width:100%;
+    gap:2px;
+  }
+  .mob-tb-btn{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:none;border:none;color:var(--muted);
+    font-family:'DM Sans',sans-serif;font-size:9px;font-weight:600;
+    letter-spacing:.04em;text-transform:uppercase;
+    padding:6px 8px;border-radius:10px;cursor:pointer;
+    transition:color .15s,background .15s;
+    flex:1;min-width:0;
+  }
+  .mob-tb-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+  .mob-tb-btn:hover,.mob-tb-btn.active{color:var(--gold);background:var(--gold-dim);}
+  .mob-tb-btn.mode-erase{color:#ff7070;background:rgba(220,50,50,.12);}
+  .mob-tb-btn.mode-restore{color:#7ddb7d;background:rgba(50,180,50,.12);}
+
+  /* Brush size bar (shown above toolbar when erase/restore active) */
+  .mob-brush-bar{
+    display:none;
+    position:fixed;bottom:68px;left:0;right:0;z-index:299;
+    background:rgba(14,14,20,0.97);border-top:1px solid var(--faint);
+    padding:8px 16px;gap:10px;align-items:center;
+    backdrop-filter:blur(10px);
+  }
+  .mob-brush-bar.active{display:flex;}
+  .mob-brush-bar span{font-size:10px;color:var(--muted);white-space:nowrap;}
+  .mob-brush-bar input{flex:1;}
+  .mob-brush-bar .brush-undo-group{display:flex;gap:4px;}
+  .mob-brush-bar .undo-btn{font-size:11px;padding:5px 9px;}
+
+  /* ── BOTTOM SHEETS ── */
+  .mob-sheet-backdrop{
+    display:none;position:fixed;inset:0;z-index:400;
+    background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);
+  }
+  .mob-sheet-backdrop.active{display:block;}
+
+  .mob-sheet{
+    position:fixed;bottom:0;left:0;right:0;z-index:401;
+    background:var(--dark2);
+    border-top:1px solid var(--gold-border);
+    border-radius:18px 18px 0 0;
+    max-height:82vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.32,.72,0,1);
+    padding-bottom:calc(env(safe-area-inset-bottom) + 16px);
+  }
+  .mob-sheet.open{transform:translateY(0);}
+  .mob-sheet-handle{width:36px;height:4px;background:var(--faint);border-radius:99px;margin:10px auto 0;}
+  .mob-sheet-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 16px 6px;}
+  .mob-sheet-body{padding:4px 16px 8px;}
+
+  /* ── Panels inside sheet ── */
+  .mob-sheet .panel{background:transparent;border:none;border-radius:0;overflow:visible;}
+  .mob-sheet .panel-header{padding:8px 0;border-bottom:1px solid var(--faint);}
+  .mob-sheet .panel-body{padding:10px 0;}
+
+  /* ── Zoom bar inside canvas header ── */
+  .canvas-card-header{flex-wrap:nowrap;}
+
+  /* ── Action row hide on mobile (download in toolbar) ── */
+  .action-row{display:none !important;}
+
+  /* ── Section / FAQ below tool ── */
+  .section{padding:0 .75rem 3rem;}
+  .steps{grid-template-columns:1fr;}
+}
+
+/* Mobile toolbar always hidden on desktop */
+@media(min-width:769px){
+  .mob-toolbar,.mob-sheet,.mob-sheet-backdrop,.mob-brush-bar{display:none !important;}
+}
+
+/* UPLOAD ANIMATION OVERLAY */
+.upload-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(11,11,18,0.92);align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(6px);}
+.upload-overlay.active{display:flex;}
+.upload-anim-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.upload-file-icon{position:relative;width:80px;height:80px;}
+.upload-file-icon svg{width:80px;height:80px;filter:drop-shadow(0 0 14px rgba(200,169,110,0.3));}
+.upload-arrow-anim{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:uploadArrow 1s ease-in-out infinite;}
+@keyframes uploadArrow{0%,100%{transform:translate(-50%,-40%);opacity:0.3}50%{transform:translate(-50%,-60%);opacity:1}}
+.upload-dots{display:flex;gap:7px;margin-top:4px;}
+.upload-dots span{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:dotBounce 1.2s ease-in-out infinite;}
+.upload-dots span:nth-child(2){animation-delay:.2s;}
+.upload-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotBounce{0%,80%,100%{opacity:.25;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+.upload-overlay-title{font-size:16px;font-weight:600;color:var(--text);letter-spacing:.04em;}
+.upload-overlay-sub{font-size:12px;color:var(--muted);font-weight:300;}
+.upload-progress-track{width:220px;height:3px;background:var(--dark5);border-radius:99px;overflow:hidden;}
+.upload-progress-fill{height:100%;background:var(--gold);border-radius:99px;width:0%;transition:width .2s;}
+
+/* BATCH CARD PROCESSING SPINNER */
+.card-proc-overlay{display:none;position:absolute;inset:0;background:rgba(17,17,24,.7);z-index:5;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.card-proc-overlay.active{display:flex;}
+.card-spinner{width:28px;height:28px;border:2.5px solid var(--dark5);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite;}
+.card-proc-label{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Background Remover","url":"https://westcrestmedia.in/tools/background-remover","description":"Remove image backgrounds instantly and download with custom colors. Free tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+</head>
+<body>
+
+<!-- UPLOAD ANIMATION OVERLAY -->
+<div class="upload-overlay" id="upload-overlay">
+  <div class="upload-anim-wrap">
+    <div class="upload-file-icon">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="16" width="48" height="58" rx="5" fill="rgba(200,169,110,0.08)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <path d="M32 16V6L56 16" fill="rgba(200,169,110,0.15)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
+        <g class="upload-arrow-anim">
+          <path d="M40 52v-16M34 42l6-6 6 6" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>
+    <div style="text-align:center;">
+      <p class="upload-overlay-title" id="upload-overlay-title">Reading Images…</p>
+      <p class="upload-overlay-sub" id="upload-overlay-sub">Preparing your files</p>
+    </div>
+    <div class="upload-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="https://westcrestmedia.in/" class="nav-logo">
+    <img src="../../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
+    Westcrest Media
+  </a>
+  <a href="https://westcrestmedia.in/" class="nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Back to Home
+  </a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><div class="pulse"></div>AI-Powered · Batch Mode · 100% Free</div>
+  <h1>Remove <em>Backgrounds</em><br>Instantly</h1>
+  <p>Upload multiple images at once — AI removes backgrounds in your browser.<br>Add shadows, custom backgrounds, and download individually or as a ZIP.</p>
+  <div class="pills">
+    <span class="pill">Batch Mode</span>
+    <span class="pill">No Upload</span>
+    <span class="pill">Drop Shadow</span>
+    <span class="pill">Photo BG</span>
+    <span class="pill">ZIP Download</span>
+    <span class="pill">Privacy First</span>
+  </div>
+</section>
+
+<div class="tool-wrap">
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="drop-zone">
+    <div class="upload-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <p class="drop-title">Drop your images here</p>
+    <p class="drop-sub">Select multiple images at once — JPG, PNG, WEBP, AVIF</p>
+    <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
+    <div class="format-tags">
+      <span class="format-tag">PEOPLE</span>
+      <span class="format-tag">PRODUCTS</span>
+      <span class="format-tag">LOGOS</span>
+      <span class="format-tag">ANIMALS</span>
+      <span class="format-tag">OBJECTS</span>
+      <span class="format-tag">BATCH UP TO 20</span>
+    </div>
+    <input type="file" id="file-in" accept="image/*" multiple>
+  </div>
+
+  <!-- BATCH HEADER -->
+  <div class="batch-header" id="batch-header">
+    <span class="batch-title" id="batch-title-text">0 images</span>
+    <div class="batch-actions">
+      <button class="btn-sm outline" onclick="document.getElementById('file-in').click()">+ Add More</button>
+      <button class="btn-sm gold" id="btn-process-all" onclick="processAll()">▶ Process All</button>
+      <button class="btn-sm gold" id="btn-dl-all" onclick="downloadAll()" style="display:none">⬇ Download All ZIP</button>
+      <button class="btn-sm danger" onclick="clearAll()">✕ Clear All</button>
+    </div>
+  </div>
+
+  <!-- BATCH GRID -->
+  <div class="batch-grid" id="batch-grid"></div>
+
+  <!-- EDITOR -->
+  <div class="editor-wrap" id="editor-wrap">
+
+    <!-- CANVAS -->
+    <div class="canvas-card">
+      <div class="canvas-card-header">
+        <span class="canvas-label" id="editor-filename">Edit Image</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="zoom-btn" onclick="adjustZoom(-0.25)">−</button>
+          <span class="zoom-level" id="zoom-level">100%</span>
+          <button class="zoom-btn" onclick="adjustZoom(+0.25)">+</button>
+          <button class="zoom-btn" onclick="resetZoom()" style="width:auto;padding:0 8px;font-size:9px;letter-spacing:.04em;">FIT</button>
+        </div>
+      </div>
+      <div id="canvas-viewport" class="checker-bg-vp">
+        <canvas id="display-canvas"></canvas>
+        <canvas id="cursor-canvas"></canvas>
+        <!-- Processing overlay -->
+        <div class="proc-overlay" id="proc-overlay">
+          <div class="ai-ring">
+            <svg viewBox="0 0 72 72"><circle class="ring-track" cx="36" cy="36" r="30"/><circle class="ring-fill" cx="36" cy="36" r="30"/></svg>
+            <div class="ai-ring-label" id="proc-pct">AI</div>
+          </div>
+          <p class="proc-text" id="proc-title">Loading AI…</p>
+          <p class="proc-sub" id="proc-sub">First run downloads ~80MB model</p>
+        </div>
+      </div>
+      <!-- Brush bar -->
+      <div class="brush-bar">
+        <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;flex-shrink:0;">Touchup:</span>
+        <button class="brush-btn" id="btn-erase"   onclick="setBrushMode('erase')"><span class="dot-e"></span> Erase</button>
+        <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')"><span class="dot-r"></span> Restore</button>
+        <div class="brush-size-group">
+          <span>Size</span>
+          <input type="range" id="brush-size" min="4" max="80" value="20" style="flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
+          <span class="slider-val" id="brush-size-val" style="min-width:34px;text-align:right;">20px</span>
+        </div>
+        <div class="brush-undo-group">
+          <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
+          <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
+        </div>
+        <span class="brush-hint-bar">Ctrl+Z undo · Scroll zoom · Space+drag pan</span>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- BG COLOR PANEL -->
+      <div class="panel" id="panel-bg">
+        <div class="panel-header" onclick="togglePanel('panel-bg')">
+          <span class="panel-title">🎨 Background</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <div class="swatch-row">
+            <div class="swatch transparent-swatch active" data-bg="transparent" title="Transparent" onclick="setBg('transparent',this)"></div>
+            <div class="swatch" style="background:#fff;" data-bg="#ffffff" onclick="setBg('#ffffff',this)" title="White"></div>
+            <div class="swatch" style="background:#000;" data-bg="#000000" onclick="setBg('#000000',this)" title="Black"></div>
+            <div class="swatch" style="background:#C9A84C;" data-bg="#C9A84C" onclick="setBg('#C9A84C',this)" title="Gold"></div>
+            <div class="swatch" style="background:#1e3a5f;" data-bg="#1e3a5f" onclick="setBg('#1e3a5f',this)" title="Navy"></div>
+            <div class="swatch" style="background:#2d1b69;" data-bg="#2d1b69" onclick="setBg('#2d1b69',this)" title="Purple"></div>
+            <div class="swatch" style="background:#1a3a2a;" data-bg="#1a3a2a" onclick="setBg('#1a3a2a',this)" title="Forest"></div>
+            <div class="swatch" style="background:#3a1a1a;" data-bg="#3a1a1a" onclick="setBg('#3a1a1a',this)" title="Maroon"></div>
+            <div class="swatch" style="background:#f5f0e8;" data-bg="#f5f0e8" onclick="setBg('#f5f0e8',this)" title="Cream"></div>
+            <div class="swatch" style="background:#e8e8e8;" data-bg="#e8e8e8" onclick="setBg('#e8e8e8',this)" title="Light gray"></div>
+            <div class="swatch" style="background:#333;" data-bg="#333333" onclick="setBg('#333333',this)" title="Dark gray"></div>
+            <div class="swatch" style="background:linear-gradient(135deg,#667eea,#764ba2);" data-bg="gradient-purple" onclick="setBg('gradient-purple',this)" title="Purple gradient"></div>
+            <div class="swatch" style="background:linear-gradient(135deg,#f093fb,#f5576c);" data-bg="gradient-pink" onclick="setBg('gradient-pink',this)" title="Pink gradient"></div>
+            <div class="swatch" style="background:linear-gradient(135deg,#4facfe,#00f2fe);" data-bg="gradient-blue" onclick="setBg('gradient-blue',this)" title="Blue gradient"></div>
+            <div class="swatch" style="background:linear-gradient(135deg,#43e97b,#38f9d7);" data-bg="gradient-green" onclick="setBg('gradient-green',this)" title="Green gradient"></div>
+          </div>
+          <div class="color-input-wrap">
+            <span style="font-size:10px;color:var(--muted);">Custom:</span>
+            <input type="color" id="custom-color-pick" value="#ff6600" onchange="applyCustomColor(this.value)">
+            <input type="text" class="hex-input" id="custom-hex" placeholder="#FF6600" maxlength="7" oninput="hexInputChange(this.value)">
+          </div>
+        </div>
+      </div>
+
+      <!-- PHOTO BG PANEL -->
+      <div class="panel" id="panel-photo">
+        <div class="panel-header" onclick="togglePanel('panel-photo')">
+          <span class="panel-title">🖼 Photo Background</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <!-- Upload from PC -->
+          <div style="margin-bottom:6px;">
+            <label style="display:flex;align-items:center;gap:8px;background:var(--dark4);border:1.5px dashed var(--gold-border);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gold-border)'">
+              <span style="font-size:16px;">📁</span>
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--text);">Upload from PC</div>
+                <div style="font-size:10px;color:var(--muted);">JPG, PNG, WEBP</div>
+              </div>
+              <input type="file" id="bg-upload-file" accept="image/*" style="display:none;" onchange="applyUploadedBg(this)">
+            </label>
+          </div>
+          <!-- Search bar -->
+          <div class="photo-search-row">
+            <input type="text" id="photo-query" placeholder="Search photos… (nature, city, office…)" onkeydown="if(event.key==='Enter')searchPhotos()">
+            <button onclick="searchPhotos()">Search</button>
+          </div>
+          <div id="photo-grid" class="photo-grid">
+            <div class="photo-loading">Click Search to load photos</div>
+          </div>
+          <div class="form-row" style="margin-top:4px;">
+            <span class="form-label">Blur:</span>
+            <div class="slider-wrap">
+              <input type="range" id="bg-blur" min="0" max="30" value="0" oninput="updateEffects()">
+              <span class="slider-val" id="bg-blur-val">0px</span>
+            </div>
+          </div>
+          <p class="photo-attribution">Photos via <a href="https://unsplash.com" target="_blank">Unsplash</a></p>
+        </div>
+      </div>
+
+      <!-- SHADOW PANEL -->
+      <div class="panel" id="panel-shadow">
+        <div class="panel-header" onclick="togglePanel('panel-shadow')">
+          <span class="panel-title">✦ Drop Shadow</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <div class="form-row">
+            <span class="form-label">Enable</span>
+            <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+              <input type="checkbox" id="shadow-enable" onchange="updateEffects()" style="accent-color:var(--gold);width:15px;height:15px;">
+              <span style="font-size:12px;color:var(--muted);">Add drop shadow</span>
+            </label>
+          </div>
+          <div id="shadow-controls" style="display:none;flex-direction:column;gap:8px;">
+            <div class="form-row">
+              <span class="form-label">Color</span>
+              <input type="color" id="shadow-color" value="#000000" onchange="updateEffects()" style="width:26px;height:26px;border:2px solid var(--faint);border-radius:5px;cursor:pointer;padding:0;">
+              <span style="font-size:11px;color:var(--muted);margin-left:4px;">Shadow color</span>
+            </div>
+            <div class="form-row">
+              <span class="form-label">Opacity</span>
+              <div class="slider-wrap">
+                <input type="range" id="shadow-opacity" min="0" max="100" value="60" oninput="updateEffects()">
+                <span class="slider-val" id="shadow-opacity-val">60%</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="form-label">Blur</span>
+              <div class="slider-wrap">
+                <input type="range" id="shadow-blur" min="0" max="60" value="20" oninput="updateEffects()">
+                <span class="slider-val" id="shadow-blur-val">20px</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="form-label">Distance</span>
+              <div class="slider-wrap">
+                <input type="range" id="shadow-distance" min="0" max="80" value="10" oninput="updateEffects()">
+                <span class="slider-val" id="shadow-distance-val">10px</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <span class="form-label">Angle</span>
+              <div class="slider-wrap">
+                <input type="range" id="shadow-angle" min="0" max="360" value="135" oninput="updateEffects()">
+                <span class="slider-val" id="shadow-angle-val">135°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBJECT TRANSFORM PANEL -->
+      <div class="panel" id="panel-subject">
+        <div class="panel-header" onclick="togglePanel('panel-subject')">
+          <span class="panel-title">🔲 Subject Position</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;line-height:1.5;">Scale &amp; move your subject independently. Background stays fixed on canvas.</div>
+          <div class="form-row">
+            <span class="form-label">Scale</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-scale" min="10" max="300" value="100" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-scale-val">100%</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">Move X</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-x" min="-500" max="500" value="0" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-x-val">0</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">Move Y</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-y" min="-500" max="500" value="0" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-y-val">0</span>
+            </div>
+          </div>
+          <button class="btn-sm outline" style="width:100%;margin-top:4px;" onclick="resetSubjectTransform()">↺ Reset Position</button>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;opacity:.7;">💡 Tip: No brush mode selected? Drag subject directly on canvas to reposition.</div>
+        </div>
+      </div>
+
+      <!-- DOWNLOAD PANEL -->
+      <div class="panel" id="panel-dl">
+        <div class="panel-header" onclick="togglePanel('panel-dl')">
+          <span class="panel-title">⬇ Download</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <button class="btn-primary" style="width:100%;" onclick="downloadCurrent()">Download PNG</button>
+          <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll()" id="sidebar-dl-all">Download All ZIP</button>
+          <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll()">← Back / New Images</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Simple Process</p>
+  <h2 class="sec-heading">How It <em>Works</em></h2>
+  <div class="steps">
+    <div class="step"><p class="step-n">01</p><h4>Upload Images</h4><p>Drop or select multiple images at once — up to 20 at a time. People, products, logos, objects.</p></div>
+    <div class="step"><p class="step-n">02</p><h4>AI Removes BG</h4><p>Each image is processed in your browser using on-device AI. No upload, no server, completely private.</p></div>
+    <div class="step"><p class="step-n">03</p><h4>Customise & Download</h4><p>Add shadows, custom backgrounds or photo backgrounds, then download individually or as a ZIP.</p></div>
+  </div>
+</section>
+
+<!-- OTHER TOOLS -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/image-converter/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🖼️</div>
+      <div>
+        <div class="other-tool-name">Image Converter</div>
+        <div class="other-tool-desc">Convert JPG, PNG, WEBP, HEIC & more. Batch support.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎬</div>
+      <div>
+        <div class="other-tool-name">Thumbnail Maker</div>
+        <div class="other-tool-desc">Create eye-catching YouTube & social media thumbnails.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎨</div>
+      <div>
+        <div class="other-tool-name">Color Palette Generator</div>
+        <div class="other-tool-desc">Extract beautiful palettes from any image.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎯</div>
+      <div>
+        <div class="other-tool-name">Image Prompt Generator</div>
+        <div class="other-tool-desc">AI prompts for Midjourney, DALL·E & more.</div>
+      </div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Is my image uploaded to any server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">No. The AI model runs entirely inside your browser using WebAssembly. Your image never leaves your device and is never sent to any server.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">How many images can I process at once? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Up to 20 images in a single batch. Images are processed one by one in sequence to avoid crashing your browser. After the first image loads the AI model, subsequent ones are much faster.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Why does the first use take longer? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">The AI model (~50MB) is downloaded once and cached in your browser. All subsequent uses are instant — no re-download needed.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I add a real photo as background? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes — use the Photo Background panel to search Pexels and apply any photo as a background. You can also blur it for a professional depth-of-field effect.</div>
+  </div>
+</section>
+
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
+
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     MOBILE BOTTOM TOOLBAR + SHEETS
+     ═══════════════════════════════════════════ -->
+
+<!-- Backdrop -->
+<div class="mob-sheet-backdrop" id="mob-backdrop" onclick="closeMobSheet()"></div>
+
+<!-- BG Sheet -->
+<div class="mob-sheet" id="mob-sheet-bg">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🎨 Background</div>
+  <div class="mob-sheet-body">
+    <div class="swatch-row" style="margin-bottom:10px;">
+      <div class="swatch transparent-swatch active" data-bg="transparent" title="Transparent" onclick="setBg('transparent',this)"></div>
+      <div class="swatch" style="background:#fff;" data-bg="#ffffff" onclick="setBg('#ffffff',this)"></div>
+      <div class="swatch" style="background:#000;" data-bg="#000000" onclick="setBg('#000000',this)"></div>
+      <div class="swatch" style="background:#C9A84C;" data-bg="#C9A84C" onclick="setBg('#C9A84C',this)"></div>
+      <div class="swatch" style="background:#1e3a5f;" data-bg="#1e3a5f" onclick="setBg('#1e3a5f',this)"></div>
+      <div class="swatch" style="background:#2d1b69;" data-bg="#2d1b69" onclick="setBg('#2d1b69',this)"></div>
+      <div class="swatch" style="background:#1a3a2a;" data-bg="#1a3a2a" onclick="setBg('#1a3a2a',this)"></div>
+      <div class="swatch" style="background:#3a1a1a;" data-bg="#3a1a1a" onclick="setBg('#3a1a1a',this)"></div>
+      <div class="swatch" style="background:#f5f0e8;" data-bg="#f5f0e8" onclick="setBg('#f5f0e8',this)"></div>
+      <div class="swatch" style="background:#e8e8e8;" data-bg="#e8e8e8" onclick="setBg('#e8e8e8',this)"></div>
+      <div class="swatch" style="background:#333;" data-bg="#333333" onclick="setBg('#333333',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#667eea,#764ba2);" data-bg="gradient-purple" onclick="setBg('gradient-purple',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#f093fb,#f5576c);" data-bg="gradient-pink" onclick="setBg('gradient-pink',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#4facfe,#00f2fe);" data-bg="gradient-blue" onclick="setBg('gradient-blue',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#43e97b,#38f9d7);" data-bg="gradient-green" onclick="setBg('gradient-green',this)"></div>
+    </div>
+    <div class="color-input-wrap" style="margin-bottom:10px;">
+      <span style="font-size:10px;color:var(--muted);">Custom:</span>
+      <input type="color" value="#ff6600" onchange="applyCustomColor(this.value)">
+      <input type="text" class="hex-input" placeholder="#FF6600" maxlength="7" oninput="hexInputChange(this.value)">
+    </div>
+  </div>
+</div>
+
+<!-- Photo BG Sheet -->
+<div class="mob-sheet" id="mob-sheet-photo">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🖼 Photo Background</div>
+  <div class="mob-sheet-body">
+    <label style="display:flex;align-items:center;gap:8px;background:var(--dark4);border:1.5px dashed var(--gold-border);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;margin-bottom:10px;">
+      <span style="font-size:16px;">📁</span>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text);">Upload from phone</div>
+        <div style="font-size:10px;color:var(--muted);">JPG, PNG, WEBP</div>
+      </div>
+      <input type="file" accept="image/*" style="display:none;" onchange="applyUploadedBg(this)">
+    </label>
+    <div class="photo-search-row" style="margin-bottom:8px;">
+      <input type="text" id="mob-photo-query" placeholder="Search photos…" onkeydown="if(event.key==='Enter'){this.blur();mobSearchPhotos();}" onfocus="setTimeout(()=>this.scrollIntoView({behavior:'smooth',block:'center'}),300)">
+      <button onclick="mobSearchPhotos()">Search</button>
+    </div>
+    <div id="mob-photo-grid" class="photo-grid" style="max-height:220px;"></div>
+    <div class="form-row" style="margin-top:8px;">
+      <span class="form-label">Blur:</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-bg-blur" min="0" max="30" value="0" oninput="mobUpdateBgBlur(this.value)">
+        <span class="slider-val" id="mob-bg-blur-val">0px</span>
+      </div>
+    </div>
+    <p class="photo-attribution" style="margin-top:6px;">Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a> / <a href="https://www.pexels.com" target="_blank">Pexels</a></p>
+  </div>
+</div>
+
+<!-- Subject Transform Sheet -->
+<div class="mob-sheet" id="mob-sheet-subject">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🔲 Subject Position</div>
+  <div class="mob-sheet-body">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Scale &amp; move your subject. Background stays fixed. Drag subject directly on canvas too.</div>
+    <div class="form-row" style="margin-bottom:8px;">
+      <span class="form-label">Scale</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-scale" min="10" max="300" value="100" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-scale-val">100%</span>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:8px;">
+      <span class="form-label">Move X</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-x" min="-500" max="500" value="0" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-x-val">0</span>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px;">
+      <span class="form-label">Move Y</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-y" min="-500" max="500" value="0" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-y-val">0</span>
+      </div>
+    </div>
+    <button class="btn-sm outline" style="width:100%;" onclick="mobResetSubject()">↺ Reset Position</button>
+  </div>
+</div>
+
+<!-- Shadow Sheet -->
+<div class="mob-sheet" id="mob-sheet-shadow">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">✦ Drop Shadow</div>
+  <div class="mob-sheet-body">
+    <div class="form-row" style="margin-bottom:10px;">
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+        <input type="checkbox" id="mob-shadow-enable" onchange="mobUpdateShadow()" style="accent-color:var(--gold);width:15px;height:15px;">
+        <span style="font-size:12px;color:var(--muted);">Add drop shadow</span>
+      </label>
+    </div>
+    <div id="mob-shadow-controls" style="display:none;flex-direction:column;gap:8px;">
+      <div class="form-row">
+        <span class="form-label">Color</span>
+        <input type="color" id="mob-shadow-color" value="#000000" onchange="mobUpdateShadow()" style="width:26px;height:26px;border:2px solid var(--faint);border-radius:5px;cursor:pointer;padding:0;">
+      </div>
+      <div class="form-row">
+        <span class="form-label">Opacity</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-opacity" min="0" max="100" value="60" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-opacity-val">60%</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Blur</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-blur" min="0" max="60" value="20" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-blur-val">20px</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Distance</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-distance" min="0" max="80" value="10" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-distance-val">10px</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Angle</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-angle" min="0" max="360" value="135" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-angle-val">135°</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Download Sheet -->
+<div class="mob-sheet" id="mob-sheet-dl">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">⬇ Download</div>
+  <div class="mob-sheet-body" style="display:flex;flex-direction:column;gap:8px;">
+    <button class="btn-primary" style="width:100%;" onclick="downloadCurrent();closeMobSheet();">Download PNG</button>
+    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll();closeMobSheet();">Download All ZIP</button>
+    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll();closeMobSheet();">← Back / New Images</button>
+  </div>
+</div>
+
+<!-- Mobile Bottom Toolbar -->
+<div class="mob-toolbar" id="mob-toolbar">
+  <div class="mob-toolbar-inner">
+    <!-- Erase -->
+    <button class="mob-tb-btn" id="mob-btn-erase" onclick="mobSetBrush('erase')">
+      <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16l10-10 7 7-3.5 3.5"/><path d="M6.5 17.5l4-4"/></svg>
+      Erase
+    </button>
+    <!-- Restore -->
+    <button class="mob-tb-btn" id="mob-btn-restore" onclick="mobSetBrush('restore')">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/><path d="M16 12l-4-4-4 4M12 8v8"/></svg>
+      Restore
+    </button>
+    <!-- BG Color -->
+    <button class="mob-tb-btn" onclick="openMobSheet('bg')">
+      <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.17-.6-1.6-.37-.43-.6-.98-.6-1.4a2.5 2.5 0 0 1 2.5-2.5H18c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
+      BG Color
+    </button>
+    <!-- Photo BG -->
+    <button class="mob-tb-btn" onclick="openMobSheet('photo')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      Photo
+    </button>
+    <!-- Subject -->
+    <button class="mob-tb-btn" onclick="openMobSheet('subject')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Position
+    </button>
+    <!-- Shadow -->
+    <button class="mob-tb-btn" onclick="openMobSheet('shadow')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      Shadow
+    </button>
+    <!-- Download -->
+    <button class="mob-tb-btn" onclick="openMobSheet('dl')">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Save
+    </button>
+  </div>
+</div>
+
+<!-- Mobile brush size bar -->
+<div class="mob-brush-bar" id="mob-brush-bar">
+  <span>Size</span>
+  <input type="range" id="mob-brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('mob-brush-size-val').textContent=this.value+'px'">
+  <span id="mob-brush-size-val">20px</span>
+  <div class="brush-undo-group">
+    <button class="undo-btn" onclick="undoStroke()">↩</button>
+    <button class="undo-btn" onclick="redoStroke()">↪</button>
+  </div>
+  <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--muted);" onclick="mobSetBrush(null)">✕ Done</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="module">
+
+const LIB_VERSION = '1.5.5';
+let removeBackground = null;
+async function loadLib() {
+  if (removeBackground) return removeBackground;
+  const mod = await import(`https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/+esm`);
+  removeBackground = mod.removeBackground || mod.default || Object.values(mod).find(v=>typeof v==='function');
+  if (!removeBackground) throw new Error('removeBackground not found');
+  return removeBackground;
+}
+
+// ─── BATCH STATE ────────────────────────────────────────────────────
+const MAX_BATCH = 20;
+let items = []; // { id, file, origBlob, resultCanvas, status, name, bgSnapshot }
+let activeId = null;
+
+// ─── EDITOR STATE ───────────────────────────────────────────────────
+let wCanvas = null, wCtx = null, origData = null;
+let brushMode = null, isPainting = false;
+window.brushSize = 20;
+const MAX_UNDO = 30;
+let undoStack = [], redoStack = [];
+let zoom = 1, panX = 0, panY = 0, isPanning = false, panStart = {x:0,y:0}, spaceDown = false;
+let baseW = 0, baseH = 0;
+let currentBgColor = 'transparent';
+let currentPhotoBg = null; // { url, img }
+let eventsReady = false;
+
+// Shadow / blur state
+let shadowEnabled = false;
+let shadowColor = '#000000', shadowOpacity = 60, shadowBlur = 20, shadowDistance = 10, shadowAngle = 135;
+let bgBlur = 0;
+
+// Subject transform (independent of canvas zoom/pan)
+let subjectScale = 1, subjectX = 0, subjectY = 0;
+let isDraggingSubject = false, subjectDragStart = {x:0,y:0};
+
+const viewport  = document.getElementById('canvas-viewport');
+const dc        = document.getElementById('display-canvas');
+const dctx      = dc.getContext('2d', { willReadFrequently:true });
+const cc        = document.getElementById('cursor-canvas');
+const cctx      = cc.getContext('2d');
+
+// ─── FILE INPUT ─────────────────────────────────────────────────────
+const fileIn   = document.getElementById('file-in');
+const dropZone = document.getElementById('drop-zone');
+
+fileIn.addEventListener('change', e => { if (e.target.files.length) addFiles(Array.from(e.target.files)); });
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  if (files.length) addFiles(files);
+});
+dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
+
+// ─── ADD FILES ──────────────────────────────────────────────────────
+function showUploadOverlay(title, sub) {
+  document.getElementById('upload-overlay-title').textContent = title;
+  document.getElementById('upload-overlay-sub').textContent = sub;
+  document.getElementById('upload-overlay').classList.add('active');
+}
+function hideUploadOverlay() {
+  document.getElementById('upload-overlay').classList.remove('active');
+}
+
+async function addFiles(files) {
+  files = files.slice(0, MAX_BATCH - items.length);
+  if (!files.length) return;
+
+  const isSingle = files.length === 1;
+
+  // Show upload reading animation
+  showUploadOverlay(
+    isSingle ? 'Loading Image…' : `Loading ${files.length} Images…`,
+    isSingle ? 'Getting ready to process' : 'Queuing all images for processing'
+  );
+
+  // Brief delay so user sees the upload state
+  await new Promise(r => setTimeout(r, 600));
+
+  files.forEach(f => {
+    items.push({ id: Date.now()+Math.random(), file:f, resultCanvas:null, status:'queued', name:f.name });
+  });
+  dropZone.classList.add('hidden');
+  renderBatchGrid();
+  updateBatchHeader();
+
+  hideUploadOverlay();
+
+  // Auto-process: single → direct, multi → sequential
+  if (isSingle) {
+    // Single photo: go straight to processing
+    document.getElementById('btn-process-all').disabled = true;
+    const item = items[items.length - 1];
+    await processItem(item);
+    document.getElementById('btn-process-all').disabled = false;
+    updateBatchHeader();
+    if (item.status === 'done') openEditor(item.id);
+  } else {
+    // Multiple photos: process sequentially, open editor as soon as first one is done
+    const toProcess = items.filter(i => i.status === 'queued');
+    document.getElementById('btn-process-all').disabled = true;
+    for (const item of toProcess) {
+      await processItem(item);
+      // Open editor immediately after first done image, then continue processing in background
+      if (item.status === 'done' && !activeId) {
+        openEditor(item.id);
+      }
+    }
+    document.getElementById('btn-process-all').disabled = false;
+    updateBatchHeader();
+  }
+}
+
+function renderBatchGrid() {
+  const grid = document.getElementById('batch-grid');
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'batch-card' + (item.id===activeId?' active-edit':'');
+    card.dataset.id = item.id;
+    card.innerHTML = `
+      <div class="batch-thumb-wrap" id="thumb-${item.id}">
+        <img class="batch-thumb" src="${item.resultCanvas ? '' : URL.createObjectURL(item.file)}" style="${item.resultCanvas?'display:none':''}">
+        ${item.resultCanvas ? `<canvas width="${item.resultCanvas.width}" height="${item.resultCanvas.height}" style="max-width:100%;max-height:100%;"></canvas>` : ''}
+        <span class="batch-status ${item.status}">${item.status==='queued'?'Queued':item.status==='processing'?'Processing…':item.status==='done'?'Done':'Error'}</span>
+        <button class="batch-remove-btn" title="Remove image" onclick="removeItem('${item.id}');event.stopPropagation();" ${item.status==='processing'?'disabled':''}>✕</button>
+        <div class="batch-progress-bar"><div class="batch-progress-fill" id="prog-${item.id}"></div></div>
+        <div class="card-proc-overlay${item.status==='processing'?' active':''}">
+          <div class="card-spinner"></div>
+          <div class="card-proc-label">AI Processing</div>
+        </div>
+      </div>
+      <div class="batch-card-footer">
+        <span class="batch-name" title="${item.name}">${item.name}</span>
+        <button class="batch-dl-btn" title="Download" ${item.status!=='done'?'disabled':''} onclick="downloadItem('${item.id}');event.stopPropagation();">⬇</button>
+      </div>`;
+    // Copy resultCanvas to card canvas
+    if (item.resultCanvas) {
+      const cvs = card.querySelector('canvas');
+      if (cvs) cvs.getContext('2d').drawImage(item.resultCanvas, 0, 0);
+    }
+    card.addEventListener('click', () => { if (item.status==='done') openEditor(item.id); });
+    grid.appendChild(card);
+  });
+  // Add more button
+  if (items.length < MAX_BATCH) {
+    const addMore = document.createElement('div');
+    addMore.className = 'batch-add-more';
+    addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span>`;
+    addMore.addEventListener('click', () => fileIn.click());
+    grid.appendChild(addMore);
+  }
+}
+
+function updateBatchHeader() {
+  const hdr = document.getElementById('batch-header');
+  hdr.classList.toggle('active', items.length > 0);
+  document.getElementById('batch-title-text').textContent = `${items.length} image${items.length!==1?'s':''}`;
+  const allDone = items.length > 0 && items.every(i=>i.status==='done');
+  document.getElementById('btn-dl-all').style.display = allDone ? '' : 'none';
+}
+
+// ─── REMOVE SINGLE ITEM ─────────────────────────────────────────────
+window.removeItem = function(id) {
+  const idx = items.findIndex(i => i.id == id);
+  if (idx === -1) return;
+  items.splice(idx, 1);
+  // If removed item was active, close editor or open next done
+  if (activeId == id) {
+    activeId = null;
+    wCanvas = null; wCtx = null; origData = null;
+    document.getElementById('editor-wrap').classList.remove('active');
+    document.getElementById('proc-overlay').classList.remove('active');
+    mobShowToolbar(false);
+    const nextDone = items.find(i => i.status === 'done');
+    if (nextDone) openEditor(nextDone.id);
+  }
+  if (!items.length) {
+    dropZone.classList.remove('hidden');
+    document.getElementById('batch-header').classList.remove('active');
+  }
+  renderBatchGrid();
+  updateBatchHeader();
+};
+
+// ─── PROCESS ALL ────────────────────────────────────────────────────
+window.processAll = async function() {
+  const toProcess = items.filter(i=>i.status==='queued'||i.status==='error');
+  if (!toProcess.length) return;
+  document.getElementById('btn-process-all').disabled = true;
+  for (const item of toProcess) {
+    await processItem(item);
+  }
+  document.getElementById('btn-process-all').disabled = false;
+  updateBatchHeader();
+  // Auto-open first done if no editor open
+  if (!activeId && items.find(i=>i.status==='done')) {
+    openEditor(items.find(i=>i.status==='done').id);
+  }
+};
+
+async function processItem(item) {
+  item.status = 'processing';
+  renderBatchGrid();
+
+  // Only show canvas proc-overlay if this item is currently open in editor
+  // OR if no editor is open yet
+  const procOverlay = document.getElementById('proc-overlay');
+  const procTitle = document.getElementById('proc-title');
+  const procSub = document.getElementById('proc-sub');
+  const procPct = document.getElementById('proc-pct');
+
+  const showOnCanvas = (activeId === item.id || !activeId);
+  if (showOnCanvas) {
+    procTitle.textContent = 'Preparing…';
+    procSub.textContent = 'Loading image into AI engine';
+    procPct.textContent = 'AI';
+    procOverlay.classList.add('active');
+  }
+
+  // Show a small toast/indicator in the card regardless
+  const cardEl = document.querySelector(`.batch-card[data-id="${item.id}"]`);
+
+  try {
+    const rbFn = await loadLib();
+
+    if (showOnCanvas) {
+      procTitle.textContent = 'AI Working…';
+      procSub.textContent = 'Detecting & removing background';
+    }
+
+    const blob = await rbFn(item.file, {
+      publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
+      progress: (key, cur, tot) => {
+        const p = tot > 0 ? Math.round(cur/tot*100) : 0;
+        const el = document.getElementById(`prog-${item.id}`);
+        if (el) el.style.width = p+'%';
+        if (showOnCanvas) {
+          if (p > 0) procPct.textContent = p+'%';
+          if (key && key.includes('fetch')) {
+            procTitle.textContent = 'Loading AI Model…';
+            procSub.textContent = 'First run downloads ~80MB — cached after';
+          } else if (p > 0) {
+            procTitle.textContent = 'AI Working…';
+            procSub.textContent = `Processing ${item.name.slice(0,20)}…`;
+          }
+        }
+      },
+      model: isMobile() ? 'small' : 'medium',
+      output: { format:'image/png', quality:1 },
+    });
+    // Store as canvas
+    const img = await loadImg(URL.createObjectURL(blob));
+    const cvs = document.createElement('canvas');
+    cvs.width = img.naturalWidth; cvs.height = img.naturalHeight;
+    cvs.getContext('2d').drawImage(img, 0, 0);
+    item.resultCanvas = cvs;
+    item.status = 'done';
+    if (showOnCanvas) {
+      procPct.textContent = '✓';
+      procTitle.textContent = 'Done!';
+      procSub.textContent = 'Background removed successfully';
+      await new Promise(r => setTimeout(r, 400));
+    }
+    // If editor is open on a different item, auto-open this one only if no activeId
+    if (!activeId) openEditor(item.id);
+  } catch(err) {
+    item.status = 'error';
+    console.error(err);
+    if (showOnCanvas) {
+      procTitle.textContent = 'Error';
+      procSub.textContent = 'Something went wrong. Please try again.';
+      await new Promise(r => setTimeout(r, 800));
+    }
+  }
+  if (showOnCanvas) procOverlay.classList.remove('active');
+  renderBatchGrid();
+}
+
+// ─── OPEN EDITOR ────────────────────────────────────────────────────
+async function openEditor(id) {
+  const item = items.find(i=>i.id==id);
+  if (!item || !item.resultCanvas) return;
+  activeId = id;
+
+  document.getElementById('editor-wrap').classList.add('active');
+  document.getElementById('editor-filename').textContent = item.name;
+
+  // Reset editor state
+  brushMode = null; isPainting = false; isPanning = false;
+  zoom = 1; panX = 0; panY = 0; baseW = 0; baseH = 0;
+  undoStack = []; redoStack = []; updateUndoUI();
+  currentBgColor = 'transparent'; currentPhotoBg = null;
+  subjectScale = 1; subjectX = 0; subjectY = 0;
+  isDraggingSubject = false;
+  // Reset sliders if present
+  const ssEl = document.getElementById('subject-scale');
+  if (ssEl) { ssEl.value = 100; document.getElementById('subject-scale-val').textContent = '100%'; }
+  const sxEl = document.getElementById('subject-x');
+  if (sxEl) { sxEl.value = 0; document.getElementById('subject-x-val').textContent = '0'; }
+  const syEl = document.getElementById('subject-y');
+  if (syEl) { syEl.value = 0; document.getElementById('subject-y-val').textContent = '0'; }
+  document.getElementById('shadow-enable').checked = false;
+  shadowEnabled = false; document.getElementById('shadow-controls').style.display = 'none';
+  document.getElementById('bg-blur').value = 0; bgBlur = 0;
+  document.getElementById('bg-blur-val').textContent = '0px';
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.swatch[data-bg="transparent"]').classList.add('active');
+  document.querySelectorAll('.photo-thumb').forEach(t=>t.classList.remove('active'));
+
+  // Set up wCanvas from item's resultCanvas
+  wCanvas = document.createElement('canvas');
+  wCanvas.width = item.resultCanvas.width;
+  wCanvas.height = item.resultCanvas.height;
+  wCtx = wCanvas.getContext('2d', { willReadFrequently:true });
+  wCtx.drawImage(item.resultCanvas, 0, 0);
+
+  // origData from original file
+  const origImg = await loadImg(URL.createObjectURL(item.file));
+  const origCanvas = document.createElement('canvas');
+  origCanvas.width = wCanvas.width; origCanvas.height = wCanvas.height;
+  const origCtx = origCanvas.getContext('2d', { willReadFrequently:true });
+  origCtx.drawImage(origImg, 0, 0, wCanvas.width, wCanvas.height);
+  origData = origCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
+
+  attachEvents();
+  requestAnimationFrame(() => {
+    computeBaseSize();
+    renderAll();
+  });
+
+  // Update grid highlight
+  renderBatchGrid();
+  // Scroll editor into view
+  document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ─── LAYOUT ─────────────────────────────────────────────────────────
+function computeBaseSize() {
+  const vp = viewport.parentElement;
+  const maxW = vp.clientWidth || 600;
+  const maxH = Math.min(window.innerHeight * 0.72, 650);
+  const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
+  baseW = Math.round(wCanvas.width * ratio);
+  baseH = Math.round(wCanvas.height * ratio);
+  viewport.style.height = baseH + 'px';
+}
+
+function renderAll() {
+  if (!wCanvas) return;
+  const dw = Math.round(baseW * zoom);
+  const dh = Math.round(baseH * zoom);
+  const vpW = viewport.clientWidth, vpH = viewport.clientHeight;
+  panX = Math.min(0, Math.max(vpW-dw, panX));
+  panY = Math.min(0, Math.max(vpH-dh, panY));
+  if (dw <= vpW) panX = Math.round((vpW-dw)/2);
+  if (dh <= vpH) panY = Math.round((vpH-dh)/2);
+  dc.width = dw; dc.height = dh;
+  dc.style.width = dw+'px'; dc.style.height = dh+'px';
+  dc.style.transform = `translate(${panX}px,${panY}px)`;
+  cc.width = dw; cc.height = dh;
+  cc.style.width = dw+'px'; cc.style.height = dh+'px';
+  cc.style.transform = `translate(${panX}px,${panY}px)`;
+  document.getElementById('zoom-level').textContent = Math.round(zoom*100)+'%';
+  drawComposite();
+}
+
+function drawComposite() {
+  if (!wCanvas) return;
+  const dw = dc.width, dh = dc.height;
+  dctx.clearRect(0, 0, dw, dh);
+
+  // 1. Background — always fills full canvas
+  if (currentPhotoBg && currentPhotoBg.img) {
+    dctx.save();
+    if (bgBlur > 0) dctx.filter = `blur(${bgBlur}px)`;
+    const imgW = currentPhotoBg.img.naturalWidth, imgH = currentPhotoBg.img.naturalHeight;
+    const scale = Math.max(dw/imgW, dh/imgH);
+    const sw = imgW*scale, sh = imgH*scale;
+    dctx.drawImage(currentPhotoBg.img, (dw-sw)/2, (dh-sh)/2, sw, sh);
+    dctx.filter = 'none';
+    dctx.restore();
+  } else if (currentBgColor !== 'transparent') {
+    dctx.save();
+    const grad = getGradient(currentBgColor, dw, dh);
+    dctx.fillStyle = grad || currentBgColor;
+    dctx.fillRect(0, 0, dw, dh);
+    dctx.restore();
+  }
+
+  // 2. Subject — drawn with its own independent transform
+  const sw = dw * subjectScale;
+  const sh = dh * subjectScale;
+  const sx = (dw - sw) / 2 + subjectX;
+  const sy = (dh - sh) / 2 + subjectY;
+
+  if (shadowEnabled) {
+    const rad = shadowAngle * Math.PI / 180;
+    const dx = Math.cos(rad) * shadowDistance;
+    const dy = Math.sin(rad) * shadowDistance;
+    const hex = shadowColor;
+    const a = shadowOpacity/100;
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    dctx.save();
+    dctx.shadowColor = `rgba(${r},${g},${b},${a})`;
+    dctx.shadowBlur = shadowBlur;
+    dctx.shadowOffsetX = dx;
+    dctx.shadowOffsetY = dy;
+    dctx.drawImage(wCanvas, sx, sy, sw, sh);
+    dctx.restore();
+  }
+
+  dctx.drawImage(wCanvas, sx, sy, sw, sh);
+
+  // Save bg+subject state into active item for export
+  const activeItem = items.find(i=>i.id==activeId);
+  if (activeItem) {
+    activeItem.bgSnapshot = {
+      photoBg: currentPhotoBg,
+      bgColor: currentBgColor,
+      bgBlur,
+      shadowEnabled,
+      shadowColor,
+      shadowOpacity,
+      shadowBlur,
+      shadowDistance,
+      shadowAngle,
+      subjectScale,
+      subjectX,
+      subjectY
+    };
+  }
+}
+
+function getGradient(color, w, h) {
+  const gradients = {
+    'gradient-purple': ['#667eea','#764ba2'],
+    'gradient-pink':   ['#f093fb','#f5576c'],
+    'gradient-blue':   ['#4facfe','#00f2fe'],
+    'gradient-green':  ['#43e97b','#38f9d7'],
+  };
+  if (gradients[color]) {
+    const g = dctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0, gradients[color][0]);
+    g.addColorStop(1, gradients[color][1]);
+    return g;
+  }
+  return null;
+}
+
+// ─── ZOOM ────────────────────────────────────────────────────────────
+window.adjustZoom = function(delta) {
+  const nz = Math.min(8, Math.max(0.25, zoom+delta));
+  const cx = viewport.clientWidth/2, cy = viewport.clientHeight/2;
+  panX = cx - (cx-panX)*(nz/zoom);
+  panY = cy - (cy-panY)*(nz/zoom);
+  zoom = nz; renderAll();
+};
+window.resetZoom = function() { zoom=1;panX=0;panY=0;renderAll(); };
+
+// ─── EVENTS ─────────────────────────────────────────────────────────
+function attachEvents() {
+  if (eventsReady) return;
+  eventsReady = true;
+  window.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName;
+    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+    if (e.code==='Space' && !isTyping) { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); }
+    if ((e.ctrlKey||e.metaKey) && e.code==='KeyZ' && !e.shiftKey) { e.preventDefault(); undoStroke(); }
+    if ((e.ctrlKey||e.metaKey) && (e.code==='KeyY'||(e.code==='KeyZ'&&e.shiftKey))) { e.preventDefault(); redoStroke(); }
+  });
+  window.addEventListener('keyup', e => { if (e.code==='Space') { spaceDown=false; viewport.style.cursor=''; updateViewportCursor(); }});
+  viewport.addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX-rect.left-panX, my = e.clientY-rect.top-panY;
+    const delta = e.deltaY<0?0.15:-0.15;
+    const nz = Math.min(8, Math.max(0.25, zoom+delta));
+    panX -= mx*(nz/zoom-1); panY -= my*(nz/zoom-1); zoom=nz; renderAll();
+  }, { passive:false });
+  viewport.addEventListener('mousedown', e => {
+    if (e.button===1||spaceDown) {
+      isPanning=true; panStart={x:e.clientX-panX,y:e.clientY-panY}; viewport.style.cursor='grabbing'; e.preventDefault(); return;
+    }
+    if (!brushMode) {
+      // Check if clicking on subject area for drag
+      const pos = canvasPos(e);
+      if (pos) {
+        isDraggingSubject = true;
+        subjectDragStart = { x: e.clientX - subjectX, y: e.clientY - subjectY };
+        viewport.style.cursor = 'move';
+        e.preventDefault();
+      } else {
+        isPanning=true; panStart={x:e.clientX-panX,y:e.clientY-panY}; viewport.style.cursor='grabbing'; e.preventDefault();
+      }
+      return;
+    }
+    const pos=canvasPos(e); if (!pos) return;
+    isPainting=true; saveSnapshot(); applyBrush(pos.x,pos.y);
+  });
+  viewport.addEventListener('mousemove', e => {
+    if (isPanning) { panX=e.clientX-panStart.x; panY=e.clientY-panStart.y; renderAll(); clearCursor(); return; }
+    if (isDraggingSubject) {
+      subjectX = e.clientX - subjectDragStart.x;
+      subjectY = e.clientY - subjectDragStart.y;
+      // Sync sliders
+      const sxEl = document.getElementById('subject-x');
+      const syEl = document.getElementById('subject-y');
+      if (sxEl) { sxEl.value = Math.max(-500, Math.min(500, Math.round(subjectX))); document.getElementById('subject-x-val').textContent = Math.round(subjectX); }
+      if (syEl) { syEl.value = Math.max(-500, Math.min(500, Math.round(subjectY))); document.getElementById('subject-y-val').textContent = Math.round(subjectY); }
+      drawComposite(); return;
+    }
+    const pos=canvasPos(e);
+    if (pos) { drawCursorRing(pos.x,pos.y); if (isPainting&&brushMode) applyBrush(pos.x,pos.y); }
+    else clearCursor();
+  });
+  viewport.addEventListener('mouseup', e => {
+    if (isPanning) { isPanning=false; viewport.style.cursor=''; updateViewportCursor(); return; }
+    if (isDraggingSubject) { isDraggingSubject=false; viewport.style.cursor=''; updateViewportCursor(); return; }
+    if (isPainting) { isPainting=false; bakeToItem(); }
+  });
+  viewport.addEventListener('mouseleave', () => { if (isPanning)isPanning=false; if (isDraggingSubject)isDraggingSubject=false; if (isPainting){isPainting=false;bakeToItem();} clearCursor(); });
+  let lastTouches=null;
+  viewport.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (e.touches.length===2){lastTouches=e.touches;isPainting=false;return;}
+    if (!brushMode){isPanning=true;panStart={x:e.touches[0].clientX-panX,y:e.touches[0].clientY-panY};return;}
+    isPainting=true; saveSnapshot(); const pos=touchPos(e.touches[0]); if(pos)applyBrush(pos.x,pos.y);
+  },{passive:false});
+  viewport.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length===2&&lastTouches){
+      const d0=Math.hypot(lastTouches[0].clientX-lastTouches[1].clientX,lastTouches[0].clientY-lastTouches[1].clientY);
+      const d1=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      const r=d1/d0;const cx=(e.touches[0].clientX+e.touches[1].clientX)/2-viewport.getBoundingClientRect().left;
+      const cy=(e.touches[0].clientY+e.touches[1].clientY)/2-viewport.getBoundingClientRect().top;
+      const nz=Math.min(8,Math.max(0.25,zoom*r)); panX-=(cx-panX)*(nz/zoom-1); panY-=(cy-panY)*(nz/zoom-1); zoom=nz; lastTouches=e.touches; renderAll(); return;
+    }
+    if (isPanning){panX=e.touches[0].clientX-panStart.x;panY=e.touches[0].clientY-panStart.y;renderAll();return;}
+    if (!brushMode||!isPainting) return;
+    const pos=touchPos(e.touches[0]); if(pos)applyBrush(pos.x,pos.y);
+  },{passive:false});
+  viewport.addEventListener('touchend', e=>{lastTouches=null;isPanning=false;if(isPainting){isPainting=false;bakeToItem();}});
+}
+
+function updateViewportCursor(){viewport.style.cursor=brushMode?'none':'move';}
+function canvasPos(e){const vr=viewport.getBoundingClientRect();const cx=e.clientX-vr.left-panX,cy=e.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
+function touchPos(t){const vr=viewport.getBoundingClientRect();const cx=t.clientX-vr.left-panX,cy=t.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
+
+// ─── CURSOR ──────────────────────────────────────────────────────────
+function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);}
+function drawCursorRing(x,y){
+  cctx.clearRect(0,0,cc.width,cc.height); if(!brushMode)return;
+  cctx.save(); cctx.beginPath(); cctx.arc(x,y,window.brushSize/2,0,Math.PI*2);
+  cctx.strokeStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.lineWidth=1.5; cctx.stroke();
+  cctx.beginPath(); cctx.arc(x,y,1.5,0,Math.PI*2); cctx.fillStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.fill(); cctx.restore();
+}
+
+// ─── BRUSH ───────────────────────────────────────────────────────────
+function applyBrush(dispX,dispY){
+  const sx=wCanvas.width/dc.width, sy=wCanvas.height/dc.height;
+  const fx=dispX*sx, fy=dispY*sy, fr=(window.brushSize/2)*sx;
+  if (brushMode==='erase'){
+    wCtx.save(); wCtx.globalCompositeOperation='destination-out';
+    wCtx.beginPath(); wCtx.arc(fx,fy,fr,0,Math.PI*2); wCtx.fillStyle='rgba(0,0,0,1)'; wCtx.fill(); wCtx.restore();
+  } else {
+    const x0=Math.max(0,Math.floor(fx-fr)),y0=Math.max(0,Math.floor(fy-fr));
+    const x1=Math.min(wCanvas.width,Math.ceil(fx+fr)),y1=Math.min(wCanvas.height,Math.ceil(fy+fr));
+    const pw=x1-x0,ph=y1-y0; if(pw<=0||ph<=0)return;
+    const patch=wCtx.getImageData(x0,y0,pw,ph);const d=patch.data,od=origData.data,W=origData.width;
+    for(let py=0;py<ph;py++){for(let px=0;px<pw;px++){
+      if((x0+px-fx)**2+(y0+py-fy)**2>fr*fr)continue;
+      const i=(py*pw+px)*4,oi=((y0+py)*W+(x0+px))*4;
+      d[i]=od[oi];d[i+1]=od[oi+1];d[i+2]=od[oi+2];d[i+3]=od[oi+3];
+    }}
+    wCtx.putImageData(patch,x0,y0);
+  }
+  drawComposite(); drawCursorRing(dispX,dispY);
+}
+
+function bakeToItem(){
+  // Save wCanvas back to item
+  const item = items.find(i=>i.id==activeId);
+  if (item && wCanvas) {
+    const cvs = document.createElement('canvas');
+    cvs.width=wCanvas.width; cvs.height=wCanvas.height;
+    cvs.getContext('2d').drawImage(wCanvas,0,0);
+    item.resultCanvas = cvs;
+  }
+}
+
+// ─── UNDO ────────────────────────────────────────────────────────────
+function saveSnapshot(){
+  const snap=document.createElement('canvas'); snap.width=wCanvas.width; snap.height=wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas,0,0); undoStack.push(snap);
+  if(undoStack.length>MAX_UNDO)undoStack.shift(); redoStack=[]; updateUndoUI();
+}
+function updateUndoUI(){
+  const u=document.getElementById('btn-undo'),r=document.getElementById('btn-redo');
+  if(u)u.disabled=undoStack.length===0; if(r)r.disabled=redoStack.length===0;
+}
+window.undoStroke=function(){
+  if(!undoStack.length)return;
+  const snap=document.createElement('canvas'); snap.width=wCanvas.width; snap.height=wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas,0,0); redoStack.push(snap);
+  const prev=undoStack.pop(); wCtx.clearRect(0,0,wCanvas.width,wCanvas.height); wCtx.drawImage(prev,0,0);
+  drawComposite(); updateUndoUI(); bakeToItem();
+};
+window.redoStroke=function(){
+  if(!redoStack.length)return;
+  const snap=document.createElement('canvas'); snap.width=wCanvas.width; snap.height=wCanvas.height;
+  snap.getContext('2d').drawImage(wCanvas,0,0); undoStack.push(snap);
+  const next=redoStack.pop(); wCtx.clearRect(0,0,wCanvas.width,wCanvas.height); wCtx.drawImage(next,0,0);
+  drawComposite(); updateUndoUI(); bakeToItem();
+};
+
+// ─── BRUSH MODE ──────────────────────────────────────────────────────
+window.setBrushMode=function(mode){
+  if(brushMode===mode){brushMode=null;updateViewportCursor();document.getElementById('btn-erase').classList.remove('mode-erase');document.getElementById('btn-restore').classList.remove('mode-restore');}
+  else{brushMode=mode;viewport.style.cursor='none';document.getElementById('btn-erase').classList.toggle('mode-erase',mode==='erase');document.getElementById('btn-restore').classList.toggle('mode-restore',mode==='restore');document.getElementById('btn-erase').classList.toggle('mode-restore',false);document.getElementById('btn-restore').classList.toggle('mode-erase',false);}
+};
+
+// ─── BG COLOR ────────────────────────────────────────────────────────
+window.setBg=function(color,el){
+  currentBgColor=color; currentPhotoBg=null;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.photo-thumb').forEach(t=>t.classList.remove('active'));
+  if(color==='transparent'){
+    viewport.classList.add('checker-bg-vp');
+  } else {
+    viewport.classList.remove('checker-bg-vp');
+  }
+  drawComposite();
+};
+window.applyCustomColor=function(val){
+  document.getElementById('custom-hex').value=val;
+  // find & remove active swatch, use raw hex
+  setBg(val, null);
+};
+window.hexInputChange=function(val){
+  if(/^#[0-9a-fA-F]{6}$/.test(val)){
+    document.getElementById('custom-color-pick').value=val;
+    setBg(val,null);
+  }
+};
+
+// ─── EFFECTS ─────────────────────────────────────────────────────────
+window.updateEffects=function(){
+  shadowEnabled=document.getElementById('shadow-enable').checked;
+  document.getElementById('shadow-controls').style.display=shadowEnabled?'flex':'none';
+  shadowColor=document.getElementById('shadow-color').value;
+  shadowOpacity=+document.getElementById('shadow-opacity').value;
+  document.getElementById('shadow-opacity-val').textContent=shadowOpacity+'%';
+  shadowBlur=+document.getElementById('shadow-blur').value;
+  document.getElementById('shadow-blur-val').textContent=shadowBlur+'px';
+  shadowDistance=+document.getElementById('shadow-distance').value;
+  document.getElementById('shadow-distance-val').textContent=shadowDistance+'px';
+  shadowAngle=+document.getElementById('shadow-angle').value;
+  document.getElementById('shadow-angle-val').textContent=shadowAngle+'°';
+  bgBlur=+document.getElementById('bg-blur').value;
+  document.getElementById('bg-blur-val').textContent=bgBlur+'px';
+  drawComposite();
+};
+
+// ─── PHOTO SEARCH (infinite scroll, shared state) ────────────────────
+let photoSearchState = { query:'', page:1, loading:false, exhausted:false, source:'' };
+
+async function fetchPhotoPage(query, page) {
+  // Try Pixabay
+  try {
+    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`);
+    if (!res.ok) throw new Error('pixabay');
+    const data = await res.json();
+    const hits = data.hits || [];
+    if (!hits.length) throw new Error('empty');
+    return { photos: hits.map(p=>({thumb:p.previewURL,full:p.largeImageURL,label:p.user})), source:'pixabay', hasMore: data.totalHits > page*18 };
+  } catch(e1) {}
+  // Try Pexels
+  try {
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,{headers:{Authorization:'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC'}});
+    if (!res.ok) throw new Error('pexels');
+    const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) throw new Error('empty');
+    return { photos: photos.map(p=>({thumb:p.src.small,full:p.src.large,label:p.photographer})), source:'pexels', hasMore: !!data.next_page };
+  } catch(e2) {}
+  return null;
+}
+
+function appendPhotosToGrid(gridEl, photos, onPick) {
+  photos.forEach(({thumb, full, label}) => {
+    const img = document.createElement('img');
+    img.className = 'photo-thumb';
+    img.crossOrigin = 'anonymous';
+    img.src = thumb;
+    img.title = label || '';
+    img.loading = 'lazy';
+    img.addEventListener('click', () => onPick(img, full));
+    gridEl.appendChild(img);
+  });
+}
+
+function setupInfiniteScroll(gridEl, onLoadMore) {
+  // Remove old sentinel
+  const old = gridEl.parentElement.querySelector('.photo-sentinel');
+  if (old) old.remove();
+  const sentinel = document.createElement('div');
+  sentinel.className = 'photo-sentinel';
+  sentinel.style.cssText = 'height:1px;width:100%;';
+  gridEl.after(sentinel);
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) onLoadMore();
+  }, { root: gridEl.parentElement, threshold: 0 });
+  obs.observe(sentinel);
+  return obs;
+}
+
+let desktopPhotoObs = null;
+window.searchPhotos = async function() {
+  const q = document.getElementById('photo-query').value.trim();
+  if (!q) {
+    document.getElementById('photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
+    return;
+  }
+  const grid = document.getElementById('photo-grid');
+  grid.innerHTML = '<div class="photo-loading">Searching…</div>';
+  // Sync to mobile
+  const mobQ = document.getElementById('mob-photo-query');
+  if (mobQ) mobQ.value = q;
+
+  if (desktopPhotoObs) { desktopPhotoObs.disconnect(); desktopPhotoObs = null; }
+  photoSearchState = { query:q, page:1, loading:true, exhausted:false, source:'' };
+
+  const result = await fetchPhotoPage(q, 1);
+  grid.innerHTML = '';
+  if (!result || !result.photos.length) {
+    grid.innerHTML = '<div class="photo-loading">No results found. Try a different search.</div>';
+    return;
+  }
+  appendPhotosToGrid(grid, result.photos, applyPhotoBg);
+  photoSearchState = { query:q, page:1, loading:false, exhausted:!result.hasMore, source:result.source };
+  document.querySelector('.photo-attribution').innerHTML = result.source==='pixabay'
+    ? 'Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a>'
+    : 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
+
+  if (result.hasMore) {
+    desktopPhotoObs = setupInfiniteScroll(grid, async () => {
+      if (photoSearchState.loading || photoSearchState.exhausted) return;
+      photoSearchState.loading = true;
+      const nextPage = photoSearchState.page + 1;
+      const more = await fetchPhotoPage(photoSearchState.query, nextPage);
+      if (more && more.photos.length) {
+        appendPhotosToGrid(grid, more.photos, applyPhotoBg);
+        photoSearchState.page = nextPage;
+        photoSearchState.exhausted = !more.hasMore;
+      } else {
+        photoSearchState.exhausted = true;
+      }
+      photoSearchState.loading = false;
+    });
+  }
+};
+
+let mobPhotoObs = null;
+window.mobSearchPhotos = async function() {
+  const q = document.getElementById('mob-photo-query').value.trim();
+  if (!q) {
+    document.getElementById('mob-photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
+    return;
+  }
+  const grid = document.getElementById('mob-photo-grid');
+  grid.innerHTML = '<div class="photo-loading">Searching…</div>';
+  // Sync to desktop
+  const deskQ = document.getElementById('photo-query');
+  if (deskQ) deskQ.value = q;
+
+  if (mobPhotoObs) { mobPhotoObs.disconnect(); mobPhotoObs = null; }
+  let mobState = { page:1, loading:true, exhausted:false };
+
+  const result = await fetchPhotoPage(q, 1);
+  grid.innerHTML = '';
+  if (!result || !result.photos.length) {
+    grid.innerHTML = '<div class="photo-loading">No results. Try a different search.</div>';
+    return;
+  }
+  appendPhotosToGrid(grid, result.photos, (img, full) => { applyPhotoBg(img, full); closeMobSheet(); });
+  mobState = { page:1, loading:false, exhausted:!result.hasMore };
+
+  if (result.hasMore) {
+    mobPhotoObs = setupInfiniteScroll(grid, async () => {
+      if (mobState.loading || mobState.exhausted) return;
+      mobState.loading = true;
+      const more = await fetchPhotoPage(q, mobState.page + 1);
+      if (more && more.photos.length) {
+        appendPhotosToGrid(grid, more.photos, (img, full) => { applyPhotoBg(img, full); closeMobSheet(); });
+        mobState.page++;
+        mobState.exhausted = !more.hasMore;
+      } else {
+        mobState.exhausted = true;
+      }
+      mobState.loading = false;
+    });
+  }
+};
+
+// Upload BG from PC
+window.applyUploadedBg = async function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = await loadImg(url);
+  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  viewport.classList.remove('checker-bg-vp');
+  currentPhotoBg = { url, img };
+  currentBgColor = 'transparent';
+  drawComposite();
+  // Show a mini preview in the label
+  const lbl = document.getElementById('bg-upload-file').parentElement;
+  lbl.style.backgroundImage = `url(${url})`;
+  lbl.style.backgroundSize = 'cover';
+  lbl.style.backgroundPosition = 'center';
+  lbl.querySelector('div').children[0].textContent = '✓ ' + file.name.slice(0,18);
+};
+
+async function applyPhotoBg(el, url) {
+  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  viewport.classList.remove('checker-bg-vp');
+  const img = await loadImg(url);
+  currentPhotoBg = { url, img };
+  currentBgColor = 'transparent';
+  drawComposite();
+}
+
+// ─── SUBJECT TRANSFORM ───────────────────────────────────────────────
+window.updateSubjectTransform = function() {
+  subjectScale = +document.getElementById('subject-scale').value / 100;
+  subjectX = +document.getElementById('subject-x').value;
+  subjectY = +document.getElementById('subject-y').value;
+  document.getElementById('subject-scale-val').textContent = Math.round(subjectScale*100) + '%';
+  document.getElementById('subject-x-val').textContent = subjectX;
+  document.getElementById('subject-y-val').textContent = subjectY;
+  drawComposite();
+};
+
+window.resetSubjectTransform = function() {
+  subjectScale = 1; subjectX = 0; subjectY = 0;
+  document.getElementById('subject-scale').value = 100;
+  document.getElementById('subject-x').value = 0;
+  document.getElementById('subject-y').value = 0;
+  document.getElementById('subject-scale-val').textContent = '100%';
+  document.getElementById('subject-x-val').textContent = '0';
+  document.getElementById('subject-y-val').textContent = '0';
+  drawComposite();
+};
+
+// ─── PANEL TOGGLE ────────────────────────────────────────────────────
+window.togglePanel=function(id){document.getElementById(id).classList.toggle('collapsed');};
+
+// ─── DOWNLOAD ────────────────────────────────────────────────────────
+function buildExportCanvasForItem(item) {
+  const subject = item.resultCanvas;
+  const w = subject.width, h = subject.height;
+  const exp = document.createElement('canvas'); exp.width=w; exp.height=h;
+  const ectx = exp.getContext('2d');
+  const bg = item.bgSnapshot || {};
+  const gradients = {'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
+
+  // BG — full canvas
+  if (bg.photoBg && bg.photoBg.img) {
+    ectx.save();
+    if (bg.bgBlur>0) ectx.filter=`blur(${bg.bgBlur}px)`;
+    const imgW=bg.photoBg.img.naturalWidth, imgH=bg.photoBg.img.naturalHeight;
+    const scale=Math.max(w/imgW,h/imgH);
+    ectx.drawImage(bg.photoBg.img,(w-imgW*scale)/2,(h-imgH*scale)/2,imgW*scale,imgH*scale);
+    ectx.filter='none'; ectx.restore();
+  } else if (bg.bgColor && bg.bgColor!=='transparent') {
+    if (gradients[bg.bgColor]) {
+      const g=ectx.createLinearGradient(0,0,w,h);g.addColorStop(0,gradients[bg.bgColor][0]);g.addColorStop(1,gradients[bg.bgColor][1]);ectx.fillStyle=g;
+    } else ectx.fillStyle=bg.bgColor;
+    ectx.fillRect(0,0,w,h);
+  }
+
+  // Subject with transform
+  const sScale = bg.subjectScale || 1;
+  const sX = bg.subjectX || 0;
+  const sY = bg.subjectY || 0;
+  const sw = w * sScale, sh = h * sScale;
+  const sx = (w - sw) / 2 + sX;
+  const sy = (h - sh) / 2 + sY;
+
+  if (bg.shadowEnabled) {
+    const rad=bg.shadowAngle*Math.PI/180;
+    const dx=Math.cos(rad)*bg.shadowDistance, dy=Math.sin(rad)*bg.shadowDistance;
+    const hex=bg.shadowColor, a=bg.shadowOpacity/100;
+    const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+    ectx.save();ectx.shadowColor=`rgba(${r},${g},${b},${a})`;ectx.shadowBlur=bg.shadowBlur;ectx.shadowOffsetX=dx;ectx.shadowOffsetY=dy;
+    ectx.drawImage(subject,sx,sy,sw,sh);ectx.restore();
+  }
+
+  ectx.drawImage(subject,sx,sy,sw,sh);
+  return exp;
+}
+
+window.downloadCurrent=function(){
+  const item=items.find(i=>i.id==activeId); if(!item)return;
+  // Sync wCanvas back to item before export
+  if(wCanvas){
+    const cvs=document.createElement('canvas');cvs.width=wCanvas.width;cvs.height=wCanvas.height;
+    cvs.getContext('2d').drawImage(wCanvas,0,0);
+    item.resultCanvas=cvs;
+  }
+  const exp=buildExportCanvasForItem(item);
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-bg-removed.png';a.click();},'image/png');
+};
+
+window.downloadItem=async function(id){
+  const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
+  const exp=buildExportCanvasForItem(item);
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png';a.click();},'image/png');
+};
+
+window.downloadAll=async function(){
+  const done=items.filter(i=>i.status==='done'); if(!done.length)return;
+  const JSZip=window.JSZip;
+  if(!JSZip){alert('JSZip not loaded. Please try again.');return;}
+  const zip=new JSZip();
+  for(const item of done){
+    const exp=buildExportCanvasForItem(item);
+    const blob=await new Promise(res=>exp.toBlob(res,'image/png'));
+    zip.file('wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png',blob);
+  }
+  const zipBlob=await zip.generateAsync({type:'blob'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(zipBlob);a.download='westcrest-bg-removed.zip';a.click();
+};
+
+window.clearAll=function(){
+  items=[]; activeId=null; wCanvas=null; wCtx=null; origData=null;
+  brushMode=null; isPainting=false; isPanning=false; eventsReady=false;
+  zoom=1;panX=0;panY=0;baseW=0;baseH=0;
+  undoStack=[];redoStack=[];updateUndoUI();
+  currentBgColor='transparent';currentPhotoBg=null;
+  fileIn.value='';
+  dc.width=0;dc.height=0;cc.width=0;cc.height=0;
+  document.getElementById('batch-grid').innerHTML='';
+  document.getElementById('batch-header').classList.remove('active');
+  document.getElementById('editor-wrap').classList.remove('active');
+  dropZone.classList.remove('hidden');
+};
+
+// ─── MOBILE UI ───────────────────────────────────────────────────────
+const isMobile = () => window.innerWidth <= 768;
+
+// Show/hide toolbar when editor opens
+const _origOpenEditor = window._origOpenEditor;
+function mobShowToolbar(show) {
+  const tb = document.getElementById('mob-toolbar');
+  if (tb) tb.classList.toggle('active', show);
+}
+
+// Intercept openEditor to also show mob toolbar
+const _openEditorOrig = openEditor;
+// We patch via observer since openEditor is defined in same scope:
+// Instead watch editor-wrap class changes
+const editorWrapEl = document.getElementById('editor-wrap');
+if (editorWrapEl) {
+  new MutationObserver(() => {
+    const active = editorWrapEl.classList.contains('active');
+    mobShowToolbar(active && isMobile());
+  }).observe(editorWrapEl, { attributes:true, attributeFilter:['class'] });
+}
+window.addEventListener('resize', () => {
+  const active = editorWrapEl && editorWrapEl.classList.contains('active');
+  mobShowToolbar(active && isMobile());
+});
+
+// ── Sheet open/close ──
+let currentSheet = null;
+window.openMobSheet = function(name) {
+  closeMobSheet();
+  const sheet = document.getElementById('mob-sheet-' + name);
+  const backdrop = document.getElementById('mob-backdrop');
+  if (!sheet) return;
+  currentSheet = name;
+  backdrop.classList.add('active');
+  sheet.classList.add('open');
+};
+window.closeMobSheet = function() {
+  document.querySelectorAll('.mob-sheet').forEach(s => s.classList.remove('open'));
+  document.getElementById('mob-backdrop').classList.remove('active');
+  currentSheet = null;
+};
+
+// ── Brush mode (mobile) ──
+window.mobSetBrush = function(mode) {
+  // Toggle off if same
+  if (brushMode === mode || mode === null) {
+    brushMode = null;
+    updateViewportCursor();
+    document.getElementById('mob-btn-erase').classList.remove('mode-erase');
+    document.getElementById('mob-btn-restore').classList.remove('mode-restore');
+    document.getElementById('mob-brush-bar').classList.remove('active');
+    // Also sync desktop buttons
+    document.getElementById('btn-erase').classList.remove('mode-erase');
+    document.getElementById('btn-restore').classList.remove('mode-restore');
+    return;
+  }
+  brushMode = mode;
+  viewport.style.cursor = 'none';
+  document.getElementById('mob-btn-erase').classList.toggle('mode-erase', mode==='erase');
+  document.getElementById('mob-btn-erase').classList.toggle('mode-restore', false);
+  document.getElementById('mob-btn-restore').classList.toggle('mode-restore', mode==='restore');
+  document.getElementById('mob-btn-restore').classList.toggle('mode-erase', false);
+  document.getElementById('mob-brush-bar').classList.add('active');
+  // Sync desktop
+  document.getElementById('btn-erase').classList.toggle('mode-erase', mode==='erase');
+  document.getElementById('btn-restore').classList.toggle('mode-restore', mode==='restore');
+  // Sync brush size
+  const mobSz = document.getElementById('mob-brush-size');
+  if (mobSz) window.brushSize = +mobSz.value;
+};
+
+// ── Subject transform (mobile) ──
+window.mobUpdateSubject = function() {
+  subjectScale = +document.getElementById('mob-subject-scale').value / 100;
+  subjectX = +document.getElementById('mob-subject-x').value;
+  subjectY = +document.getElementById('mob-subject-y').value;
+  document.getElementById('mob-subject-scale-val').textContent = Math.round(subjectScale*100) + '%';
+  document.getElementById('mob-subject-x-val').textContent = subjectX;
+  document.getElementById('mob-subject-y-val').textContent = subjectY;
+  // Sync desktop sliders
+  const ss = document.getElementById('subject-scale'); if(ss){ss.value=Math.round(subjectScale*100);document.getElementById('subject-scale-val').textContent=Math.round(subjectScale*100)+'%';}
+  const sx = document.getElementById('subject-x'); if(sx){sx.value=subjectX;document.getElementById('subject-x-val').textContent=subjectX;}
+  const sy = document.getElementById('subject-y'); if(sy){sy.value=subjectY;document.getElementById('subject-y-val').textContent=subjectY;}
+  drawComposite();
+};
+window.mobResetSubject = function() {
+  subjectScale=1;subjectX=0;subjectY=0;
+  ['mob-subject-scale','mob-subject-x','mob-subject-y'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=[100,0,0][i];});
+  document.getElementById('mob-subject-scale-val').textContent='100%';
+  document.getElementById('mob-subject-x-val').textContent='0';
+  document.getElementById('mob-subject-y-val').textContent='0';
+  resetSubjectTransform();
+};
+
+// ── Shadow (mobile) ──
+window.mobUpdateShadow = function() {
+  const en = document.getElementById('mob-shadow-enable').checked;
+  // Sync to desktop shadow inputs
+  document.getElementById('shadow-enable').checked = en;
+  if (en) {
+    document.getElementById('shadow-color').value = document.getElementById('mob-shadow-color').value;
+    document.getElementById('shadow-opacity').value = document.getElementById('mob-shadow-opacity').value;
+    document.getElementById('shadow-blur').value = document.getElementById('mob-shadow-blur').value;
+    document.getElementById('shadow-distance').value = document.getElementById('mob-shadow-distance').value;
+    document.getElementById('shadow-angle').value = document.getElementById('mob-shadow-angle').value;
+  }
+  document.getElementById('mob-shadow-controls').style.display = en ? 'flex' : 'none';
+  // Update display vals
+  document.getElementById('mob-shadow-opacity-val').textContent = document.getElementById('mob-shadow-opacity').value + '%';
+  document.getElementById('mob-shadow-blur-val').textContent = document.getElementById('mob-shadow-blur').value + 'px';
+  document.getElementById('mob-shadow-distance-val').textContent = document.getElementById('mob-shadow-distance').value + 'px';
+  document.getElementById('mob-shadow-angle-val').textContent = document.getElementById('mob-shadow-angle').value + '°';
+  updateEffects();
+};
+
+// ── BG Blur (mobile) ──
+window.mobUpdateBgBlur = function(val) {
+  bgBlur = +val;
+  document.getElementById('mob-bg-blur-val').textContent = val + 'px';
+  document.getElementById('bg-blur').value = val;
+  document.getElementById('bg-blur-val').textContent = val + 'px';
+  drawComposite();
+};
+
+// ── Photo search (mobile) — defined above in shared search section ──
+
+
+// ── Touch subject drag ──
+// We patch into the existing touch events via a flag approach
+// When no brushMode and single finger touch, drag subject
+let mobTouchDragActive = false;
+let mobTouchDragStart = {x:0, y:0};
+
+viewport.addEventListener('touchstart', e => {
+  if (e.touches.length === 1 && !brushMode) {
+    mobTouchDragActive = true;
+    mobTouchDragStart = { x: e.touches[0].clientX - subjectX, y: e.touches[0].clientY - subjectY };
+  }
+}, { passive: true, capture: true });
+
+viewport.addEventListener('touchmove', e => {
+  if (mobTouchDragActive && e.touches.length === 1 && !brushMode) {
+    e.preventDefault();
+    subjectX = e.touches[0].clientX - mobTouchDragStart.x;
+    subjectY = e.touches[0].clientY - mobTouchDragStart.y;
+    // Sync mobile sliders
+    const sxEl = document.getElementById('mob-subject-x');
+    const syEl = document.getElementById('mob-subject-y');
+    if (sxEl) { sxEl.value = Math.max(-500, Math.min(500, Math.round(subjectX))); document.getElementById('mob-subject-x-val').textContent = Math.round(subjectX); }
+    if (syEl) { syEl.value = Math.max(-500, Math.min(500, Math.round(subjectY))); document.getElementById('mob-subject-y-val').textContent = Math.round(subjectY); }
+    drawComposite();
+  }
+}, { passive: false, capture: true });
+
+viewport.addEventListener('touchend', () => { mobTouchDragActive = false; }, { passive: true, capture: true });
+
+// ─── UTIL ────────────────────────────────────────────────────────────
+function loadImg(src){return new Promise(res=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.src=src;});}
+
+</script>
+</body>
+</html>
