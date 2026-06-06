@@ -260,6 +260,136 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ═══════════════════════════════════════════════
+   MOBILE UI  (≤768px)  — desktop untouched above
+   ═══════════════════════════════════════════════ */
+@media(max-width:768px){
+
+  /* Hide desktop bottom nav on mobile (we have our own) */
+  .wc-bottom-nav{display:none;}
+
+  /* ── Hero tighten ── */
+  .hero{padding:2rem 1rem 1.5rem;}
+  .hero h1{font-size:clamp(1.6rem,8vw,2.4rem);}
+  .pills{gap:4px;}
+  .pill{font-size:9px;padding:2px 8px;}
+
+  /* ── Tool wrap ── */
+  .tool-wrap{padding:0 .75rem 7rem;}
+
+  /* ── Drop zone ── */
+  .drop-zone{padding:2rem 1rem;}
+
+  /* ── Batch grid 2 cols ── */
+  .batch-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
+  .batch-header{flex-direction:column;align-items:flex-start;gap:.5rem;}
+  .batch-actions{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
+  .batch-actions .btn-sm{flex:1;min-width:calc(50% - 3px);text-align:center;justify-content:center;}
+
+  /* ── Editor: single column, canvas full width ── */
+  .editor-wrap.active{
+    display:flex !important;
+    flex-direction:column;
+    gap:.6rem;
+  }
+
+  /* Canvas card: full width, viewport taller */
+  #canvas-viewport{min-height:55vw !important;max-height:62vw;}
+
+  /* Hide desktop sidebar entirely on mobile */
+  .sidebar{display:none !important;}
+
+  /* ── MOBILE BOTTOM TOOLBAR ── */
+  .mob-toolbar{
+    display:none;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    z-index:300;
+    background:rgba(14,14,20,0.97);
+    border-top:1px solid var(--gold-border);
+    backdrop-filter:blur(16px);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .mob-toolbar.active{display:flex;}
+  .mob-toolbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    width:100%;
+    gap:2px;
+  }
+  .mob-tb-btn{
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    background:none;border:none;color:var(--muted);
+    font-family:'DM Sans',sans-serif;font-size:9px;font-weight:600;
+    letter-spacing:.04em;text-transform:uppercase;
+    padding:6px 8px;border-radius:10px;cursor:pointer;
+    transition:color .15s,background .15s;
+    flex:1;min-width:0;
+  }
+  .mob-tb-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+  .mob-tb-btn:hover,.mob-tb-btn.active{color:var(--gold);background:var(--gold-dim);}
+  .mob-tb-btn.mode-erase{color:#ff7070;background:rgba(220,50,50,.12);}
+  .mob-tb-btn.mode-restore{color:#7ddb7d;background:rgba(50,180,50,.12);}
+
+  /* Brush size bar (shown above toolbar when erase/restore active) */
+  .mob-brush-bar{
+    display:none;
+    position:fixed;bottom:68px;left:0;right:0;z-index:299;
+    background:rgba(14,14,20,0.97);border-top:1px solid var(--faint);
+    padding:8px 16px;gap:10px;align-items:center;
+    backdrop-filter:blur(10px);
+  }
+  .mob-brush-bar.active{display:flex;}
+  .mob-brush-bar span{font-size:10px;color:var(--muted);white-space:nowrap;}
+  .mob-brush-bar input{flex:1;}
+  .mob-brush-bar .brush-undo-group{display:flex;gap:4px;}
+  .mob-brush-bar .undo-btn{font-size:11px;padding:5px 9px;}
+
+  /* ── BOTTOM SHEETS ── */
+  .mob-sheet-backdrop{
+    display:none;position:fixed;inset:0;z-index:400;
+    background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);
+  }
+  .mob-sheet-backdrop.active{display:block;}
+
+  .mob-sheet{
+    position:fixed;bottom:0;left:0;right:0;z-index:401;
+    background:var(--dark2);
+    border-top:1px solid var(--gold-border);
+    border-radius:18px 18px 0 0;
+    max-height:82vh;
+    overflow-y:auto;
+    transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.32,.72,0,1);
+    padding-bottom:calc(16px + env(safe-area-inset-bottom));
+  }
+  .mob-sheet.open{transform:translateY(0);}
+  .mob-sheet-handle{width:36px;height:4px;background:var(--faint);border-radius:99px;margin:10px auto 0;}
+  .mob-sheet-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 16px 6px;}
+  .mob-sheet-body{padding:4px 16px 8px;}
+
+  /* ── Panels inside sheet ── */
+  .mob-sheet .panel{background:transparent;border:none;border-radius:0;overflow:visible;}
+  .mob-sheet .panel-header{padding:8px 0;border-bottom:1px solid var(--faint);}
+  .mob-sheet .panel-body{padding:10px 0;}
+
+  /* ── Zoom bar inside canvas header ── */
+  .canvas-card-header{flex-wrap:nowrap;}
+
+  /* ── Action row hide on mobile (download in toolbar) ── */
+  .action-row{display:none !important;}
+
+  /* ── Section / FAQ below tool ── */
+  .section{padding:0 .75rem 3rem;}
+  .steps{grid-template-columns:1fr;}
+}
+
+/* Mobile toolbar always hidden on desktop */
+@media(min-width:769px){
+  .mob-toolbar,.mob-sheet,.mob-sheet-backdrop,.mob-brush-bar{display:none !important;}
+}
+
 /* UPLOAD ANIMATION OVERLAY */
 .upload-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(11,11,18,0.92);align-items:center;justify-content:center;flex-direction:column;gap:16px;backdrop-filter:blur(6px);}
 .upload-overlay.active{display:flex;}
@@ -681,6 +811,215 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
   <div class="wc-bn-divider"></div>
   <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
 </nav>
+
+<!-- ═══════════════════════════════════════════
+     MOBILE BOTTOM TOOLBAR + SHEETS
+     ═══════════════════════════════════════════ -->
+
+<!-- Backdrop -->
+<div class="mob-sheet-backdrop" id="mob-backdrop" onclick="closeMobSheet()"></div>
+
+<!-- BG Sheet -->
+<div class="mob-sheet" id="mob-sheet-bg">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🎨 Background</div>
+  <div class="mob-sheet-body">
+    <div class="swatch-row" style="margin-bottom:10px;">
+      <div class="swatch transparent-swatch active" data-bg="transparent" title="Transparent" onclick="setBg('transparent',this)"></div>
+      <div class="swatch" style="background:#fff;" data-bg="#ffffff" onclick="setBg('#ffffff',this)"></div>
+      <div class="swatch" style="background:#000;" data-bg="#000000" onclick="setBg('#000000',this)"></div>
+      <div class="swatch" style="background:#C9A84C;" data-bg="#C9A84C" onclick="setBg('#C9A84C',this)"></div>
+      <div class="swatch" style="background:#1e3a5f;" data-bg="#1e3a5f" onclick="setBg('#1e3a5f',this)"></div>
+      <div class="swatch" style="background:#2d1b69;" data-bg="#2d1b69" onclick="setBg('#2d1b69',this)"></div>
+      <div class="swatch" style="background:#1a3a2a;" data-bg="#1a3a2a" onclick="setBg('#1a3a2a',this)"></div>
+      <div class="swatch" style="background:#3a1a1a;" data-bg="#3a1a1a" onclick="setBg('#3a1a1a',this)"></div>
+      <div class="swatch" style="background:#f5f0e8;" data-bg="#f5f0e8" onclick="setBg('#f5f0e8',this)"></div>
+      <div class="swatch" style="background:#e8e8e8;" data-bg="#e8e8e8" onclick="setBg('#e8e8e8',this)"></div>
+      <div class="swatch" style="background:#333;" data-bg="#333333" onclick="setBg('#333333',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#667eea,#764ba2);" data-bg="gradient-purple" onclick="setBg('gradient-purple',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#f093fb,#f5576c);" data-bg="gradient-pink" onclick="setBg('gradient-pink',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#4facfe,#00f2fe);" data-bg="gradient-blue" onclick="setBg('gradient-blue',this)"></div>
+      <div class="swatch" style="background:linear-gradient(135deg,#43e97b,#38f9d7);" data-bg="gradient-green" onclick="setBg('gradient-green',this)"></div>
+    </div>
+    <div class="color-input-wrap" style="margin-bottom:10px;">
+      <span style="font-size:10px;color:var(--muted);">Custom:</span>
+      <input type="color" value="#ff6600" onchange="applyCustomColor(this.value)">
+      <input type="text" class="hex-input" placeholder="#FF6600" maxlength="7" oninput="hexInputChange(this.value)">
+    </div>
+  </div>
+</div>
+
+<!-- Photo BG Sheet -->
+<div class="mob-sheet" id="mob-sheet-photo">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🖼 Photo Background</div>
+  <div class="mob-sheet-body">
+    <label style="display:flex;align-items:center;gap:8px;background:var(--dark4);border:1.5px dashed var(--gold-border);border-radius:var(--radius-sm);padding:8px 12px;cursor:pointer;margin-bottom:10px;">
+      <span style="font-size:16px;">📁</span>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text);">Upload from phone</div>
+        <div style="font-size:10px;color:var(--muted);">JPG, PNG, WEBP</div>
+      </div>
+      <input type="file" accept="image/*" style="display:none;" onchange="applyUploadedBg(this)">
+    </label>
+    <div class="photo-search-row" style="margin-bottom:8px;">
+      <input type="text" id="mob-photo-query" placeholder="Search photos…" value="studio background">
+      <button onclick="mobSearchPhotos()">Search</button>
+    </div>
+    <div id="mob-photo-grid" class="photo-grid" style="max-height:220px;"></div>
+    <div class="form-row" style="margin-top:8px;">
+      <span class="form-label">Blur:</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-bg-blur" min="0" max="30" value="0" oninput="mobUpdateBgBlur(this.value)">
+        <span class="slider-val" id="mob-bg-blur-val">0px</span>
+      </div>
+    </div>
+    <p class="photo-attribution" style="margin-top:6px;">Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a> / <a href="https://www.pexels.com" target="_blank">Pexels</a></p>
+  </div>
+</div>
+
+<!-- Subject Transform Sheet -->
+<div class="mob-sheet" id="mob-sheet-subject">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">🔲 Subject Position</div>
+  <div class="mob-sheet-body">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Scale &amp; move your subject. Background stays fixed. Drag subject directly on canvas too.</div>
+    <div class="form-row" style="margin-bottom:8px;">
+      <span class="form-label">Scale</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-scale" min="10" max="300" value="100" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-scale-val">100%</span>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:8px;">
+      <span class="form-label">Move X</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-x" min="-500" max="500" value="0" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-x-val">0</span>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px;">
+      <span class="form-label">Move Y</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-subject-y" min="-500" max="500" value="0" oninput="mobUpdateSubject()">
+        <span class="slider-val" id="mob-subject-y-val">0</span>
+      </div>
+    </div>
+    <button class="btn-sm outline" style="width:100%;" onclick="mobResetSubject()">↺ Reset Position</button>
+  </div>
+</div>
+
+<!-- Shadow Sheet -->
+<div class="mob-sheet" id="mob-sheet-shadow">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">✦ Drop Shadow</div>
+  <div class="mob-sheet-body">
+    <div class="form-row" style="margin-bottom:10px;">
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+        <input type="checkbox" id="mob-shadow-enable" onchange="mobUpdateShadow()" style="accent-color:var(--gold);width:15px;height:15px;">
+        <span style="font-size:12px;color:var(--muted);">Add drop shadow</span>
+      </label>
+    </div>
+    <div id="mob-shadow-controls" style="display:none;flex-direction:column;gap:8px;">
+      <div class="form-row">
+        <span class="form-label">Color</span>
+        <input type="color" id="mob-shadow-color" value="#000000" onchange="mobUpdateShadow()" style="width:26px;height:26px;border:2px solid var(--faint);border-radius:5px;cursor:pointer;padding:0;">
+      </div>
+      <div class="form-row">
+        <span class="form-label">Opacity</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-opacity" min="0" max="100" value="60" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-opacity-val">60%</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Blur</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-blur" min="0" max="60" value="20" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-blur-val">20px</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Distance</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-distance" min="0" max="80" value="10" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-distance-val">10px</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Angle</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-shadow-angle" min="0" max="360" value="135" oninput="mobUpdateShadow()">
+          <span class="slider-val" id="mob-shadow-angle-val">135°</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Download Sheet -->
+<div class="mob-sheet" id="mob-sheet-dl">
+  <div class="mob-sheet-handle"></div>
+  <div class="mob-sheet-title">⬇ Download</div>
+  <div class="mob-sheet-body" style="display:flex;flex-direction:column;gap:8px;">
+    <button class="btn-primary" style="width:100%;" onclick="downloadCurrent();closeMobSheet();">Download PNG</button>
+    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll();closeMobSheet();">Download All ZIP</button>
+    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll();closeMobSheet();">← Back / New Images</button>
+  </div>
+</div>
+
+<!-- Mobile Bottom Toolbar -->
+<div class="mob-toolbar" id="mob-toolbar">
+  <div class="mob-toolbar-inner">
+    <!-- Erase -->
+    <button class="mob-tb-btn" id="mob-btn-erase" onclick="mobSetBrush('erase')">
+      <svg viewBox="0 0 24 24"><path d="M20 20H7L3 16l10-10 7 7-3.5 3.5"/><path d="M6.5 17.5l4-4"/></svg>
+      Erase
+    </button>
+    <!-- Restore -->
+    <button class="mob-tb-btn" id="mob-btn-restore" onclick="mobSetBrush('restore')">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/><path d="M16 12l-4-4-4 4M12 8v8"/></svg>
+      Restore
+    </button>
+    <!-- BG Color -->
+    <button class="mob-tb-btn" onclick="openMobSheet('bg')">
+      <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.17-.6-1.6-.37-.43-.6-.98-.6-1.4a2.5 2.5 0 0 1 2.5-2.5H18c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
+      BG Color
+    </button>
+    <!-- Photo BG -->
+    <button class="mob-tb-btn" onclick="openMobSheet('photo')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      Photo
+    </button>
+    <!-- Subject -->
+    <button class="mob-tb-btn" onclick="openMobSheet('subject')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Position
+    </button>
+    <!-- Shadow -->
+    <button class="mob-tb-btn" onclick="openMobSheet('shadow')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      Shadow
+    </button>
+    <!-- Download -->
+    <button class="mob-tb-btn" onclick="openMobSheet('dl')">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Save
+    </button>
+  </div>
+</div>
+
+<!-- Mobile brush size bar -->
+<div class="mob-brush-bar" id="mob-brush-bar">
+  <span>Size</span>
+  <input type="range" id="mob-brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('mob-brush-size-val').textContent=this.value+'px'">
+  <span id="mob-brush-size-val">20px</span>
+  <div class="brush-undo-group">
+    <button class="undo-btn" onclick="undoStroke()">↩</button>
+    <button class="undo-btn" onclick="redoStroke()">↪</button>
+  </div>
+  <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--muted);" onclick="mobSetBrush(null)">✕ Done</button>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
@@ -1523,6 +1862,204 @@ window.clearAll=function(){
   document.getElementById('editor-wrap').classList.remove('active');
   dropZone.classList.remove('hidden');
 };
+
+// ─── MOBILE UI ───────────────────────────────────────────────────────
+const isMobile = () => window.innerWidth <= 768;
+
+// Show/hide toolbar when editor opens
+const _origOpenEditor = window._origOpenEditor;
+function mobShowToolbar(show) {
+  const tb = document.getElementById('mob-toolbar');
+  if (tb) tb.classList.toggle('active', show);
+}
+
+// Intercept openEditor to also show mob toolbar
+const _openEditorOrig = openEditor;
+// We patch via observer since openEditor is defined in same scope:
+// Instead watch editor-wrap class changes
+const editorWrapEl = document.getElementById('editor-wrap');
+if (editorWrapEl) {
+  new MutationObserver(() => {
+    const active = editorWrapEl.classList.contains('active');
+    mobShowToolbar(active && isMobile());
+  }).observe(editorWrapEl, { attributes:true, attributeFilter:['class'] });
+}
+window.addEventListener('resize', () => {
+  const active = editorWrapEl && editorWrapEl.classList.contains('active');
+  mobShowToolbar(active && isMobile());
+});
+
+// ── Sheet open/close ──
+let currentSheet = null;
+window.openMobSheet = function(name) {
+  closeMobSheet();
+  const sheet = document.getElementById('mob-sheet-' + name);
+  const backdrop = document.getElementById('mob-backdrop');
+  if (!sheet) return;
+  currentSheet = name;
+  backdrop.classList.add('active');
+  sheet.classList.add('open');
+};
+window.closeMobSheet = function() {
+  document.querySelectorAll('.mob-sheet').forEach(s => s.classList.remove('open'));
+  document.getElementById('mob-backdrop').classList.remove('active');
+  currentSheet = null;
+};
+
+// ── Brush mode (mobile) ──
+window.mobSetBrush = function(mode) {
+  // Toggle off if same
+  if (brushMode === mode || mode === null) {
+    brushMode = null;
+    updateViewportCursor();
+    document.getElementById('mob-btn-erase').classList.remove('mode-erase');
+    document.getElementById('mob-btn-restore').classList.remove('mode-restore');
+    document.getElementById('mob-brush-bar').classList.remove('active');
+    // Also sync desktop buttons
+    document.getElementById('btn-erase').classList.remove('mode-erase');
+    document.getElementById('btn-restore').classList.remove('mode-restore');
+    return;
+  }
+  brushMode = mode;
+  viewport.style.cursor = 'none';
+  document.getElementById('mob-btn-erase').classList.toggle('mode-erase', mode==='erase');
+  document.getElementById('mob-btn-erase').classList.toggle('mode-restore', false);
+  document.getElementById('mob-btn-restore').classList.toggle('mode-restore', mode==='restore');
+  document.getElementById('mob-btn-restore').classList.toggle('mode-erase', false);
+  document.getElementById('mob-brush-bar').classList.add('active');
+  // Sync desktop
+  document.getElementById('btn-erase').classList.toggle('mode-erase', mode==='erase');
+  document.getElementById('btn-restore').classList.toggle('mode-restore', mode==='restore');
+  // Sync brush size
+  const mobSz = document.getElementById('mob-brush-size');
+  if (mobSz) window.brushSize = +mobSz.value;
+};
+
+// ── Subject transform (mobile) ──
+window.mobUpdateSubject = function() {
+  subjectScale = +document.getElementById('mob-subject-scale').value / 100;
+  subjectX = +document.getElementById('mob-subject-x').value;
+  subjectY = +document.getElementById('mob-subject-y').value;
+  document.getElementById('mob-subject-scale-val').textContent = Math.round(subjectScale*100) + '%';
+  document.getElementById('mob-subject-x-val').textContent = subjectX;
+  document.getElementById('mob-subject-y-val').textContent = subjectY;
+  // Sync desktop sliders
+  const ss = document.getElementById('subject-scale'); if(ss){ss.value=Math.round(subjectScale*100);document.getElementById('subject-scale-val').textContent=Math.round(subjectScale*100)+'%';}
+  const sx = document.getElementById('subject-x'); if(sx){sx.value=subjectX;document.getElementById('subject-x-val').textContent=subjectX;}
+  const sy = document.getElementById('subject-y'); if(sy){sy.value=subjectY;document.getElementById('subject-y-val').textContent=subjectY;}
+  drawComposite();
+};
+window.mobResetSubject = function() {
+  subjectScale=1;subjectX=0;subjectY=0;
+  ['mob-subject-scale','mob-subject-x','mob-subject-y'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=[100,0,0][i];});
+  document.getElementById('mob-subject-scale-val').textContent='100%';
+  document.getElementById('mob-subject-x-val').textContent='0';
+  document.getElementById('mob-subject-y-val').textContent='0';
+  resetSubjectTransform();
+};
+
+// ── Shadow (mobile) ──
+window.mobUpdateShadow = function() {
+  const en = document.getElementById('mob-shadow-enable').checked;
+  // Sync to desktop shadow inputs
+  document.getElementById('shadow-enable').checked = en;
+  if (en) {
+    document.getElementById('shadow-color').value = document.getElementById('mob-shadow-color').value;
+    document.getElementById('shadow-opacity').value = document.getElementById('mob-shadow-opacity').value;
+    document.getElementById('shadow-blur').value = document.getElementById('mob-shadow-blur').value;
+    document.getElementById('shadow-distance').value = document.getElementById('mob-shadow-distance').value;
+    document.getElementById('shadow-angle').value = document.getElementById('mob-shadow-angle').value;
+  }
+  document.getElementById('mob-shadow-controls').style.display = en ? 'flex' : 'none';
+  // Update display vals
+  document.getElementById('mob-shadow-opacity-val').textContent = document.getElementById('mob-shadow-opacity').value + '%';
+  document.getElementById('mob-shadow-blur-val').textContent = document.getElementById('mob-shadow-blur').value + 'px';
+  document.getElementById('mob-shadow-distance-val').textContent = document.getElementById('mob-shadow-distance').value + 'px';
+  document.getElementById('mob-shadow-angle-val').textContent = document.getElementById('mob-shadow-angle').value + '°';
+  updateEffects();
+};
+
+// ── BG Blur (mobile) ──
+window.mobUpdateBgBlur = function(val) {
+  bgBlur = +val;
+  document.getElementById('mob-bg-blur-val').textContent = val + 'px';
+  document.getElementById('bg-blur').value = val;
+  document.getElementById('bg-blur-val').textContent = val + 'px';
+  drawComposite();
+};
+
+// ── Photo search (mobile) ──
+window.mobSearchPhotos = async function() {
+  const q = document.getElementById('mob-photo-query').value.trim() || 'studio background';
+  // Also update desktop query
+  document.getElementById('photo-query').value = q;
+  const grid = document.getElementById('mob-photo-grid');
+  grid.innerHTML = '<div class="photo-loading">Searching…</div>';
+
+  function renderPhotos(list, attribution) {
+    grid.innerHTML = '';
+    list.forEach(({thumb, full, label}) => {
+      const img = document.createElement('img');
+      img.className = 'photo-thumb';
+      img.crossOrigin = 'anonymous';
+      img.src = thumb;
+      img.title = label || '';
+      img.addEventListener('click', () => { applyPhotoBg(img, full); closeMobSheet(); });
+      grid.appendChild(img);
+    });
+  }
+
+  try {
+    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(q)}&image_type=photo&orientation=horizontal&per_page=18&safesearch=true`);
+    if (!res.ok) throw new Error('pixabay');
+    const data = await res.json();
+    const hits = data.hits || [];
+    if (!hits.length) throw new Error('empty');
+    renderPhotos(hits.map(p=>({thumb:p.previewURL,full:p.largeImageURL,label:p.user})));
+    return;
+  } catch(e) {}
+
+  try {
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=18&orientation=landscape`,{headers:{Authorization:'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC'}});
+    if (!res.ok) throw new Error('pexels');
+    const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) throw new Error('empty');
+    renderPhotos(photos.map(p=>({thumb:p.src.small,full:p.src.large,label:p.photographer})));
+    return;
+  } catch(e) {}
+
+  grid.innerHTML = '<div class="photo-loading">No results. Try a different query.</div>';
+};
+
+// ── Touch subject drag ──
+// We patch into the existing touch events via a flag approach
+// When no brushMode and single finger touch, drag subject
+let mobTouchDragActive = false;
+let mobTouchDragStart = {x:0, y:0};
+
+viewport.addEventListener('touchstart', e => {
+  if (e.touches.length === 1 && !brushMode) {
+    mobTouchDragActive = true;
+    mobTouchDragStart = { x: e.touches[0].clientX - subjectX, y: e.touches[0].clientY - subjectY };
+  }
+}, { passive: true, capture: true });
+
+viewport.addEventListener('touchmove', e => {
+  if (mobTouchDragActive && e.touches.length === 1 && !brushMode) {
+    e.preventDefault();
+    subjectX = e.touches[0].clientX - mobTouchDragStart.x;
+    subjectY = e.touches[0].clientY - mobTouchDragStart.y;
+    // Sync mobile sliders
+    const sxEl = document.getElementById('mob-subject-x');
+    const syEl = document.getElementById('mob-subject-y');
+    if (sxEl) { sxEl.value = Math.max(-500, Math.min(500, Math.round(subjectX))); document.getElementById('mob-subject-x-val').textContent = Math.round(subjectX); }
+    if (syEl) { syEl.value = Math.max(-500, Math.min(500, Math.round(subjectY))); document.getElementById('mob-subject-y-val').textContent = Math.round(subjectY); }
+    drawComposite();
+  }
+}, { passive: false, capture: true });
+
+viewport.addEventListener('touchend', () => { mobTouchDragActive = false; }, { passive: true, capture: true });
 
 // ─── UTIL ────────────────────────────────────────────────────────────
 function loadImg(src){return new Promise(res=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.src=src;});}
