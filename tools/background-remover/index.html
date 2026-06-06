@@ -1701,25 +1701,19 @@ window.updateEffects=function(){
 // ─── PHOTO SEARCH (infinite scroll, shared state) ────────────────────
 let photoSearchState = { query:'', page:1, loading:false, exhausted:false, source:'' };
 
+// ── API KEY — apni Pexels key yahan daalo ───────────────────────────
+const PEXELS_API_KEY = 'o4lyPnNivfvjZiCGp6IfzVomd465edTzsZmJWlUMUHcvuJJoUmLVbAiiC'
+// ───────────────────────────────────────────────────────────────────
+
 async function fetchPhotoPage(query, page) {
-  // Try Pixabay
   try {
-    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`);
-    if (!res.ok) throw new Error('pixabay');
-    const data = await res.json();
-    const hits = data.hits || [];
-    if (!hits.length) throw new Error('empty');
-    return { photos: hits.map(p=>({thumb:p.previewURL,full:p.largeImageURL,label:p.user})), source:'pixabay', hasMore: data.totalHits > page*18 };
-  } catch(e1) {}
-  // Try Pexels
-  try {
-    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,{headers:{Authorization:'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC'}});
-    if (!res.ok) throw new Error('pexels');
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`, { headers: { Authorization: PEXELS_API_KEY } });
+    if (!res.ok) throw new Error('pexels ' + res.status);
     const data = await res.json();
     const photos = data.photos || [];
     if (!photos.length) throw new Error('empty');
     return { photos: photos.map(p=>({thumb:p.src.small,full:p.src.large,label:p.photographer})), source:'pexels', hasMore: !!data.next_page };
-  } catch(e2) {}
+  } catch(e) { console.warn('Pexels failed:', e.message); }
   return null;
 }
 
