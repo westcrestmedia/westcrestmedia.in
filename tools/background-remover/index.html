@@ -194,7 +194,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .photo-search-row input{flex:1;background:var(--dark4);border:1.5px solid var(--faint);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 10px;border-radius:var(--radius-sm);outline:none;}
 .photo-search-row input:focus{border-color:var(--gold-border);}
 .photo-search-row button{background:var(--gold-dim);border:1.5px solid var(--gold-border);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;}
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:200px;overflow-y:auto;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow-y:auto;margin-top:4px;}
 .photo-grid::-webkit-scrollbar{width:4px;}
 .photo-grid::-webkit-scrollbar-track{background:var(--dark3);}
 .photo-grid::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:2px;}
@@ -539,6 +539,40 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
         </div>
       </div>
 
+      <!-- SUBJECT TRANSFORM PANEL -->
+      <div class="panel" id="panel-subject">
+        <div class="panel-header" onclick="togglePanel('panel-subject')">
+          <span class="panel-title">🔲 Subject Position</span>
+          <span class="panel-toggle">▾</span>
+        </div>
+        <div class="panel-body">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;line-height:1.5;">Scale &amp; move your subject independently. Background stays fixed on canvas.</div>
+          <div class="form-row">
+            <span class="form-label">Scale</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-scale" min="10" max="300" value="100" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-scale-val">100%</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">Move X</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-x" min="-500" max="500" value="0" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-x-val">0</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">Move Y</span>
+            <div class="slider-wrap">
+              <input type="range" id="subject-y" min="-500" max="500" value="0" oninput="updateSubjectTransform()">
+              <span class="slider-val" id="subject-y-val">0</span>
+            </div>
+          </div>
+          <button class="btn-sm outline" style="width:100%;margin-top:4px;" onclick="resetSubjectTransform()">↺ Reset Position</button>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;opacity:.7;">💡 Tip: No brush mode selected? Drag subject directly on canvas to reposition.</div>
+        </div>
+      </div>
+
       <!-- DOWNLOAD PANEL -->
       <div class="panel" id="panel-dl">
         <div class="panel-header" onclick="togglePanel('panel-dl')">
@@ -682,6 +716,10 @@ let eventsReady = false;
 let shadowEnabled = false;
 let shadowColor = '#000000', shadowOpacity = 60, shadowBlur = 20, shadowDistance = 10, shadowAngle = 135;
 let bgBlur = 0;
+
+// Subject transform (independent of canvas zoom/pan)
+let subjectScale = 1, subjectX = 0, subjectY = 0;
+let isDraggingSubject = false, subjectDragStart = {x:0,y:0};
 
 const viewport  = document.getElementById('canvas-viewport');
 const dc        = document.getElementById('display-canvas');
@@ -900,6 +938,15 @@ async function openEditor(id) {
   zoom = 1; panX = 0; panY = 0; baseW = 0; baseH = 0;
   undoStack = []; redoStack = []; updateUndoUI();
   currentBgColor = 'transparent'; currentPhotoBg = null;
+  subjectScale = 1; subjectX = 0; subjectY = 0;
+  isDraggingSubject = false;
+  // Reset sliders if present
+  const ssEl = document.getElementById('subject-scale');
+  if (ssEl) { ssEl.value = 100; document.getElementById('subject-scale-val').textContent = '100%'; }
+  const sxEl = document.getElementById('subject-x');
+  if (sxEl) { sxEl.value = 0; document.getElementById('subject-x-val').textContent = '0'; }
+  const syEl = document.getElementById('subject-y');
+  if (syEl) { syEl.value = 0; document.getElementById('subject-y-val').textContent = '0'; }
   document.getElementById('shadow-enable').checked = false;
   shadowEnabled = false; document.getElementById('shadow-controls').style.display = 'none';
   document.getElementById('bg-blur').value = 0; bgBlur = 0;
@@ -970,7 +1017,7 @@ function drawComposite() {
   const dw = dc.width, dh = dc.height;
   dctx.clearRect(0, 0, dw, dh);
 
-  // 1. Background
+  // 1. Background — always fills full canvas
   if (currentPhotoBg && currentPhotoBg.img) {
     dctx.save();
     if (bgBlur > 0) dctx.filter = `blur(${bgBlur}px)`;
@@ -988,7 +1035,12 @@ function drawComposite() {
     dctx.restore();
   }
 
-  // 2. Shadow
+  // 2. Subject — drawn with its own independent transform
+  const sw = dw * subjectScale;
+  const sh = dh * subjectScale;
+  const sx = (dw - sw) / 2 + subjectX;
+  const sy = (dh - sh) / 2 + subjectY;
+
   if (shadowEnabled) {
     const rad = shadowAngle * Math.PI / 180;
     const dx = Math.cos(rad) * shadowDistance;
@@ -1001,14 +1053,13 @@ function drawComposite() {
     dctx.shadowBlur = shadowBlur;
     dctx.shadowOffsetX = dx;
     dctx.shadowOffsetY = dy;
-    dctx.drawImage(wCanvas, 0, 0, dw, dh);
+    dctx.drawImage(wCanvas, sx, sy, sw, sh);
     dctx.restore();
   }
 
-  // 3. Subject
-  dctx.drawImage(wCanvas, 0, 0, dw, dh);
+  dctx.drawImage(wCanvas, sx, sy, sw, sh);
 
-  // Save bg state into active item for multi-image export
+  // Save bg+subject state into active item for export
   const activeItem = items.find(i=>i.id==activeId);
   if (activeItem) {
     activeItem.bgSnapshot = {
@@ -1020,7 +1071,10 @@ function drawComposite() {
       shadowOpacity,
       shadowBlur,
       shadowDistance,
-      shadowAngle
+      shadowAngle,
+      subjectScale,
+      subjectX,
+      subjectY
     };
   }
 }
@@ -1056,7 +1110,9 @@ function attachEvents() {
   if (eventsReady) return;
   eventsReady = true;
   window.addEventListener('keydown', e => {
-    if (e.code==='Space') { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); }
+    const tag = document.activeElement.tagName;
+    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+    if (e.code==='Space' && !isTyping) { spaceDown=true; viewport.style.cursor='grab'; e.preventDefault(); }
     if ((e.ctrlKey||e.metaKey) && e.code==='KeyZ' && !e.shiftKey) { e.preventDefault(); undoStroke(); }
     if ((e.ctrlKey||e.metaKey) && (e.code==='KeyY'||(e.code==='KeyZ'&&e.shiftKey))) { e.preventDefault(); redoStroke(); }
   });
@@ -1070,23 +1126,47 @@ function attachEvents() {
     panX -= mx*(nz/zoom-1); panY -= my*(nz/zoom-1); zoom=nz; renderAll();
   }, { passive:false });
   viewport.addEventListener('mousedown', e => {
-    if (e.button===1||spaceDown||!brushMode) {
+    if (e.button===1||spaceDown) {
       isPanning=true; panStart={x:e.clientX-panX,y:e.clientY-panY}; viewport.style.cursor='grabbing'; e.preventDefault(); return;
+    }
+    if (!brushMode) {
+      // Check if clicking on subject area for drag
+      const pos = canvasPos(e);
+      if (pos) {
+        isDraggingSubject = true;
+        subjectDragStart = { x: e.clientX - subjectX, y: e.clientY - subjectY };
+        viewport.style.cursor = 'move';
+        e.preventDefault();
+      } else {
+        isPanning=true; panStart={x:e.clientX-panX,y:e.clientY-panY}; viewport.style.cursor='grabbing'; e.preventDefault();
+      }
+      return;
     }
     const pos=canvasPos(e); if (!pos) return;
     isPainting=true; saveSnapshot(); applyBrush(pos.x,pos.y);
   });
   viewport.addEventListener('mousemove', e => {
     if (isPanning) { panX=e.clientX-panStart.x; panY=e.clientY-panStart.y; renderAll(); clearCursor(); return; }
+    if (isDraggingSubject) {
+      subjectX = e.clientX - subjectDragStart.x;
+      subjectY = e.clientY - subjectDragStart.y;
+      // Sync sliders
+      const sxEl = document.getElementById('subject-x');
+      const syEl = document.getElementById('subject-y');
+      if (sxEl) { sxEl.value = Math.max(-500, Math.min(500, Math.round(subjectX))); document.getElementById('subject-x-val').textContent = Math.round(subjectX); }
+      if (syEl) { syEl.value = Math.max(-500, Math.min(500, Math.round(subjectY))); document.getElementById('subject-y-val').textContent = Math.round(subjectY); }
+      drawComposite(); return;
+    }
     const pos=canvasPos(e);
     if (pos) { drawCursorRing(pos.x,pos.y); if (isPainting&&brushMode) applyBrush(pos.x,pos.y); }
     else clearCursor();
   });
   viewport.addEventListener('mouseup', e => {
     if (isPanning) { isPanning=false; viewport.style.cursor=''; updateViewportCursor(); return; }
+    if (isDraggingSubject) { isDraggingSubject=false; viewport.style.cursor=''; updateViewportCursor(); return; }
     if (isPainting) { isPainting=false; bakeToItem(); }
   });
-  viewport.addEventListener('mouseleave', () => { if (isPanning)isPanning=false; if (isPainting){isPainting=false;bakeToItem();} clearCursor(); });
+  viewport.addEventListener('mouseleave', () => { if (isPanning)isPanning=false; if (isDraggingSubject)isDraggingSubject=false; if (isPainting){isPainting=false;bakeToItem();} clearCursor(); });
   let lastTouches=null;
   viewport.addEventListener('touchstart', e => {
     e.preventDefault();
@@ -1110,7 +1190,7 @@ function attachEvents() {
   viewport.addEventListener('touchend', e=>{lastTouches=null;isPanning=false;if(isPainting){isPainting=false;bakeToItem();}});
 }
 
-function updateViewportCursor(){viewport.style.cursor=brushMode?'none':'grab';}
+function updateViewportCursor(){viewport.style.cursor=brushMode?'none':'move';}
 function canvasPos(e){const vr=viewport.getBoundingClientRect();const cx=e.clientX-vr.left-panX,cy=e.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
 function touchPos(t){const vr=viewport.getBoundingClientRect();const cx=t.clientX-vr.left-panX,cy=t.clientY-vr.top-panY;if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;return{x:cx,y:cy};}
 
@@ -1236,70 +1316,65 @@ window.searchPhotos = async function(){
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
 
-  // Try Pexels first
-  try {
-    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape`, {
-      headers: { Authorization: 'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC' }
-    });
-    if (!res.ok) throw new Error('pexels error');
-    const data = await res.json();
-    const photos = data.photos || [];
-    if (!photos.length) throw new Error('no results');
+  function renderPhotos(list, attribution) {
     grid.innerHTML = '';
-    photos.forEach(photo => {
+    list.forEach(({thumb, full, label}) => {
       const img = document.createElement('img');
       img.className = 'photo-thumb';
       img.crossOrigin = 'anonymous';
-      img.src = photo.src.small;
-      img.title = photo.photographer || '';
-      img.addEventListener('click', () => applyPhotoBg(img, photo.src.large));
+      img.src = thumb;
+      img.title = label || '';
+      img.addEventListener('click', () => applyPhotoBg(img, full));
       grid.appendChild(img);
     });
-    document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
+    document.querySelector('.photo-attribution').innerHTML = attribution;
+  }
+
+  // Try Pixabay first (most CORS-friendly)
+  try {
+    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(q)}&image_type=photo&orientation=horizontal&per_page=18&safesearch=true`);
+    if (!res.ok) throw new Error('pixabay');
+    const data = await res.json();
+    const hits = data.hits || [];
+    if (!hits.length) throw new Error('empty');
+    renderPhotos(hits.map(p=>({thumb:p.previewURL, full:p.largeImageURL, label:p.user})), 'Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a>');
     return;
   } catch(e1) {}
 
-  // Fallback: Pixabay (free, no key needed for basic)
+  // Fallback: Pexels
   try {
-    const res = await fetch(`https://pixabay.com/api/?key=48046984-39b3a1db5b5f7e2d5e3a9c0f4&q=${encodeURIComponent(q)}&image_type=photo&orientation=horizontal&per_page=12`);
-    if (!res.ok) throw new Error('pixabay error');
-    const data = await res.json();
-    const hits = data.hits || [];
-    if (!hits.length) throw new Error('no results');
-    grid.innerHTML = '';
-    hits.forEach(photo => {
-      const img = document.createElement('img');
-      img.className = 'photo-thumb';
-      img.crossOrigin = 'anonymous';
-      img.src = photo.previewURL;
-      img.title = photo.user || '';
-      img.addEventListener('click', () => applyPhotoBg(img, photo.largeImageURL));
-      grid.appendChild(img);
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=18&orientation=landscape`, {
+      headers: { Authorization: 'O1LCzCqKgdoxLGJiMgxZRSJ0RkyB5wIBIvJJSJGJiABWQIMNV5abkJAC' }
     });
-    document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a>';
+    if (!res.ok) throw new Error('pexels');
+    const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) throw new Error('empty');
+    renderPhotos(photos.map(p=>({thumb:p.src.small, full:p.src.large, label:p.photographer})), 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>');
     return;
   } catch(e2) {}
 
-  // Final fallback: curated static backgrounds
-  grid.innerHTML = '';
-  const fallbacks = [
-    { thumb:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Abstract' },
-    { thumb:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Studio' },
-    { thumb:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Nature' },
-    { thumb:'https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Night Sky' },
-    { thumb:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Dark' },
-    { thumb:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=200', full:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?auto=compress&cs=tinysrgb&w=1260', label:'Bokeh' },
-  ];
-  fallbacks.forEach(p => {
-    const img = document.createElement('img');
-    img.className = 'photo-thumb';
-    img.crossOrigin = 'anonymous';
-    img.src = p.thumb;
-    img.title = p.label;
-    img.addEventListener('click', () => applyPhotoBg(img, p.full));
-    grid.appendChild(img);
-  });
-  document.querySelector('.photo-attribution').innerHTML = 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
+  // Last resort: 18 curated static backgrounds (always works)
+  renderPhotos([
+    {thumb:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?w=200',full:'https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?w=1260',label:'Abstract'},
+    {thumb:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?w=200',full:'https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?w=1260',label:'Studio'},
+    {thumb:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?w=200',full:'https://images.pexels.com/photos/1287145/pexels-photo-1287145.jpeg?w=1260',label:'Nature'},
+    {thumb:'https://images.pexels.com/photos/956999/pexels-photo-956999.jpeg?w=200',full:'https://images.pexels.com/photos/956999/pexels-photo-956999.jpeg?w=1260',label:'Night Sky'},
+    {thumb:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?w=200',full:'https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?w=1260',label:'Dark'},
+    {thumb:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?w=200',full:'https://images.pexels.com/photos/1366957/pexels-photo-1366957.jpeg?w=1260',label:'Bokeh'},
+    {thumb:'https://images.pexels.com/photos/3617500/pexels-photo-3617500.jpeg?w=200',full:'https://images.pexels.com/photos/3617500/pexels-photo-3617500.jpeg?w=1260',label:'Gradient'},
+    {thumb:'https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg?w=200',full:'https://images.pexels.com/photos/1939485/pexels-photo-1939485.jpeg?w=1260',label:'Minimal'},
+    {thumb:'https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?w=200',full:'https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?w=1260',label:'Forest'},
+    {thumb:'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg?w=200',full:'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg?w=1260',label:'Sky'},
+    {thumb:'https://images.pexels.com/photos/247431/pexels-photo-247431.jpeg?w=200',full:'https://images.pexels.com/photos/247431/pexels-photo-247431.jpeg?w=1260',label:'City'},
+    {thumb:'https://images.pexels.com/photos/3075993/pexels-photo-3075993.jpeg?w=200',full:'https://images.pexels.com/photos/3075993/pexels-photo-3075993.jpeg?w=1260',label:'Office'},
+    {thumb:'https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?w=200',full:'https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?w=1260',label:'Mountains'},
+    {thumb:'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?w=200',full:'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?w=1260',label:'Tech'},
+    {thumb:'https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?w=200',full:'https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?w=1260',label:'Ocean'},
+    {thumb:'https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg?w=200',full:'https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg?w=1260',label:'Sunset'},
+    {thumb:'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?w=200',full:'https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?w=1260',label:'Marble'},
+    {thumb:'https://images.pexels.com/photos/949587/pexels-photo-949587.jpeg?w=200',full:'https://images.pexels.com/photos/949587/pexels-photo-949587.jpeg?w=1260',label:'Smoke'},
+  ], 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>');
 };
 
 // Upload BG from PC
@@ -1333,11 +1408,32 @@ async function applyPhotoBg(el, url) {
   drawComposite();
 }
 
+// ─── SUBJECT TRANSFORM ───────────────────────────────────────────────
+window.updateSubjectTransform = function() {
+  subjectScale = +document.getElementById('subject-scale').value / 100;
+  subjectX = +document.getElementById('subject-x').value;
+  subjectY = +document.getElementById('subject-y').value;
+  document.getElementById('subject-scale-val').textContent = Math.round(subjectScale*100) + '%';
+  document.getElementById('subject-x-val').textContent = subjectX;
+  document.getElementById('subject-y-val').textContent = subjectY;
+  drawComposite();
+};
+
+window.resetSubjectTransform = function() {
+  subjectScale = 1; subjectX = 0; subjectY = 0;
+  document.getElementById('subject-scale').value = 100;
+  document.getElementById('subject-x').value = 0;
+  document.getElementById('subject-y').value = 0;
+  document.getElementById('subject-scale-val').textContent = '100%';
+  document.getElementById('subject-x-val').textContent = '0';
+  document.getElementById('subject-y-val').textContent = '0';
+  drawComposite();
+};
+
 // ─── PANEL TOGGLE ────────────────────────────────────────────────────
 window.togglePanel=function(id){document.getElementById(id).classList.toggle('collapsed');};
 
 // ─── DOWNLOAD ────────────────────────────────────────────────────────
-// Builds export canvas for ANY item using its saved bgSnapshot
 function buildExportCanvasForItem(item) {
   const subject = item.resultCanvas;
   const w = subject.width, h = subject.height;
@@ -1346,7 +1442,7 @@ function buildExportCanvasForItem(item) {
   const bg = item.bgSnapshot || {};
   const gradients = {'gradient-purple':['#667eea','#764ba2'],'gradient-pink':['#f093fb','#f5576c'],'gradient-blue':['#4facfe','#00f2fe'],'gradient-green':['#43e97b','#38f9d7']};
 
-  // BG
+  // BG — full canvas
   if (bg.photoBg && bg.photoBg.img) {
     ectx.save();
     if (bg.bgBlur>0) ectx.filter=`blur(${bg.bgBlur}px)`;
@@ -1361,18 +1457,24 @@ function buildExportCanvasForItem(item) {
     ectx.fillRect(0,0,w,h);
   }
 
-  // Shadow
+  // Subject with transform
+  const sScale = bg.subjectScale || 1;
+  const sX = bg.subjectX || 0;
+  const sY = bg.subjectY || 0;
+  const sw = w * sScale, sh = h * sScale;
+  const sx = (w - sw) / 2 + sX;
+  const sy = (h - sh) / 2 + sY;
+
   if (bg.shadowEnabled) {
     const rad=bg.shadowAngle*Math.PI/180;
     const dx=Math.cos(rad)*bg.shadowDistance, dy=Math.sin(rad)*bg.shadowDistance;
     const hex=bg.shadowColor, a=bg.shadowOpacity/100;
     const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
     ectx.save();ectx.shadowColor=`rgba(${r},${g},${b},${a})`;ectx.shadowBlur=bg.shadowBlur;ectx.shadowOffsetX=dx;ectx.shadowOffsetY=dy;
-    ectx.drawImage(subject,0,0);ectx.restore();
+    ectx.drawImage(subject,sx,sy,sw,sh);ectx.restore();
   }
 
-  // Subject
-  ectx.drawImage(subject,0,0);
+  ectx.drawImage(subject,sx,sy,sw,sh);
   return exp;
 }
 
