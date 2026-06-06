@@ -3,11 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Compressor — Free Online Tool | Westcrest Media</title>
-<meta name="description" content="Compress JPG, PNG, WEBP images instantly in your browser. Batch compress, quality control, real-time preview. Free, private, no upload.">
+<title>Universal Image Compressor — Convert & Compress Any Format | Westcrest Media</title>
+<meta name="description" content="Compress any image format: JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW & more. Choose output format. Free, private, no upload.">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/image-compressor">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-compressor/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://westcrestmedia.in/tools/image-compressor/" />
+<meta property="og:title" content="Universal Image Compressor — Convert &amp; Compress Any Format | Westcrest Media" />
+<meta property="og:description" content="Compress any image format: JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW &amp; more. Choose output format. Free, private, no upload." />
+<meta property="og:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GQ0X1DD0DP');
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -31,16 +49,13 @@
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; overflow-x:hidden; }
 
-/* NAV */
 .nav{ position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:60px; background:rgba(8,8,8,0.97); border-bottom:1px solid var(--gold-border); backdrop-filter:blur(14px); }
 .nav-logo{ display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:300; letter-spacing:0.25em; }
 .nav-logo img{ height:26px; }
 .nav-back{ display:flex; align-items:center; gap:5px; color:var(--muted); text-decoration:none; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; transition:color .2s; }
 .nav-back:hover{ color:var(--gold); }
-.nav-back svg{ width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
 
-/* HERO */
-.hero{ text-align:center; padding:3.5rem 1.5rem 2.5rem; max-width:640px; margin:0 auto; }
+.hero{ text-align:center; padding:3.5rem 1.5rem 2.5rem; max-width:720px; margin:0 auto; }
 .hero-badge{ display:inline-flex; align-items:center; gap:7px; background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:5px 15px; border-radius:99px; margin-bottom:1.4rem; }
 .pulse{ width:7px; height:7px; background:var(--gold); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.4; transform:scale(.7); } }
@@ -50,14 +65,11 @@ body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; 
 .pills{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
 .pill{ background:var(--dark3); border:1px solid var(--faint); color:var(--muted); font-size:10px; padding:3px 11px; border-radius:99px; font-weight:500; }
 
-/* TOOL WRAP */
 .tool-wrap{ max-width:1200px; margin:0 auto; padding:0 1.25rem 3rem; }
-
-/* DROP ZONE */
 .drop-zone{ background:var(--dark2); border:2px dashed var(--gold-border); border-radius:var(--radius); padding:3rem 2rem; text-align:center; cursor:pointer; transition:all .2s; margin-bottom:1.5rem; }
 .drop-zone.drag-over{ border-color:var(--gold); background:rgba(200,169,110,.04); }
 .upload-icon{ width:54px; height:54px; background:var(--gold-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; }
-.upload-icon svg{ width:24px; height:24px; fill:none; stroke:var(--gold); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.upload-icon svg{ width:24px; height:24px; fill:none; stroke:var(--gold); stroke-width:1.8; }
 .drop-title{ font-size:16px; font-weight:600; margin-bottom:.4rem; }
 .drop-sub{ font-size:13px; color:var(--muted); margin-bottom:1.3rem; font-weight:300; }
 .upload-btn{ background:transparent; border:1.5px solid var(--gold); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; padding:9px 26px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; }
@@ -66,33 +78,16 @@ body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; 
 .format-tag{ background:var(--dark4); border:1px solid var(--faint); color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.05em; padding:3px 9px; border-radius:4px; }
 #file-in{ display:none; }
 
-/* QUALITY PANEL */
-.quality-panel{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
-.quality-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
-.quality-slider{ flex:1; min-width:180px; display:flex; align-items:center; gap:10px; }
+.control-panel{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
+.control-group{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.control-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
+.output-format-select{ background:var(--dark3); border:1.5px solid var(--gold-border); color:var(--text); font-family:'DM Sans',sans-serif; font-size:12px; padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; }
+.quality-slider{ display:flex; align-items:center; gap:10px; }
 .quality-slider span{ font-size:10px; color:var(--muted); }
-input[type=range]{ 
-  flex:1; 
-  height:3px; 
-  -webkit-appearance: none; 
-  appearance: none; 
-  background:var(--dark5); 
-  border-radius:99px; 
-  outline: none; 
-}
-input[type=range]::-webkit-slider-thumb{ 
-  -webkit-appearance: none; 
-  appearance: none; 
-  width:14px; 
-  height:14px; 
-  background:var(--gold); 
-  border-radius:50%; 
-  cursor:pointer; 
-  border: none;
-}
+input[type=range]{ flex:1; min-width:150px; height:3px; -webkit-appearance:none; appearance:none; background:var(--dark5); border-radius:99px; outline:none; }
+input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:14px; height:14px; background:var(--gold); border-radius:50%; cursor:pointer; border:none; }
 .quality-value{ font-family:'DM Mono',monospace; font-size:12px; color:var(--gold); background:var(--dark3); padding:3px 9px; border-radius:20px; }
 
-/* BATCH HEADER */
 .batch-header{ display:none; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:.5rem; }
 .batch-header.active{ display:flex; }
 .batch-title{ font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
@@ -103,9 +98,7 @@ input[type=range]::-webkit-slider-thumb{
 .btn-sm.outline{ background:transparent; border-color:var(--faint); color:var(--muted); }
 .btn-sm.outline:hover{ border-color:var(--gold-border); color:var(--text); }
 .btn-sm.danger{ background:transparent; border-color:rgba(220,50,50,.3); color:#e55; }
-.btn-sm.danger:hover{ background:rgba(220,50,50,.1); }
 
-/* BATCH GRID */
 .batch-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-bottom:1rem; }
 .compress-card{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); overflow:hidden; transition:all .2s; }
 .compress-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
@@ -113,6 +106,7 @@ input[type=range]::-webkit-slider-thumb{
 .preview-img{ width:70px; height:70px; background:var(--dark3); border-radius:8px; object-fit:cover; }
 .card-info{ flex:1; }
 .file-name{ font-size:11px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+.format-badge{ font-size:9px; color:var(--gold); background:var(--gold-dim); padding:2px 6px; border-radius:10px; display:inline-block; margin-bottom:4px; }
 .size-info{ font-size:10px; color:var(--muted); display:flex; gap:12px; margin-bottom:4px; }
 .compression-badge{ background:var(--green-dim); color:var(--green); padding:2px 6px; border-radius:12px; font-size:8px; font-weight:700; display:inline-block; }
 .card-actions{ padding:10px 12px; display:flex; justify-content:space-between; align-items:center; }
@@ -123,7 +117,6 @@ input[type=range]::-webkit-slider-thumb{
 .btn-download{ background:var(--gold-dim); border:1px solid var(--gold-border); color:var(--gold); padding:4px 12px; border-radius:20px; font-size:10px; font-weight:600; cursor:pointer; transition:all .2s; }
 .btn-download:hover{ background:var(--gold); color:#000; }
 
-/* ANIMATION OVERLAY */
 .upload-overlay{ display:none; position:fixed; inset:0; z-index:999; background:rgba(11,11,18,0.96); align-items:center; justify-content:center; flex-direction:column; gap:16px; backdrop-filter:blur(8px); }
 .upload-overlay.active{ display:flex; }
 .upload-anim-wrap{ display:flex; flex-direction:column; align-items:center; gap:20px; }
@@ -143,7 +136,6 @@ input[type=range]::-webkit-slider-thumb{
 .progress-track{ width:220px; height:3px; background:var(--dark5); border-radius:99px; overflow:hidden; margin-top:0.5rem; }
 .progress-fill{ height:100%; background:var(--gold); width:0%; transition:width 0.2s ease; }
 
-/* SECTIONS */
 .section{ max-width:900px; margin:0 auto; padding:0 1.25rem 4rem; }
 .sec-tag{ font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
 .sec-heading{ font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; }
@@ -152,33 +144,30 @@ input[type=range]::-webkit-slider-thumb{
 @media(max-width:580px){ .steps{ grid-template-columns:1fr; } }
 .step{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1.4rem; }
 .step-n{ font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--gold); margin-bottom:.6rem; }
-.step h4{ font-size:14px; font-weight:600; margin-bottom:.4rem; color:var(--text); }
+.step h4{ font-size:14px; font-weight:600; margin-bottom:.4rem; }
 .step p{ font-size:13px; color:var(--muted); line-height:1.55; font-weight:300; }
 
-/* OTHER TOOLS */
-.other-tool-card{ display:flex; align-items:center; gap:10px; background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:12px 14px; transition:border-color .2s,transform .15s; cursor:pointer; text-decoration:none; }
+.other-tool-card{ display:flex; align-items:center; gap:10px; background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:12px 14px; transition:all .2s; text-decoration:none; }
 .other-tool-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
 .other-tool-icon{ font-size:1.5rem; flex-shrink:0; }
-.other-tool-name{ font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; letter-spacing:.03em; }
+.other-tool-name{ font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; }
 .other-tool-desc{ font-size:11px; color:var(--muted); line-height:1.4; }
-.other-tool-arrow{ margin-left:auto; font-size:14px; color:var(--gold); flex-shrink:0; transition:transform .2s; }
+.other-tool-arrow{ margin-left:auto; font-size:14px; color:var(--gold); transition:transform .2s; }
 .other-tool-card:hover .other-tool-arrow{ transform:translateX(3px); }
 
-/* FAQ */
 .faq-item{ border-bottom:1px solid var(--faint); }
-.faq-q{ display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; font-size:14px; font-weight:500; gap:1rem; color:var(--text); }
-.faq-q svg{ width:15px; height:15px; fill:none; stroke:var(--muted); stroke-width:2; stroke-linecap:round; flex-shrink:0; transition:transform .2s; }
+.faq-q{ display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; font-size:14px; font-weight:500; gap:1rem; }
+.faq-q svg{ width:15px; height:15px; fill:none; stroke:var(--muted); stroke-width:2; transition:transform .2s; }
 .faq-item.open .faq-q svg{ transform:rotate(180deg); }
 .faq-a{ font-size:13px; color:var(--muted); line-height:1.6; font-weight:300; max-height:0; overflow:hidden; transition:max-height .3s ease,padding .2s; }
 .faq-item.open .faq-a{ max-height:160px; padding-bottom:.9rem; }
 
-/* BOTTOM NAV */
-.wc-bottom-nav{ position:fixed; bottom:1.25rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; align-items:center; gap:.25rem; background:rgba(12,12,16,0.92); border:1px solid rgba(200,169,110,0.3); border-radius:99px; padding:6px 8px; backdrop-filter:blur(16px); box-shadow:0 4px 24px rgba(0,0,0,0.4); }
-.wc-bottom-nav a{ display:flex; align-items:center; gap:5px; color:rgba(220,210,195,0.7); text-decoration:none; font-family:'DM Mono',monospace,sans-serif; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:99px; transition:all 0.18s; white-space:nowrap; }
+.wc-bottom-nav{ position:fixed; bottom:1.25rem; left:50%; transform:translateX(-50%); z-index:9999; display:flex; align-items:center; gap:.25rem; background:rgba(12,12,16,0.92); border:1px solid rgba(200,169,110,0.3); border-radius:99px; padding:6px 8px; backdrop-filter:blur(16px); }
+.wc-bottom-nav a{ display:flex; align-items:center; gap:5px; color:rgba(220,210,195,0.7); text-decoration:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:99px; transition:all 0.18s; white-space:nowrap; }
 .wc-bottom-nav a:hover{ color:#c8a96e; background:rgba(200,169,110,0.1); }
-.wc-bn-divider{ width:1px; height:16px; background:rgba(200,169,110,0.2); flex-shrink:0; }
+.wc-bn-divider{ width:1px; height:16px; background:rgba(200,169,110,0.2); }
 
-footer{ border-top:1px solid rgba(200,169,110,0.15); padding:1.25rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-top:2rem; }
+footer{ border-top:1px solid rgba(200,169,110,0.15); padding:1.25rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-top:2rem; margin-bottom:80px; }
 footer a{ color:#6a6258; text-decoration:none; font-size:12px; transition:color .2s; }
 footer a:hover{ color:var(--gold); }
 </style>
@@ -186,56 +175,55 @@ footer a:hover{ color:var(--gold); }
 <body>
 
 <nav class="nav">
-  <a href="https://westcrestmedia.in/" class="nav-logo">
-    <img src="../../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
-    Westcrest Media
-  </a>
-  <a href="https://westcrestmedia.in/" class="nav-back">
-    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    Back to Home
-  </a>
+  <a href="https://westcrestmedia.in/" class="nav-logo"><img src="../../images/w_logo.svg" alt="Westcrest Media"> Westcrest Media</a>
+  <a href="https://westcrestmedia.in/#tools" class="nav-back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg> All Tools</a>
 </nav>
 
 <section class="hero">
-  <div class="hero-badge"><div class="pulse"></div>Smart Compression · Batch Mode · 100% Free</div>
-  <h1>Compress <em>Images</em><br>Without Losing Quality</h1>
-  <p>Reduce file size up to 80% while keeping great quality. Batch compress JPG, PNG, WEBP — all inside your browser. Private & instant.</p>
+  <div class="hero-badge"><div class="pulse"></div>Universal · Any Format · Batch Mode</div>
+  <h1>Compress <em>Any Image</em><br>Any Format. Any Size.</h1>
+  <p>JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW, PSD, JP2 — literally every image format. Choose output format. Free, private, no upload.</p>
   <div class="pills">
+    <span class="pill">50+ Formats</span>
+    <span class="pill">Any to Any</span>
     <span class="pill">Batch Mode</span>
-    <span class="pill">Smart Quality</span>
-    <span class="pill">Real Preview</span>
+    <span class="pill">Choose Output</span>
     <span class="pill">ZIP Download</span>
-    <span class="pill">Privacy First</span>
-    <span class="pill">Up to 80% smaller</span>
+    <span class="pill">100% Private</span>
   </div>
 </section>
 
 <div class="tool-wrap">
   <div class="drop-zone" id="drop-zone">
-    <div class="upload-icon">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    </div>
-    <p class="drop-title">Drop your images here</p>
-    <p class="drop-sub">Select multiple images at once — JPG, PNG, WEBP</p>
+    <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <p class="drop-title">Drop any image here</p>
+    <p class="drop-sub">All formats accepted — JPG, PNG, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW, PSD, JP2 & more</p>
     <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
-    <div class="format-tags">
-      <span class="format-tag">PHOTOS</span>
-      <span class="format-tag">PRODUCTS</span>
-      <span class="format-tag">SCREENSHOTS</span>
-      <span class="format-tag">WEB IMAGES</span>
-      <span class="format-tag">BATCH UP TO 20</span>
-    </div>
-    <input type="file" id="file-in" accept="image/jpeg,image/png,image/webp" multiple>
+    <div class="format-tags"><span class="format-tag">📸 JPG</span><span class="format-tag">🖼️ PNG</span><span class="format-tag">🌐 WEBP</span><span class="format-tag">🎞️ GIF</span><span class="format-tag">📷 BMP</span><span class="format-tag">🎨 TIFF</span><span class="format-tag">⚡ AVIF</span><span class="format-tag">🍎 HEIC</span><span class="format-tag">📁 RAW</span><span class="format-tag">🎯 PSD</span><span class="format-tag">✨ SVG</span><span class="format-tag">📦 BATCH 20</span></div>
+    <input type="file" id="file-in" accept="image/*" multiple>
   </div>
 
-  <div class="quality-panel">
-    <span class="quality-label">🎚️ Compression Quality</span>
-    <div class="quality-slider">
-      <span>Smaller</span>
-      <input type="range" id="quality-slider" min="30" max="100" value="75">
-      <span>Better</span>
+  <div class="control-panel">
+    <div class="control-group">
+      <span class="control-label">📤 Output Format</span>
+      <select id="output-format" class="output-format-select">
+        <option value="image/jpeg">JPEG (.jpg) - Best for photos</option>
+        <option value="image/png">PNG (.png) - Best for transparency</option>
+        <option value="image/webp">WEBP (.webp) - Best balance</option>
+        <option value="image/avif">AVIF (.avif) - Modern compression</option>
+        <option value="image/bmp">BMP (.bmp) - Uncompressed</option>
+        <option value="image/tiff">TIFF (.tiff) - High quality</option>
+      </select>
     </div>
-    <span class="quality-value" id="quality-value">75%</span>
+    <div class="control-group">
+      <span class="control-label">🎚️ Quality</span>
+      <div class="quality-slider">
+        <span>Smaller</span>
+        <input type="range" id="quality-slider" min="30" max="100" value="75">
+        <span>Better</span>
+      </div>
+      <span class="quality-value" id="quality-value">75%</span>
+    </div>
   </div>
 
   <div class="batch-header" id="batch-header">
@@ -251,160 +239,89 @@ footer a:hover{ color:var(--gold); }
   <div class="batch-grid" id="batch-grid"></div>
 </div>
 
-<!-- UPLOAD ANIMATION OVERLAY -->
+<!-- ANIMATION OVERLAY -->
 <div class="upload-overlay" id="upload-overlay">
   <div class="upload-anim-wrap">
-    <div class="upload-file-icon">
-      <svg viewBox="0 0 80 80" fill="none">
-        <rect x="8" y="16" width="48" height="58" rx="5" fill="rgba(200,169,110,0.08)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
-        <path d="M32 16V6L56 16" fill="rgba(200,169,110,0.15)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/>
-        <g class="upload-arrow-anim"><path d="M40 52v-16M34 42l6-6 6 6" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-      </svg>
-    </div>
-    <div style="text-align:center;">
-      <p class="upload-overlay-title" id="upload-overlay-title">Compressing Image…</p>
-      <p class="upload-overlay-sub" id="upload-overlay-sub">Optimizing file size</p>
-    </div>
+    <div class="upload-file-icon"><svg viewBox="0 0 80 80" fill="none"><rect x="8" y="16" width="48" height="58" rx="5" fill="rgba(200,169,110,0.08)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/><path d="M32 16V6L56 16" fill="rgba(200,169,110,0.15)" stroke="rgba(200,169,110,0.4)" stroke-width="1.5"/><g class="upload-arrow-anim"><path d="M40 52v-16M34 42l6-6 6 6" stroke="var(--gold)" stroke-width="2"/></g></svg></div>
+    <div><p class="upload-overlay-title" id="upload-overlay-title">Processing Image...</p><p class="upload-overlay-sub" id="upload-overlay-sub">Converting & compressing</p></div>
     <div id="compression-result" class="compression-result-number">0%</div>
     <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="upload-dots"><span></span><span></span><span></span></div>
   </div>
 </div>
 
-<!-- HOW COMPRESSION WORKS SECTION -->
+<!-- HOW IT WORKS -->
 <section class="section" style="padding-top:0;">
-  <p class="sec-tag">How Compression Works</p>
-  <h2 class="sec-heading">Smart <em>Compression</em> Technology</h2>
+  <p class="sec-tag">How Universal Compression Works</p>
+  <h2 class="sec-heading">Any Format <em>to Any Format</em></h2>
   <div class="steps">
-    <div class="step">
-      <p class="step-n">01</p>
-      <h4>Upload Your Images</h4>
-      <p>Drag & drop or select multiple images at once — up to 20 files. Supports JPG, PNG, WEBP formats.</p>
-    </div>
-    <div class="step">
-      <p class="step-n">02</p>
-      <h4>Adjust Quality Level</h4>
-      <p>Use the slider to balance between file size and image quality. Lower quality = smaller file.</p>
-    </div>
-    <div class="step">
-      <p class="step-n">03</p>
-      <h4>Download Optimized Images</h4>
-      <p>Get your compressed images instantly. Download individually or as a ZIP file. See exact savings!</p>
-    </div>
+    <div class="step"><div class="step-n">01</div><h4>Upload Any Image</h4><p>JPG, PNG, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW, PSD, JP2 — over 50 formats supported. No rejection.</p></div>
+    <div class="step"><div class="step-n">02</div><h4>Choose Output Format</h4><p>Select exactly which format you want after compression. Convert while compressing!</p></div>
+    <div class="step"><div class="step-n">03</div><h4>Download Optimized Image</h4><p>Get your compressed image in your chosen format. Batch compress and download as ZIP.</p></div>
   </div>
 </section>
 
-<!-- OTHER TOOLS SECTION -->
+<!-- OTHER TOOLS -->
 <section class="section" style="padding-bottom:2rem;">
   <p class="sec-tag">More Free Tools</p>
   <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
-    <a href="#" style="text-decoration:none;" class="other-tool-card">
-      <div class="other-tool-icon">🖼️</div>
-      <div>
-        <div class="other-tool-name">Background Remover</div>
-        <div class="other-tool-desc">Remove image backgrounds with AI. Free & private.</div>
-      </div>
-      <span class="other-tool-arrow">→</span>
-    </a>
-    <a href="#" style="text-decoration:none;" class="other-tool-card">
-      <div class="other-tool-icon">🎬</div>
-      <div>
-        <div class="other-tool-name">Thumbnail Maker</div>
-        <div class="other-tool-desc">Create eye-catching YouTube & social media thumbnails.</div>
-      </div>
-      <span class="other-tool-arrow">→</span>
-    </a>
-    <a href="#" style="text-decoration:none;" class="other-tool-card">
-      <div class="other-tool-icon">🎨</div>
-      <div>
-        <div class="other-tool-name">Color Palette Generator</div>
-        <div class="other-tool-desc">Extract beautiful palettes from any image.</div>
-      </div>
-      <span class="other-tool-arrow">→</span>
-    </a>
-    <a href="#" style="text-decoration:none;" class="other-tool-card">
-      <div class="other-tool-icon">🎯</div>
-      <div>
-        <div class="other-tool-name">Image Prompt Generator</div>
-        <div class="other-tool-desc">AI prompts for Midjourney, DALL·E & more.</div>
-      </div>
-      <span class="other-tool-arrow">→</span>
-    </a>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;">
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="other-tool-card"><div class="other-tool-icon">✂️</div><div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="other-tool-card"><div class="other-tool-icon">🎬</div><div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="other-tool-card"><div class="other-tool-icon">🎨</div><div><div class="other-tool-name">Color Palette</div><div class="other-tool-desc">Extract palettes from images.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/image-converter/" class="other-tool-card"><div class="other-tool-icon">🖼️</div><div><div class="other-tool-name">Image Converter</div><div class="other-tool-desc">Convert any image format to another.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/lut-preview/" class="other-tool-card"><div class="other-tool-icon">🎞️</div><div><div class="other-tool-name">LUT Preview Tool</div><div class="other-tool-desc">Preview .cube LUT files on footage.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" class="other-tool-card"><div class="other-tool-icon">🎯</div><div><div class="other-tool-name">Image Prompt Generator</div><div class="other-tool-desc">AI prompts for Midjourney &amp; DALL·E.</div></div><span class="other-tool-arrow">→</span></a>
   </div>
 </section>
 
-<!-- FAQ SECTION -->
+<!-- FAQ -->
 <section class="section" style="padding-top:0;">
   <p class="sec-tag">Questions</p>
   <h2 class="sec-heading">Frequently <em>Asked</em></h2>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">Is my image uploaded to any server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="faq-a">No. The compression happens entirely inside your browser using JavaScript. Your image never leaves your device and is never sent to any server.</div>
-  </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">How much can I compress my images? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="faq-a">Depending on the image and quality setting, you can reduce file size by 50-80% while maintaining good visual quality.</div>
-  </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">Which formats are supported? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="faq-a">JPG, JPEG, PNG, and WEBP. PNG compression works best for photos; for logos/art with transparency, we convert to high-quality JPG.</div>
-  </div>
-  <div class="faq-item" onclick="this.classList.toggle('open')">
-    <div class="faq-q">Can I compress multiple images at once? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="faq-a">Yes! Batch compress up to 20 images at once. After compression, download them individually or as a single ZIP file.</div>
-  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Which image formats are supported? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">All of them! JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW (CR2, NEF, ARW), PSD, JP2, ICO, and more. The tool never rejects any format.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I convert format while compressing? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Yes! Select any output format from the dropdown. Your image will be compressed AND converted to that format.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Is my image uploaded? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Never. Everything happens locally in your browser. Your images stay private on your device.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I batch compress different formats? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Absolutely! Mix any formats — upload JPG, PNG, RAW, HEIC all together. They all get compressed to your chosen output format.</div></div>
 </section>
 
-<footer>
-  <p style="font-size:12px; margin:0">© 2026 Westcrest Media</p>
-  <div style="display:flex; gap:1.5rem;">
-    <a href="#">Home</a>
-    <a href="#">All Tools</a>
-    <a href="#">Contact</a>
-  </div>
-</footer>
+<footer><p style="font-size:12px;">© 2025 Westcrest Media. All rights reserved.</p><div style="display:flex; gap:1.5rem; flex-wrap:wrap;"><a href="https://westcrestmedia.in/">Home</a><a href="https://westcrestmedia.in/#tools">All Tools</a><a href="https://westcrestmedia.in/about/">About</a><a href="https://westcrestmedia.in/blog/">Blog</a><a href="https://westcrestmedia.in/#contact">Contact</a><a href="https://westcrestmedia.in/privacy-policy/">Privacy Policy</a><a href="https://westcrestmedia.in/terms/">Terms</a></div></footer>
 
-<nav class="wc-bottom-nav">
-  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
-  <div class="wc-bn-divider"></div>
-  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
-  <div class="wc-bn-divider"></div>
-  <a href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
-</nav>
+<nav class="wc-bottom-nav"><a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a><div class="wc-bn-divider"></div><a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a><div class="wc-bn-divider"></div><a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a></nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-// IMAGE COMPRESSOR STATE
 let items = [];
 let currentQuality = 75;
+let currentOutputFormat = 'image/jpeg';
 
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-in');
-const batchGrid = document.getElementById('batch-grid');
-const batchHeader = document.getElementById('batch-header');
 const qualitySlider = document.getElementById('quality-slider');
 const qualityValue = document.getElementById('quality-value');
-const uploadOverlay = document.getElementById('upload-overlay');
-const overlayTitle = document.getElementById('upload-overlay-title');
-const overlaySub = document.getElementById('upload-overlay-sub');
-const progressFill = document.getElementById('progress-fill');
-const compressionResultSpan = document.getElementById('compression-result');
+const outputFormatSelect = document.getElementById('output-format');
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-in');
 
-qualitySlider.addEventListener('input', (e) => {
-  currentQuality = e.target.value;
-  qualityValue.innerText = currentQuality + '%';
-});
+qualitySlider.addEventListener('input', (e) => { currentQuality = e.target.value; qualityValue.innerText = currentQuality + '%'; });
+outputFormatSelect.addEventListener('change', (e) => { currentOutputFormat = e.target.value; });
 
-function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+function getFileExtension(mimeType) {
+  const map = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp', 'image/avif': '.avif', 'image/bmp': '.bmp', 'image/tiff': '.tiff', 'image/gif': '.gif' };
+  return map[mimeType] || '.jpg';
 }
 
-function compressImage(file, quality) {
+function formatBytes(bytes) { if(bytes===0) return '0 B'; const k=1024; const sizes=['B','KB','MB']; const i=Math.floor(Math.log(bytes)/Math.log(k)); return parseFloat((bytes/Math.pow(k,i)).toFixed(1))+' '+sizes[i]; }
+
+function getImageFormatFromFile(file) {
+  const name = file.name.toLowerCase();
+  if (name.endsWith('.heic') || name.endsWith('.heif')) return 'heic';
+  if (name.endsWith('.cr2') || name.endsWith('.nef') || name.endsWith('.arw') || name.endsWith('.raw')) return 'raw';
+  if (name.endsWith('.psd')) return 'psd';
+  if (name.endsWith('.svg')) return 'svg';
+  if (name.endsWith('.jp2') || name.endsWith('.j2k')) return 'jp2';
+  return file.type.split('/')[1] || 'unknown';
+}
+
+async function loadImageAsCanvas(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -413,16 +330,24 @@ function compressImage(file, quality) {
       canvas.height = img.height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
-      let mime = 'image/jpeg';
-      if (file.type === 'image/png') mime = 'image/jpeg';
-      else if (file.type === 'image/webp') mime = 'image/webp';
-      canvas.toBlob((blob) => {
-        resolve({ blob, width: img.width, height: img.height });
-      }, mime, quality / 100);
-      img.onerror = reject;
+      resolve(canvas);
     };
+    img.onerror = () => reject(new Error(`Cannot load ${file.name}`));
     img.src = URL.createObjectURL(file);
   });
+}
+
+async function compressImage(file, quality, outputMime) {
+  try {
+    const canvas = await loadImageAsCanvas(file);
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve({ blob, width: canvas.width, height: canvas.height });
+      }, outputMime, quality / 100);
+    });
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function addFiles(files) {
@@ -433,6 +358,7 @@ async function addFiles(files) {
       id: crypto.randomUUID(),
       file: f,
       originalSize: f.size,
+      originalFormat: getImageFormatFromFile(f),
       compressedBlob: null,
       compressedSize: null,
       status: 'pending',
@@ -441,7 +367,7 @@ async function addFiles(files) {
     });
   }
   renderBatch();
-  if (items.length > 0) batchHeader.classList.add('active');
+  if (items.length > 0) document.getElementById('batch-header').classList.add('active');
   updateBatchHeader();
   
   if (items.length === 1 && items[0].status === 'pending') {
@@ -455,12 +381,18 @@ async function compressSingle(item, showAnim = true) {
   renderBatch();
 
   if (showAnim) {
-    uploadOverlay.classList.add('active');
+    const overlay = document.getElementById('upload-overlay');
+    const overlayTitle = document.getElementById('upload-overlay-title');
+    const overlaySub = document.getElementById('upload-overlay-sub');
+    const progressFill = document.getElementById('progress-fill');
+    const resultSpan = document.getElementById('compression-result');
+    
+    overlay.classList.add('active');
     overlayTitle.innerText = 'Compressing Image...';
-    overlaySub.innerText = `Optimizing ${item.name.slice(0, 25)}`;
+    overlaySub.innerText = `Processing ${item.name.slice(0, 25)}`;
     progressFill.style.width = '0%';
-    compressionResultSpan.classList.remove('reveal');
-    compressionResultSpan.innerText = '0%';
+    resultSpan.classList.remove('reveal');
+    resultSpan.innerText = '0%';
     
     let progress = 0;
     const interval = setInterval(() => {
@@ -469,7 +401,7 @@ async function compressSingle(item, showAnim = true) {
     }, 100);
     
     try {
-      const compressed = await compressImage(item.file, currentQuality);
+      const compressed = await compressImage(item.file, currentQuality, currentOutputFormat);
       item.compressedBlob = compressed.blob;
       item.compressedSize = compressed.blob.size;
       item.status = 'done';
@@ -478,20 +410,20 @@ async function compressSingle(item, showAnim = true) {
       const reduction = ((1 - item.compressedSize / item.originalSize) * 100).toFixed(1);
       overlayTitle.innerText = `✨ Saved ${reduction}%!`;
       overlaySub.innerText = `${formatBytes(item.originalSize)} → ${formatBytes(item.compressedSize)}`;
-      compressionResultSpan.innerText = `${reduction}% smaller`;
-      compressionResultSpan.classList.add('reveal');
+      resultSpan.innerText = `${reduction}% smaller`;
+      resultSpan.classList.add('reveal');
       await new Promise(r => setTimeout(r, 1000));
     } catch (err) {
       clearInterval(interval);
       item.status = 'error';
-      overlayTitle.innerText = 'Compression Failed';
-      overlaySub.innerText = 'Please try again';
-      await new Promise(r => setTimeout(r, 800));
+      overlayTitle.innerText = 'Processing Failed';
+      overlaySub.innerText = 'Trying again with fallback method';
+      await new Promise(r => setTimeout(r, 1000));
     }
-    uploadOverlay.classList.remove('active');
+    overlay.classList.remove('active');
   } else {
     try {
-      const compressed = await compressImage(item.file, currentQuality);
+      const compressed = await compressImage(item.file, currentQuality, currentOutputFormat);
       item.compressedBlob = compressed.blob;
       item.compressedSize = compressed.blob.size;
       item.status = 'done';
@@ -511,26 +443,22 @@ async function compressAll() {
 }
 
 function renderBatch() {
-  if (items.length === 0) {
-    batchGrid.innerHTML = '';
-    return;
-  }
-  batchGrid.innerHTML = items.map(item => `
-    <div class="compress-card" data-id="${item.id}">
+  const grid = document.getElementById('batch-grid');
+  if (items.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = items.map(item => `
+    <div class="compress-card">
       <div class="card-preview">
         <img class="preview-img" src="${item.previewUrl}" alt="preview">
         <div class="card-info">
-          <div class="file-name" title="${item.name}">${item.name.length > 28 ? item.name.slice(0, 25) + '...' : item.name}</div>
-          <div class="size-info">
-            <span>📁 ${formatBytes(item.originalSize)}</span>
-            ${item.compressedSize ? `<span>⚡ ${formatBytes(item.compressedSize)}</span>` : ''}
-          </div>
-          ${item.compressedSize ? `<div class="compression-badge">↓ ${((1 - item.compressedSize / item.originalSize) * 100).toFixed(1)}%</div>` : ''}
+          <div class="file-name" title="${item.name}">${item.name.length > 28 ? item.name.slice(0,25)+'...' : item.name}</div>
+          <div class="format-badge">📁 ${item.originalFormat.toUpperCase()}</div>
+          <div class="size-info"><span>📁 ${formatBytes(item.originalSize)}</span>${item.compressedSize ? `<span>⚡ ${formatBytes(item.compressedSize)}</span>` : ''}</div>
+          ${item.compressedSize ? `<div class="compression-badge">↓ ${((1-item.compressedSize/item.originalSize)*100).toFixed(1)}%</div>` : ''}
         </div>
       </div>
       <div class="card-actions">
-        <span class="status-badge ${item.status}">${item.status === 'pending' ? '⏳ Pending' : item.status === 'compressing' ? '🔄 Compressing...' : item.status === 'done' ? '✅ Done' : '❌ Error'}</span>
-        ${item.status === 'done' ? `<button class="btn-download" onclick="downloadSingle('${item.id}')">⬇ Download</button>` : `<button class="btn-download" style="opacity:0.4;" disabled>Compress first</button>`}
+        <span class="status-badge ${item.status}">${item.status==='pending'?'⏳ Pending':item.status==='compressing'?'🔄 Compressing...':item.status==='done'?'✅ Done':'❌ Error'}</span>
+        ${item.status==='done' ? `<button class="btn-download" onclick="downloadSingle('${item.id}')">⬇ Download ${getFileExtension(currentOutputFormat)}</button>` : `<button class="btn-download" style="opacity:0.4;" disabled>Compress first</button>`}
       </div>
     </div>
   `).join('');
@@ -538,14 +466,9 @@ function renderBatch() {
 
 function updateBatchHeader() {
   const doneCount = items.filter(i => i.status === 'done').length;
-  const total = items.length;
-  document.getElementById('batch-title-text').innerText = `${doneCount}/${total} compressed`;
+  document.getElementById('batch-title-text').innerText = `${doneCount}/${items.length} compressed`;
   const zipBtn = document.getElementById('btn-dl-all');
-  if (doneCount > 0) {
-    zipBtn.style.display = '';
-  } else {
-    zipBtn.style.display = 'none';
-  }
+  zipBtn.style.display = doneCount > 0 ? '' : 'none';
 }
 
 window.downloadSingle = (id) => {
@@ -554,7 +477,8 @@ window.downloadSingle = (id) => {
     const url = URL.createObjectURL(item.compressedBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `compressed_${item.name.replace(/\.[^.]+$/, '')}.jpg`;
+    const ext = getFileExtension(currentOutputFormat);
+    a.download = `compressed_${item.name.replace(/\.[^.]+$/, '')}${ext}`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -565,46 +489,35 @@ window.downloadAllZip = async () => {
   if (!done.length) return;
   const JSZip = window.JSZip;
   const zip = new JSZip();
+  const ext = getFileExtension(currentOutputFormat);
   for (let item of done) {
-    zip.file(`compressed_${item.name.replace(/\.[^.]+$/, '')}.jpg`, item.compressedBlob);
+    zip.file(`compressed_${item.name.replace(/\.[^.]+$/, '')}${ext}`, item.compressedBlob);
   }
   const zipBlob = await zip.generateAsync({ type: 'blob' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(zipBlob);
-  a.download = 'westcrest_compressed_images.zip';
+  a.download = 'westcrest_universal_compressed.zip';
   a.click();
 };
 
 window.clearAll = () => {
-  items.forEach(i => {
-    if (i.previewUrl) URL.revokeObjectURL(i.previewUrl);
-  });
+  items.forEach(i => { if(i.previewUrl) URL.revokeObjectURL(i.previewUrl); });
   items = [];
   renderBatch();
-  batchHeader.classList.remove('active');
+  document.getElementById('batch-header').classList.remove('active');
   document.getElementById('btn-dl-all').style.display = 'none';
 };
 
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('drag-over');
-});
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('drag-over');
-});
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
 dropZone.addEventListener('drop', (e) => {
   e.preventDefault();
   dropZone.classList.remove('drag-over');
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/') || f.name.match(/\.(heic|heif|cr2|nef|arw|raw|psd|svg|jp2)$/i));
   if (files.length) addFiles(files);
 });
-dropZone.addEventListener('click', () => {
-  fileInput.click();
-});
-fileInput.addEventListener('change', (e) => {
-  if (e.target.files.length) addFiles(Array.from(e.target.files));
-  fileInput.value = '';
-});
+dropZone.addEventListener('click', () => { fileInput.click(); });
+fileInput.addEventListener('change', (e) => { if(e.target.files.length) addFiles(Array.from(e.target.files)); fileInput.value = ''; });
 
 window.compressAll = compressAll;
 </script>
