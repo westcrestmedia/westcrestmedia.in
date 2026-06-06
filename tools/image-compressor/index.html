@@ -88,6 +88,10 @@ input[type=range]{ flex:1; min-width:150px; height:3px; -webkit-appearance:none;
 input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:14px; height:14px; background:var(--gold); border-radius:50%; cursor:pointer; border:none; }
 .quality-value{ font-family:'DM Mono',monospace; font-size:12px; color:var(--gold); background:var(--dark3); padding:3px 9px; border-radius:20px; }
 
+.pro-tip{ display:flex; align-items:flex-start; gap:10px; background:rgba(200,169,110,0.05); border:1px solid rgba(200,169,110,0.18); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:1.5rem; }
+.pro-tip-icon{ font-size:14px; flex-shrink:0; margin-top:1px; }
+.pro-tip-text{ font-size:11.5px; color:var(--muted); line-height:1.6; font-weight:300; }
+.pro-tip-text strong{ color:var(--gold); font-weight:600; }
 .batch-header{ display:none; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:.5rem; }
 .batch-header.active{ display:flex; }
 .batch-title{ font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
@@ -224,6 +228,13 @@ footer a:hover{ color:var(--gold); }
       </div>
       <span class="quality-value" id="quality-value">75%</span>
     </div>
+  </div>
+
+  <div class="pro-tip">
+    <span class="pro-tip-icon">💡</span>
+    <p class="pro-tip-text">
+      <strong>Want maximum compression?</strong> Set output format to <strong>JPEG (.jpg)</strong> and quality between <strong>70–80%</strong> before uploading — ideal for web images, social media, and email. JPEG delivers the smallest file size with minimal visible quality loss.
+    </p>
   </div>
 
   <div class="batch-header" id="batch-header">
@@ -468,7 +479,9 @@ function updateBatchHeader() {
   const doneCount = items.filter(i => i.status === 'done').length;
   document.getElementById('batch-title-text').innerText = `${doneCount}/${items.length} compressed`;
   const zipBtn = document.getElementById('btn-dl-all');
-  zipBtn.style.display = doneCount > 0 ? '' : 'none';
+  zipBtn.style.display = doneCount > 1 ? '' : 'none';
+  const compressBtn = document.getElementById('btn-compress-all');
+  compressBtn.innerText = items.length === 1 ? '⚡ Compress' : '⚡ Compress All';
 }
 
 window.downloadSingle = (id) => {
@@ -508,15 +521,27 @@ window.clearAll = () => {
   document.getElementById('btn-dl-all').style.display = 'none';
 };
 
+let isDragging = false;
+
+dropZone.addEventListener('dragenter', (e) => { e.preventDefault(); isDragging = true; dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
+dropZone.addEventListener('dragleave', (e) => {
+  if (!dropZone.contains(e.relatedTarget)) {
+    isDragging = false;
+    dropZone.classList.remove('drag-over');
+  }
+});
 dropZone.addEventListener('drop', (e) => {
   e.preventDefault();
+  isDragging = false;
   dropZone.classList.remove('drag-over');
   const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/') || f.name.match(/\.(heic|heif|cr2|nef|arw|raw|psd|svg|jp2)$/i));
   if (files.length) addFiles(files);
 });
-dropZone.addEventListener('click', () => { fileInput.click(); });
+dropZone.addEventListener('click', (e) => {
+  if (e.target === fileInput) return;
+  fileInput.click();
+});
 fileInput.addEventListener('change', (e) => { if(e.target.files.length) addFiles(Array.from(e.target.files)); fileInput.value = ''; });
 
 window.compressAll = compressAll;
