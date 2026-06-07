@@ -19,16 +19,16 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="canonical" href="https://westcrestmedia.in/tools/lut-preview/">
 <!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/lut-preview">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/lut-preview">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/lut-preview">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/lut-preview">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/lut-preview">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/lut-preview/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/lut-preview/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/lut-preview/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/lut-preview/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/lut-preview/">
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/lut-preview">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/lut-preview/">
 <meta property="og:title"       content="LUT Preview Tool — Westcrest Media">
 <meta property="og:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
@@ -40,6 +40,8 @@
 <meta name="twitter:title"       content="LUT Preview Tool — Westcrest Media">
 <meta name="twitter:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
 <meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta name="keywords" content="LUT preview tool, cinematic LUT, colour grading online, free LUT tool, .cube file export, DaVinci Resolve LUT, photo colour grade">
+<meta name="theme-color" content="#C9A84C">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
 
@@ -75,8 +77,10 @@ body{
   min-height:100vh;
   display:flex;
   flex-direction:column;
-  overflow:hidden;
+  overflow-x:hidden;
 }
+
+html { overflow-x: hidden; }
 
 /* HEADER */
 .header{
@@ -118,7 +122,7 @@ body{
 .btn-orange:hover{background:rgba(200,169,110,0.15)}
 
 /* BODY LAYOUT */
-.body{display:flex;flex:1;overflow:hidden;height:calc(100vh - 52px)}
+.body{display:flex;height:calc(100vh - 112px);overflow:hidden}
 
 /* LEFT SIDEBAR */
 .sidebar{
@@ -403,77 +407,251 @@ input[type=file]{display:none}
 }
 
 
-/* ── LUT PREVIEW MOBILE FIX ── */
+/* ══════════════════════════════════════════
+   MOBILE UI  ≤768px — completely separate layout
+   ══════════════════════════════════════════ */
 @media (max-width: 768px) {
-  html, body { overflow-x: hidden; }
+  html, body { overflow-x: hidden; overflow-y: auto; }
+
+  /* Hide desktop elements on mobile */
+  .sidebar,
+  .right-panel,
+  .histogram-bar,
+  .header-mid,
+  .view-toggle,
+  .wc-nav-logo span { display: none !important; }
+
+  /* Tool header — compact, just buttons */
+  .header {
+    height: auto !important;
+    padding: 8px 12px !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .header-right {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 100%;
+    justify-content: center;
+  }
+  .header-right .btn {
+    font-size: 10px !important;
+    padding: 6px 12px !important;
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* Main body — full vertical scroll */
   .body {
+    display: flex !important;
     flex-direction: column !important;
     height: auto !important;
     overflow: visible !important;
   }
-  .sidebar {
-    width: 100% !important;
-    min-width: unset !important;
-    border-right: none !important;
-    border-bottom: 1px solid var(--border);
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  .lut-list { max-height: 220px !important; overflow-y: auto !important; }
+
+  /* Canvas area — full width, auto height */
   .canvas-area {
     width: 100% !important;
-    min-height: 260px !important;
-    height: 55vw !important;
-    overflow: hidden !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
   }
-  .canvas-top { flex-wrap: wrap; gap: 6px; padding: 6px !important; }
-  .view-toggle { flex-wrap: wrap; }
-  .vt-btn { font-size: 9px !important; padding: 4px 8px !important; }
-  .preview-area { flex-direction: column !important; }
-  .preview-panel canvas {
-    max-width: 100% !important;
-    max-height: 100% !important;
+
+  /* Canvas top bar — compact */
+  .canvas-top {
+    padding: 6px 10px !important;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .lut-active-name { font-size: 13px !important; }
+
+  /* Preview area — stacked: Original on top, LUT below */
+  .preview-area {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide split/SBS/single canvases on mobile — we use mob canvases */
+  #viewSplit, #viewSBS, #viewSingle, #noImageState { display: none !important; }
+
+  /* MOBILE STACKED VIEW */
+  #mobView {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
+  .mob-img-block {
+    width: 100%;
+    background: #050709;
+    position: relative;
+  }
+  .mob-img-block canvas {
     width: 100% !important;
     height: auto !important;
+    display: block;
+  }
+  .mob-img-label {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: rgba(0,0,0,0.75);
+    color: rgba(245,240,232,0.8);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid rgba(200,169,110,0.2);
+  }
+  .mob-divider {
+    width: 100%;
+    height: 2px;
+    background: rgba(200,169,110,0.35);
+  }
+
+  /* MOBILE NO IMAGE STATE */
+  #mobNoImg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+    gap: 12px;
+    color: rgba(245,240,232,0.3);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-align: center;
+  }
+  #mobNoImg .ni-icon { font-size: 3rem; opacity: 0.3; }
+
+  /* MOBILE CONTROLS — below images, full width */
+  #mobControls {
     display: block !important;
+    padding: 14px;
+    background: #16161e;
+    border-top: 1px solid rgba(255,255,255,0.08);
   }
-  #splitCanvas {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 55vw !important;
+  .mob-ctrl-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.28);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
-  .header-right { flex-wrap: wrap; gap: 4px !important; }
-  .header-right .btn { font-size: 10px !important; padding: 5px 10px !important; }
-  .lut-grid { grid-template-columns: repeat(3, 1fr) !important; }
-  .wc-bottom-nav { bottom: 0.5rem; }
+  .mob-ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .mob-ctrl-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.35);
+    min-width: 72px;
+    letter-spacing: .5px;
+  }
+  .mob-ctrl-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #c8a96e;
+    min-width: 34px;
+    text-align: right;
+  }
+
+  /* MOBILE LUT LIST — horizontal scroll chips */
+  #mobLutSection {
+    display: block !important;
+    padding: 12px 14px;
+    background: #111118;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  #mobLutScroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  #mobLutScroll::-webkit-scrollbar { display: none; }
+  .mob-lut-chip {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(200,169,110,0.2);
+    background: #16161e;
+    transition: all .15s;
+    min-width: 72px;
+  }
+  .mob-lut-chip.active {
+    border-color: #c8a96e;
+    background: rgba(200,169,110,0.12);
+  }
+  .mob-lut-swatch {
+    width: 44px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mob-lut-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: rgba(245,240,232,0.6);
+    text-align: center;
+    letter-spacing: .3px;
+    line-height: 1.3;
+    max-width: 64px;
+    word-break: break-word;
+  }
+  .mob-lut-chip.active .mob-lut-name { color: #c8a96e; }
+
+  /* MOBILE ACTIONS ROW */
+  #mobActions {
+    display: flex !important;
+    gap: 8px;
+    padding: 10px 14px 14px;
+    background: #111118;
+  }
+  #mobActions .btn {
+    flex: 1;
+    font-size: 10px !important;
+    padding: 8px 6px !important;
+    text-align: center;
+  }
+
+  /* Hide desktop .wc-bottom-nav, use footer links on mobile */
+  .wc-bottom-nav { display: none !important; }
+
+  /* Explore tools — stack to 1 col on very small */
+  .wc-explore-grid { grid-template-columns: 1fr 1fr !important; }
 }
-@media (max-width: 480px) {
-  .canvas-area { height: 60vw !important; }
-  .lut-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .header { padding: 0 10px !important; }
+
+@media (max-width: 400px) {
+  .wc-explore-grid { grid-template-columns: 1fr !important; }
 }
+
 
 </style>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "LUT Preview Tool",
-  "url": "https://westcrestmedia.in/tools/lut-preview",
-  "description": "Preview and apply LUTs to your images online. Export .cube files free. Tool by Westcrest Media.",
-  "applicationCategory": "DesignApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
-}
+{"@context":"https://schema.org","@type":"WebApplication","name":"LUT Preview Tool","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Preview and apply LUTs to your images online. Export .cube files free. Tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Preview Tool","item":"https://westcrestmedia.in/tools/lut-preview/"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"LUT Preview Tool — Westcrest Media","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Preview Tool","item":"https://westcrestmedia.in/tools/lut-preview/"}]}}
 </script>
 </head>
 <body>
@@ -673,7 +851,172 @@ input[type=file]{display:none}
   </div>
 
 </div>
+
+<!-- ══ MOBILE UI (hidden on desktop via CSS) ══ -->
+<!-- Mobile stacked view: Original top, LUT bottom -->
+<div id="mobView" style="display:none;flex-direction:column;width:100%;">
+  <div class="mob-img-block" id="mobOrigBlock">
+    <div id="mobNoImg">
+      <div class="ni-icon">🎞</div>
+      <p>Tap "Load Image" to start</p>
+      <button class="btn btn-accent" style="margin-top:8px;font-size:12px;padding:8px 20px;" onclick="document.getElementById('imgInput').click()">⬆ LOAD IMAGE</button>
+    </div>
+    <canvas id="mobOrigCanvas" style="display:none;width:100%;height:auto;"></canvas>
+    <div class="mob-img-label">ORIGINAL</div>
+  </div>
+  <div class="mob-divider"></div>
+  <div class="mob-img-block" id="mobLutBlock">
+    <canvas id="mobLutCanvas" style="width:100%;height:auto;display:block;opacity:0.3;"></canvas>
+    <div class="mob-img-label" style="background:rgba(200,169,110,0.2);border-color:rgba(200,169,110,0.4);color:#c8a96e;">LUT GRADE</div>
+  </div>
+</div>
+
+<!-- Mobile LUT chips -->
+<div id="mobLutSection" style="display:none;">
+  <div class="mob-ctrl-title">Built-in LUTs — scroll to browse</div>
+  <div id="mobLutScroll"></div>
+</div>
+
+<!-- Mobile controls -->
+<div id="mobControls" style="display:none;">
+  <div class="mob-ctrl-title">LUT Controls</div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label">INTENSITY</span>
+    <input type="range" id="mobIntensity" min="0" max="100" value="100" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('intensity').value=this.value;document.getElementById('mobIntVal').textContent=this.value+'%';applyLUT();mobRedraw();">
+    <span class="mob-ctrl-val" id="mobIntVal">100%</span>
+  </div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label">EXPOSURE</span>
+    <input type="range" id="mobExposure" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('exposure').value=this.value;document.getElementById('mobExpVal').textContent=this.value;applyLUT();mobRedraw();">
+    <span class="mob-ctrl-val" id="mobExpVal">0</span>
+  </div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label">CONTRAST</span>
+    <input type="range" id="mobContrast" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('contrast').value=this.value;document.getElementById('mobConVal').textContent=this.value;applyLUT();mobRedraw();">
+    <span class="mob-ctrl-val" id="mobConVal">0</span>
+  </div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label">SATURATION</span>
+    <input type="range" id="mobSaturation" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('saturation').value=this.value;document.getElementById('mobSatVal').textContent=this.value;applyLUT();mobRedraw();">
+    <span class="mob-ctrl-val" id="mobSatVal">0</span>
+  </div>
+</div>
+
+<!-- Mobile action buttons -->
+<div id="mobActions" style="display:none;">
+  <button class="btn btn-accent" onclick="document.getElementById('imgInput').click()">⬆ IMAGE</button>
+  <button class="btn btn-orange" onclick="exportResult()">⬇ PNG</button>
+  <button class="btn btn-accent" onclick="exportCubeFile()">⬇ .CUBE</button>
+  <button class="btn" onclick="document.getElementById('lutInput').click()">+ .CUBE</button>
+</div>
+
 <div class="toast" id="toast"></div>
+
+<!-- SECTIONS: How it Works + FAQ + Explore -->
+<style>
+.wc-section{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem}
+.wc-sec-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#c8a96e;margin-bottom:.5rem}
+.wc-sec-heading{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;margin-bottom:2rem;color:#f5f0e8}
+.wc-sec-heading em{font-style:italic;color:#c8a96e}
+.wc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:580px){.wc-steps{grid-template-columns:1fr}}
+.wc-step{background:#16161e;border:1px solid rgba(200,169,110,0.22);border-radius:14px;padding:1.4rem}
+.wc-step-n{font-size:11px;font-weight:700;letter-spacing:.1em;color:#c8a96e;margin-bottom:.6rem}
+.wc-step h4{font-size:14px;font-weight:600;margin-bottom:.4rem;color:#f5f0e8}
+.wc-step p{font-size:13px;color:rgba(245,240,232,0.55);line-height:1.55;font-weight:300}
+.wc-faq-item{border-bottom:1px solid rgba(245,240,232,0.12)}
+.wc-faq-q{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;cursor:pointer;font-size:14px;font-weight:500;gap:1rem;color:#f5f0e8}
+.wc-faq-q svg{width:15px;height:15px;fill:none;stroke:rgba(245,240,232,0.55);stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .2s}
+.wc-faq-item.open .wc-faq-q svg{transform:rotate(180deg)}
+.wc-faq-a{font-size:13px;color:rgba(245,240,232,0.55);line-height:1.6;font-weight:300;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s}
+.wc-faq-item.open .wc-faq-a{max-height:180px;padding-bottom:.9rem}
+.wc-tool-card{display:flex;align-items:center;gap:10px;background:#16161e;border:1px solid rgba(200,169,110,0.22);border-radius:14px;padding:12px 14px;transition:all .2s;text-decoration:none}
+.wc-tool-card:hover{border-color:#c8a96e;transform:translateY(-2px)}
+.wc-tool-icon{font-size:1.5rem;flex-shrink:0}
+.wc-tool-name{font-size:12px;font-weight:700;color:#f5f0e8;margin-bottom:2px;letter-spacing:.03em}
+.wc-tool-desc{font-size:11px;color:rgba(245,240,232,0.55);line-height:1.4}
+.wc-tool-arrow{margin-left:auto;font-size:14px;color:#c8a96e;flex-shrink:0;transition:transform .2s}
+.wc-tool-card:hover .wc-tool-arrow{transform:translateX(3px)}
+</style>
+
+<!-- HOW IT WORKS -->
+<section class="wc-section" style="padding-top:3rem;">
+  <p class="wc-sec-tag">Simple Process</p>
+  <h2 class="wc-sec-heading">How It <em>Works</em></h2>
+  <div class="wc-steps">
+    <div class="wc-step"><p class="wc-step-n">01</p><h4>Load Your Image</h4><p>Upload any JPG, PNG, or WEBP photo. You can also drag and drop directly onto the tool.</p></div>
+    <div class="wc-step"><p class="wc-step-n">02</p><h4>Choose a LUT Grade</h4><p>Select from 10+ built-in cinematic LUTs or upload your own .cube file. Adjust intensity, exposure, contrast, and saturation in real time.</p></div>
+    <div class="wc-step"><p class="wc-step-n">03</p><h4>Export PNG or .CUBE</h4><p>Download the graded image as a PNG, or export the LUT itself as a .cube file — ready to use in DaVinci Resolve or Premiere Pro.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wc-section" style="padding-top:0;">
+  <p class="wc-sec-tag">Questions</p>
+  <h2 class="wc-sec-heading">Frequently <em>Asked</em></h2>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What is a LUT? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">A LUT (Look-Up Table) is a colour grading preset that maps the colours in your image to a new set of colours. They're widely used in film, photography, and video production to achieve consistent cinematic looks.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">Can I use my own .cube LUT file? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">Yes! Click the "+ .CUBE FILE" button in the header or drag and drop a .cube file onto the tool. Your custom LUT will be applied instantly and you can also export it back as a .cube.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">Does this work with DaVinci Resolve? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">Yes. The exported .cube files from this tool are standard 33×33×33 3D LUTs, fully compatible with DaVinci Resolve, Adobe Premiere Pro, Final Cut Pro, and most other professional editing software.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">Is my image uploaded to a server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">No. All processing happens entirely in your browser using the HTML5 Canvas API. Your image never leaves your device — no server uploads, no data stored.</div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="wc-section" style="padding-top:0;padding-bottom:2rem;">
+  <p class="wc-sec-tag">More Free Tools</p>
+  <h2 class="wc-sec-heading">Explore Our <em>Tools</em></h2>
+  <div class="wc-explore-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/background-remover/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">✂️</div>
+      <div><div class="wc-tool-name">Background Remover</div><div class="wc-tool-desc">Remove backgrounds from any photo instantly.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🎲</div>
+      <div><div class="wc-tool-name">Image Prompt Generator</div><div class="wc-tool-desc">AI prompts for Midjourney & DALL·E.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🎬</div>
+      <div><div class="wc-tool-name">Thumbnail Maker</div><div class="wc-tool-desc">Create YouTube & social media thumbnails.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🎨</div>
+      <div><div class="wc-tool-name">Color Palette Generator</div><div class="wc-tool-desc">Generate perfect palettes for your brand.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:#c8a96e;text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
+
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
 
 <script>
 // ─── STATE ──────────────────────────────────────────────
@@ -1272,6 +1615,89 @@ function showToast(msg){
 buildLUTList();
 setView('split',null);
 document.querySelectorAll('.vt-btn')[0].classList.add('active');
+
+// ─── MOBILE INIT ─────────────────────────────────────────
+function isMobile(){ return window.innerWidth <= 768; }
+
+function mobShow(){
+  if(!isMobile()) return;
+  document.getElementById('mobView').style.display = 'flex';
+  document.getElementById('mobLutSection').style.display = 'block';
+  document.getElementById('mobControls').style.display = 'block';
+  document.getElementById('mobActions').style.display = 'flex';
+  buildMobLutList();
+}
+
+function buildMobLutList(){
+  const scroll = document.getElementById('mobLutScroll');
+  if(!scroll || scroll.children.length > 0) return;
+  BUILTIN_LUTS.forEach((lut, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'mob-lut-chip';
+    chip.innerHTML = `
+      <canvas class="mob-lut-swatch" width="44" height="28" id="mobSwatch${i}"></canvas>
+      <div class="mob-lut-name">${lut.name}</div>`;
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.mob-lut-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentLUT = { type:'builtin', fn:lut.fn };
+      currentLUTName = lut.name;
+      document.getElementById('activeLUTName').innerHTML = `<span>◉</span>${lut.name}`;
+      applyLUT();
+      mobRedraw();
+    });
+    scroll.appendChild(chip);
+    // Draw swatch
+    setTimeout(() => {
+      const sw = document.getElementById(`mobSwatch${i}`);
+      if(!sw) return;
+      const ctx = sw.getContext('2d');
+      const cols = lut.swatch;
+      const w = sw.width / cols.length;
+      cols.forEach((c, ci) => {
+        ctx.fillStyle = c;
+        ctx.fillRect(ci * w, 0, w, sw.height);
+      });
+    }, 0);
+  });
+}
+
+function mobRedraw(){
+  if(!isMobile() || !srcImage) return;
+  // Draw original
+  const oc = document.getElementById('mobOrigCanvas');
+  oc.width = srcImage.width; oc.height = srcImage.height;
+  oc.getContext('2d').drawImage(offscreenOrig, 0, 0);
+  // Draw LUT graded
+  const lc = document.getElementById('mobLutCanvas');
+  lc.width = srcImage.width; lc.height = srcImage.height;
+  if(offscreenLUT) lc.getContext('2d').drawImage(offscreenLUT, 0, 0);
+  else lc.getContext('2d').drawImage(offscreenOrig, 0, 0);
+}
+
+// Hook into loadImage to trigger mobile redraw
+const _origLoadImage = loadImage;
+// Patch: after image loads, call mobRedraw
+const origApplyLUT = applyLUT;
+// We'll hook via the existing applyLUT — add mobRedraw at end
+const _applyLUT = applyLUT;
+
+// Watch for image load on mobile
+document.getElementById('imgInput').addEventListener('change', () => {
+  setTimeout(() => {
+    if(isMobile() && srcImage){
+      document.getElementById('mobNoImg').style.display = 'none';
+      document.getElementById('mobOrigCanvas').style.display = 'block';
+      mobRedraw();
+    }
+  }, 600);
+});
+
+// Init on load
+window.addEventListener('DOMContentLoaded', mobShow);
+window.addEventListener('resize', () => {
+  if(isMobile()){ mobShow(); if(srcImage) mobRedraw(); }
+});
 </script>
 </body>
 </html>
