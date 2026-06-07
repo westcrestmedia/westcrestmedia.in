@@ -1,490 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Image Prompt Generator — Midjourney, DALL·E, Stable Diffusion | Westcrest Media</title>
+<meta name="description" content="Generate optimised AI image prompts for Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly and more. Free tool powered by Claude AI.">
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="image prompt generator, AI image prompts, Midjourney prompts, DALL-E prompts, Stable Diffusion prompts, AI art prompts, free prompt generator, Firefly prompts">
+<meta name="theme-color" content="#C9A84C">
+<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
+<link rel="shortcut icon" href="../../images/w_logo.svg">
+<link rel="apple-touch-icon" href="../../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-prompt/">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-prompt/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-prompt/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-prompt/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-prompt/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-prompt/">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/image-prompt/">
+<meta property="og:title"       content="AI Image Prompt Generator — Midjourney, DALL·E, Stable Diffusion | Westcrest Media">
+<meta property="og:description" content="Generate optimised AI image prompts for Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly and more. Free tool powered by Claude AI.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="AI Image Prompt Generator — Westcrest Media">
+<meta name="twitter:description" content="Generate optimised AI image prompts for Midjourney, DALL·E 3, Stable Diffusion & more. Free, powered by Claude AI.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+
+<!-- Schema: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"AI Image Prompt Generator","url":"https://westcrestmedia.in/tools/image-prompt/","description":"Generate optimised AI image prompts for Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly and more. Free tool powered by Claude AI.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+
+<!-- Schema: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Prompt Generator","item":"https://westcrestmedia.in/tools/image-prompt/"}]}
+</script>
+
+<!-- Schema: WebPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"AI Image Prompt Generator — Midjourney, DALL·E, Stable Diffusion | Westcrest Media","url":"https://westcrestmedia.in/tools/image-prompt/","description":"Generate optimised AI image prompts for Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly and more. Free tool powered by Claude AI.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Prompt Generator","item":"https://westcrestmedia.in/tools/image-prompt/"}]}}
+</script>
+
 <!-- Google Analytics GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-GQ0X1DD0DP', {
-    'send_page_view': true,
-    'cookie_flags': 'SameSite=None;Secure'
-  });
+  gtag('config', 'G-GQ0X1DD0DP', { 'send_page_view': true, 'cookie_flags': 'SameSite=None;Secure' });
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Prompt Generator — Westcrest</title>
-<meta name="description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
-<meta name="robots" content="index, follow">
-<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
-<link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/image-prompt">
-<!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-prompt">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-prompt">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-prompt">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-prompt">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-prompt">
-<!-- Open Graph -->
-<meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/image-prompt">
-<meta property="og:title"       content="AI Image Prompt Generator — Westcrest Media">
-<meta property="og:description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
-<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
-<meta property="og:locale"      content="en_GB">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:locale:alternate" content="en_CA">
-<!-- Twitter Card -->
-<meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="AI Image Prompt Generator — Westcrest Media">
-<meta name="twitter:description" content="Generate optimised AI image prompts for Midjourney, DALL·E, Stable Diffusion and more with Claude AI.">
-<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
-<link rel="apple-touch-icon" href="../../images/w_logo.svg" />
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
+/* ─── DESIGN TOKENS ─────────────────────────────────── */
+:root {
+  --gold: #c8a96e;
+  --gold2: #e8c98e;
+  --gold-dim: rgba(200,169,110,0.12);
+  --gold-border: rgba(200,169,110,0.22);
+  --dark: #0a0a0f;
+  --dark2: #13131a;
+  --dark3: #1c1c26;
+  --dark4: #1e1e28;
+  --dark5: #2a2a38;
+  --text: #e8e4d8;
+  --muted: rgba(232,228,216,0.55);
+  --faint: rgba(232,228,216,0.10);
+  --radius: 14px;
+  --radius-sm: 8px;
+  /* Safe spacing so content never hides behind fixed bottom nav */
+  --nav-h: 60px;
+  --bottom-nav-clearance: 80px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  /* Reserve space so last section never hides under floating bottom nav */
+  padding-bottom: var(--bottom-nav-clearance);
+  /* Smooth font rendering on iOS/Android */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  body {
-    font-family: 'Syne', sans-serif;
-    background: #0a0a0f;
-    color: #e8e4d8;
-    min-height: 100vh;
-    padding: 2.5rem 1.5rem;
-  }
+/* ─── NAV ────────────────────────────────────────────── */
+.nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem; height: var(--nav-h);
+  background: rgba(10,10,15,0.97);
+  border-bottom: 1px solid var(--gold-border);
+  backdrop-filter: blur(14px);
+  /* Prevent any child from breaking out */
+  overflow: hidden;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 300;
+  /* Tighter tracking so it fits on 320px screens */
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+  min-width: 0; overflow: hidden;
+}
+.nav-logo img { height: 24px; flex-shrink: 0; }
+.nav-logo span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-back {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.12em;
+  text-transform: uppercase; transition: color .2s;
+  flex-shrink: 0; white-space: nowrap;
+  /* Minimum tap target 44px */
+  padding: 10px 0;
+}
+.nav-back:hover, .nav-back:focus { color: var(--gold); }
+.nav-back svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
+/* ─── HERO ───────────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  max-width: 720px; margin: 0 auto;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  color: var(--gold); font-size: 10px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 99px; margin-bottom: 1.2rem;
+  max-width: 100%; /* never overflow */
+}
+.pulse { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; animation: pulse 2s ease-in-out infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.4; transform:scale(.7); } }
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.9rem, 6vw, 3.2rem);
+  line-height: 1.08; letter-spacing: -.02em; margin-bottom: .75rem;
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero p { color: var(--muted); font-size: 13px; line-height: 1.65; margin-bottom: 1.2rem; font-weight: 300; }
+.pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.pill { background: var(--dark3); border: 1px solid var(--faint); color: var(--muted); font-size: 10px; padding: 3px 10px; border-radius: 99px; font-weight: 500; }
 
-  .header-badge {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: #c8a96e;
-    border: 1px solid #c8a96e44;
-    padding: 4px 14px;
-    border-radius: 20px;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
+/* ─── TOOL WRAP ──────────────────────────────────────── */
+.tool-wrap { max-width: 780px; margin: 0 auto; padding: 0 1rem 2rem; }
 
-  h1 {
-    font-size: clamp(1.6rem, 4vw, 2.4rem);
-    font-weight: 700;
-    color: #f0ebe0;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
+/* ─── CARD ───────────────────────────────────────────── */
+.card {
+  background: var(--dark2);
+  border: 1px solid var(--dark5);
+  border-radius: var(--radius);
+  padding: 1.1rem 1rem;
+  margin-bottom: 1rem;
+}
+.card-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.16em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
 
-  h1 span { color: #c8a96e; }
+/* ─── TEXTAREA ───────────────────────────────────────── */
+textarea {
+  width: 100%;
+  background: #0d0d14;
+  border: 1px solid var(--dark5);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  /* 16px minimum prevents iOS auto-zoom on focus */
+  font-size: 16px;
+  line-height: 1.55;
+  padding: 0.8rem 0.9rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  /* Smooth typing on mobile */
+  appearance: none;
+  -webkit-appearance: none;
+}
+textarea:focus { border-color: rgba(200,169,110,0.4); }
+textarea::placeholder { color: #3d3d52; }
 
-  .subtitle {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: #6e6b62;
-    letter-spacing: 0.05em;
-  }
+/* ─── SELECT ─────────────────────────────────────────── */
+select {
+  width: 100%;
+  background: #0d0d14;
+  border: 1px solid var(--dark5);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  /* 16px prevents iOS zoom */
+  font-size: 16px;
+  padding: 0.7rem 0.75rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+  /* Minimum tap target */
+  min-height: 44px;
+}
+select:focus { border-color: rgba(200,169,110,0.4); }
 
-  .container { max-width: 780px; margin: 0 auto; }
+/* ─── GRID-2 — stacks on mobile ──────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
-  .card {
-    background: #13131a;
-    border: 1px solid #2a2a38;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
-  }
+/* ─── CHIPS ──────────────────────────────────────────── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--dark5);
+  background: #0d0d14; color: #6e6b62;
+  cursor: pointer; transition: all 0.15s;
+  user-select: none;
+  /* Comfortable tap target */
+  min-height: 32px; display: flex; align-items: center;
+}
+.chip:active, .chip.active { border-color: var(--gold); background: rgba(200,169,110,0.1); color: var(--gold); }
 
-  .card-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: #c8a96e;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
+/* ─── TOGGLES ────────────────────────────────────────── */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--dark4);
+  /* Taller rows = easier to tap */
+  min-height: 48px;
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 13px; color: #b0ab9e; flex: 1; padding-right: 1rem; }
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--dark5); border-radius: 11px;
+  position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+  /* Larger tap target wrapper */
+  padding: 4px;
+}
+.toggle.on { background: var(--gold); }
+.toggle-dot {
+  width: 14px; height: 14px;
+  background: #f0ebe0; border-radius: 50%;
+  position: absolute; top: 4px; left: 4px;
+  transition: transform 0.2s;
+}
+.toggle.on .toggle-dot { transform: translateX(18px); }
 
-  textarea {
-    width: 100%;
-    background: #0d0d14;
-    border: 1px solid #2a2a38;
-    border-radius: 10px;
-    color: #e8e4d8;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 0.875rem 1rem;
-    resize: none;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+/* ─── VARIATIONS ─────────────────────────────────────── */
+.variations-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.var-btn {
+  flex: 1; padding: 0.65rem 0.5rem;
+  background: var(--dark2); border: 1px solid var(--dark5);
+  border-radius: var(--radius-sm); color: #6e6b62;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  cursor: pointer; transition: all 0.15s; text-align: center;
+  /* Tap target */
+  min-height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.var-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,169,110,0.07); }
 
-  textarea:focus { border-color: #c8a96e66; }
-  textarea::placeholder { color: #3d3d52; }
+/* ─── GENERATE BUTTON ────────────────────────────────── */
+.gen-btn {
+  width: 100%; padding: 1rem;
+  background: linear-gradient(135deg, #c8a96e, #b08840);
+  border: none; border-radius: 12px;
+  color: #0a0a0f; font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: all 0.2s; margin-bottom: 1.25rem;
+  /* Solid tap target */
+  min-height: 52px;
+  /* Prevent iOS button styling override */
+  appearance: none;
+  -webkit-appearance: none;
+}
+.gen-btn:active { transform: scale(0.98); opacity: 0.9; }
+.gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  .grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+/* ─── LOADING ────────────────────────────────────────── */
+.loading-bar { width: 100%; height: 2px; background: var(--dark5); border-radius: 2px; overflow: hidden; margin-bottom: 1.25rem; display: none; }
+.loading-bar.active { display: block; }
+.loading-fill { height: 100%; background: linear-gradient(90deg, transparent, var(--gold), transparent); animation: shimmer 1.5s infinite; width: 60%; }
+@keyframes shimmer { 0%{ transform:translateX(-100%); } 100%{ transform:translateX(300%); } }
 
-  select {
-    width: 100%;
-    background: #0d0d14;
-    border: 1px solid #2a2a38;
-    border-radius: 8px;
-    color: #e8e4d8;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 0.6rem 0.75rem;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    transition: border-color 0.2s;
-  }
+/* ─── ERROR ──────────────────────────────────────────── */
+.error-msg { background: #1e1014; border: 1px solid #6b2a2a; border-radius: 10px; padding: 0.875rem 1rem; font-family: 'DM Mono', monospace; font-size: 12px; color: #e07070; margin-bottom: 1rem; display: none; }
+.error-msg.visible { display: block; }
 
-  select:focus { border-color: #c8a96e66; }
+/* ─── RESULTS ────────────────────────────────────────── */
+.results-area { display: none; }
+.results-area.visible { display: block; }
+.result-card {
+  background: var(--dark2); border: 1px solid var(--dark5);
+  border-radius: var(--radius); padding: 1.1rem 1rem;
+  margin-bottom: 1rem; position: relative;
+  transition: border-color 0.2s;
+}
+.result-platform { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 6px; }
+.result-platform::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
+.result-text {
+  font-size: 13px; line-height: 1.7; color: #c8c4b8;
+  font-family: 'DM Mono', monospace;
+  /* On mobile copy btn is below, not absolute — no right padding needed */
+  padding-right: 0;
+  margin-bottom: 0.75rem;
+  /* Allow text to wrap properly */
+  word-break: break-word;
+}
+/* Copy button — below text on mobile, absolute on desktop */
+.copy-btn {
+  display: block; width: 100%;
+  background: var(--dark4); border: 1px solid var(--dark5);
+  border-radius: var(--radius-sm); color: #6e6b62;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 8px 12px; cursor: pointer; transition: all 0.15s;
+  text-align: center; min-height: 36px;
+}
+.copy-btn:active, .copy-btn:hover { border-color: rgba(200,169,110,0.4); color: var(--gold); }
+.copy-btn.copied { border-color: #4caf7d; color: #4caf7d; }
+.neg-section { margin-top: 0.875rem; padding-top: 0.875rem; border-top: 1px solid var(--dark4); }
+.neg-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: #6e3a3a; text-transform: uppercase; margin-bottom: 0.5rem; }
+.neg-text { font-size: 12px; line-height: 1.6; color: #7a6060; font-family: 'DM Mono', monospace; word-break: break-word; }
+.tip-section { margin-top: 0.875rem; padding: 0.625rem 0.875rem; background: #0d1a12; border-radius: var(--radius-sm); border: 1px solid #1a3020; font-size: 12px; color: #6ea87d; font-family: 'DM Mono', monospace; word-break: break-word; }
+.tip-label { color: #4caf7d; letter-spacing: 0.1em; font-size: 9px; text-transform: uppercase; margin-bottom: 3px; }
 
-  .chip-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+/* ─── HOW IT WORKS / FAQ / EXPLORE ──────────────────── */
+.section { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+.sec-tag { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+.sec-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem,4vw,2.2rem); letter-spacing: -.02em; margin-bottom: 1.5rem; }
+.sec-heading em { font-style: italic; color: var(--gold); }
 
-  .chip {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid #2a2a38;
-    background: #0d0d14;
-    color: #6e6b62;
-    cursor: pointer;
-    transition: all 0.15s;
-    user-select: none;
-  }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; }
+.step { background: var(--dark2); border: 1px solid var(--gold-border); border-radius: var(--radius); padding: 1.1rem; }
+.step-n { font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--gold); margin-bottom: .5rem; }
+.step h4 { font-size: 13px; font-weight: 600; margin-bottom: .35rem; }
+.step p { font-size: 12px; color: var(--muted); line-height: 1.55; font-weight: 300; }
 
-  .chip:hover { border-color: #c8a96e55; color: #c8a96e; }
-  .chip.active { border-color: #c8a96e; background: #c8a96e18; color: #c8a96e; }
+.faq-item { border-bottom: 1px solid var(--faint); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 0; cursor: pointer;
+  font-size: 13px; font-weight: 500; gap: 0.75rem;
+  /* Good tap target */
+  min-height: 48px;
+}
+.faq-q svg { width: 15px; height: 15px; fill: none; stroke: var(--muted); stroke-width: 2; transition: transform .2s; flex-shrink: 0; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { font-size: 12px; color: var(--muted); line-height: 1.6; font-weight: 300; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .2s; }
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: .9rem; }
 
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid #1e1e28;
-  }
+/* ─── EXPLORE TOOLS ──────────────────────────────────── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+.other-tool-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  background: var(--dark2); border: 1px solid var(--gold-border);
+  border-radius: var(--radius); padding: 12px;
+  transition: all .2s; text-decoration: none;
+}
+.other-tool-card:active, .other-tool-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.other-tool-icon { font-size: 1.4rem; line-height: 1; }
+.other-tool-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 1px; line-height: 1.3; }
+.other-tool-desc { font-size: 10px; color: var(--muted); line-height: 1.4; }
+.other-tool-arrow { font-size: 13px; color: var(--gold); margin-top: auto; }
 
-  .toggle-row:last-child { border-bottom: none; }
-
-  .toggle-label { font-size: 13px; color: #b0ab9e; }
-
-  .toggle {
-    width: 36px;
-    height: 20px;
-    background: #2a2a38;
-    border-radius: 10px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-
-  .toggle.on { background: #c8a96e; }
-
-  .toggle-dot {
-    width: 14px;
-    height: 14px;
-    background: #f0ebe0;
-    border-radius: 50%;
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    transition: transform 0.2s;
-  }
-
-  .toggle.on .toggle-dot { transform: translateX(16px); }
-
-  .variations-toggle {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .var-btn {
-    flex: 1;
-    padding: 0.5rem;
-    background: #13131a;
-    border: 1px solid #2a2a38;
-    border-radius: 8px;
-    color: #6e6b62;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-  }
-
-  .var-btn.active { border-color: #c8a96e; color: #c8a96e; background: #c8a96e12; }
-
-  .gen-btn {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #c8a96e, #b08840);
-    border: none;
-    border-radius: 12px;
-    color: #0a0a0f;
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    transition: all 0.2s;
-    margin-bottom: 1.25rem;
-  }
-
-  .gen-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px #c8a96e33; }
-  .gen-btn:active { transform: translateY(0); }
-  .gen-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-  .loading-bar {
-    width: 100%;
-    height: 2px;
-    background: #2a2a38;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 1.25rem;
-    display: none;
-  }
-
-  .loading-bar.active { display: block; }
-
-  .loading-fill {
-    height: 100%;
-    background: linear-gradient(90deg, transparent, #c8a96e, transparent);
-    animation: shimmer 1.5s infinite;
-    width: 60%;
-  }
-
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(300%); }
-  }
-
-  .error-msg {
-    background: #1e1014;
-    border: 1px solid #6b2a2a;
-    border-radius: 10px;
-    padding: 0.875rem 1rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: #e07070;
-    margin-bottom: 1rem;
-    display: none;
-  }
-
-  .error-msg.visible { display: block; }
-
-  .results-area { display: none; }
-  .results-area.visible { display: block; }
-
-  .result-card {
-    background: #13131a;
-    border: 1px solid #2a2a38;
-    border-radius: 14px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    position: relative;
-    transition: border-color 0.2s;
-  }
-
-  .result-card:hover { border-color: #c8a96e44; }
-
-  .result-platform {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: #c8a96e;
-    text-transform: uppercase;
-    margin-bottom: 0.625rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .result-platform::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #c8a96e;
-    border-radius: 50%;
-  }
-
-  .result-text {
-    font-size: 13px;
-    line-height: 1.7;
-    color: #c8c4b8;
-    font-family: 'DM Mono', monospace;
-    padding-right: 4rem;
-  }
-
-  .copy-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #1e1e28;
-    border: 1px solid #2a2a38;
-    border-radius: 8px;
-    color: #6e6b62;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 5px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .copy-btn:hover { border-color: #c8a96e66; color: #c8a96e; }
-  .copy-btn.copied { border-color: #4caf7d; color: #4caf7d; }
-
-  .neg-section {
-    margin-top: 0.875rem;
-    padding-top: 0.875rem;
-    border-top: 1px solid #1e1e28;
-  }
-
-  .neg-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    color: #6e3a3a;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-
-  .neg-text {
-    font-size: 12px;
-    line-height: 1.6;
-    color: #7a6060;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .tip-section {
-    margin-top: 0.875rem;
-    padding: 0.625rem 0.875rem;
-    background: #0d1a12;
-    border-radius: 8px;
-    border: 1px solid #1a3020;
-    font-size: 12px;
-    color: #6ea87d;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .tip-label {
-    color: #4caf7d;
-    letter-spacing: 0.1em;
-    font-size: 9px;
-    text-transform: uppercase;
-    margin-bottom: 3px;
-  }
-
-  @media (max-width: 560px) {
-    .grid-2 { grid-template-columns: 1fr; }
-  }
-
-/* ── BOTTOM NAV BAR ── */
-.wc-bottom-nav {
-  position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
+/* ─── FOOTER ─────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid rgba(200,169,110,0.15);
+  padding: 0 1.25rem;
+  height: 40px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.25rem;
-  background: rgba(12,12,16,0.92);
+  gap: 1rem;
+  overflow: hidden;
+}
+.site-footer p { font-size: 11px; color: #6a6258; margin: 0; white-space: nowrap; }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: #6a6258; text-decoration: none; font-size: 11px; white-space: nowrap; transition: color .2s; }
+.footer-links a:hover { color: var(--gold); }
+
+/* ─── BOTTOM NAV ─────────────────────────────────────── */
+.wc-bottom-nav {
+  position: fixed; bottom: 1.25rem; left: 50%;
+  transform: translateX(-50%); z-index: 9999;
+  display: flex; align-items: center; gap: .25rem;
+  background: rgba(12,12,16,0.95);
   border: 1px solid rgba(200,169,110,0.3);
-  border-radius: 99px;
-  padding: 6px 8px;
+  border-radius: 99px; padding: 6px 8px;
   backdrop-filter: blur(16px);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  /* Prevent it ever exceeding viewport width */
+  max-width: calc(100vw - 2rem);
 }
 .wc-bottom-nav a {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(220,210,195,0.7);
-  text-decoration: none;
-  font-family: 'DM Mono', monospace, sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 99px;
-  transition: all 0.18s;
-  white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(220,210,195,0.7); text-decoration: none;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 7px 14px; border-radius: 99px;
+  transition: all 0.18s; white-space: nowrap;
+  /* Minimum tap target */
+  min-height: 36px;
 }
-.wc-bottom-nav a:hover {
-  color: #c8a96e;
-  background: rgba(200,169,110,0.1);
-}
-.wc-bottom-nav .wc-bn-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(200,169,110,0.2);
-  flex-shrink: 0;
-}
-@media (max-width: 480px) {
-  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
-  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+.wc-bottom-nav a:hover, .wc-bottom-nav a:focus { color: var(--gold); background: rgba(200,169,110,0.1); }
+.wc-bn-divider { width: 1px; height: 16px; background: rgba(200,169,110,0.2); flex-shrink: 0; }
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ════════════════════════════════════════════════════════ */
+
+/* ── Tablet: ≤768px ──────────────────────────────────── */
+@media(max-width:768px){
+  .nav { padding: 0 1rem; }
+  .hero { padding: 2rem 1rem 1.75rem; }
+  .tool-wrap { padding: 0 1rem 2rem; }
+  .section { padding: 0 1rem 2.5rem; }
 }
 
-</style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Image Prompt Generator",
-  "url": "https://westcrestmedia.in/tools/image-prompt",
-  "description": "Generate powerful AI image prompts instantly. Free tool by Westcrest Media for creators and designers.",
-  "applicationCategory": "DesignApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
+/* ── Mobile: ≤600px ──────────────────────────────────── */
+@media(max-width:600px){
+  /* Grid-2 → single column */
+  .grid-2 { grid-template-columns: 1fr; }
+  /* Steps → single column */
+  .steps { grid-template-columns: 1fr; }
+  /* Explore tools: 2×2 on mobile */
+  .tools-grid { grid-template-columns: repeat(2,1fr); }
+  /* Card tool layout — row again inside explore (icon + text side by side) */
+  .other-tool-card { flex-direction: row; align-items: center; gap: 10px; }
+  .other-tool-arrow { margin-left: auto; margin-top: 0; }
+  /* Tighten hero */
+  .hero { padding: 1.75rem 1rem 1.5rem; }
+  .hero p { font-size: 12px; }
+  .pills { gap: 5px; }
+  .pill { font-size: 9px; }
+  /* Bottom nav text hidden, icons only */
+  .wc-bottom-nav a { padding: 7px 12px; font-size: 9px; gap: 4px; }
 }
-</script>
+
+/* ── Small mobile: ≤400px ────────────────────────────── */
+@media(max-width:400px){
+  .nav-logo span { display: none; } /* show only logo icon */
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .card { padding: 0.9rem 0.85rem; }
+  .tool-wrap { padding: 0 0.75rem 1.5rem; }
+  .section { padding: 0 0.75rem 2rem; }
+  .hero { padding: 1.5rem 0.75rem 1.25rem; }
+}
+
+/* ── Desktop: hover states ───────────────────────────── */
+@media(hover:hover){
+  .gen-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,169,110,0.2); }
+  .chip:hover { border-color: rgba(200,169,110,0.35); color: var(--gold); }
+  /* Copy btn back to absolute on desktop */
+  .result-card { padding: 1.25rem; }
+  .result-text { padding-right: 4.5rem; margin-bottom: 0; }
+  .copy-btn {
+    position: absolute; top: 1rem; right: 1rem;
+    width: auto; display: inline-block;
+    font-size: 10px; padding: 5px 12px; min-height: auto;
+  }
+  .other-tool-card { flex-direction: row; align-items: center; }
+  .other-tool-arrow { margin-top: 0; }
+}
+</style>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav style="position:fixed;top:0;left:0;right:0;z-index:999;background:#0a0a0f;border-bottom:1px solid #1e1e28;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;">
-  <a href="https://westcrestmedia.in/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <img src="../../images/w_logo.svg" alt="Westcrest" style="width:28px;height:28px;">
-    <span style="font-family:'Syne',sans-serif;font-size:14px;color:#e8e4d8;letter-spacing:0.04em;">Westcrest Media</span>
+<nav class="nav">
+  <a href="https://westcrestmedia.in/" class="nav-logo">
+    <img src="../../images/w_logo.svg" alt="Westcrest Media"><span>Westcrest Media</span>
   </a>
-  <a href="https://westcrestmedia.in/" style="font-family:'DM Mono',monospace;font-size:10px;color:#6e6b62;letter-spacing:0.15em;text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6e6b62'">‹ Back to Home</a>
+  <a href="https://westcrestmedia.in/" class="nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back to Home
+  </a>
 </nav>
 
-<div class="container" style="padding-top:72px;">
-
-  <div class="header">
-    <div class="header-badge">✦ AI Powered Tool</div>
-    <h1>Image <span>Prompt</span> Generator</h1>
-    <p class="subtitle">Midjourney · DALL·E · Stable Diffusion · Firefly</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><div class="pulse"></div>AI Powered · Free · Instant</div>
+  <h1>Image <em>Prompt</em><br>Generator</h1>
+  <p>Generate powerful, platform-optimised prompts for Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly and more — powered by Claude AI.</p>
+  <div class="pills">
+    <span class="pill">Midjourney</span>
+    <span class="pill">DALL·E 3</span>
+    <span class="pill">Stable Diffusion</span>
+    <span class="pill">Adobe Firefly</span>
+    <span class="pill">Ideogram</span>
+    <span class="pill">Free Forever</span>
   </div>
+</section>
 
+<!-- TOOL -->
+<div class="tool-wrap">
 
   <!-- Idea Input -->
   <div class="card">
@@ -600,9 +632,7 @@
     <div class="var-btn" data-n="3">3 Variations</div>
   </div>
 
-  <button class="gen-btn" id="genBtn" onclick="generatePrompts()">
-    ✦ Generate Image Prompts
-  </button>
+  <button class="gen-btn" id="genBtn" onclick="generatePrompts()">✦ Generate Image Prompts</button>
 
   <div class="loading-bar" id="loadingBar"><div class="loading-fill"></div></div>
   <div class="error-msg" id="errorMsg"></div>
@@ -610,22 +640,96 @@
 
 </div>
 
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">How It Works</p>
+  <h2 class="sec-heading">Prompts Built for <em>Your Platform</em></h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <h4>Describe Your Idea</h4>
+      <p>Type any scene, concept, or visual idea — as simple or detailed as you like. The AI handles the rest.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <h4>Choose Your Settings</h4>
+      <p>Pick your platform (Midjourney, DALL·E, SD), art style, mood, lighting, and aspect ratio to fine-tune the output.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <h4>Copy & Create</h4>
+      <p>Get a fully optimised, ready-to-use prompt with negative prompts and pro tips. One click to copy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Which AI platforms are supported? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Midjourney, DALL·E 3, Stable Diffusion, Adobe Firefly, and Ideogram. Each platform gets a specially formatted prompt with platform-specific syntax and parameters.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What is a negative prompt? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">A negative prompt tells the AI what to avoid — things like blurry images, extra limbs, or unwanted styles. Toggle it on to get one automatically generated with your prompt.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Is this tool free? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes, completely free. No sign-up, no usage limits, no watermarks. Just describe your idea and generate.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I generate multiple variations? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes! Choose 1, 2, or 3 variations. Each variation takes a different creative angle of your idea — great for exploring different interpretations before committing to one.</div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div class="tools-grid">
+
+    <a href="https://westcrestmedia.in/tools/video-prompt/" class="other-tool-card"><div class="other-tool-icon">🎥</div><div><div class="other-tool-name">Video Prompt Generator</div><div class="other-tool-desc">AI prompts for Sora, Runway & more.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="other-tool-card"><div class="other-tool-icon">✂️</div><div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="other-tool-card"><div class="other-tool-icon">🎨</div><div><div class="other-tool-name">Color Palette Generator</div><div class="other-tool-desc">Extract beautiful palettes from images.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="other-tool-card"><div class="other-tool-icon">🎬</div><div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div><span class="other-tool-arrow">→</span></a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>© 2026 Westcrest Media</p>
+  <div class="footer-links">
+    <a href="https://westcrestmedia.in/">Home</a>
+    <a href="https://westcrestmedia.in/#tools">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- BOTTOM NAV -->
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
+
 <script>
   let numVariations = 1;
-
 
   document.querySelectorAll('#moodChips .chip').forEach(c => {
     c.addEventListener('click', () => c.classList.toggle('active'));
   });
-
   document.querySelectorAll('#lightChips .chip').forEach(c => {
     c.addEventListener('click', () => c.classList.toggle('active'));
   });
-
   document.querySelectorAll('.toggle').forEach(t => {
     t.addEventListener('click', () => t.classList.toggle('on'));
   });
-
   document.querySelectorAll('.var-btn').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.var-btn').forEach(x => x.classList.remove('active'));
@@ -724,30 +828,25 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations — each with
 
       parsed.prompts.forEach((p, i) => {
         const varLabel = numVariations > 1 ? ` — Variation ${i + 1}` : '';
-
         const negHTML = (includeNeg && p.negative_prompt) ? `
           <div class="neg-section">
             <div class="neg-label">✕ Negative Prompt</div>
             <div class="neg-text">${escHtml(p.negative_prompt)}</div>
           </div>` : '';
-
         const tipHTML = p.tips ? `
           <div class="tip-section">
             <div class="tip-label">💡 Pro Tip</div>
             ${escHtml(p.tips)}
           </div>` : '';
-
         const card = document.createElement('div');
         card.className = 'result-card';
         card.innerHTML = `
           <button class="copy-btn" onclick="copyText(this)">Copy</button>
           <div class="result-platform">${escHtml(p.platform || platform)}${escHtml(varLabel)}</div>
           <div class="result-text" data-prompt="${escAttr(p.main_prompt)}">${escHtml(p.main_prompt)}</div>
-          ${negHTML}
-          ${tipHTML}`;
+          ${negHTML}${tipHTML}`;
         results.appendChild(card);
       });
-
       results.classList.add('visible');
 
     } catch (err) {
@@ -778,9 +877,8 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations — each with
   function escHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
   function escAttr(str) {
-    return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return String(str).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 </script>
 </body>
