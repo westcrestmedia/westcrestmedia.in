@@ -730,6 +730,8 @@
 .wc-tool-desc { font-size:11px; color:rgba(245,240,232,0.55); line-height:1.4; }
 .wc-tool-arrow { margin-left:auto; font-size:14px; color:#c8a96e; flex-shrink:0; transition:transform .2s; }
 .wc-tool-card:hover .wc-tool-arrow { transform:translateX(3px); }
+@media(max-width:700px){ .wc-explore-grid { grid-template-columns:repeat(2,1fr) !important; } }
+@media(max-width:400px){ .wc-explore-grid { grid-template-columns:1fr !important; } }
 </style>
 
 <!-- HOW IT WORKS -->
@@ -769,7 +771,7 @@
 <section class="wc-section" style="padding-top:0;padding-bottom:2rem;">
   <p class="wc-sec-tag">More Free Tools</p>
   <h2 class="wc-sec-heading">Explore Our <em>Tools</em></h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+  <div class="wc-explore-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.2rem;">
     <a href="https://westcrestmedia.in/tools/color-palette/" style="text-decoration:none;" class="wc-tool-card">
       <div class="wc-tool-icon">🎨</div>
       <div><div class="wc-tool-name">Color Palette Generator</div><div class="wc-tool-desc">Generate perfect palettes for your brand.</div></div>
