@@ -12,13 +12,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Image Format Converter — Free Online Tool | Westcrest Media</title>
-<!-- <link rel="icon" type="image/svg+xml" href="../images/w_logo.svg">
-<link rel="shortcut icon" href="../images/w_logo.svg"> -->
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
 <meta name="description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, AVIF, BMP, TIFF, GIF, SVG, ICO, WBMP to any format. No upload required, 100% browser-side.">
 <meta name="keywords" content="image converter, png to jpg, webp to png, heic to jpg, free image converter, online image converter">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-converter/">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-converter/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-converter/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-converter/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-converter/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-converter/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://westcrestmedia.in/tools/image-converter/">
+<meta property="og:title" content="Image Format Converter — Free Online Tool | Westcrest Media">
+<meta property="og:description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, AVIF, BMP, TIFF, GIF, SVG, ICO, WBMP to any format. No upload required, 100% browser-side.">
+<meta property="og:image" content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Image Format Converter — Westcrest Media">
+<meta name="twitter:description" content="Free online image converter. Convert any format instantly in your browser.">
+<meta name="twitter:image" content="https://westcrestmedia.in/images/og-image.jpg">
 <meta name="theme-color" content="#C9A84C">
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://westcrestmedia.in/"},
+    {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://westcrestmedia.in/#tools"},
+    {"@type": "ListItem", "position": 3, "name": "Image Converter", "item": "https://westcrestmedia.in/tools/image-converter/"}
+  ]
+}
+</script>
+<!-- WebPage Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Image Format Converter",
+  "url": "https://westcrestmedia.in/tools/image-converter/",
+  "description": "Free online image converter. Convert JPG, PNG, WEBP, HEIC, AVIF, BMP, TIFF, GIF to any format. 100% browser-side.",
+  "isPartOf": {"@type": "WebSite", "name": "Westcrest Media", "url": "https://westcrestmedia.in/"}
+}
+</script>
 <!-- <link rel="stylesheet" href="../css/style.css"> -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -489,6 +529,48 @@
   .tool-footer a { color: var(--text-muted); text-decoration: none; font-size: 12px; }
   .tool-footer a:hover { color: var(--gold); }
   .footer-links { display: flex; gap: 1.5rem; }
+
+  /* FLOATING BOTTOM NAV */
+  .float-nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(18,18,24,0.92);
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 99px;
+    backdrop-filter: blur(16px);
+    padding: 10px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  }
+  .float-nav a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(245,240,232,0.55);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 99px;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+  .float-nav a:hover { color: var(--gold); }
+  .float-nav .fn-divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(200,169,110,0.2);
+    margin: 0 2px;
+  }
+  .float-nav svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  body { padding-bottom: 80px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 </head>
@@ -496,12 +578,12 @@
 
 <!-- NAV -->
 <nav class="tool-nav">
-  <a href="https://westcrestmedia.github.io/" class="logo">
+  <a href="https://westcrestmedia.in/" class="logo">
     <!-- <img src="../images/w_logo.svg" alt="Westcrest Media" style="height:26px;"> -->
        <img src="../../images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
     Westcrest Media
   </a>
-  <a href="https://westcrestmedia.github.io/" class="back-btn">
+  <a href="https://westcrestmedia.in/" class="back-btn">
     <svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Back to Home
   </a>
@@ -644,19 +726,61 @@
   </div>
 </section>
 
+<!-- EXPLORE OTHER TOOLS -->
+<section class="how-section" style="padding-bottom:2rem;">
+  <p class="section-tag">Westcrest Media Tools</p>
+  <h2 class="section-heading">Explore <em>Other Tools</em></h2>
+  <div class="steps-grid" style="grid-template-columns:repeat(4,1fr);gap:1rem;">
+    <a href="https://westcrestmedia.in/tools/image-compressor/" class="step-card" style="text-decoration:none;display:block;transition:border-color .2s,transform .15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+      <p class="step-num">🗜️ Image Compressor</p>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.5;margin-top:.3rem;">Compress images without quality loss. Browser-side, no upload.</p>
+    </a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="step-card" style="text-decoration:none;display:block;transition:border-color .2s,transform .15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+      <p class="step-num">🖼️ Background Remover</p>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.5;margin-top:.3rem;">Remove image backgrounds instantly. AI-powered, batch support.</p>
+    </a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="step-card" style="text-decoration:none;display:block;transition:border-color .2s,transform .15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+      <p class="step-num">🖼️ Thumbnail Maker</p>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.5;margin-top:.3rem;">Create eye-catching YouTube & social media thumbnails.</p>
+    </a>
+    <a href="https://westcrestmedia.in/tools/aspect-ratio-calculator/" class="step-card" style="text-decoration:none;display:block;transition:border-color .2s,transform .15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='';this.style.transform=''">
+      <p class="step-num">📐 Aspect Ratio Calculator</p>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.5;margin-top:.3rem;">Calculate and convert aspect ratios for any screen or format.</p>
+    </a>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="tool-footer">
   <p>© 2026 Westcrest Media — Free Tools</p>
   <div class="footer-links">
-    <a href="https://westcrestmedia.github.io/">Home</a>
-    <a href="https://westcrestmedia.github.io/#tools">All Tools</a>
-    <a href="https://westcrestmedia.github.io/#contact">Contact</a>
+    <a href="https://westcrestmedia.in/">Home</a>
+    <a href="https://westcrestmedia.in/#tools">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact">Contact</a>
   </div>
 </footer>
 
+<!-- FLOATING NAV -->
+<nav class="float-nav">
+  <a href="https://westcrestmedia.in/">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <div class="fn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    All Tools
+  </a>
+  <div class="fn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Contact
+  </a>
+</nav>
+
 <script>
 // jsPDF loaded via CDN
-const { jsPDF } = window.jspdf;
+let jsPDF = window.jspdf ? window.jspdf.jsPDF : null;
 
 let files = [];
 let outputFormat = 'jpg';
