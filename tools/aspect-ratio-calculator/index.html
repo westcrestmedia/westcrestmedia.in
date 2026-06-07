@@ -19,16 +19,16 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="canonical" href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
 <!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/aspect-ratio-calculator">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/aspect-ratio-calculator/">
 <meta property="og:title"       content="Aspect Ratio Calculator — Westcrest Media">
 <meta property="og:description" content="Calculate and convert aspect ratios for video, photo and social media formats instantly.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
@@ -40,6 +40,8 @@
 <meta name="twitter:title"       content="Aspect Ratio Calculator — Westcrest Media">
 <meta name="twitter:description" content="Calculate and convert aspect ratios for video, photo and social media formats instantly.">
 <meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta name="keywords" content="aspect ratio calculator, video aspect ratio, image ratio converter, 16:9 calculator, social media dimensions, resolution calculator">
+<meta name="theme-color" content="#C9A84C">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -62,6 +64,8 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { overflow-x: hidden; }
 
     body {
       font-family: 'Syne', sans-serif;
@@ -704,27 +708,123 @@
   .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
 }
 
+/* ══════════════════════════════════════════
+   MOBILE UI  ≤640px
+   Order: Presets → Preview box (big) → Ratio → Inputs → Results → Scale → Sizes
+   ══════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Nav compact */
+  .wc-nav { padding: 0 1rem; }
+
+  /* Container — tighter padding */
+  .container { padding: 16px 14px 100px; }
+
+  /* Header — smaller */
+  header { margin-bottom: 20px; }
+  header h1 { font-size: 2.2rem; }
+  .badge { font-size: 10px; padding: 4px 10px; margin-bottom: 12px; }
+  .subtitle { font-size: 0.8rem; }
+
+  /* Presets — horizontal scroll, no wrap */
+  .presets {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .presets::-webkit-scrollbar { display: none; }
+  .preset-chip { flex-shrink: 0; font-size: 11px; padding: 6px 12px; }
+
+  /* Unit switcher — full width */
+  .unit-switcher { width: 100%; justify-content: space-between; margin-bottom: 14px; }
+  .unit-btn { flex: 1; text-align: center; }
+
+  /* Main grid — REVERSE order on mobile: Preview first, then inputs */
+  .main-grid {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 14px;
+  }
+
+  /* Preview card — comes first (column-reverse makes it top) */
+  .preview-card {
+    padding: 16px;
+    margin-bottom: 0;
+  }
+  .preview-stage { min-height: 160px; }
+  .preview-box {
+    max-width: 90vw !important;
+    max-height: 180px !important;
+  }
+
+  /* Dimensions card — compact */
+  .card { padding: 16px; }
+  .card-title { margin-bottom: 12px; }
+
+  /* Input row — bigger touch targets */
+  .input-row { gap: 8px; }
+  .input-group input {
+    font-size: 1.3rem;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .times-sign { font-size: 1.2rem; margin-top: 18px; }
+
+  /* Lock row */
+  .lock-row { margin-top: 10px; }
+
+  /* Ratio display — bigger, more prominent */
+  .ratio-display { padding: 14px; margin-top: 12px; }
+  .ratio-big { font-size: 3rem; }
+  .ratio-label { font-size: 10px; }
+
+  /* Result cards — 2x2 grid */
+  .results-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .result-card { padding: 12px; }
+  .result-card .rc-val { font-size: 1rem; }
+  .result-card .rc-label { font-size: 9px; }
+
+  /* Scale card — compact */
+  .scale-card { padding: 16px; margin-bottom: 14px; }
+  .scale-inputs {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .scale-arrow { font-size: 1.2rem; margin-bottom: 8px; }
+  .scale-result { padding: 12px; }
+  .scale-result .sr-val { font-size: 1.3rem; }
+
+  /* Sizes table — hide by default, show via toggle */
+  .sizes-card { padding: 16px; margin-bottom: 14px; }
+  .sizes-table th { font-size: 9px; padding: 6px 8px; }
+  .sizes-table td { font-size: 11px; padding: 8px; }
+
+  /* Tool footer — hide on mobile (we have proper footer) */
+  .tool-footer { display: none; }
+
+  /* Bottom nav always visible */
+  .wc-bottom-nav { bottom: 0.6rem; }
+}
+
+
 </style>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Aspect Ratio Calculator",
-  "url": "https://westcrestmedia.in/tools/aspect-ratio-calculator",
-  "description": "Calculate and convert aspect ratios for video, social media, and design. Free tool by Westcrest Media.",
-  "applicationCategory": "DesignApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
-}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Aspect Ratio Calculator","url":"https://westcrestmedia.in/tools/aspect-ratio-calculator/","description":"Calculate and convert aspect ratios for video, social media, and design. Free tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Aspect Ratio Calculator","item":"https://westcrestmedia.in/tools/aspect-ratio-calculator/"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Aspect Ratio Calculator — Westcrest Media","url":"https://westcrestmedia.in/tools/aspect-ratio-calculator/","description":"Calculate and convert aspect ratios for video, photo and social media formats instantly.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Aspect Ratio Calculator","item":"https://westcrestmedia.in/tools/aspect-ratio-calculator/"}]}}
 </script>
 </head>
 <body>
@@ -783,9 +883,9 @@
     <button class="unit-btn" data-unit="%">%</button>
   </div>
 
-  <!-- INPUT CARDS -->
+  <!-- INPUT + PREVIEW GRID -->
   <div class="main-grid">
-    <!-- WIDTH INPUT -->
+    <!-- DIMENSIONS INPUT -->
     <div class="card">
       <p class="card-title">Dimensions</p>
       <div class="input-row">
@@ -813,8 +913,8 @@
       </div>
     </div>
 
-    <!-- VISUAL PREVIEW -->
-    <div class="card">
+    <!-- VISUAL PREVIEW — on mobile this appears on top via column-reverse -->
+    <div class="card" id="previewCard">
       <p class="card-title">Preview</p>
       <div class="preview-stage">
         <div class="preview-box" id="previewBox">
@@ -879,7 +979,9 @@
   <div class="sizes-card">
     <div class="sizes-header">
       <p class="card-title" style="margin:0">Common Standard Sizes</p>
+      <button id="sizeToggleBtn" onclick="toggleSizesTable()" style="display:none;font-family:'DM Mono',monospace;font-size:11px;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.3);color:#c8a96e;padding:5px 12px;border-radius:20px;cursor:pointer;">Show ▾</button>
     </div>
+    <div id="sizesTableWrap">
     <table class="sizes-table">
       <thead>
         <tr>
@@ -891,12 +993,122 @@
       </thead>
       <tbody id="sizesBody"></tbody>
     </table>
+    </div>
   </div>
 
   <div class="tool-footer">
-    Built for Westcrest Website · All calculations run in-browser
+    Built for Westcrest Media · All calculations run in-browser
   </div>
+
 </div>
+
+<!-- HOW IT WORKS + FAQ + EXPLORE -->
+<style>
+.wc-section{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem}
+.wc-sec-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#c8a96e;margin-bottom:.5rem}
+.wc-sec-heading{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;margin-bottom:2rem;color:#f5f0e8}
+.wc-sec-heading em{font-style:italic;color:#c8a96e}
+.wc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:580px){.wc-steps{grid-template-columns:1fr}}
+.wc-step{background:#16161e;border:1px solid rgba(200,169,110,0.22);border-radius:14px;padding:1.4rem}
+.wc-step-n{font-size:11px;font-weight:700;letter-spacing:.1em;color:#c8a96e;margin-bottom:.6rem}
+.wc-step h4{font-size:14px;font-weight:600;margin-bottom:.4rem;color:#f5f0e8}
+.wc-step p{font-size:13px;color:rgba(245,240,232,0.55);line-height:1.55;font-weight:300}
+.wc-faq-item{border-bottom:1px solid rgba(245,240,232,0.12)}
+.wc-faq-q{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;cursor:pointer;font-size:14px;font-weight:500;gap:1rem;color:#f5f0e8}
+.wc-faq-q svg{width:15px;height:15px;fill:none;stroke:rgba(245,240,232,0.55);stroke-width:2;stroke-linecap:round;flex-shrink:0;transition:transform .2s}
+.wc-faq-item.open .wc-faq-q svg{transform:rotate(180deg)}
+.wc-faq-a{font-size:13px;color:rgba(245,240,232,0.55);line-height:1.6;font-weight:300;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s}
+.wc-faq-item.open .wc-faq-a{max-height:180px;padding-bottom:.9rem}
+.wc-tool-card{display:flex;align-items:center;gap:10px;background:#16161e;border:1px solid rgba(200,169,110,0.22);border-radius:14px;padding:12px 14px;transition:all .2s;text-decoration:none}
+.wc-tool-card:hover{border-color:#c8a96e;transform:translateY(-2px)}
+.wc-tool-icon{font-size:1.5rem;flex-shrink:0}
+.wc-tool-name{font-size:12px;font-weight:700;color:#f5f0e8;margin-bottom:2px;letter-spacing:.03em}
+.wc-tool-desc{font-size:11px;color:rgba(245,240,232,0.55);line-height:1.4}
+.wc-tool-arrow{margin-left:auto;font-size:14px;color:#c8a96e;flex-shrink:0;transition:transform .2s}
+.wc-tool-card:hover .wc-tool-arrow{transform:translateX(3px)}
+@media(max-width:700px){.wc-section div[style*="repeat(4"]{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:400px){.wc-section div[style*="repeat(4"]{grid-template-columns:1fr!important}}
+</style>
+
+<!-- HOW IT WORKS -->
+<section class="wc-section" style="padding-top:3rem;">
+  <p class="wc-sec-tag">Simple Process</p>
+  <h2 class="wc-sec-heading">How It <em>Works</em></h2>
+  <div class="wc-steps">
+    <div class="wc-step"><p class="wc-step-n">01</p><h4>Enter Dimensions</h4><p>Type your width and height — or pick a preset like 16:9, 1:1, or 9:16 to auto-fill instantly.</p></div>
+    <div class="wc-step"><p class="wc-step-n">02</p><h4>See Results Instantly</h4><p>Get the simplified ratio, decimal value, width percentage, total pixels, and a live visual preview — all updated in real time.</p></div>
+    <div class="wc-step"><p class="wc-step-n">03</p><h4>Scale to Any Size</h4><p>Use the Scale Calculator to find the correct width or height for any new size, keeping your ratio perfectly locked.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wc-section" style="padding-top:0;">
+  <p class="wc-sec-tag">Questions</p>
+  <h2 class="wc-sec-heading">Frequently <em>Asked</em></h2>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What is an aspect ratio? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">An aspect ratio is the proportional relationship between a frame's width and height, expressed as two numbers separated by a colon (e.g. 16:9). It defines the shape of the image regardless of its actual pixel size.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What aspect ratio should I use for YouTube? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">YouTube recommends 16:9 for standard videos (1920×1080 or 3840×2160 for 4K). For Shorts, use 9:16 (1080×1920). Use the presets above to auto-fill these values instantly.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">How do I keep the same ratio when resizing? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">Enable the "Lock aspect ratio" toggle, then change either the width or height — the other dimension will update automatically to maintain your ratio. Or use the Scale Calculator for any target size.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What's the difference between 16:9 and 1.78:1? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">They're the same ratio expressed differently. 16:9 is the simplified whole-number form, while 1.78:1 (or 1.7778) is the decimal equivalent. This tool shows both — use whichever your software requires.</div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="wc-section" style="padding-top:0;padding-bottom:2rem;">
+  <p class="wc-sec-tag">More Free Tools</p>
+  <h2 class="wc-sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🎬</div>
+      <div><div class="wc-tool-name">Thumbnail Maker</div><div class="wc-tool-desc">Create YouTube & social thumbnails.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-converter/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🖼️</div>
+      <div><div class="wc-tool-name">Image Converter</div><div class="wc-tool-desc">Convert JPG, PNG, WEBP & more.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-compressor/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">⚡</div>
+      <div><div class="wc-tool-name">Image Compressor</div><div class="wc-tool-desc">Compress images without quality loss.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/lut-preview/" style="text-decoration:none;" class="wc-tool-card">
+      <div class="wc-tool-icon">🎞️</div>
+      <div><div class="wc-tool-name">LUT Preview</div><div class="wc-tool-desc">Preview cinematic colour grades.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:#c8a96e;text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
+
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
 
 <script>
 // ── DATA ─────────────────────────────────────────────
@@ -1148,6 +1360,28 @@ document.getElementById('inputW').value = 1920;
 document.getElementById('inputH').value = 1080;
 calculate();
 highlightPresets(1920, 1080);
+
+// ── MOBILE SIZES TABLE TOGGLE ─────────────────────────
+function toggleSizesTable() {
+  const wrap = document.getElementById('sizesTableWrap');
+  const btn  = document.getElementById('sizeToggleBtn');
+  const open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? 'Show ▾' : 'Hide ▴';
+}
+
+// On mobile: hide table by default, show toggle button
+if (window.innerWidth <= 640) {
+  document.getElementById('sizesTableWrap').style.display = 'none';
+  document.getElementById('sizeToggleBtn').style.display  = 'block';
+}
+window.addEventListener('resize', () => {
+  const isMob = window.innerWidth <= 640;
+  const btn   = document.getElementById('sizeToggleBtn');
+  const wrap  = document.getElementById('sizesTableWrap');
+  btn.style.display = isMob ? 'block' : 'none';
+  if (!isMob) wrap.style.display = 'block';
+});
 </script>
 </body>
 </html>
