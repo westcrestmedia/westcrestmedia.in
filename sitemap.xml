@@ -1,63 +1,69 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://westcrestmedia.in/</loc>
-    <lastmod>2026-06-03</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/color-palette</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/color-palette/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/background-remover</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/background-remover/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/image-converter</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/image-converter/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/font-pairing-tool</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/font-pairing-tool/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/image-prompt</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/image-prompt/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/video-prompt</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/video-prompt/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/lut-preview</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/lut-preview/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/thumbnail-maker</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/thumbnail-maker/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://westcrestmedia.in/tools/aspect-ratio-calculator</loc>
-    <lastmod>2026-06-03</lastmod>
+    <loc>https://westcrestmedia.in/tools/aspect-ratio-calculator/</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://westcrestmedia.in/tools/image-compressor/</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
