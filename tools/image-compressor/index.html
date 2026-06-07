@@ -8,6 +8,11 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="canonical" href="https://westcrestmedia.in/tools/image-compressor/">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-compressor/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-compressor/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-compressor/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-compressor/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-compressor/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
@@ -15,7 +20,24 @@
 <meta property="og:title" content="Universal Image Compressor — Convert &amp; Compress Any Format | Westcrest Media" />
 <meta property="og:description" content="Compress any image format: JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW &amp; more. Choose output format. Free, private, no upload." />
 <meta property="og:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:locale:alternate" content="en_CA" />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Universal Image Compressor — Westcrest Media" />
+<meta name="twitter:description" content="Compress any image format: JPG, PNG, WEBP, HEIC, RAW & more. Free, private, no upload." />
+<meta name="twitter:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+<meta name="keywords" content="image compressor, compress image, reduce image size, webp compressor, png compressor, jpg compressor, batch image compressor, free image compressor" />
+<meta name="theme-color" content="#C9A84C" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Universal Image Compressor","url":"https://westcrestmedia.in/tools/image-compressor/","description":"Compress any image format: JPG, PNG, WEBP, GIF, HEIC, RAW & more. Free, private, no upload.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Compressor","item":"https://westcrestmedia.in/tools/image-compressor/"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Universal Image Compressor — Convert & Compress Any Format | Westcrest Media","url":"https://westcrestmedia.in/tools/image-compressor/","description":"Compress any image format: JPG, PNG, WEBP, GIF, BMP, TIFF, AVIF, HEIC, SVG, RAW & more. Free, private, no upload.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Compressor","item":"https://westcrestmedia.in/tools/image-compressor/"}]}}
+</script>
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
@@ -47,6 +69,7 @@
   --green-dim: rgba(111,191,111,0.12);
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
+html{ overflow-x:hidden; }
 body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; overflow-x:hidden; }
 
 .nav{ position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:60px; background:rgba(8,8,8,0.97); border-bottom:1px solid var(--gold-border); backdrop-filter:blur(14px); }
@@ -66,7 +89,7 @@ body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; 
 .pills{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
 .pill{ background:var(--dark3); border:1px solid var(--faint); color:var(--muted); font-size:10px; padding:3px 11px; border-radius:99px; font-weight:500; }
 
-.tool-wrap{ max-width:1200px; margin:0 auto; padding:0 1.25rem 3rem; }
+.tool-wrap{ max-width:1200px; margin:0 auto; padding:0 1.25rem 3rem; overflow:hidden; }
 .drop-zone{ background:var(--dark2); border:2px dashed var(--gold-border); border-radius:var(--radius); padding:3rem 2rem; text-align:center; cursor:pointer; transition:all .2s; margin-bottom:1.5rem; }
 .drop-zone.drag-over{ border-color:var(--gold); background:rgba(200,169,110,.04); }
 .upload-icon{ width:54px; height:54px; background:var(--gold-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; }
@@ -79,7 +102,7 @@ body{ background:var(--dark); color:var(--text); font-family:'Syne',sans-serif; 
 .format-tag{ background:var(--dark4); border:1px solid var(--faint); color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.05em; padding:3px 9px; border-radius:4px; }
 #file-in{ display:none; }
 
-.control-panel{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
+.control-panel{ background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1rem 1.2rem; margin-bottom:1.5rem; display:flex; align-items:center; flex-wrap:wrap; gap:1rem; justify-content:space-between; overflow:hidden; }
 .control-group{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 .control-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); }
 .output-format-select{ background:var(--dark3); border:1.5px solid var(--gold-border); color:var(--text); font-family:'DM Sans',sans-serif; font-size:12px; padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; }
@@ -171,10 +194,6 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:non
 .wc-bottom-nav a{ display:flex; align-items:center; gap:5px; color:rgba(220,210,195,0.7); text-decoration:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border-radius:99px; transition:all 0.18s; white-space:nowrap; }
 .wc-bottom-nav a:hover{ color:#c8a96e; background:rgba(200,169,110,0.1); }
 .wc-bn-divider{ width:1px; height:16px; background:rgba(200,169,110,0.2); }
-
-footer{ border-top:1px solid rgba(200,169,110,0.15); padding:1.25rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-top:2rem; margin-bottom:80px; }
-footer a{ color:#6a6258; text-decoration:none; font-size:12px; transition:color .2s; }
-footer a:hover{ color:var(--gold); }
 </style>
 </head>
 <body>
@@ -273,20 +292,6 @@ footer a:hover{ color:var(--gold); }
   </div>
 </section>
 
-<!-- OTHER TOOLS -->
-<section class="section" style="padding-bottom:2rem;">
-  <p class="sec-tag">More Free Tools</p>
-  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;">
-    <a href="https://westcrestmedia.in/tools/background-remover/" class="other-tool-card"><div class="other-tool-icon">✂️</div><div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div><span class="other-tool-arrow">→</span></a>
-    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="other-tool-card"><div class="other-tool-icon">🎬</div><div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div><span class="other-tool-arrow">→</span></a>
-    <a href="https://westcrestmedia.in/tools/color-palette/" class="other-tool-card"><div class="other-tool-icon">🎨</div><div><div class="other-tool-name">Color Palette</div><div class="other-tool-desc">Extract palettes from images.</div></div><span class="other-tool-arrow">→</span></a>
-    <a href="https://westcrestmedia.in/tools/image-converter/" class="other-tool-card"><div class="other-tool-icon">🖼️</div><div><div class="other-tool-name">Image Converter</div><div class="other-tool-desc">Convert any image format to another.</div></div><span class="other-tool-arrow">→</span></a>
-    <a href="https://westcrestmedia.in/tools/lut-preview/" class="other-tool-card"><div class="other-tool-icon">🎞️</div><div><div class="other-tool-name">LUT Preview Tool</div><div class="other-tool-desc">Preview .cube LUT files on footage.</div></div><span class="other-tool-arrow">→</span></a>
-    <a href="https://westcrestmedia.in/tools/image-prompt/" class="other-tool-card"><div class="other-tool-icon">🎯</div><div><div class="other-tool-name">Image Prompt Generator</div><div class="other-tool-desc">AI prompts for Midjourney &amp; DALL·E.</div></div><span class="other-tool-arrow">→</span></a>
-  </div>
-</section>
-
 <!-- FAQ -->
 <section class="section" style="padding-top:0;">
   <p class="sec-tag">Questions</p>
@@ -297,7 +302,20 @@ footer a:hover{ color:var(--gold); }
   <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I batch compress different formats? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Absolutely! Mix any formats — upload JPG, PNG, RAW, HEIC all together. They all get compressed to your chosen output format.</div></div>
 </section>
 
-<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+<!-- OTHER TOOLS -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="other-tool-card"><div class="other-tool-icon">✂️</div><div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="other-tool-card"><div class="other-tool-icon">🎬</div><div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="other-tool-card"><div class="other-tool-icon">🎨</div><div><div class="other-tool-name">Color Palette Generator</div><div class="other-tool-desc">Extract beautiful palettes from any image.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" class="other-tool-card"><div class="other-tool-icon">🎲</div><div><div class="other-tool-name">Image Prompt Generator</div><div class="other-tool-desc">AI prompts for Midjourney &amp; DALL·E.</div></div><span class="other-tool-arrow">→</span></a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
   <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
   <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
     <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
