@@ -19,31 +19,35 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/thumbnail-maker">
+<link rel="canonical" href="https://westcrestmedia.in/tools/thumbnail-maker/">
 <!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/thumbnail-maker">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/thumbnail-maker">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/thumbnail-maker">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/thumbnail-maker">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/thumbnail-maker">
+<link rel="alternate" hreflang="en-gb"      href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<link rel="alternate" hreflang="en-us"      href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<link rel="alternate" hreflang="en-ca"      href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<link rel="alternate" hreflang="en"         href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<link rel="alternate" hreflang="x-default"  href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<meta name="keywords" content="thumbnail maker, YouTube thumbnail maker, free thumbnail creator, social media thumbnail, online thumbnail generator, YouTube thumbnail design, thumbnail editor">
+<meta name="theme-color" content="#111118">
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/thumbnail-maker">
-<meta property="og:title"       content="Video Thumbnail Maker — Westcrest Media">
-<meta property="og:description" content="Create professional YouTube and social media thumbnails in your browser. No upload needed.">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/thumbnail-maker/">
+<meta property="og:title"       content="Free Thumbnail Maker — YouTube & Social Media | Westcrest Media">
+<meta property="og:description" content="Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD. No upload needed.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta property="og:locale"      content="en_GB">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:locale:alternate" content="en_CA">
 <!-- Twitter Card -->
 <meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Video Thumbnail Maker — Westcrest Media">
-<meta name="twitter:description" content="Create professional YouTube and social media thumbnails in your browser. No upload needed.">
+<meta name="twitter:site"        content="@WestcrestMedia">
+<meta name="twitter:title"       content="Free Thumbnail Maker — YouTube & Social Media | Westcrest Media">
+<meta name="twitter:description" content="Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD.">
 <meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Rajdhani:wght@600;700&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
 
   :root {
     --bg: #111118;
@@ -457,50 +461,109 @@
 }
 
 
-/* ── THUMBNAIL MAKER MOBILE FIX ── */
+/* ── THUMBNAIL MAKER MOBILE UI ── */
 @media (max-width: 768px) {
   html, body { overflow-x: hidden; }
+
+  /* wc-nav — compact, no cut */
+  .wc-nav { padding: 0 1rem !important; height: 50px !important; }
+  .wc-nav-logo { font-size: 0.95rem !important; letter-spacing: 0.12em !important; }
+  .wc-nav-logo img { height: 20px !important; }
+  .wc-nav-back { font-size: 0.55rem !important; }
+
+  /* Tool header — icon-only buttons, no overflow */
+  .header { padding: 0 10px !important; height: 46px !important; gap: 6px !important; }
+  .logo { font-size: 0.8rem !important; letter-spacing: 0.05em !important; white-space: nowrap; }
+  .logo span { display: none !important; }
+  .header-actions { gap: 4px !important; flex-shrink: 0; }
+  .header-actions .btn { padding: 5px 8px !important; font-size: 10px !important; white-space: nowrap; }
+
+  /* Platform bar — horizontal scroll, no wrap */
+  .platform-bar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 7px 10px !important;
+    gap: 6px !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .platform-bar::-webkit-scrollbar { display: none; }
+  .platform-label { display: none !important; }
+  .plat-btn { font-size: 11px !important; padding: 5px 11px !important; flex-shrink: 0 !important; }
+  .custom-size { flex-shrink: 0 !important; }
+  .custom-size input { width: 48px !important; }
+
+  /* MAIN — canvas FIRST (order trick) */
   .main {
     flex-direction: column !important;
     height: auto !important;
     overflow: visible !important;
   }
+
+  /* Canvas — order 1, sabse upar, scaled */
+  .canvas-area {
+    order: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 180px !important;
+    padding: 10px !important;
+    overflow: hidden !important;
+    background: #06060a !important;
+    border-bottom: 1px solid var(--border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .canvas-wrapper { transform-origin: top center !important; }
+  .zoom-bar { bottom: 8px !important; padding: 4px 10px !important; gap: 6px !important; font-size: 11px !important; }
+  .zoom-btn { width: 22px !important; height: 22px !important; font-size: 13px !important; }
+
+  /* Left panel — order 2, tabs + scrollable content */
   .left-panel {
+    order: 2 !important;
     width: 100% !important;
     min-width: unset !important;
     border-right: none !important;
-    border-bottom: 1px solid var(--border);
-    max-height: 50vh;
-    overflow-y: auto;
+    border-top: 1px solid var(--border) !important;
+    border-bottom: 1px solid var(--border) !important;
+    max-height: 40vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
-  .canvas-area {
+  .panel-tabs { flex-shrink: 0 !important; }
+  .tab { font-size: 10px !important; padding: 9px 4px !important; }
+  .panel-content { flex: 1 !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; padding: 10px !important; }
+
+  /* Add buttons — bigger touch targets */
+  .add-btn { padding: 11px 6px !important; font-size: 10px !important; }
+  .add-btn .icon { font-size: 20px !important; }
+  .form-input { padding: 8px 10px !important; font-size: 12px !important; }
+
+  /* Right panel — order 3, templates + properties */
+  .right-panel {
+    order: 3 !important;
     width: 100% !important;
-    height: auto !important;
-    min-height: 200px;
-    overflow-x: auto !important;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 12px;
+    min-width: unset !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border) !important;
+    padding: 12px !important;
+    max-height: 35vh !important;
+    overflow-y: auto !important;
   }
-  .canvas-wrapper {
-    max-width: 100% !important;
-    overflow: visible !important;
-  }
-  #mainCanvas {
-    max-width: 100% !important;
-    height: auto !important;
-    transform-origin: top left;
-  }
-  .platform-bar { flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
-  .plat-btn { font-size: 11px !important; padding: 4px 10px !important; }
-  .header { padding: 0 12px !important; }
-  .header-right { flex-wrap: wrap; gap: 4px !important; }
+  .template-grid { grid-template-columns: repeat(3,1fr) !important; }
+
+  .toast { bottom: 70px !important; right: 10px !important; }
+  body { padding-bottom: 80px !important; }
   .wc-bottom-nav { bottom: 0.5rem; }
 }
-@media (max-width: 480px) {
-  .left-panel { max-height: 45vh; }
-  .canvas-area { padding: 8px; }
+
+@media (max-width: 420px) {
+  .header-actions .btn { font-size: 9px !important; padding: 4px 6px !important; }
+  .left-panel { max-height: 38vh !important; }
+  .right-panel { max-height: 30vh !important; }
+  .template-grid { grid-template-columns: repeat(2,1fr) !important; }
 }
 
 </style>
@@ -509,20 +572,33 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "Thumbnail Maker",
-  "url": "https://westcrestmedia.in/tools/thumbnail-maker",
+  "url": "https://westcrestmedia.in/tools/thumbnail-maker/",
   "description": "Create eye-catching YouTube and social media thumbnails free. Tool by Westcrest Media.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+  "creator": { "@type": "Organization", "name": "Westcrest Media", "url": "https://westcrestmedia.in" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home",  "item": "https://westcrestmedia.in/" },
+    { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://westcrestmedia.in/tools/" },
+    { "@type": "ListItem", "position": 3, "name": "Thumbnail Maker", "item": "https://westcrestmedia.in/tools/thumbnail-maker/" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Free Thumbnail Maker — YouTube & Social Media",
+  "url": "https://westcrestmedia.in/tools/thumbnail-maker/",
+  "description": "Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD.",
+  "publisher": { "@type": "Organization", "name": "Westcrest Media", "url": "https://westcrestmedia.in" }
 }
 </script>
 </head>
@@ -836,6 +912,131 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
+
+<!-- HOW IT WORKS + FAQ + EXPLORE — same style as Font Pairing Tool -->
+<style>
+.wc-section { width:100%; max-width:1200px; margin:0 auto; padding:0 2.5rem 4rem; }
+.wc-sec-tag { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#c8a96e; margin-bottom:.5rem; display:block; padding:0; }
+.wc-sec-heading { font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; color:#f5f0e8; }
+.wc-sec-heading em { font-style:italic; color:#c8a96e; }
+.wc-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media(max-width:580px){ .wc-steps { grid-template-columns:1fr; } }
+.wc-step { background:#16161e; border:1px solid rgba(200,169,110,0.22); border-radius:14px; padding:1.4rem; }
+.wc-step-n { font-size:11px; font-weight:700; letter-spacing:.1em; color:#c8a96e; margin-bottom:.6rem; }
+.wc-step h4 { font-size:14px; font-weight:600; margin-bottom:.4rem; color:#f5f0e8; }
+.wc-step p { font-size:13px; color:rgba(245,240,232,0.55); line-height:1.55; font-weight:300; }
+.wc-faq-item { border-bottom:1px solid rgba(245,240,232,0.12); }
+.wc-faq-q { display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; font-size:14px; font-weight:500; gap:1rem; color:#f5f0e8; }
+.wc-faq-q svg { width:15px; height:15px; fill:none; stroke:rgba(245,240,232,0.55); stroke-width:2; stroke-linecap:round; flex-shrink:0; transition:transform .2s; }
+.wc-faq-item.open .wc-faq-q svg { transform:rotate(180deg); }
+.wc-faq-a { font-size:13px; color:rgba(245,240,232,0.55); line-height:1.6; font-weight:300; max-height:0; overflow:hidden; transition:max-height .3s ease,padding .2s; }
+.wc-faq-item.open .wc-faq-a { max-height:160px; padding-bottom:.9rem; }
+.wc-tool-card { display:flex; align-items:center; gap:10px; background:#16161e; border:1px solid rgba(200,169,110,0.22); border-radius:14px; padding:12px 14px; transition:all .2s; text-decoration:none; }
+.wc-tool-card:hover { border-color:#c8a96e; transform:translateY(-2px); }
+.wc-tool-icon { font-size:1.5rem; flex-shrink:0; }
+.wc-tool-name { font-size:12px; font-weight:700; color:#f5f0e8; margin-bottom:2px; letter-spacing:.03em; }
+.wc-tool-desc { font-size:11px; color:rgba(245,240,232,0.55); line-height:1.4; }
+.wc-tool-arrow { margin-left:auto; font-size:14px; color:#c8a96e; flex-shrink:0; transition:transform .2s; }
+.wc-tool-card:hover .wc-tool-arrow { transform:translateX(3px); }
+.wc-explore-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin-bottom:1.2rem; }
+@media(max-width:700px){ .wc-explore-grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:400px){ .wc-explore-grid { grid-template-columns:1fr; } }
+</style>
+
+<!-- HOW IT WORKS -->
+<section class="wc-section" style="padding-top:3rem;">
+  <p class="wc-sec-tag">Simple Process</p>
+  <h2 class="wc-sec-heading">How It <em>Works</em></h2>
+  <div class="wc-steps">
+    <div class="wc-step">
+      <p class="wc-step-n">01</p>
+      <h4>Choose Your Platform</h4>
+      <p>Pick from YouTube, Instagram, Twitter or Facebook presets — or enter a custom size. Canvas adjusts instantly.</p>
+    </div>
+    <div class="wc-step">
+      <p class="wc-step-n">02</p>
+      <h4>Design Your Thumbnail</h4>
+      <p>Add text layers, upload images, drop shapes and pick from gradient presets. Drag, resize and style each element freely.</p>
+    </div>
+    <div class="wc-step">
+      <p class="wc-step-n">03</p>
+      <h4>Export in HD</h4>
+      <p>Download as PNG or JPG at full resolution. No account, no watermark — everything runs locally in your browser.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wc-section" style="padding-top:0;padding-bottom:4rem;">
+  <p class="wc-sec-tag">Questions</p>
+  <h2 class="wc-sec-heading">Frequently <em>Asked</em></h2>
+  <div style="border-top:1px solid rgba(245,240,232,0.12);">
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">Is the thumbnail maker free to use? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">Yes — completely free, no account required. Everything runs in your browser with no server upload.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What image formats can I export? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">You can export as PNG (lossless) or JPG (smaller file size). Both export at the full canvas resolution you set.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">What size should a YouTube thumbnail be? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">YouTube recommends 1280×720 px (HD) or 1920×1080 px (Full HD). Both presets are available in the platform bar above.</div>
+  </div>
+  <div class="wc-faq-item" onclick="this.classList.toggle('open')">
+    <div class="wc-faq-q">Are my images uploaded to a server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="wc-faq-a">No — images never leave your device. All editing happens locally in your browser using the Canvas API.</div>
+  </div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="wc-section" style="padding-top:0;padding-bottom:2rem;">
+  <p class="wc-sec-tag">More Free Tools</p>
+  <h2 class="wc-sec-heading">Explore Our <em>Tools</em></h2>
+  <div class="wc-explore-grid">
+    <a href="https://westcrestmedia.in/tools/image-converter/" class="wc-tool-card">
+      <div class="wc-tool-icon">🖼️</div>
+      <div><div class="wc-tool-name">Image Converter</div><div class="wc-tool-desc">Convert JPG, PNG, WEBP, HEIC & more.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-compressor/" class="wc-tool-card">
+      <div class="wc-tool-icon">⚡</div>
+      <div><div class="wc-tool-name">Image Compressor</div><div class="wc-tool-desc">Reduce file size fast, no quality loss.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="wc-tool-card">
+      <div class="wc-tool-icon">✂️</div>
+      <div><div class="wc-tool-name">Background Remover</div><div class="wc-tool-desc">Remove BG from images in seconds.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/lut-preview/" class="wc-tool-card">
+      <div class="wc-tool-icon">🎞️</div>
+      <div><div class="wc-tool-name">LUT Preview</div><div class="wc-tool-desc">Preview colour grades on your footage.</div></div>
+      <span class="wc-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:#c8a96e;text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0;">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
 
 <script>
 const canvas = document.getElementById('mainCanvas');
@@ -1615,21 +1816,21 @@ window.addEventListener('load', () => {
 
 // Mobile canvas auto-scale
 function fitCanvasToMobile() {
-  const isMobile = window.innerWidth <= 768;
-  if (!isMobile) return;
   const wrapper = document.getElementById('canvasWrapper');
-  const area = document.querySelector('.canvas-area');
+  const area    = document.querySelector('.canvas-area');
   if (!wrapper || !area) return;
-  const availW = area.clientWidth - 24;
-  const canvasNativeW = canvasW;
-  if (canvasNativeW > availW) {
-    const scale = availW / canvasNativeW;
-    wrapper.style.transformOrigin = 'top left';
-    wrapper.style.transform = 'scale(' + scale + ')';
-    wrapper.style.width = canvasNativeW + 'px';
-    area.style.height = (canvasH * scale + 24) + 'px';
+  const isMobile = window.innerWidth <= 768;
+  if (!isMobile) { wrapper.style.transform = ''; area.style.height = ''; return; }
+  const availW = area.clientWidth - 20;
+  if (canvasW > availW) {
+    const sc = availW / canvasW;
+    wrapper.style.transformOrigin = 'top center';
+    wrapper.style.transform = 'scale(' + sc + ')';
+    wrapper.style.width = canvasW + 'px';
+    area.style.height = (canvasH * sc + 20) + 'px';
   } else {
     wrapper.style.transform = '';
+    area.style.height = '';
   }
 }
 window.addEventListener('resize', fitCanvasToMobile);
