@@ -635,7 +635,7 @@ input[type=file]{display:none}
   .wc-bottom-nav { display: none !important; }
 
   /* Explore tools — stack to 1 col on very small */
-  .wc-explore-grid { grid-template-columns: 1fr 1fr !important; }
+  .wc-explore-grid { grid-template-columns: repeat(2,1fr) !important; }
 }
 
 @media (max-width: 400px) {
@@ -976,7 +976,7 @@ input[type=file]{display:none}
 <section class="wc-section" style="padding-top:0;padding-bottom:2rem;">
   <p class="wc-sec-tag">More Free Tools</p>
   <h2 class="wc-sec-heading">Explore Our <em>Tools</em></h2>
-  <div class="wc-explore-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.2rem;">
+  <div class="wc-explore-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.2rem;">
     <a href="https://westcrestmedia.in/tools/background-remover/" style="text-decoration:none;" class="wc-tool-card">
       <div class="wc-tool-icon">✂️</div>
       <div><div class="wc-tool-name">Background Remover</div><div class="wc-tool-desc">Remove backgrounds from any photo instantly.</div></div>
