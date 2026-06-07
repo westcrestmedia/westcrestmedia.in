@@ -586,6 +586,7 @@
   body { padding-bottom: 80px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
 
@@ -648,6 +649,11 @@
     <input type="file" id="file-input" multiple accept="image/*,.heic,.heif,.wbmp">
   </div>
 
+  <!-- PRO TIP -->
+  <div id="pro-tip" style="display:none;background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.15);border-radius:8px;padding:10px 16px;margin-bottom:1rem;font-size:12px;color:rgba(245,240,232,0.5);line-height:1.6;">
+    💡 <strong style="color:rgba(245,240,232,0.7);">How to download:</strong> After converting, each file gets its own <strong style="color:rgba(245,240,232,0.7);">↓ Download</strong> button — or use <strong style="color:rgba(245,240,232,0.7);">Download All</strong> to save them one by one, or <strong style="color:rgba(245,240,232,0.7);">Download ZIP</strong> to get everything in a single zip file.
+  </div>
+
   <!-- SETTINGS -->
   <div class="settings-panel">
     <div class="setting-group">
@@ -680,7 +686,8 @@
     <div class="file-count"><span id="file-count-num">0</span> files selected</div>
     <div class="action-btns">
       <button id="clear-btn" onclick="clearAll()">Clear</button>
-      <button id="download-all-btn" onclick="downloadAll()">↓ Download All</button>
+      <button id="download-all-btn" onclick="downloadAll()" style="display:none;">↓ Download All</button>
+      <button id="download-zip-btn" onclick="downloadZip()" style="display:none;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:13px;font-weight:600;padding:9px 18px;border-radius:6px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">↓ Download ZIP</button>
       <button id="convert-btn" onclick="convertAll()">Convert</button>
     </div>
   </div>
@@ -833,11 +840,13 @@ dropZone.addEventListener('click', e => {
 document.getElementById('file-input').addEventListener('change', e => handleFiles([...e.target.files]));
 
 function handleFiles(newFiles) {
-  const imageFiles = newFiles.filter(f => f.type.startsWith('image/'));
+  const imageFiles = newFiles.filter(f => f.type.startsWith('image/') || f.name.toLowerCase().match(/\.(heic|heif|wbmp)$/));
   files = [...files, ...imageFiles];
   convertedBlobs = {};
   renderFileList();
   updateActionBar();
+  const tip = document.getElementById('pro-tip');
+  if (tip) tip.style.display = files.length > 0 ? 'block' : 'none';
 }
 
 function updateActionBar() {
@@ -857,9 +866,12 @@ function updateActionBar() {
   // Smart button text
   convertBtn.textContent = files.length === 1 ? 'Convert' : 'Convert All';
 
-  // Show Download All only if conversions done
+  // Show Download All + ZIP only if conversions done
   const doneCount = Object.keys(convertedBlobs).length;
+  const showDl = doneCount > 0 && outputFormat !== 'pdf';
   dlBtn.style.display = doneCount > 0 ? 'block' : 'none';
+  const zipBtn = document.getElementById('download-zip-btn');
+  if (zipBtn) zipBtn.style.display = (showDl && doneCount > 1) ? 'block' : 'none';
 }
 
 function renderFileList() {
@@ -995,7 +1007,7 @@ function convertImage(file, index) {
           if (existing) existing.remove();
           const dlBtn = document.createElement('button');
           dlBtn.className = 'dl-btn';
-          dlBtn.textContent = '↓ Save';
+          dlBtn.textContent = '↓ Download';
           dlBtn.onclick = () => downloadFile(index);
           item.appendChild(dlBtn);
           resolve();
@@ -1029,7 +1041,7 @@ function convertImage(file, index) {
                   if (ex) ex.remove();
                   const dlBtn = document.createElement('button');
                   dlBtn.className = 'dl-btn';
-                  dlBtn.textContent = '↓ Save';
+                  dlBtn.textContent = '↓ Download';
                   dlBtn.onclick = () => downloadFile(index);
                   item.appendChild(dlBtn);
                   URL.revokeObjectURL(url);
@@ -1171,6 +1183,30 @@ function downloadAll() {
   Object.keys(convertedBlobs).forEach(idx => {
     setTimeout(() => downloadFile(idx), idx * 200);
   });
+}
+
+async function downloadZip() {
+  const zip = new JSZip();
+  const keys = Object.keys(convertedBlobs);
+  if (keys.length === 0) return;
+
+  const zipBtn = document.getElementById('download-zip-btn');
+  zipBtn.textContent = 'Preparing ZIP...';
+  zipBtn.disabled = true;
+
+  for (const idx of keys) {
+    const { blob, name } = convertedBlobs[idx];
+    zip.file(name, blob);
+  }
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(zipBlob);
+  a.download = 'converted-images.zip';
+  a.click();
+
+  zipBtn.textContent = '↓ Download ZIP';
+  zipBtn.disabled = false;
 }
 
 function clearAll() {
