@@ -19,16 +19,16 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/color-palette">
+<link rel="canonical" href="https://westcrestmedia.in/tools/color-palette/">
 <!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/color-palette">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/color-palette">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/color-palette">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/color-palette">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/color-palette">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/color-palette/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/color-palette/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/color-palette/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/color-palette/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/color-palette/">
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/color-palette">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/color-palette/">
 <meta property="og:title"       content="Color Palette Generator — Westcrest Media">
 <meta property="og:description" content="Generate beautiful color palettes for your brand, UI, or creative projects. Free tool by Westcrest Media.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
@@ -63,7 +63,7 @@
   --radius-sm: 8px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body { background: var(--dark); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
 /* NAV */
@@ -162,11 +162,7 @@ body { background: var(--dark); color: var(--text); font-family: 'Syne', sans-se
 .info-card h4 { font-size:13px; font-weight:600; margin-bottom:.4rem; color:var(--gold); }
 .info-card p { font-size:12px; color:var(--muted); line-height:1.55; }
 
-footer { border-top:1px solid var(--faint); padding:1.5rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-footer p { font-size:12px; color:var(--muted); }
-.footer-links { display:flex; gap:1.5rem; }
-.footer-links a { color:var(--muted); text-decoration:none; font-size:12px; transition:color .2s; }
-.footer-links a:hover { color:var(--gold); }
+/* footer handled inline */
 
 /* ── BOTTOM NAV BAR ── */
 .wc-bottom-nav {
@@ -217,25 +213,13 @@ footer p { font-size:12px; color:var(--muted); }
 
 </style>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Color Palette Generator",
-  "url": "https://westcrestmedia.in/tools/color-palette",
-  "description": "Generate beautiful color palettes for brand, UI, and creative projects. Free online tool by Westcrest Media.",
-  "applicationCategory": "DesignApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
-}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Color Palette Generator","url":"https://westcrestmedia.in/tools/color-palette/","description":"Generate beautiful color palettes for brand, UI, and creative projects. Free online tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Color Palette Generator","item":"https://westcrestmedia.in/tools/color-palette/"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Color Palette Generator — Free Tool | Westcrest Media","url":"https://westcrestmedia.in/tools/color-palette/","description":"Generate beautiful color palettes for your brand, UI, or creative projects. Free tool by Westcrest Media.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Color Palette Generator","item":"https://westcrestmedia.in/tools/color-palette/"}]}}
 </script>
 </head>
 <body>
@@ -312,6 +296,7 @@ footer p { font-size:12px; color:var(--muted); }
     <button class="export-btn" onclick="exportHEX()">Copy HEX List</button>
     <button class="export-btn" onclick="exportJSON()">Copy JSON</button>
     <button class="export-btn" onclick="exportSVG()">Download SVG</button>
+    <button class="export-btn" onclick="exportPNG()">Download PNG</button>
   </div>
 
   <!-- HISTORY -->
@@ -330,16 +315,112 @@ footer p { font-size:12px; color:var(--muted); }
     <div class="info-card"><h4>Tetradic</h4><p>Four colors forming a rectangle on the wheel. Rich palette — needs careful balance to not overwhelm.</p></div>
   </div>
 
-</div>
+</div><!-- /tool-wrap -->
 
-<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:1.25rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+<!-- SECTIONS CSS -->
+<style>
+.section { max-width:900px; margin:0 auto; padding:0 1.25rem 4rem; }
+.sec-heading { font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; }
+.sec-heading em { font-style:italic; color:var(--gold); }
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media(max-width:580px){ .steps { grid-template-columns:1fr; } }
+.step { background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:1.4rem; }
+.step-n { font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--gold); margin-bottom:.6rem; }
+.step h4 { font-size:14px; font-weight:600; margin-bottom:.4rem; }
+.step p { font-size:13px; color:var(--muted); line-height:1.55; font-weight:300; }
+.faq-item { border-bottom:1px solid var(--faint); }
+.faq-q { display:flex; justify-content:space-between; align-items:center; padding:1rem 0; cursor:pointer; font-size:14px; font-weight:500; gap:1rem; }
+.faq-q svg { width:15px; height:15px; fill:none; stroke:var(--muted); stroke-width:2; stroke-linecap:round; flex-shrink:0; transition:transform .2s; }
+.faq-item.open .faq-q svg { transform:rotate(180deg); }
+.faq-a { font-size:13px; color:var(--muted); line-height:1.6; font-weight:300; max-height:0; overflow:hidden; transition:max-height .3s ease,padding .2s; }
+.faq-item.open .faq-a { max-height:160px; padding-bottom:.9rem; }
+.other-tool-card { display:flex; align-items:center; gap:10px; background:var(--dark2); border:1px solid var(--gold-border); border-radius:var(--radius); padding:12px 14px; transition:all .2s; text-decoration:none; }
+.other-tool-card:hover { border-color:var(--gold); transform:translateY(-2px); }
+.other-tool-icon { font-size:1.5rem; flex-shrink:0; }
+.other-tool-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; letter-spacing:.03em; }
+.other-tool-desc { font-size:11px; color:var(--muted); line-height:1.4; }
+.other-tool-arrow { margin-left:auto; font-size:14px; color:var(--gold); flex-shrink:0; transition:transform .2s; }
+.other-tool-card:hover .other-tool-arrow { transform:translateX(3px); }
+</style>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:2rem;">
+  <p class="sec-tag">Simple Process</p>
+  <h2 class="sec-heading">How It <em>Works</em></h2>
+  <div class="steps">
+    <div class="step"><p class="step-n">01</p><h4>Pick a Base Color</h4><p>Enter any HEX code or use the color picker to choose your starting color.</p></div>
+    <div class="step"><p class="step-n">02</p><h4>Choose a Harmony</h4><p>Select from Complementary, Triadic, Analogous, Monochromatic, and more harmony rules.</p></div>
+    <div class="step"><p class="step-n">03</p><h4>Copy & Export</h4><p>Copy HEX, RGB, HSL or CSS variables. Export your palette as SVG or JSON instantly.</p></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What is a color harmony rule? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Color harmony rules are guidelines for combining colors that look visually pleasing. Complementary uses opposite colors for contrast, Analogous uses neighboring colors for calm, and Triadic uses evenly spaced colors for balance.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Can I use these palettes for commercial projects? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes! All generated palettes are completely free to use for personal and commercial projects — branding, UI design, print, web, anything.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">How do I export my palette? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Use the export buttons below the palette — copy as CSS Variables, HEX list, or JSON. You can also download the palette as an SVG file for use in design tools.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Does this tool save my palettes? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Your last 10 palettes are saved in the Recent Palettes section during your session. Nothing is uploaded to any server — everything stays in your browser.</div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="section" style="padding-top:0;padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/image-converter/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🖼️</div>
+      <div><div class="other-tool-name">Image Converter</div><div class="other-tool-desc">Convert JPG, PNG, WEBP, HEIC & more.</div></div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">✂️</div>
+      <div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎲</div>
+      <div><div class="other-tool-name">Image Prompt Generator</div><div class="other-tool-desc">AI prompts for Midjourney & DALL·E.</div></div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" style="text-decoration:none;" class="other-tool-card">
+      <div class="other-tool-icon">🎬</div>
+      <div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div>
+      <span class="other-tool-arrow">→</span>
+    </a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
   <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
   <div style="display:flex;gap:1.5rem;">
-    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
-    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
-    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;transition:color .2s" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
   </div>
 </footer>
+
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
 
 <div class="toast" id="toast"></div>
 
@@ -529,6 +610,38 @@ function exportSVG() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${currentPalette.length*w}" height="${h}">${rects}</svg>`;
   const blob = new Blob([svg],{type:'image/svg+xml'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='palette.svg'; a.click();
+}
+
+function exportPNG() {
+  const swatchW = 160, swatchH = 200;
+  const labelH = 48;
+  const totalW = currentPalette.length * swatchW;
+  const totalH = swatchH + labelH;
+  const canvas = document.createElement('canvas');
+  canvas.width = totalW; canvas.height = totalH;
+  const ctx = canvas.getContext('2d');
+  currentPalette.forEach((c, i) => {
+    // swatch
+    ctx.fillStyle = c;
+    ctx.fillRect(i * swatchW, 0, swatchW, swatchH);
+    // label background
+    ctx.fillStyle = '#111118';
+    ctx.fillRect(i * swatchW, swatchH, swatchW, labelH);
+    // hex text
+    ctx.fillStyle = c;
+    ctx.font = 'bold 13px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(c.toUpperCase(), i * swatchW + swatchW / 2, swatchH + 20);
+    // rgb text
+    const [r,g,b] = hexToRgb(c);
+    ctx.fillStyle = 'rgba(245,240,232,0.5)';
+    ctx.font = '11px monospace';
+    ctx.fillText(`rgb(${r},${g},${b})`, i * swatchW + swatchW / 2, swatchH + 38);
+  });
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'palette.png';
+  a.click();
 }
 
 // ── COPY UTIL ────────────────────────────────────────────────────────
