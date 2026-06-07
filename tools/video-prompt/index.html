@@ -1,607 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Video Prompt Generator — Runway, Sora, Pika, Kling | Westcrest Media</title>
+<meta name="description" content="Generate optimised AI video prompts for Runway Gen-3, Sora, Pika Labs, Kling AI, Luma Dream Machine and more. Free tool powered by Claude AI.">
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="video prompt generator, AI video prompts, Runway prompts, Sora prompts, Pika Labs prompts, Kling AI prompts, text to video prompts, free video prompt generator">
+<meta name="theme-color" content="#C9A84C">
+<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
+<link rel="shortcut icon" href="../../images/w_logo.svg">
+<link rel="apple-touch-icon" href="../../images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/video-prompt/">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/video-prompt/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/video-prompt/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/video-prompt/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/video-prompt/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/video-prompt/">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:url"         content="https://westcrestmedia.in/tools/video-prompt/">
+<meta property="og:title"       content="AI Video Prompt Generator — Runway, Sora, Pika, Kling | Westcrest Media">
+<meta property="og:description" content="Generate optimised AI video prompts for Runway Gen-3, Sora, Pika Labs, Kling AI and more. Free, powered by Claude AI.">
+<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+<meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
+
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="AI Video Prompt Generator — Westcrest Media">
+<meta name="twitter:description" content="Generate optimised AI video prompts for Runway, Sora, Pika, Kling & more. Free, powered by Claude AI.">
+<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
+
+<!-- Schema: WebApplication -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"AI Video Prompt Generator","url":"https://westcrestmedia.in/tools/video-prompt/","description":"Generate optimised AI video prompts for Runway Gen-3, Sora, Pika Labs, Kling AI, Luma Dream Machine and more. Free tool powered by Claude AI.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+
+<!-- Schema: BreadcrumbList -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Video Prompt Generator","item":"https://westcrestmedia.in/tools/video-prompt/"}]}
+</script>
+
+<!-- Schema: WebPage -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"AI Video Prompt Generator — Runway, Sora, Pika, Kling | Westcrest Media","url":"https://westcrestmedia.in/tools/video-prompt/","description":"Generate optimised AI video prompts for Runway Gen-3, Sora, Pika Labs, Kling AI and more. Free tool powered by Claude AI.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Video Prompt Generator","item":"https://westcrestmedia.in/tools/video-prompt/"}]}}
+</script>
+
 <!-- Google Analytics GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-GQ0X1DD0DP', {
-    'send_page_view': true,
-    'cookie_flags': 'SameSite=None;Secure'
-  });
+  gtag('config', 'G-GQ0X1DD0DP', { 'send_page_view': true, 'cookie_flags': 'SameSite=None;Secure' });
 </script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Prompt Generator — Westcrest</title>
-<meta name="description" content="Generate optimised AI video prompts for Runway, Sora, Pika, Kling and more with Claude AI.">
-<meta name="robots" content="index, follow">
-<link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
-<link rel="shortcut icon" href="../../images/w_logo.svg">
-<link rel="canonical" href="https://westcrestmedia.in/tools/video-prompt">
-<!-- Hreflang for UK, US, Canada targeting -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/video-prompt">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/video-prompt">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/video-prompt">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/video-prompt">
-<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/video-prompt">
-<!-- Open Graph -->
-<meta property="og:type"        content="website">
-<meta property="og:url"         content="https://westcrestmedia.in/tools/video-prompt">
-<meta property="og:title"       content="AI Video Prompt Generator — Westcrest Media">
-<meta property="og:description" content="Generate optimised AI video prompts for Runway, Sora, Pika, Kling and more with Claude AI.">
-<meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
-<meta property="og:locale"      content="en_GB">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:locale:alternate" content="en_CA">
-<!-- Twitter Card -->
-<meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="AI Video Prompt Generator — Westcrest Media">
-<meta name="twitter:description" content="Generate optimised AI video prompts for Runway, Sora, Pika, Kling and more with Claude AI.">
-<meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
-<link rel="apple-touch-icon" href="../../images/w_logo.svg" />
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
-
-  :root {
-    --bg:       #111118;
-    --surface:  #16161e;
-    --surface2: #1c1c26;
-    --border:   rgba(255,255,255,0.10);
-    --border2:  rgba(200,169,110,0.25);
-    --accent:   #c8a96e;
-    --accent2:  #e8c98e;
-    --gold:     #c8a96e;
-    --gold2:    #e8c98e;
-    --gold-dim: rgba(200,169,110,0.15);
-    --text:     #f5f0e8;
-    --muted:    rgba(245,240,232,0.55);
-    --danger:   #e05555;
-    --success:  #4caf80;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Syne', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2.5rem 1.5rem 4rem;
-  }
-
-  /* scanline overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(200,169,110,0.01) 2px,
-      rgba(200,169,110,0.01) 4px
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
-
-  /* HEADER */
-  .header { margin-bottom: 2.5rem; }
-
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .rec-dot {
-    width: 10px; height: 10px;
-    background: var(--danger);
-    border-radius: 50%;
-    animation: blink 1.2s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes blink {
-    0%,100% { opacity: 1; }
-    50%      { opacity: 0.2; }
-  }
-
-  .header-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    border: 1px solid rgba(200,169,110,0.4);
-    padding: 3px 12px;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.8rem, 8vw, 5rem);
-    letter-spacing: 0.06em;
-    color: #fff;
-    line-height: 0.95;
-    margin-bottom: 0.5rem;
-  }
-
-  h1 .cyan { color: var(--gold); }
-
-  .subtitle {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.12em;
-  }
-
-  /* DIVIDER */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-    margin: 1.5rem 0;
-    opacity: 0.4;
-  }
-
-  /* CARD */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1.375rem;
-    margin-bottom: 1rem;
-    position: relative;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: var(--gold);
-    border-radius: 4px 0 0 4px;
-    opacity: 0.5;
-  }
-
-  .card-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.22em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-
-  textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    line-height: 1.65;
-    padding: 0.875rem 1rem;
-    resize: none;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  textarea:focus { border-color: var(--gold); }
-  textarea::placeholder { color: #2a3a55; }
-
-  /* GRID */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-
-  /* SELECT */
-  .sel-wrap { position: relative; }
-  .sel-wrap::after {
-    content: '▾';
-    position: absolute;
-    right: 10px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--gold);
-    font-size: 12px;
-    pointer-events: none;
-  }
-
-  select {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 0.55rem 2rem 0.55rem 0.75rem;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    transition: border-color 0.2s;
-  }
-
-  select:focus { border-color: var(--gold); }
-
-  /* CHIPS */
-  .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-  .chip {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 4px 11px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
-    user-select: none;
-    letter-spacing: 0.05em;
-  }
-
-  .chip:hover  { border-color: var(--gold); color: var(--gold); }
-  .chip.active { border-color: var(--gold); background: rgba(200,169,110,0.1); color: var(--gold); }
-
-  /* TOGGLE */
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.55rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 13px; color: #8aa0bc; }
-
-  .toggle {
-    width: 36px; height: 20px;
-    background: var(--border);
-    border-radius: 10px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-
-  .toggle.on { background: var(--accent2); }
-
-  .toggle-dot {
-    width: 14px; height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 3px; left: 3px;
-    transition: transform 0.2s;
-  }
-
-  .toggle.on .toggle-dot { transform: translateX(16px); }
-
-  /* VAR TOGGLE */
-  .var-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-
-  .var-btn {
-    flex: 1;
-    padding: 0.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-    border-radius: 3px;
-  }
-
-  .var-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,169,110,0.08); }
-
-  /* GENERATE BUTTON */
-  .gen-btn {
-    width: 100%;
-    padding: 1rem;
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--gold);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.3rem;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 1.25rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .gen-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  .gen-btn:hover::before { opacity: 0.1; }
-  .gen-btn:hover { box-shadow: 0 0 20px rgba(200,169,110,0.2); }
-  .gen-btn:active { transform: scale(0.99); }
-  .gen-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
-
-  .gen-btn span { position: relative; z-index: 1; }
-
-  /* LOADING */
-  .loading-bar {
-    width: 100%; height: 2px;
-    background: var(--border);
-    margin-bottom: 1.25rem;
-    display: none;
-    overflow: hidden;
-  }
-
-  .loading-bar.active { display: block; }
-
-  .loading-fill {
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    animation: scan 1.4s linear infinite;
-    width: 50%;
-  }
-
-  @keyframes scan {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(400%); }
-  }
-
-  /* ERROR */
-  .error-msg {
-    background: rgba(255,77,77,0.08);
-    border: 1px solid rgba(255,77,77,0.4);
-    padding: 0.875rem 1rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--danger);
-    margin-bottom: 1rem;
-    display: none;
-  }
-
-  .error-msg.visible { display: block; }
-
-  /* RESULTS */
-  .results-area { display: none; }
-  .results-area.visible { display: block; }
-
-  .results-header {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .result-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    position: relative;
-    border-radius: 3px;
-    transition: border-color 0.2s;
-  }
-
-  .result-card:hover { border-color: var(--border2); }
-
-  .result-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.875rem;
-  }
-
-  .result-platform {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .result-platform::before {
-    content: '▶';
-    font-size: 8px;
-    color: var(--gold);
-  }
-
-  .copy-btn {
-    background: transparent;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 4px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    border-radius: 2px;
-  }
-
-  .copy-btn:hover  { border-color: var(--gold); color: var(--gold); }
-  .copy-btn.copied { border-color: var(--success); color: var(--success); }
-
-  .result-text {
-    font-family: 'DM Mono', monospace;
-    font-size: 12.5px;
-    line-height: 1.75;
-    color: #9ab8d4;
-  }
-
-  .result-section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin: 0.875rem 0 0.4rem;
-    padding-top: 0.875rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .section-neg   { color: #cc5555; }
-  .section-cam   { color: var(--gold); }
-  .section-tip   { color: var(--success); }
-
-  .section-text {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    line-height: 1.65;
-  }
-
-  .neg-text  { color: #7a5555; }
-  .cam-text  { color: #9a8045; }
-  .tip-text  { color: #4a9a70; }
-
-  /* SHOT TYPES VISUAL */
-  .shot-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 0.5rem;
-  }
-
-  .shot-item {
-    border: 1px solid var(--border);
-    padding: 0.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.15s;
-    border-radius: 3px;
-  }
-
-  .shot-item:hover  { border-color: var(--gold); }
-  .shot-item.active { border-color: var(--gold); background: rgba(200,169,110,0.08); }
-
-  .shot-icon {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-    display: block;
-  }
-
-  .shot-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  .shot-item.active .shot-label { color: var(--gold); }
-
-  @media (max-width: 560px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .grid-3 { grid-template-columns: 1fr 1fr; }
-  }
-
-/* ── BOTTOM NAV BAR ── */
+/* ─── DESIGN TOKENS ─────────────────────────────────── */
+:root {
+  --bg:       #111118;
+  --surface:  #16161e;
+  --surface2: #1c1c26;
+  --border:   rgba(255,255,255,0.10);
+  --border2:  rgba(200,169,110,0.25);
+  --gold:     #c8a96e;
+  --gold2:    #e8c98e;
+  --gold-dim: rgba(200,169,110,0.15);
+  --text:     #f5f0e8;
+  --muted:    rgba(245,240,232,0.55);
+  --danger:   #e05555;
+  --success:  #4caf80;
+  --nav-h:    60px;
+  --bottom-nav-clearance: 80px;
+}
+
+/* ─── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: var(--bottom-nav-clearance);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* scanline overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(200,169,110,0.01) 2px,rgba(200,169,110,0.01) 4px);
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── NAV ────────────────────────────────────────────── */
+.nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem; height: var(--nav-h);
+  background: rgba(17,17,24,0.97);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; letter-spacing: 0.04em;
+  min-width: 0; overflow: hidden;
+}
+.nav-logo img { width: 26px; height: 26px; flex-shrink: 0; }
+.nav-logo span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-back {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.12em;
+  text-transform: uppercase; transition: color .2s;
+  flex-shrink: 0; white-space: nowrap;
+  padding: 10px 0;
+}
+.nav-back:hover, .nav-back:focus { color: var(--gold); }
+.nav-back svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ─── CONTAINER ──────────────────────────────────────── */
+.container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; padding: 2rem 1rem 1rem; }
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.header { margin-bottom: 2rem; text-align: center; padding-top: 1.5rem; }
+.header-top { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+@keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.2; } }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.18em; color: rgba(245,240,232,0.75);
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+  padding: 5px 16px; border-radius: 99px; text-transform: uppercase;
+}
+.hero-badge-dot { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; animation: blink 1.8s ease-in-out infinite; flex-shrink: 0; }
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 6vw, 3.8rem);
+  letter-spacing: 0.01em;
+  color: #fff;
+  line-height: 1.05;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+}
+h1 em { font-style: italic; color: var(--gold); font-weight: 300; }
+.hero-desc {
+  font-size: clamp(12px, 2vw, 14px);
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 580px;
+  margin: 0 auto 1.25rem;
+  font-weight: 300;
+}
+.hero-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem; margin-bottom: 0.5rem; }
+.hero-pill {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.06em; color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 99px; padding: 5px 14px;
+  background: transparent;
+}
+
+/* ─── DIVIDER ────────────────────────────────────────── */
+.divider { height: 1px; background: linear-gradient(90deg, var(--gold), transparent); margin: 1.25rem 0; opacity: 0.4; }
+
+/* ─── CARD ───────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.1rem 1rem;
+  margin-bottom: 0.875rem;
+  position: relative;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--gold); border-radius: 4px 0 0 4px; opacity: 0.5;
+}
+.card-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.65rem; }
+
+/* ─── TEXTAREA ───────────────────────────────────────── */
+textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  /* 16px — prevents iOS auto-zoom on focus */
+  font-size: 16px;
+  line-height: 1.65;
+  padding: 0.8rem 0.9rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+textarea:focus { border-color: var(--gold); }
+textarea::placeholder { color: #2a3a55; }
+
+/* ─── GRIDS ──────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-bottom: 0.875rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.875rem; margin-bottom: 0.875rem; }
+
+/* ─── SELECT ─────────────────────────────────────────── */
+.sel-wrap { position: relative; }
+.sel-wrap::after {
+  content: '▾'; position: absolute; right: 10px; top: 50%;
+  transform: translateY(-50%); color: var(--gold); font-size: 12px; pointer-events: none;
+}
+select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  /* 16px — prevents iOS auto-zoom */
+  font-size: 16px;
+  padding: 0.65rem 2rem 0.65rem 0.75rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+  min-height: 44px;
+}
+select:focus { border-color: var(--gold); }
+
+/* ─── CHIPS ──────────────────────────────────────────── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  padding: 6px 11px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+  user-select: none; letter-spacing: 0.05em;
+  border-radius: 3px;
+  min-height: 30px; display: flex; align-items: center;
+}
+.chip:active, .chip.active { border-color: var(--gold); background: rgba(200,169,110,0.1); color: var(--gold); }
+
+/* ─── SHOT GRID ──────────────────────────────────────── */
+.shot-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(80px,1fr)); gap: 0.45rem; }
+.shot-item {
+  border: 1px solid var(--border); padding: 0.5rem 0.35rem;
+  text-align: center; cursor: pointer; transition: all 0.15s; border-radius: 3px;
+  min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.shot-item:active, .shot-item.active { border-color: var(--gold); background: rgba(200,169,110,0.08); }
+.shot-icon { font-size: 1.1rem; margin-bottom: 3px; display: block; line-height: 1; }
+.shot-label { font-family: 'DM Mono', monospace; font-size: 8.5px; color: var(--muted); letter-spacing: 0.05em; }
+.shot-item.active .shot-label { color: var(--gold); }
+
+/* ─── TOGGLES ────────────────────────────────────────── */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--border);
+  min-height: 50px;
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 13px; color: #8aa0bc; flex: 1; padding-right: 1rem; line-height: 1.4; }
+.toggle {
+  width: 40px; height: 22px; background: var(--border);
+  border-radius: 11px; position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.toggle.on { background: var(--gold2); }
+.toggle-dot {
+  width: 14px; height: 14px; background: #fff; border-radius: 50%;
+  position: absolute; top: 4px; left: 4px; transition: transform 0.2s;
+}
+.toggle.on .toggle-dot { transform: translateX(18px); }
+
+/* ─── VARIATIONS ─────────────────────────────────────── */
+.var-row { display: flex; gap: 0.5rem; margin-bottom: 0.875rem; }
+.var-btn {
+  flex: 1; padding: 0.65rem 0.5rem;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Mono', monospace;
+  font-size: 11px; cursor: pointer; transition: all 0.15s;
+  text-align: center; border-radius: 3px;
+  min-height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.var-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,169,110,0.08); }
+
+/* ─── GENERATE BUTTON ────────────────────────────────── */
+.gen-btn {
+  width: 100%; padding: 1rem;
+  background: transparent; border: 1px solid var(--gold);
+  color: var(--gold); font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; letter-spacing: 0.15em;
+  cursor: pointer; transition: all 0.2s; margin-bottom: 1.25rem;
+  position: relative; overflow: hidden;
+  min-height: 56px;
+  appearance: none; -webkit-appearance: none;
+}
+.gen-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold); opacity: 0; transition: opacity 0.2s;
+}
+.gen-btn:active::before { opacity: 0.15; }
+.gen-btn:active { transform: scale(0.98); }
+.gen-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.gen-btn span { position: relative; z-index: 1; }
+
+/* ─── LOADING ────────────────────────────────────────── */
+.loading-bar { width: 100%; height: 2px; background: var(--border); margin-bottom: 1.25rem; display: none; overflow: hidden; }
+.loading-bar.active { display: block; }
+.loading-fill { height: 100%; background: linear-gradient(90deg, transparent, var(--gold), transparent); animation: scan 1.4s linear infinite; width: 50%; }
+@keyframes scan { 0%{ transform:translateX(-100%); } 100%{ transform:translateX(400%); } }
+
+/* ─── ERROR ──────────────────────────────────────────── */
+.error-msg { background: rgba(255,77,77,0.08); border: 1px solid rgba(255,77,77,0.4); padding: 0.875rem 1rem; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--danger); margin-bottom: 1rem; display: none; border-radius: 3px; }
+.error-msg.visible { display: block; }
+
+/* ─── RESULTS ────────────────────────────────────────── */
+.results-area { display: none; }
+.results-area.visible { display: block; }
+.results-header { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+.result-card { background: var(--surface2); border: 1px solid var(--border); padding: 1.1rem 1rem; margin-bottom: 1rem; position: relative; border-radius: 3px; transition: border-color 0.2s; }
+.result-card:hover { border-color: var(--border2); }
+.result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; gap: 0.5rem; flex-wrap: wrap; }
+.result-platform { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.result-platform::before { content: '▶'; font-size: 8px; color: var(--gold); }
+.copy-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; border-radius: 2px; min-height: 32px; }
+.copy-btn:active, .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+.copy-btn.copied { border-color: var(--success); color: var(--success); }
+.result-text { font-family: 'DM Mono', monospace; font-size: 12.5px; line-height: 1.75; color: #9ab8d4; word-break: break-word; }
+.result-section-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; margin: 0.875rem 0 0.4rem; padding-top: 0.875rem; border-top: 1px solid var(--border); }
+.section-neg { color: #cc5555; }
+.section-cam { color: var(--gold); }
+.section-tip { color: var(--success); }
+.section-text { font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.65; word-break: break-word; }
+.neg-text { color: #7a5555; }
+.cam-text { color: #9a8045; }
+.tip-text { color: #4a9a70; }
+
+/* ─── WC- CLASS ALIASES (Font Pairing parity) ────────── */
+.wc-section { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+.wc-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; }
+.wc-faq-item { border-bottom: 1px solid rgba(245,240,232,0.08); }
+
+/* Step card polish */
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+  position: relative;
+}
+.step::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--gold); border-radius: 4px 0 0 4px; opacity: 0.4;
+}
+
+/* ─── HOW IT WORKS / FAQ / EXPLORE ──────────────────── */
+.section { max-width: 900px; margin: 0 auto; padding: 0 1rem 3rem; }
+.sec-tag { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+.sec-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem,4vw,2.2rem); letter-spacing: -.02em; margin-bottom: 1.5rem; color: var(--text); }
+.sec-heading em { font-style: italic; color: var(--gold); }
+
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; }
+.step { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; padding: 1.1rem; }
+.step-n { font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--gold); margin-bottom: .5rem; font-family: 'DM Mono', monospace; }
+.step h4 { font-size: 13px; font-weight: 600; margin-bottom: .35rem; }
+.step p { font-size: 12px; color: var(--muted); line-height: 1.55; font-weight: 300; }
+
+.faq-item { border-bottom: 1px solid rgba(245,240,232,0.08); }
+.faq-q { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; cursor: pointer; font-size: 13px; font-weight: 500; gap: 0.75rem; min-height: 48px; }
+.faq-q svg { width: 15px; height: 15px; fill: none; stroke: var(--muted); stroke-width: 2; transition: transform .2s; flex-shrink: 0; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { font-size: 12px; color: var(--muted); line-height: 1.6; font-weight: 300; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .2s; }
+.faq-item.open .faq-a { max-height: 200px; padding-bottom: .9rem; }
+
+/* ─── EXPLORE TOOLS ──────────────────────────────────── */
+.tools-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; margin-bottom: 1.2rem; }
+.other-tool-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 4px; padding: 12px; transition: all .2s; text-decoration: none;
+}
+.other-tool-card:active, .other-tool-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.other-tool-icon { font-size: 1.4rem; line-height: 1; }
+.other-tool-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 1px; line-height: 1.3; }
+.other-tool-desc { font-size: 10px; color: var(--muted); line-height: 1.4; }
+.other-tool-arrow { font-size: 13px; color: var(--gold); margin-top: auto; }
+
+/* ─── FOOTER ─────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid rgba(200,169,110,0.15);
+  padding: 0 1.25rem; height: 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; overflow: hidden;
+}
+.site-footer p { font-size: 11px; color: #6a6258; margin: 0; white-space: nowrap; }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: #6a6258; text-decoration: none; font-size: 11px; white-space: nowrap; transition: color .2s; }
+.footer-links a:hover { color: var(--gold); }
+
+/* ─── BOTTOM NAV ─────────────────────────────────────── */
 .wc-bottom-nav {
-  position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: rgba(12,12,16,0.92);
+  position: fixed; bottom: 1.25rem; left: 50%;
+  transform: translateX(-50%); z-index: 9999;
+  display: flex; align-items: center; gap: .25rem;
+  background: rgba(12,12,16,0.95);
   border: 1px solid rgba(200,169,110,0.3);
-  border-radius: 99px;
-  padding: 6px 8px;
+  border-radius: 99px; padding: 6px 8px;
   backdrop-filter: blur(16px);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  max-width: calc(100vw - 2rem);
 }
 .wc-bottom-nav a {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(220,210,195,0.7);
-  text-decoration: none;
-  font-family: 'DM Mono', monospace, sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 99px;
-  transition: all 0.18s;
-  white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+  color: rgba(220,210,195,0.7); text-decoration: none;
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 7px 14px; border-radius: 99px;
+  transition: all 0.18s; white-space: nowrap; min-height: 36px;
 }
-.wc-bottom-nav a:hover {
-  color: #c8a96e;
-  background: rgba(200,169,110,0.1);
-}
-.wc-bottom-nav .wc-bn-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(200,169,110,0.2);
-  flex-shrink: 0;
-}
-@media (max-width: 480px) {
-  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
-  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+.wc-bottom-nav a:hover, .wc-bottom-nav a:focus { color: var(--gold); background: rgba(200,169,110,0.1); }
+.wc-bn-divider { width: 1px; height: 16px; background: rgba(200,169,110,0.2); flex-shrink: 0; }
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ════════════════════════════════════════════════════════ */
+
+/* ── Tablet ≤768px ───────────────────────────────────── */
+@media(max-width:768px){
+  .container { padding: 1.75rem 1rem 1rem; }
+  .section, .wc-section { padding: 0 1rem 2.5rem; }
 }
 
-</style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Video Prompt Generator",
-  "url": "https://westcrestmedia.in/tools/video-prompt",
-  "description": "Create detailed AI video prompts for your projects. Free tool by Westcrest Media.",
-  "applicationCategory": "DesignApplication",
-  "operatingSystem": "Web Browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "GBP"
-  },
-  "creator": {
-    "@type": "Organization",
-    "name": "Westcrest Media",
-    "url": "https://westcrestmedia.in"
-  }
+/* ── Mobile ≤600px ───────────────────────────────────── */
+@media(max-width:600px){
+  /* Grids stack */
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  /* Steps stack */
+  .steps, .wc-steps { grid-template-columns: 1fr; }
+  /* Explore: 1×4 (single column on mobile) */
+  .tools-grid { grid-template-columns: 1fr; }
+  /* Explore card: row layout on mobile */
+  .other-tool-card { flex-direction: row; align-items: center; padding: 10px 12px; }
+  .other-tool-icon { font-size: 1.3rem; }
+  .other-tool-arrow { margin-top: 0; margin-left: auto; }
+  /* Shot grid tighter */
+  .shot-grid { grid-template-columns: repeat(4,1fr); }
+  /* Header */
+  h1 { font-size: clamp(2rem,10vw,3.5rem); }
+  .container { padding: 1.5rem 1rem 1rem; }
 }
-</script>
+
+/* ── Small mobile ≤400px ─────────────────────────────── */
+@media(max-width:400px){
+  .nav-logo span { display: none; }
+  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
+  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
+  .container { padding: 1.25rem 0.75rem 1rem; }
+  .section, .wc-section { padding: 0 0.75rem 2rem; }
+  .shot-grid { grid-template-columns: repeat(4,1fr); }
+  .card { padding: 0.9rem 0.85rem; }
+  .grid-3 { grid-template-columns: 1fr; }
+  .steps, .wc-steps { grid-template-columns: 1fr; }
+}
+
+/* ── Desktop hover states ────────────────────────────── */
+@media(hover:hover){
+  .gen-btn:hover::before { opacity: 0.1; }
+  .gen-btn:hover { box-shadow: 0 0 20px rgba(200,169,110,0.2); }
+  .chip:hover { border-color: var(--gold); color: var(--gold); }
+  .shot-item:hover { border-color: var(--gold); }
+}
+</style>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav style="position:fixed;top:0;left:0;right:0;z-index:999;background:#111118;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;">
-  <a href="https://westcrestmedia.in/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <img src="../../images/w_logo.svg" alt="Westcrest" style="width:28px;height:28px;">
-    <span style="font-family:'Syne',sans-serif;font-size:14px;color:var(--text);letter-spacing:0.04em;">Westcrest Media</span>
+<nav class="nav">
+  <a href="https://westcrestmedia.in/" class="nav-logo">
+    <img src="../../images/w_logo.svg" alt="Westcrest Media"><span>Westcrest Media</span>
   </a>
-  <a href="https://westcrestmedia.in/" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.15em;text-decoration:none;text-transform:uppercase;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">‹ Back to Home</a>
+  <a href="https://westcrestmedia.in/" class="nav-back">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back to Home
+  </a>
 </nav>
 
-<div class="container" style="padding-top:72px;">
+<div class="container">
 
   <!-- HEADER -->
   <div class="header">
     <div class="header-top">
-      <div class="rec-dot"></div>
-      <div class="header-badge">AI Powered · Video Tools</div>
+      <div class="hero-badge"><span class="hero-badge-dot"></span>AI Powered · Free · Instant</div>
     </div>
-    <h1>VIDEO<br><span class="cyan">PROMPT</span><br>GENERATOR</h1>
-    <p class="subtitle">Sora · Runway · Pika · Kling · Luma Dream Machine</p>
+    <h1>Video <em>Prompt</em><br>Generator</h1>
+    <p class="hero-desc">Generate powerful, platform-optimised prompts for Runway Gen-3, Sora, Pika Labs, Kling AI and more — powered by Claude AI.</p>
+    <div class="hero-pills">
+      <span class="hero-pill">Runway Gen-3</span>
+      <span class="hero-pill">Sora</span>
+      <span class="hero-pill">Pika Labs</span>
+      <span class="hero-pill">Kling AI</span>
+      <span class="hero-pill">Luma Dream</span>
+      <span class="hero-pill">Free Forever</span>
+    </div>
   </div>
 
   <div class="divider"></div>
 
+  <!-- SCENE INPUT -->
   <div class="card">
     <div class="card-label">// Scene Description</div>
     <textarea id="userIdea" rows="4" placeholder="e.g. A time-lapse of a storm building over a desert canyon, dust swirling, lightning in the distance, cinematic wide angle..."></textarea>
@@ -644,42 +567,18 @@
   <div class="card">
     <div class="card-label">// Shot Type</div>
     <div class="shot-grid" id="shotGrid">
-      <div class="shot-item active" data-val="wide shot">
-        <span class="shot-icon">🌄</span>
-        <div class="shot-label">Wide Shot</div>
-      </div>
-      <div class="shot-item" data-val="close-up">
-        <span class="shot-icon">🔍</span>
-        <div class="shot-label">Close-Up</div>
-      </div>
-      <div class="shot-item" data-val="aerial drone">
-        <span class="shot-icon">🚁</span>
-        <div class="shot-label">Aerial</div>
-      </div>
-      <div class="shot-item" data-val="tracking shot">
-        <span class="shot-icon">🎬</span>
-        <div class="shot-label">Tracking</div>
-      </div>
-      <div class="shot-item" data-val="POV">
-        <span class="shot-icon">👁</span>
-        <div class="shot-label">POV</div>
-      </div>
-      <div class="shot-item" data-val="time-lapse">
-        <span class="shot-icon">⏩</span>
-        <div class="shot-label">Time-lapse</div>
-      </div>
-      <div class="shot-item" data-val="slow motion">
-        <span class="shot-icon">🐌</span>
-        <div class="shot-label">Slow-Mo</div>
-      </div>
-      <div class="shot-item" data-val="handheld">
-        <span class="shot-icon">📷</span>
-        <div class="shot-label">Handheld</div>
-      </div>
+      <div class="shot-item active" data-val="wide shot"><span class="shot-icon">🌄</span><div class="shot-label">Wide Shot</div></div>
+      <div class="shot-item" data-val="close-up"><span class="shot-icon">🔍</span><div class="shot-label">Close-Up</div></div>
+      <div class="shot-item" data-val="aerial drone"><span class="shot-icon">🚁</span><div class="shot-label">Aerial</div></div>
+      <div class="shot-item" data-val="tracking shot"><span class="shot-icon">🎬</span><div class="shot-label">Tracking</div></div>
+      <div class="shot-item" data-val="POV"><span class="shot-icon">👁</span><div class="shot-label">POV</div></div>
+      <div class="shot-item" data-val="time-lapse"><span class="shot-icon">⏩</span><div class="shot-label">Time-lapse</div></div>
+      <div class="shot-item" data-val="slow motion"><span class="shot-icon">🐌</span><div class="shot-label">Slow-Mo</div></div>
+      <div class="shot-item" data-val="handheld"><span class="shot-icon">📷</span><div class="shot-label">Handheld</div></div>
     </div>
   </div>
 
-  <!-- MOOD + LIGHTING -->
+  <!-- MOOD -->
   <div class="card">
     <div class="card-label">// Mood</div>
     <div class="chip-group" id="moodChips">
@@ -696,6 +595,7 @@
     </div>
   </div>
 
+  <!-- LIGHTING -->
   <div class="card">
     <div class="card-label">// Lighting &amp; Time of Day</div>
     <div class="chip-group" id="lightChips">
@@ -756,7 +656,7 @@
   <div class="card">
     <div class="card-label">// Advanced Options</div>
     <div class="toggle-row">
-      <span class="toggle-label">Include camera & lens specs</span>
+      <span class="toggle-label">Include camera &amp; lens specs</span>
       <div class="toggle on" id="camToggle"><div class="toggle-dot"></div></div>
     </div>
     <div class="toggle-row">
@@ -793,10 +693,86 @@
 
 </div>
 
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:1rem;">
+  <p class="sec-tag">How It Works</p>
+  <h2 class="sec-heading">Prompts Built for <em>Every Platform</em></h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <h4>Describe Your Scene</h4>
+      <p>Type any scene, motion, or visual idea. The more specific, the better the output — but even a single line works.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <h4>Configure Your Settings</h4>
+      <p>Choose platform, visual style, shot type, mood, lighting, duration, ratio, and camera motion to shape the prompt.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <h4>Copy & Generate</h4>
+      <p>Get a fully optimised prompt with negative prompts, camera specs, and platform-specific tips. One tap to copy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Which video AI platforms are supported? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">OpenAI Sora, Runway Gen-3, Pika Labs, Kling AI, Luma Dream Machine, and Stable Video Diffusion. Each gets platform-specific syntax and phrasing optimised for that tool.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What is a negative prompt for video? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">It tells the AI what to avoid — things like camera shake, blurry footage, unrealistic motion, or unwanted visual elements. Toggle it on to include one automatically.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">Is this tool completely free? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Yes, 100% free. No account needed, no usage limits, no watermarks. Describe your scene and generate instantly.</div>
+  </div>
+  <div class="faq-item" onclick="this.classList.toggle('open')">
+    <div class="faq-q">What do camera specs and director references add? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="faq-a">Camera specs add technical lens and movement details that push AI tools toward cinematic quality. Director references help anchor the visual language to a recognisable filmmaking style.</div>
+  </div>
+</section>
+
+<!-- EXPLORE OTHER TOOLS -->
+<section class="section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div class="tools-grid">
+    <a href="https://westcrestmedia.in/tools/image-prompt/" class="other-tool-card"><div class="other-tool-icon">🎲</div><div><div class="other-tool-name">Image Prompt Generator</div><div class="other-tool-desc">AI prompts for Midjourney & DALL·E.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="other-tool-card"><div class="other-tool-icon">✂️</div><div><div class="other-tool-name">Background Remover</div><div class="other-tool-desc">Remove BG with AI — 100% free.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="other-tool-card"><div class="other-tool-icon">🎨</div><div><div class="other-tool-name">Color Palette Generator</div><div class="other-tool-desc">Extract beautiful palettes from images.</div></div><span class="other-tool-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/thumbnail-maker/" class="other-tool-card"><div class="other-tool-icon">🎬</div><div><div class="other-tool-name">Thumbnail Maker</div><div class="other-tool-desc">Create YouTube thumbnails instantly.</div></div><span class="other-tool-arrow">→</span></a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>© 2026 Westcrest Media</p>
+  <div class="footer-links">
+    <a href="https://westcrestmedia.in/">Home</a>
+    <a href="https://westcrestmedia.in/#tools">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact">Contact</a>
+  </div>
+</footer>
+
+<!-- BOTTOM NAV -->
+<nav class="wc-bottom-nav">
+  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
+  <div class="wc-bn-divider"></div>
+  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
+</nav>
+
 <script>
   let numVariations = 1;
 
-  // Shot type — single select
   document.querySelectorAll('#shotGrid .shot-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('#shotGrid .shot-item').forEach(x => x.classList.remove('active'));
@@ -804,17 +780,14 @@
     });
   });
 
-  // Chips — multi select
   document.querySelectorAll('#moodChips .chip, #lightChips .chip').forEach(c => {
     c.addEventListener('click', () => c.classList.toggle('active'));
   });
 
-  // Toggles
   document.querySelectorAll('.toggle').forEach(t => {
     t.addEventListener('click', () => t.classList.toggle('on'));
   });
 
-  // Variations
   document.querySelectorAll('.var-btn').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.var-btn').forEach(x => x.classList.remove('active'));
@@ -859,7 +832,6 @@
     loading.classList.add('active');
     errDiv.classList.remove('visible');
 
-    // Clear previous results but keep header
     const oldCards = results.querySelectorAll('.result-card');
     oldCards.forEach(c => c.remove());
     results.classList.add('visible');
@@ -870,7 +842,7 @@ Return ONLY valid JSON — no markdown, no explanation, no code fences.
 
 Platform-specific rules:
 - Sora: Rich descriptive natural language, focus on motion physics, temporal progression
-- Runway Gen-3: Precise motion descriptors, camera movement keywords, Cinematic language
+- Runway Gen-3: Precise motion descriptors, camera movement keywords, cinematic language
 - Pika Labs: Concise prompts with motion keywords, use "zoom in:", "pan left:", style tags
 - Kling AI: Detailed scene descriptions with subject/background/action structure
 - Luma Dream Machine: Natural prose with emphasis on lighting and camera motion
@@ -931,28 +903,21 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations with differen
 
       parsed.prompts.forEach((p, i) => {
         const varLabel = numVariations > 1 ? ` · VAR ${i + 1}` : '';
-
         let extras = '';
-
         if (inclNeg && p.negative_prompt) {
-          extras += `<div class="result-section-label section-neg">// Negative Prompt</div>
-            <div class="section-text neg-text">${esc(p.negative_prompt)}</div>`;
+          extras += `<div class="result-section-label section-neg">// Negative Prompt</div><div class="section-text neg-text">${esc(p.negative_prompt)}</div>`;
         }
         if (inclCam && p.camera_specs) {
-          extras += `<div class="result-section-label section-cam">// Camera &amp; Lens</div>
-            <div class="section-text cam-text">${esc(p.camera_specs)}</div>`;
+          extras += `<div class="result-section-label section-cam">// Camera &amp; Lens</div><div class="section-text cam-text">${esc(p.camera_specs)}</div>`;
         }
         if (inclRef && p.director_ref) {
-          extras += `<div class="result-section-label section-cam">// Director Reference</div>
-            <div class="section-text cam-text">${esc(p.director_ref)}</div>`;
+          extras += `<div class="result-section-label section-cam">// Director Reference</div><div class="section-text cam-text">${esc(p.director_ref)}</div>`;
         }
         if (inclSound && p.sound_design) {
-          extras += `<div class="result-section-label section-tip">// Sound Design</div>
-            <div class="section-text tip-text">${esc(p.sound_design)}</div>`;
+          extras += `<div class="result-section-label section-tip">// Sound Design</div><div class="section-text tip-text">${esc(p.sound_design)}</div>`;
         }
         if (p.tips) {
-          extras += `<div class="result-section-label section-tip">// Pro Tip</div>
-            <div class="section-text tip-text">${esc(p.tips)}</div>`;
+          extras += `<div class="result-section-label section-tip">// Pro Tip</div><div class="section-text tip-text">${esc(p.tips)}</div>`;
         }
 
         const card = document.createElement('div');
@@ -964,7 +929,6 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations with differen
           </div>
           <div class="result-text" data-prompt="${escAttr(p.main_prompt)}">${esc(p.main_prompt)}</div>
           ${extras}`;
-
         results.appendChild(card);
       });
 
@@ -993,11 +957,8 @@ ${numVariations > 1 ? `Create ${numVariations} distinct variations with differen
   }
 
   function esc(str) {
-    return String(str)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
   function escAttr(str) {
     return String(str).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
