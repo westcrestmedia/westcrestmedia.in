@@ -390,6 +390,38 @@
   .copy-css-btn:hover { border-color: var(--gold); color: var(--gold); }
   .copy-css-btn.copied { border-color: var(--success); color: var(--success); }
 
+  /* DOWNLOAD BUTTON ROW */
+  .download-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .dl-btn {
+    flex: 1;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .dl-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+  .dl-btn.dl-dark { border-color: rgba(255,255,255,0.12); }
+  .dl-btn.dl-dark:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+  .dl-btn.dl-light { border-color: rgba(255,255,255,0.12); }
+  .dl-btn.dl-downloading { opacity: 0.6; cursor: not-allowed; }
+
   /* EMPTY STATE */
   .empty-state {
     text-align: center;
@@ -547,6 +579,7 @@
 }
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Font Pairing Tool","url":"https://westcrestmedia.in/tools/font-pairing/","description":"Find perfect font combinations for your brand or project. Free AI-powered tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
 </script>
@@ -634,12 +667,21 @@
         <label>Font Preference</label>
         <select id="fontPref">
           <option value="any combination">Any Combination</option>
-          <option value="serif + sans-serif">Serif + Sans-Serif (classic)</option>
-          <option value="sans-serif + sans-serif">Sans + Sans (modern)</option>
-          <option value="serif + serif">Serif + Serif (editorial)</option>
-          <option value="display + readable">Display + Readable</option>
-          <option value="handwritten + clean">Handwritten + Clean</option>
-          <option value="monospace + sans">Mono + Sans (tech)</option>
+          <option value="serif + sans-serif">Serif + Sans-Serif (Classic)</option>
+          <option value="sans-serif + sans-serif">Sans + Sans (Modern)</option>
+          <option value="serif + serif">Serif + Serif (Editorial)</option>
+          <option value="display + readable">Display + Readable (Expressive)</option>
+          <option value="handwritten + clean">Handwritten + Clean (Personal)</option>
+          <option value="monospace + sans">Mono + Sans (Tech / Code)</option>
+          <option value="condensed + wide">Condensed + Wide (Contrast)</option>
+          <option value="slab serif + sans">Slab Serif + Sans (Bold & Grounded)</option>
+          <option value="geometric sans + humanist">Geometric + Humanist (Friendly Modern)</option>
+          <option value="display + monospace">Display + Mono (Creative / Unique)</option>
+          <option value="thin + bold weight contrast">Light + Heavy Weight Contrast</option>
+          <option value="vintage serif + clean sans">Vintage Serif + Clean Sans (Retro Modern)</option>
+          <option value="script + sans-serif">Script + Sans-Serif (Elegant)</option>
+          <option value="humanist sans + serif">Humanist Sans + Serif (Approachable)</option>
+          <option value="brutalist display + mono">Brutalist Display + Mono (Edgy)</option>
         </select>
 
         <label>Number of Pairings</label>
@@ -1016,7 +1058,15 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       <div class="pair-info-title" style="margin-bottom:0.4rem">CSS Import</div>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
-      <button class="copy-css-btn" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy CSS</button>`;
+      <button class="copy-css-btn" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy CSS</button>
+      <div class="download-row">
+        <button class="dl-btn dl-dark" onclick="downloadCard(this, ${idx}, 'dark')" title="Download dark preview as PNG">
+          ⬇ Dark PNG
+        </button>
+        <button class="dl-btn dl-light" onclick="downloadCard(this, ${idx}, 'light')" title="Download light preview as PNG">
+          ⬇ Light PNG
+        </button>
+      </div>`;
 
     container.appendChild(info);
   }
@@ -1049,6 +1099,74 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy CSS'; btn.classList.remove('copied'); }, 2000);
     });
+  }
+
+  async function downloadCard(btn, idx, theme) {
+    if (btn.classList.contains('dl-downloading')) return;
+    btn.classList.add('dl-downloading');
+    const origText = btn.textContent;
+    btn.textContent = '⟳ Rendering...';
+
+    const card = document.querySelectorAll('.preview-card')[idx];
+    if (!card) { btn.classList.remove('dl-downloading'); btn.textContent = origText; return; }
+
+    // Temporarily apply light bg if theme=light
+    const originalBg = card.style.background;
+    const originalColor = card.style.color;
+    let styleOverride = null;
+
+    if (theme === 'light') {
+      styleOverride = document.createElement('style');
+      styleOverride.id = 'dl-light-override';
+      styleOverride.textContent = `
+        #dl-capture-clone { background: #ffffff !important; color: #111111 !important; }
+        #dl-capture-clone .preview-heading { color: #111111 !important; }
+        #dl-capture-clone .preview-subheading { color: #8a6a2e !important; }
+        #dl-capture-clone .preview-body { color: #444444 !important; }
+        #dl-capture-clone .preview-caption { color: #888888 !important; }
+        #dl-capture-clone .preview-badge { color: #8a6a2e !important; border-color: #c8a96e !important; }
+        #dl-capture-clone .font-meta { border-top-color: #dddddd !important; }
+        #dl-capture-clone .font-meta-label { color: #888888 !important; }
+        #dl-capture-clone .font-meta-val { color: #111111 !important; }
+      `;
+      document.head.appendChild(styleOverride);
+    }
+
+    // Clone the card for capture
+    const clone = card.cloneNode(true);
+    clone.id = 'dl-capture-clone';
+    clone.style.display = 'block';
+    clone.style.position = 'fixed';
+    clone.style.left = '-9999px';
+    clone.style.top = '0';
+    clone.style.width = '800px';
+    clone.style.padding = '2.5rem';
+    clone.style.borderRadius = '16px';
+    clone.style.background = theme === 'light' ? '#ffffff' : '#1e1e28';
+    document.body.appendChild(clone);
+
+    try {
+      await new Promise(r => setTimeout(r, 200)); // let fonts settle
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: theme === 'light' ? '#ffffff' : '#1e1e28',
+        logging: false
+      });
+      const p = pairingsData[idx];
+      const name = (p?.name || 'font-pairing').toLowerCase().replace(/\s+/g, '-');
+      const link = document.createElement('a');
+      link.download = `${name}-${theme}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (e) {
+      showError('Download failed. Please try again.');
+    } finally {
+      document.body.removeChild(clone);
+      if (styleOverride) document.head.removeChild(styleOverride);
+      btn.classList.remove('dl-downloading');
+      btn.textContent = origText;
+    }
   }
 
   function showError(msg) {
