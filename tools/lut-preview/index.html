@@ -330,6 +330,66 @@ select.form-input{
 }
 .toast.show{transform:translateY(0);opacity:1}
 
+
+/* ── EDITABLE NUMBER INPUT + RESET BTN (desktop) ── */
+.ctrl-num-input {
+  width: 42px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 4px;
+  text-align: center;
+}
+.ctrl-num-input::-webkit-inner-spin-button,
+.ctrl-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ctrl-num-input { -moz-appearance: textfield; appearance: textfield; }
+.ctrl-num-input:focus { outline: none; border-color: var(--accent); }
+.ctrl-reset-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text3);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 5px;
+  transition: color .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.ctrl-reset-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ── EDITABLE NUMBER INPUT + RESET BTN (mobile) ── */
+.mob-num-input {
+  width: 44px;
+  background: #1c1c26;
+  border: 1px solid rgba(200,169,110,0.25);
+  border-radius: 4px;
+  color: #c8a96e;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 3px 4px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mob-num-input::-webkit-inner-spin-button,
+.mob-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.mob-num-input { -moz-appearance: textfield; appearance: textfield; }
+.mob-num-input:focus { outline: none; border-color: #c8a96e; }
+.mob-reset-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: rgba(245,240,232,0.3);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 3px 6px;
+  transition: color .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.mob-reset-btn:hover { color: #c8a96e; border-color: #c8a96e; }
+
 input[type=file]{display:none}
 
 /* ── COMMON NAV ── */
@@ -711,23 +771,27 @@ input[type=file]{display:none}
       <div class="sb-title">LUT Controls</div>
       <div class="ctrl-row">
         <span class="ctrl-label">INTENSITY</span>
-        <input type="range" id="intensity" min="0" max="100" value="100" oninput="applyLUT()">
-        <span class="ctrl-val" id="intensityVal">100%</span>
+        <input type="range" id="intensity" min="0" max="100" value="100" oninput="syncInput('intensity','intensityNum');applyLUT()">
+        <input type="number" id="intensityNum" min="0" max="100" value="100" class="ctrl-num-input" oninput="syncSlider('intensityNum','intensity');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('intensity','intensityNum',100,'%')">↺</button>
       </div>
       <div class="ctrl-row">
         <span class="ctrl-label">EXPOSURE</span>
-        <input type="range" id="exposure" min="-100" max="100" value="0" oninput="applyLUT()">
-        <span class="ctrl-val" id="exposureVal">0</span>
+        <input type="range" id="exposure" min="-100" max="100" value="0" oninput="syncInput('exposure','exposureNum');applyLUT()">
+        <input type="number" id="exposureNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('exposureNum','exposure');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('exposure','exposureNum',0,'')">↺</button>
       </div>
       <div class="ctrl-row">
         <span class="ctrl-label">CONTRAST</span>
-        <input type="range" id="contrast" min="-100" max="100" value="0" oninput="applyLUT()">
-        <span class="ctrl-val" id="contrastVal">0</span>
+        <input type="range" id="contrast" min="-100" max="100" value="0" oninput="syncInput('contrast','contrastNum');applyLUT()">
+        <input type="number" id="contrastNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('contrastNum','contrast');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('contrast','contrastNum',0,'')">↺</button>
       </div>
       <div class="ctrl-row">
         <span class="ctrl-label">SATURATION</span>
-        <input type="range" id="saturation" min="-100" max="100" value="0" oninput="applyLUT()">
-        <span class="ctrl-val" id="saturationVal">0</span>
+        <input type="range" id="saturation" min="-100" max="100" value="0" oninput="syncInput('saturation','saturationNum');applyLUT()">
+        <input type="number" id="saturationNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('saturationNum','saturation');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('saturation','saturationNum',0,'')">↺</button>
       </div>
       <div class="ctrl-row" style="margin-top:6px">
         <span class="ctrl-label">SPLIT POS</span>
@@ -771,7 +835,7 @@ input[type=file]{display:none}
       </div>
 
       <!-- SIDE BY SIDE -->
-      <div id="viewSBS" style="display:none;width:100%;height:100%;display:none;flex">
+      <div id="viewSBS" style="display:none;width:100%;height:100%;">
         <div class="preview-panel" style="flex:1">
           <canvas id="origCanvas"></canvas>
           <div class="panel-label">ORIGINAL</div>
@@ -869,7 +933,7 @@ input[type=file]{display:none}
   </div>
   <div class="mob-divider"></div>
   <div class="mob-img-block" id="mobLutBlock">
-    <canvas id="mobLutCanvas" style="width:100%;height:auto;display:block;opacity:0.3;"></canvas>
+    <canvas id="mobLutCanvas" style="width:100%;height:auto;display:block;"></canvas>
     <div class="mob-img-label" style="background:rgba(200,169,110,0.2);border-color:rgba(200,169,110,0.4);color:#c8a96e;">LUT GRADE</div>
   </div>
 </div>
@@ -885,23 +949,27 @@ input[type=file]{display:none}
   <div class="mob-ctrl-title">LUT Controls</div>
   <div class="mob-ctrl-row">
     <span class="mob-ctrl-label">INTENSITY</span>
-    <input type="range" id="mobIntensity" min="0" max="100" value="100" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('intensity').value=this.value;document.getElementById('mobIntVal').textContent=this.value+'%';applyLUT();mobRedraw();">
-    <span class="mob-ctrl-val" id="mobIntVal">100%</span>
+    <input type="range" id="mobIntensity" min="0" max="100" value="100" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('intensity').value=this.value;document.getElementById('mobIntNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobIntNum" min="0" max="100" value="100" class="mob-num-input" oninput="var v=Math.min(100,Math.max(0,this.value||0));this.value=v;document.getElementById('mobIntensity').value=v;document.getElementById('intensity').value=v;applyLUT();mobRedraw();">
+    <button class="mob-reset-btn" onclick="document.getElementById('mobIntensity').value=100;document.getElementById('mobIntNum').value=100;document.getElementById('intensity').value=100;applyLUT();mobRedraw();">↺</button>
   </div>
   <div class="mob-ctrl-row">
     <span class="mob-ctrl-label">EXPOSURE</span>
-    <input type="range" id="mobExposure" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('exposure').value=this.value;document.getElementById('mobExpVal').textContent=this.value;applyLUT();mobRedraw();">
-    <span class="mob-ctrl-val" id="mobExpVal">0</span>
+    <input type="range" id="mobExposure" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('exposure').value=this.value;document.getElementById('mobExpNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobExpNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=Math.min(100,Math.max(-100,this.value===''||this.value==='-'?this.value:parseInt(this.value)||0));if(this.value!=='-'){this.value=v;document.getElementById('mobExposure').value=v;document.getElementById('exposure').value=v;applyLUT();mobRedraw();}">
+    <button class="mob-reset-btn" onclick="document.getElementById('mobExposure').value=0;document.getElementById('mobExpNum').value=0;document.getElementById('exposure').value=0;applyLUT();mobRedraw();">↺</button>
   </div>
   <div class="mob-ctrl-row">
     <span class="mob-ctrl-label">CONTRAST</span>
-    <input type="range" id="mobContrast" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('contrast').value=this.value;document.getElementById('mobConVal').textContent=this.value;applyLUT();mobRedraw();">
-    <span class="mob-ctrl-val" id="mobConVal">0</span>
+    <input type="range" id="mobContrast" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('contrast').value=this.value;document.getElementById('mobConNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobConNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=Math.min(100,Math.max(-100,this.value===''||this.value==='-'?this.value:parseInt(this.value)||0));if(this.value!=='-'){this.value=v;document.getElementById('mobContrast').value=v;document.getElementById('contrast').value=v;applyLUT();mobRedraw();}">
+    <button class="mob-reset-btn" onclick="document.getElementById('mobContrast').value=0;document.getElementById('mobConNum').value=0;document.getElementById('contrast').value=0;applyLUT();mobRedraw();">↺</button>
   </div>
   <div class="mob-ctrl-row">
     <span class="mob-ctrl-label">SATURATION</span>
-    <input type="range" id="mobSaturation" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('saturation').value=this.value;document.getElementById('mobSatVal').textContent=this.value;applyLUT();mobRedraw();">
-    <span class="mob-ctrl-val" id="mobSatVal">0</span>
+    <input type="range" id="mobSaturation" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('saturation').value=this.value;document.getElementById('mobSatNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobSatNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=Math.min(100,Math.max(-100,this.value===''||this.value==='-'?this.value:parseInt(this.value)||0));if(this.value!=='-'){this.value=v;document.getElementById('mobSaturation').value=v;document.getElementById('saturation').value=v;applyLUT();mobRedraw();}">
+    <button class="mob-reset-btn" onclick="document.getElementById('mobSaturation').value=0;document.getElementById('mobSatNum').value=0;document.getElementById('saturation').value=0;applyLUT();mobRedraw();">↺</button>
   </div>
 </div>
 
@@ -1162,6 +1230,25 @@ const BUILTIN_LUTS = [
   },
 ];
 
+
+// ── SYNC HELPERS ─────────────────────────────────────────
+function syncInput(sliderId, numId){
+  document.getElementById(numId).value = document.getElementById(sliderId).value;
+}
+function syncSlider(numId, sliderId){
+  const el = document.getElementById(numId);
+  const min = parseInt(el.min), max = parseInt(el.max);
+  let v = parseInt(el.value);
+  if(isNaN(v)) return;
+  v = Math.min(max, Math.max(min, v));
+  el.value = v;
+  document.getElementById(sliderId).value = v;
+}
+function resetSingle(sliderId, numId, defaultVal, suffix){
+  document.getElementById(sliderId).value = defaultVal;
+  document.getElementById(numId).value = defaultVal;
+}
+
 // ─── BUILD LUT LIST ──────────────────────────────────────
 function buildLUTList(){
   const list = document.getElementById('lutList');
@@ -1387,6 +1474,7 @@ function applyLUT(){
 
   drawCurrentView();
   drawHistogram(outData.data,w*h);
+  if(typeof isMobile === 'function' && isMobile()) mobRedraw();
 }
 
 function clamp(v){return Math.max(0,Math.min(255,v))}
@@ -1485,18 +1573,34 @@ function drawHistogram(data,pixels){
 
 // ─── SLIDER LABELS ───────────────────────────────────────
 function updateSliderLabels(){
-  document.getElementById('intensityVal').textContent=document.getElementById('intensity').value+'%';
-  document.getElementById('exposureVal').textContent=document.getElementById('exposure').value;
-  document.getElementById('contrastVal').textContent=document.getElementById('contrast').value;
-  document.getElementById('saturationVal').textContent=document.getElementById('saturation').value;
+  const ids = ['intensity','exposure','contrast','saturation'];
+  ids.forEach(id => {
+    const numEl = document.getElementById(id+'Num');
+    if(numEl) numEl.value = document.getElementById(id).value;
+  });
 }
 
 function resetControls(){
-  ['intensity'].forEach(id=>{document.getElementById(id).value=100});
+  document.getElementById('intensity').value=100;
   ['exposure','contrast','saturation'].forEach(id=>{document.getElementById(id).value=0});
   document.getElementById('splitPos').value=50;
-  updateSliderLabels();
+  // Reset desktop number inputs
+  if(document.getElementById('intensityNum')) document.getElementById('intensityNum').value=100;
+  ['exposure','contrast','saturation'].forEach(id=>{
+    const n=document.getElementById(id+'Num');
+    if(n) n.value=0;
+  });
+  // Reset mobile sliders + inputs
+  document.getElementById('mobIntensity').value=100;
+  document.getElementById('mobIntNum').value=100;
+  ['Exposure','Contrast','Saturation'].forEach(n=>{
+    const sl=document.getElementById('mob'+n);
+    const nm=document.getElementById('mob'+n.slice(0,3)+'Num');
+    if(sl) sl.value=0;
+    if(nm) nm.value=0;
+  });
   applyLUT();
+  mobRedraw();
   showToast('Controls reset');
 }
 
