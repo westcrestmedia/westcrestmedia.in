@@ -364,12 +364,20 @@
     /* ─── NAV ─── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 28px 60px;
+      padding: 14px 60px;
       display: flex; align-items: center; justify-content: space-between;
       background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
       transition: padding 0.4s;
     }
-    nav.scrolled { padding: 18px 60px; background: rgba(8,8,8,0.97); border-bottom: 1px solid var(--border); }
+    nav.scrolled { padding: 10px 60px; background: rgba(8,8,8,0.97); border-bottom: 1px solid var(--border); }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 1.4rem;
+      letter-spacing: 0.25em; font-weight: 300;
+      color: var(--white);
+      text-decoration: none;
+      line-height: 1;
+    }
+    .nav-logo img { height: 52px; width: auto; object-fit: contain; mix-blend-mode: lighten; display: block; }
     .nav-logo {
       font-family: var(--font-display); font-size: 1.4rem;
       letter-spacing: 0.25em; font-weight: 300;
@@ -512,8 +520,9 @@
 
     /* ─── HERO ─── */
     #hero {
-      height: 100vh; min-height: 700px;
+      min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
+      padding: 100px 0 60px;
       position: relative; overflow: hidden;
     }
     .hero-bg {
@@ -579,17 +588,6 @@
       transition: border-color 0.3s, color 0.3s, transform 0.2s;
     }
     .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
-    .hero-scroll {
-      position: absolute; bottom: 40px; left: 50%;
-      transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      opacity: 0; animation: fadeInUp 0.8s 3.2s ease forwards;
-    }
-    .scroll-line {
-      width: 1px; height: 60px; background: linear-gradient(to bottom, var(--gold), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    .scroll-text { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--white-dim); }
     @keyframes scrollPulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
 
     /* ─── SECTION BASE ─── */
@@ -1049,10 +1047,11 @@
       .contact-grid { grid-template-columns: 1fr; gap: 60px; }
     }
     @media (max-width: 900px) {
-      nav { padding: 20px 30px; }
-      nav.scrolled { padding: 14px 30px; }
+      nav { padding: 10px 20px; }
+      nav.scrolled { padding: 8px 20px; background: rgba(8,8,8,0.98); }
       .nav-links, .nav-cta { display: none; }
       .hamburger { display: flex; }
+      .nav-logo img { height: 48px !important; }
       .container { padding: 0 30px; }
       .padded { padding: 80px 0; }
       .services-grid { grid-template-columns: 1fr; }
@@ -1108,7 +1107,7 @@
   <!-- NAV -->
   <nav id="navbar">
     <a href="#" class="nav-logo">
-      <img src="images/logo.png" alt="Westcrest Media" style="height:80px; width:auto; object-fit:contain; mix-blend-mode:lighten;" />
+      <img src="images/logo.png" alt="Westcrest Media" style="height:52px; width:auto; object-fit:contain; mix-blend-mode:lighten; display:block;" />
     </a>
     <ul class="nav-links">
       <li class="nav-dropdown"><a href="#tools">Tools</a>
@@ -1167,10 +1166,6 @@
         <span class="hero-pill">🎥 AI Prompts</span>
         <span class="hero-pill">+ 5 More →</span>
       </div>
-    </div>
-    <div class="hero-scroll">
-      <div class="scroll-line"></div>
-      <span class="scroll-text">Scroll</span>
     </div>
   </section>
 
