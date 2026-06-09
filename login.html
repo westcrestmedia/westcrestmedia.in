@@ -588,14 +588,15 @@
     </div>
   </div>
  
-  
-  <script>
+ 
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+ 
     const SUPABASE_URL = 'https://arxhryvhmnxkwqwnxoei.supabase.co'
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyeGhyeXZobW54a3dxd254b2VpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDQxNzEsImV4cCI6MjA5NjU4MDE3MX0.0FJtAGOkCflI3ZpGm9ZdfIHWr3GHj_2xqysIMIqXonI'
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
  
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
- 
-    async function loginWithGoogle() {
+    window.loginWithGoogle = async function() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: 'https://westcrestmedia.in/login.html' }
@@ -603,7 +604,7 @@
       if (error) showError(error.message)
     }
  
-    async function loginWithEmail(email, password) {
+    window.loginWithEmail = async function(email, password) {
       const btn = document.getElementById('email-login-btn')
       const mode = btn.dataset.mode
       if (!email || !password) return showError('Please fill in all fields.')
@@ -630,13 +631,13 @@
       showUserPanel(data.user)
     }
  
-    async function logout() {
+    window.logout = async function() {
       await supabase.auth.signOut()
       document.getElementById('user-panel').style.display = 'none'
       document.getElementById('auth-box').style.display = 'block'
     }
  
-    function toggleMode() {
+    window.toggleMode = function() {
       const btn = document.getElementById('email-login-btn')
       const toggle = document.getElementById('mode-toggle')
       const title = document.getElementById('form-title')
@@ -687,10 +688,8 @@
       document.getElementById('auth-error').style.display = 'none'
     }
  
-    window.addEventListener('load', async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) showUserPanel(session.user)
-    })
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) showUserPanel(session.user)
   </script>
 </body>
 </html>
