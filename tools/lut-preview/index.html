@@ -793,6 +793,27 @@ input[type=file]{display:none}
         <input type="number" id="saturationNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('saturationNum','saturation');applyLUT()">
         <button class="ctrl-reset-btn" onclick="resetSingle('saturation','saturationNum',0,'')">↺</button>
       </div>
+      <div style="height:1px;background:rgba(200,169,110,0.15);margin:8px 0;"></div>
+      <div class="sb-title" style="margin-bottom:8px;">Color Channels</div>
+      <div class="ctrl-row">
+        <span class="ctrl-label" style="color:#ff6b6b;">RED</span>
+        <input type="range" id="redCh" min="-100" max="100" value="0" oninput="syncInput('redCh','redChNum');applyLUT()">
+        <input type="number" id="redChNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('redChNum','redCh');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('redCh','redChNum',0,'')">↺</button>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label" style="color:#6bff8a;">GREEN</span>
+        <input type="range" id="greenCh" min="-100" max="100" value="0" oninput="syncInput('greenCh','greenChNum');applyLUT()">
+        <input type="number" id="greenChNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('greenChNum','greenCh');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('greenCh','greenChNum',0,'')">↺</button>
+      </div>
+      <div class="ctrl-row">
+        <span class="ctrl-label" style="color:#6baeff;">BLUE</span>
+        <input type="range" id="blueCh" min="-100" max="100" value="0" oninput="syncInput('blueCh','blueChNum');applyLUT()">
+        <input type="number" id="blueChNum" min="-100" max="100" value="0" class="ctrl-num-input" oninput="syncSlider('blueChNum','blueCh');applyLUT()">
+        <button class="ctrl-reset-btn" onclick="resetSingle('blueCh','blueChNum',0,'')">↺</button>
+      </div>
+      <div style="height:1px;background:rgba(200,169,110,0.15);margin:8px 0;"></div>
       <div class="ctrl-row" style="margin-top:6px">
         <span class="ctrl-label">SPLIT POS</span>
         <input type="range" id="splitPos" min="5" max="95" value="50" oninput="updateSplitPos()">
@@ -970,6 +991,26 @@ input[type=file]{display:none}
     <input type="range" id="mobSaturation" min="-100" max="100" value="0" style="flex:1;accent-color:#c8a96e;" oninput="document.getElementById('saturation').value=this.value;document.getElementById('mobSatNum').value=this.value;applyLUT();mobRedraw();">
     <input type="number" id="mobSatNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=Math.min(100,Math.max(-100,this.value===''||this.value==='-'?this.value:parseInt(this.value)||0));if(this.value!=='-'){this.value=v;document.getElementById('mobSaturation').value=v;document.getElementById('saturation').value=v;applyLUT();mobRedraw();}">
     <button class="mob-reset-btn" onclick="document.getElementById('mobSaturation').value=0;document.getElementById('mobSatNum').value=0;document.getElementById('saturation').value=0;applyLUT();mobRedraw();">↺</button>
+  </div>
+  <div style="height:1px;background:rgba(200,169,110,0.15);margin:6px 0;"></div>
+  <div class="mob-ctrl-title" style="margin-top:4px;">Color Channels</div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label" style="color:#ff6b6b;">RED</span>
+    <input type="range" id="mobRedCh" min="-100" max="100" value="0" style="flex:1;accent-color:#ff6b6b;" oninput="document.getElementById('redCh').value=this.value;document.getElementById('mobRedNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobRedNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=clampNum(this,-100,100);document.getElementById('mobRedCh').value=v;document.getElementById('redCh').value=v;applyLUT();mobRedraw();">
+    <button class="mob-reset-btn" onclick="resetMobCh('mobRedCh','mobRedNum','redCh')">↺</button>
+  </div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label" style="color:#6bff8a;">GREEN</span>
+    <input type="range" id="mobGreenCh" min="-100" max="100" value="0" style="flex:1;accent-color:#6bff8a;" oninput="document.getElementById('greenCh').value=this.value;document.getElementById('mobGreenNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobGreenNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=clampNum(this,-100,100);document.getElementById('mobGreenCh').value=v;document.getElementById('greenCh').value=v;applyLUT();mobRedraw();">
+    <button class="mob-reset-btn" onclick="resetMobCh('mobGreenCh','mobGreenNum','greenCh')">↺</button>
+  </div>
+  <div class="mob-ctrl-row">
+    <span class="mob-ctrl-label" style="color:#6baeff;">BLUE</span>
+    <input type="range" id="mobBlueCh" min="-100" max="100" value="0" style="flex:1;accent-color:#6baeff;" oninput="document.getElementById('blueCh').value=this.value;document.getElementById('mobBlueNum').value=this.value;applyLUT();mobRedraw();">
+    <input type="number" id="mobBlueNum" min="-100" max="100" value="0" class="mob-num-input" oninput="var v=clampNum(this,-100,100);document.getElementById('mobBlueCh').value=v;document.getElementById('blueCh').value=v;applyLUT();mobRedraw();">
+    <button class="mob-reset-btn" onclick="resetMobCh('mobBlueCh','mobBlueNum','blueCh')">↺</button>
   </div>
 </div>
 
@@ -1232,6 +1273,23 @@ const BUILTIN_LUTS = [
 
 
 // ── SYNC HELPERS ─────────────────────────────────────────
+function clampNum(el, min, max){
+  if(el.value === '' || el.value === '-') return el.value;
+  let v = parseInt(el.value);
+  if(isNaN(v)) return 0;
+  v = Math.min(max, Math.max(min, v));
+  el.value = v;
+  return v;
+}
+function resetMobCh(mobSlider, mobNum, desktopId){
+  document.getElementById(mobSlider).value = 0;
+  document.getElementById(mobNum).value = 0;
+  document.getElementById(desktopId).value = 0;
+  const numEl = document.getElementById(desktopId + 'Num');
+  if(numEl) numEl.value = 0;
+  applyLUT();
+  mobRedraw();
+}
 function syncInput(sliderId, numId){
   document.getElementById(numId).value = document.getElementById(sliderId).value;
 }
@@ -1408,6 +1466,9 @@ function applyLUT(){
   const exposure=parseInt(document.getElementById('exposure').value);
   const contrast=parseInt(document.getElementById('contrast').value);
   const saturation=parseInt(document.getElementById('saturation').value)/100;
+  const redShift=parseInt(document.getElementById('redCh').value);
+  const greenShift=parseInt(document.getElementById('greenCh').value);
+  const blueShift=parseInt(document.getElementById('blueCh').value);
 
   const src=srcImageData.data;
   const w=srcImage.width,h=srcImage.height;
@@ -1440,6 +1501,11 @@ function applyLUT(){
       g=clamp(lum+(g-lum)*(1+saturation));
       b=clamp(lum+(b-lum)*(1+saturation));
     }
+
+    // Channel shifts
+    if(redShift!==0)   r=clamp(r+redShift*2.55);
+    if(greenShift!==0) g=clamp(g+greenShift*2.55);
+    if(blueShift!==0)  b=clamp(b+blueShift*2.55);
 
     let nr=r,ng=g,nb=b;
     if(currentLUT){
@@ -1573,7 +1639,7 @@ function drawHistogram(data,pixels){
 
 // ─── SLIDER LABELS ───────────────────────────────────────
 function updateSliderLabels(){
-  const ids = ['intensity','exposure','contrast','saturation'];
+  const ids = ['intensity','exposure','contrast','saturation','redCh','greenCh','blueCh'];
   ids.forEach(id => {
     const numEl = document.getElementById(id+'Num');
     if(numEl) numEl.value = document.getElementById(id).value;
@@ -1598,6 +1664,18 @@ function resetControls(){
     const nm=document.getElementById('mob'+n.slice(0,3)+'Num');
     if(sl) sl.value=0;
     if(nm) nm.value=0;
+  });
+  // Reset RGB channels
+  ['redCh','greenCh','blueCh'].forEach(id=>{
+    document.getElementById(id).value=0;
+    const n=document.getElementById(id+'Num');
+    if(n) n.value=0;
+  });
+  ['mobRedCh','mobGreenCh','mobBlueCh'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=0;
+  });
+  ['mobRedNum','mobGreenNum','mobBlueNum'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value=0;
   });
   applyLUT();
   mobRedraw();
@@ -1630,17 +1708,16 @@ function exportCubeFile(){
   const contrast   = parseInt(document.getElementById('contrast').value);
   const saturation = parseInt(document.getElementById('saturation').value) / 100;
 
-  const expFactor  = Math.pow(2, exposure / 50);
-  const conFactor  = (259 * (contrast + 255)) / (255 * (259 - contrast));
+  const expFactor = Math.pow(2, exposure / 50);
+  const conFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
 
   showToast('Baking LUT… please wait');
 
-  // Use setTimeout so toast renders before heavy loop
   setTimeout(()=>{
     let lines = [];
     lines.push('# Generated by Westcrest LUT Preview Tool');
     lines.push('# LUT Name: ' + name);
-    lines.push('# Adjustments baked: Exposure=' + exposure + ' Contrast=' + contrast + ' Saturation=' + Math.round(saturation*100) + ' Intensity=' + Math.round(intensity*100) + '%');
+    lines.push('# Baked: Exposure=' + exposure + ' Contrast=' + contrast + ' Saturation=' + Math.round(saturation*100) + ' Intensity=' + Math.round(intensity*100) + '%');
     lines.push('# Date: ' + new Date().toISOString().slice(0,10));
     lines.push('TITLE "' + name + '"');
     lines.push('');
@@ -1686,12 +1763,11 @@ function exportCubeFile(){
           }
           nr = cl(nr); ng = cl(ng); nb = cl(nb);
 
-          // 5. Intensity blend (mix between adjusted-only and LUT result)
+          // 5. Intensity blend
           const fr = r * (1 - intensity) + nr * intensity;
           const fg = g * (1 - intensity) + ng * intensity;
           const fb = b * (1 - intensity) + nb * intensity;
 
-          // Normalize 0–1 for .cube format
           const fo = v => Math.max(0, Math.min(1, v / 255)).toFixed(6);
           lines.push(fo(fr) + ' ' + fo(fg) + ' ' + fo(fb));
         }
