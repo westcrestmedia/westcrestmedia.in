@@ -369,6 +369,7 @@
       background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
       transition: padding 0.4s;
     }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
     nav.scrolled { padding: 10px 60px; background: rgba(8,8,8,0.97); border-bottom: 1px solid var(--border); }
     .nav-logo {
       font-family: var(--font-display); font-size: 1.4rem;
@@ -1212,8 +1213,10 @@
       <li><a href="/blog/">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="#contact" class="nav-cta">Start a Project</a>
-    <a href="/login.html" class="nav-signin">Sign In</a>
+    <div class="nav-right">
+      <a href="#contact" class="nav-cta">Start a Project</a>
+      <a href="/login.html" class="nav-signin">Sign In</a>
+    </div>
     <div class="hamburger" id="hamburger" onclick="toggleMobile()">
       <span></span><span></span><span></span>
     </div>
