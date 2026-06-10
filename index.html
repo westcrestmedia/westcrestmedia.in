@@ -505,6 +505,23 @@
     }
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
+    .nav-signin {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      padding: 10px 22px;
+      border: 1px solid rgba(200,169,110,0.45);
+      border-radius: 2px;
+      background: rgba(200,169,110,0.06);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      white-space: nowrap;
+    }
+    .nav-signin:hover { background: rgba(200,169,110,0.14); border-color: var(--gold); color: var(--gold2); }
+
     .nav-cta {
       font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
       color: var(--bg); background: var(--gold);
@@ -1196,6 +1213,7 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Start a Project</a>
+    <a href="/login.html" class="nav-signin">Sign In</a>
     <div class="hamburger" id="hamburger" onclick="toggleMobile()">
       <span></span><span></span><span></span>
     </div>
