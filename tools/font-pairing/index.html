@@ -848,16 +848,20 @@
 .wc-nav {
   position: sticky; top: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 60px;
+  padding: 0 1rem; height: 60px;
   background: rgba(8,8,8,0.97);
   border-bottom: 1px solid rgba(200,169,110,0.22);
   backdrop-filter: blur(14px);
+  width: 100%;
+  box-sizing: border-box;
 }
 .wc-nav-logo {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 8px;
   text-decoration: none; color: #f5f0e8;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; font-weight: 300; letter-spacing: 0.25em;
+  font-size: clamp(0.85rem, 3.5vw, 1.15rem); font-weight: 300; letter-spacing: 0.18em;
+  min-width: 0;
+  flex-shrink: 1;
 }
 .wc-nav-logo img { height: 26px; width: auto; }
 .wc-nav-back {
@@ -918,6 +922,79 @@
   .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
 }
 
+
+  /* ── GLOBAL MOBILE OVERFLOW FIX ── */
+  @media (max-width: 700px) {
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      max-width: 100%;
+    }
+    /* Nav: keep logo + back link in bounds */
+    .wc-nav { padding: 0 0.875rem; }
+    .wc-nav-logo { font-size: 0.85rem; letter-spacing: 0.12em; }
+    .wc-nav-logo img { height: 22px; }
+
+    /* Step indicator: no overflow */
+    .step-indicator {
+      padding: 0.5rem 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .step-item {
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    .step-item:not(.active) .step-text {
+      display: none;
+    }
+    .step-text {
+      font-size: 9px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80px;
+    }
+    .step-arrow { margin: 0 0.15rem; font-size: 9px; }
+
+    /* Panels: no overflow */
+    .panel { max-width: 100%; overflow: hidden; }
+
+    /* Selects: stay in bounds */
+    select, input[type="text"] { max-width: 100%; }
+
+    /* Chip groups: wrap, no overflow */
+    .chip-group { max-width: 100%; }
+
+    /* Pair-info CSS block: contained, no horizontal bleed */
+    .pair-info {
+      max-width: 100%;
+      overflow: visible;
+      box-sizing: border-box;
+    }
+    .pair-info > * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Preview area: no overflow */
+    .preview-area { max-width: 100%; overflow: hidden; }
+    .preview-card { max-width: 100%; overflow: hidden; }
+
+    /* Font showcase card inside pair-info */
+    .pair-info > div { max-width: 100%; }
+
+    /* Pair tabs scrollable */
+    .pair-tabs { max-width: 100%; }
+
+    /* h1 */
+    h1 { font-size: clamp(2rem, 8vw, 3rem); }
+  }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="application/ld+json">
@@ -1165,7 +1242,8 @@
 
 <!-- HOW IT WORKS + FAQ + EXPLORE -->
 <style>
-.wc-section { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; overflow-x:hidden; }
+.wc-section { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; overflow-x:hidden; box-sizing:border-box; width:100%; }
+@media(max-width:700px){ .wc-section { padding-left:1rem; padding-right:1rem; } }
 .wc-sec-tag { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#c8a96e; margin-bottom:.5rem; }
 .wc-sec-heading { font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; color:#f5f0e8; }
 .wc-sec-heading em { font-style:italic; color:#c8a96e; }
@@ -1508,6 +1586,7 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
     // Pairing info
     const info = document.createElement('div');
     info.className = 'pair-info' + (idx === 0 ? ' active' : '');
+    info.style.cssText = 'max-width:100%;box-sizing:border-box;';
     info.innerHTML = `
       <!-- ── FONT SHOWCASE CARD ── -->
       <div style="background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-bottom:1rem;">
@@ -1547,12 +1626,12 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       <div class="pair-info-text" style="margin-bottom:1rem">${escHtml(p.use_cases)}</div>
 
       <!-- ── CSS EXPORT ── -->
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0.75rem;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0.75rem;max-width:100%;box-sizing:border-box;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.875rem;border-bottom:1px solid var(--border);background:var(--bg3);">
           <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">CSS Export</span>
           <button class="copy-css-btn" style="width:auto;padding:3px 12px;margin:0;font-size:10px;border-radius:6px;" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy</button>
         </div>
-        <div style="padding:0.875rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.7;word-break:break-all;overflow-x:auto;max-width:100%;">${escHtml(p.css_import)}<br><br>${escHtml(p.css_variables)}</div>
+        <div style="padding:0.875rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.7;word-break:break-all;white-space:pre-wrap;overflow-x:hidden;max-width:100%;box-sizing:border-box;">${escHtml(p.css_import)}<br><br>${escHtml(p.css_variables)}</div>
       </div>
 
       <div class="download-row">
