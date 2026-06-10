@@ -1446,46 +1446,60 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
   function renderCard(p, idx, container) {
     const headingTxt = document.getElementById('customHeading').value || 'The Art of Visual Design';
     const bodyTxt    = document.getElementById('customBody').value    || 'Great typography creates harmony between form and function. Every typeface tells a story before a single word is read.';
-    const hSize      = document.getElementById('headingSize').value + 'px';
-    const bSize      = document.getElementById('bodySize').value + 'px';
+
+    // Cap font sizes on mobile to prevent overflow
+    const isMobile = window.innerWidth <= 700;
+    const hRaw = parseInt(document.getElementById('headingSize').value);
+    const bRaw = parseInt(document.getElementById('bodySize').value);
+    const hCapped = isMobile ? Math.min(hRaw, 28) : hRaw;
+    const bCapped = isMobile ? Math.min(bRaw, 15) : bRaw;
+    const hSize = hCapped + 'px';
+    const bSize = bCapped + 'px';
 
     const card = document.createElement('div');
     card.className = 'preview-card' + (idx === 0 ? ' active' : '');
     card.innerHTML = `
-      <div class="preview-badge">${escHtml(p.heading_style)} + ${escHtml(p.body_style)}</div>
+      <!-- Top bar: pairing name + style badge -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem;padding-bottom:0.875rem;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">${escHtml(p.heading_style)} + ${escHtml(p.body_style)}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);letter-spacing:0.02em;">${escHtml(p.name)}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:10px;padding:3px 10px;border:1px solid var(--border2);border-radius:20px;color:var(--gold);white-space:nowrap;">${escHtml(p.heading_font)}</span>
+          <span style="font-size:10px;padding:3px 10px;border:1px solid var(--border);border-radius:20px;color:var(--muted);white-space:nowrap;">${escHtml(p.body_font)}</span>
+        </div>
+      </div>
 
-      <div class="preview-heading" style="font-family:'${escHtml(p.heading_font)}',serif;font-size:${hSize};font-weight:${escHtml(p.heading_weight)};color:var(--text)">
+      <!-- Heading preview -->
+      <div class="preview-heading" style="font-family:'${escHtml(p.heading_font)}',serif;font-size:${hSize};font-weight:${escHtml(p.heading_weight)};color:var(--text);word-break:break-word;overflow-wrap:break-word;">
         ${escHtml(headingTxt)}
       </div>
 
-      <div class="preview-subheading" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:calc(${bSize} * 1.25);font-weight:500;color:var(--accent)">
-        Subheading — ${escHtml(p.name)}
+      <!-- Subheading -->
+      <div class="preview-subheading" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:calc(${bSize} * 1.15);font-weight:500;color:var(--accent);word-break:break-word;">
+        A refined pairing for your project
       </div>
 
-      <div class="preview-body" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:${bSize};font-weight:${escHtml(p.body_weight)};color:var(--muted)">
+      <!-- Body -->
+      <div class="preview-body" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:${bSize};font-weight:${escHtml(p.body_weight)};color:var(--muted);word-break:break-word;">
         ${escHtml(bodyTxt)}
       </div>
 
-      <div class="preview-caption" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:calc(${bSize} * 0.8);color:var(--muted);font-style:italic">
-        Caption · ${escHtml(p.heading_font)} for headings · ${escHtml(p.body_font)} for body
+      <!-- Caption -->
+      <div class="preview-caption" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:calc(${bSize} * 0.82);color:rgba(245,240,232,0.35);font-style:italic;word-break:break-word;">
+        Caption text · ${escHtml(p.heading_font)} for headings · ${escHtml(p.body_font)} for body
       </div>
 
-      <div class="font-meta">
-        <div class="font-meta-item">
-          <span class="font-meta-label">Heading</span>
-          <span class="font-meta-val">${escHtml(p.heading_font)}</span>
+      <!-- Font meta chips -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:1rem;margin-top:0.75rem;border-top:1px solid var(--border);">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;">
+          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;">Heading</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(p.heading_font)} · ${escHtml(p.heading_weight)}</div>
         </div>
-        <div class="font-meta-item">
-          <span class="font-meta-label">Body</span>
-          <span class="font-meta-val">${escHtml(p.body_font)}</span>
-        </div>
-        <div class="font-meta-item">
-          <span class="font-meta-label">H-Weight</span>
-          <span class="font-meta-val">${escHtml(p.heading_weight)}</span>
-        </div>
-        <div class="font-meta-item">
-          <span class="font-meta-label">B-Weight</span>
-          <span class="font-meta-val">${escHtml(p.body_weight)}</span>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;">
+          <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;">Body</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(p.body_font)} · ${escHtml(p.body_weight)}</div>
         </div>
       </div>`;
 
@@ -1495,14 +1509,52 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
     const info = document.createElement('div');
     info.className = 'pair-info' + (idx === 0 ? ' active' : '');
     info.innerHTML = `
+      <!-- ── FONT SHOWCASE CARD ── -->
+      <div style="background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-bottom:1rem;">
+
+        <!-- Header strip -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1rem;background:rgba(200,169,110,0.07);border-bottom:1px solid var(--border2);">
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);">✦ Font Showcase</span>
+          <span style="font-size:9px;color:var(--muted);letter-spacing:0.08em;">${escHtml(p.heading_style)} + ${escHtml(p.body_style)}</span>
+        </div>
+
+        <!-- Heading font row -->
+        <div style="padding:1rem 1rem 0.75rem;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;">
+            <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">Heading</span>
+            <span style="font-size:9px;color:rgba(245,240,232,0.3);font-family:var(--font-mono);">${escHtml(p.heading_weight)}</span>
+          </div>
+          <div style="font-family:'${escHtml(p.heading_font)}',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:${escHtml(p.heading_weight)};color:var(--text);line-height:1.1;letter-spacing:-0.01em;">${escHtml(p.heading_font)}</div>
+          <div style="font-family:'${escHtml(p.heading_font)}',serif;font-size:clamp(0.7rem,2vw,0.85rem);font-weight:${escHtml(p.heading_weight)};color:var(--muted);letter-spacing:0.08em;margin-top:4px;">Aa Bb Cc Dd Ee Ff Gg — 0123456789</div>
+        </div>
+
+        <!-- Body font row -->
+        <div style="padding:0.75rem 1rem 1rem;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;">
+            <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">Body</span>
+            <span style="font-size:9px;color:rgba(245,240,232,0.3);font-family:var(--font-mono);">${escHtml(p.body_weight)}</span>
+          </div>
+          <div style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:clamp(1.1rem,3.5vw,1.5rem);font-weight:${escHtml(p.body_weight)};color:var(--gold2);line-height:1.2;">${escHtml(p.body_font)}</div>
+          <div style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:clamp(0.7rem,2vw,0.82rem);font-weight:${escHtml(p.body_weight)};color:var(--muted);margin-top:4px;line-height:1.6;">The quick brown fox jumps over the lazy dog. Perfect readability at any size.</div>
+        </div>
+
+      </div>
+
+      <!-- ── PAIRING RATIONALE ── -->
       <div class="pair-info-title">Why this works</div>
       <div class="pair-info-text" style="margin-bottom:0.75rem">${escHtml(p.rationale)}</div>
       <div class="pair-info-title">Use cases</div>
-      <div class="pair-info-text" style="margin-bottom:0.875rem">${escHtml(p.use_cases)}</div>
-      <div class="pair-info-title" style="margin-bottom:0.4rem">CSS Import</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;overflow-x:auto;max-width:100%;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;overflow-x:auto;max-width:100%;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
-      <button class="copy-css-btn" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy CSS</button>
+      <div class="pair-info-text" style="margin-bottom:1rem">${escHtml(p.use_cases)}</div>
+
+      <!-- ── CSS EXPORT ── -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0.75rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.875rem;border-bottom:1px solid var(--border);background:var(--bg3);">
+          <span style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">CSS Export</span>
+          <button class="copy-css-btn" style="width:auto;padding:3px 12px;margin:0;font-size:10px;border-radius:6px;" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy</button>
+        </div>
+        <div style="padding:0.875rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.7;word-break:break-all;overflow-x:auto;max-width:100%;">${escHtml(p.css_import)}<br><br>${escHtml(p.css_variables)}</div>
+      </div>
+
       <div class="download-row">
         <button class="dl-btn dl-dark" onclick="downloadCard(this, ${idx}, 'dark')" title="Download dark preview as PNG">
           ⬇ Dark PNG
@@ -1576,26 +1628,39 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       document.head.appendChild(styleOverride);
     }
 
-    // Clone the card for capture
+    // Build isolated wrapper so html2canvas only sees this single card
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;width:720px;max-width:none;overflow:visible;pointer-events:none;';
+    document.body.appendChild(wrapper);
+
     const clone = card.cloneNode(true);
     clone.id = 'dl-capture-clone';
-    clone.style.display = 'block';
-    clone.style.position = 'fixed';
-    clone.style.left = '-9999px';
-    clone.style.top = '0';
-    clone.style.width = '800px';
-    clone.style.padding = '2.5rem';
-    clone.style.borderRadius = '16px';
-    clone.style.background = theme === 'light' ? '#ffffff' : '#1e1e28';
-    document.body.appendChild(clone);
+    clone.style.cssText = [
+      'display:block',
+      'position:static',
+      'width:100%',
+      'padding:2.5rem',
+      'border-radius:16px',
+      'overflow:visible',
+      'box-sizing:border-box',
+      'min-height:unset',
+      `background:${theme === 'light' ? '#ffffff' : '#1e1e28'}`
+    ].join(';');
+    clone.classList.add('active');
+    wrapper.appendChild(clone);
 
     try {
-      await new Promise(r => setTimeout(r, 200)); // let fonts settle
+      await new Promise(r => setTimeout(r, 300)); // let fonts settle
       const canvas = await html2canvas(clone, {
         scale: 2,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: theme === 'light' ? '#ffffff' : '#1e1e28',
-        logging: false
+        logging: false,
+        width: clone.scrollWidth,
+        height: clone.scrollHeight,
+        windowWidth: 1200,
+        windowHeight: 900
       });
       const p = pairingsData[idx];
       const name = (p?.name || 'font-pairing').toLowerCase().replace(/\s+/g, '-');
@@ -1606,7 +1671,7 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
     } catch (e) {
       showError('Download failed. Please try again.');
     } finally {
-      document.body.removeChild(clone);
+      if (wrapper.parentNode) document.body.removeChild(wrapper);
       if (styleOverride) document.head.removeChild(styleOverride);
       btn.classList.remove('dl-downloading');
       btn.textContent = origText;
