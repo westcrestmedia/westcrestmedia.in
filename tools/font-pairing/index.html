@@ -759,6 +759,45 @@
     .layout { grid-template-columns: 1fr; }
     .preview-area { position: static; }
     .font-lock-row { grid-template-columns: 1fr; }
+
+    /* Prevent preview card overflow on mobile */
+    .preview-card {
+      padding: 1rem;
+      min-height: unset;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    /* Badge: take it out of absolute so it doesn't overlap text */
+    .preview-badge {
+      position: static;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Cap heading size — slider can push it to 72px which blows the card */
+    .preview-heading {
+      font-size: clamp(1.4rem, 7vw, 2.2rem) !important;
+      word-break: break-word;
+    }
+
+    .preview-subheading {
+      font-size: clamp(0.85rem, 3.5vw, 1.1rem) !important;
+    }
+
+    .preview-body {
+      font-size: clamp(0.8rem, 3vw, 1rem) !important;
+    }
+
+    .preview-caption {
+      font-size: clamp(0.75rem, 2.8vw, 0.9rem) !important;
+    }
+
+    /* Pair info tighter padding */
+    .pair-info { padding: 0.875rem; }
+
+    /* Panel tighter padding */
+    .panel { padding: 1rem; }
   }
 
   /* MOBILE SCROLL TO PREVIEW */
@@ -1126,7 +1165,7 @@
 
 <!-- HOW IT WORKS + FAQ + EXPLORE -->
 <style>
-.wc-section { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; }
+.wc-section { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; overflow-x:hidden; }
 .wc-sec-tag { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#c8a96e; margin-bottom:.5rem; }
 .wc-sec-heading { font-family:'Cormorant Garamond',serif; font-size:clamp(1.6rem,3vw,2.2rem); letter-spacing:-.02em; margin-bottom:2rem; color:#f5f0e8; }
 .wc-sec-heading em { font-style:italic; color:#c8a96e; }
@@ -1461,8 +1500,8 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       <div class="pair-info-title">Use cases</div>
       <div class="pair-info-text" style="margin-bottom:0.875rem">${escHtml(p.use_cases)}</div>
       <div class="pair-info-title" style="margin-bottom:0.4rem">CSS Import</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;overflow-x:auto;max-width:100%;margin-bottom:0.5rem">${escHtml(p.css_import)}</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.75rem;font-family:var(--font-mono);font-size:11px;color:var(--gold);line-height:1.6;word-break:break-all;overflow-x:auto;max-width:100%;margin-bottom:0.75rem">${escHtml(p.css_variables)}</div>
       <button class="copy-css-btn" onclick="copyCss(this, \`${escapeBt(p.css_import)}\n${escapeBt(p.css_variables)}\`)">Copy CSS</button>
       <div class="download-row">
         <button class="dl-btn dl-dark" onclick="downloadCard(this, ${idx}, 'dark')" title="Download dark preview as PNG">
