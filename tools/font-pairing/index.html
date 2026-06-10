@@ -499,9 +499,310 @@
 
   .custom-text-input:focus { border-color: var(--text); }
 
+  /* FONT LOCK OPTION */
+  .font-lock-section {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .font-lock-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .font-lock-title .badge-optional {
+    font-size: 8px;
+    padding: 2px 7px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-weight: 400;
+  }
+
+  .font-lock-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .font-lock-item label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .font-lock-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    padding: 0.45rem 0.7rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 0;
+  }
+
+  .font-lock-input:focus { border-color: var(--gold); }
+  .font-lock-input::placeholder { color: rgba(245,240,232,0.25); font-size:11px; }
+
+  /* HINT TOOLTIPS */
+  .hint-bubble {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: rgba(200,169,110,0.08);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1rem;
+    font-size: 11.5px;
+    color: rgba(245,240,232,0.7);
+    line-height: 1.5;
+  }
+
+  .hint-bubble .hint-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .hint-bubble.hint-result {
+    background: rgba(76,175,128,0.07);
+    border-color: rgba(76,175,128,0.2);
+    color: rgba(245,240,232,0.65);
+  }
+
+  /* VIEW ALL DESIGNS BUTTON */
+  .view-all-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px dashed var(--border2);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .view-all-btn.visible {
+    display: flex;
+  }
+
+  .view-all-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  /* ALL DESIGNS GRID */
+  .all-designs-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(8,8,12,0.92);
+    backdrop-filter: blur(12px);
+    overflow-y: auto;
+    padding: 2rem 1rem 5rem;
+  }
+
+  .all-designs-overlay.open { display: block; }
+
+  .all-designs-header {
+    max-width: 900px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .all-designs-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .close-overlay-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .close-overlay-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .all-designs-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .all-designs-grid .preview-card {
+    display: block !important;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .all-designs-grid .preview-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+  }
+
+  .design-select-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* STEP INDICATOR */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    overflow: hidden;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .step-item.done .step-num {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--bg);
+  }
+
+  .step-item.active .step-num {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .step-text {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .step-item.active .step-text { color: var(--gold); }
+  .step-item.done .step-text { color: var(--text); }
+
+  .step-arrow {
+    font-size: 10px;
+    color: var(--border2);
+    margin: 0 0.25rem;
+  }
+
+  /* MOBILE IMPROVEMENTS */
   @media (max-width: 700px) {
     .layout { grid-template-columns: 1fr; }
     .preview-area { position: static; }
+    .font-lock-row { grid-template-columns: 1fr; }
+  }
+
+  /* MOBILE SCROLL TO PREVIEW */
+  .scroll-to-preview-btn {
+    display: none;
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--gold);
+    border: none;
+    border-radius: 8px;
+    color: #111;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    transition: all 0.2s;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  @media (max-width: 700px) {
+    .scroll-to-preview-btn { display: flex; }
+  }
+
+  .scroll-to-preview-btn:hover { background: var(--gold2); }
+
+  /* PAIR TABS mobile scroll */
+  @media (max-width: 700px) {
+    .pair-tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .pair-tabs::-webkit-scrollbar { display: none; }
+    .pair-tab { white-space: nowrap; flex-shrink: 0; }
+
+    .all-designs-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
 /* ── COMMON NAV ── */
@@ -616,11 +917,33 @@
 
   <div class="layout">
 
-    <!-- LEFT: CONTROLS -->
-    <div class="controls-col">
+  <div class="controls-col">
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="stepIndicator">
+        <div class="step-item active" id="step1">
+          <div class="step-num">1</div>
+          <div class="step-text">Set Context</div>
+        </div>
+        <div class="step-arrow">›</div>
+        <div class="step-item" id="step2">
+          <div class="step-num">2</div>
+          <div class="step-text">Generate</div>
+        </div>
+        <div class="step-arrow">›</div>
+        <div class="step-item" id="step3">
+          <div class="step-num">3</div>
+          <div class="step-text">Pick Design</div>
+        </div>
+      </div>
 
       <div class="panel">
         <div class="panel-label">Project Context</div>
+
+        <div class="hint-bubble">
+          <span class="hint-icon">💡</span>
+          <span>Select your project type and industry, then choose as many vibe chips below as you like.</span>
+        </div>
 
         <label>Project Type</label>
         <select id="projectType">
@@ -691,12 +1014,38 @@
           <option value="4">4 Pairings</option>
         </select>
 
+        <!-- Font Lock Section -->
+        <div class="font-lock-section">
+          <div class="font-lock-title">
+            🔒 Lock a Font <span class="badge-optional">Optional</span>
+          </div>
+          <div class="hint-bubble" style="margin-bottom:0.75rem;margin-top:0;">
+            <span class="hint-icon">✏️</span>
+            <span>If you have a specific Google Font in mind, type it here — the AI will make sure to include it.</span>
+          </div>
+          <div class="font-lock-row">
+            <div class="font-lock-item">
+              <label>Lock Heading Font</label>
+              <input type="text" class="font-lock-input" id="lockHeading" placeholder="e.g. Playfair Display">
+            </div>
+            <div class="font-lock-item">
+              <label>Lock Body Font</label>
+              <input type="text" class="font-lock-input" id="lockBody" placeholder="e.g. Inter">
+            </div>
+          </div>
+        </div>
+
         <button class="gen-btn" id="genBtn" onclick="generatePairings()">
           ✦ Generate Font Pairings
         </button>
 
         <div class="loading-bar" id="loadingBar"><div class="loading-fill"></div></div>
         <div class="error-msg" id="errorMsg"></div>
+
+        <!-- Mobile: scroll to results -->
+        <button class="scroll-to-preview-btn" id="scrollToPreviewBtn" onclick="document.getElementById('previewArea').scrollIntoView({behavior:'smooth'})" style="display:none;">
+          ↓ View Pairings
+        </button>
       </div>
 
     </div>
@@ -708,11 +1057,20 @@
       <div class="empty-state" id="emptyState">
         <div class="empty-icon">Aa</div>
         <div class="empty-text">Your font pairings will appear here</div>
-        <div class="empty-sub">Fill in your project details and click Generate</div>
+        <div class="empty-sub" style="margin-bottom:1rem">Fill in your project details and click Generate</div>
+        <div class="hint-bubble" style="text-align:left;max-width:320px;margin:0 auto;">
+          <span class="hint-icon">👈</span>
+          <span>Configure your project on the left, then press <strong style="color:var(--gold)">Generate Font Pairings</strong>.</span>
+        </div>
       </div>
 
       <!-- Preview controls (hidden until results) -->
       <div id="previewControls" style="display:none">
+
+        <div class="hint-bubble hint-result" id="resultHint">
+          <span class="hint-icon">🎨</span>
+          <span>Browse pairings using the tabs below. Click <strong style="color:rgba(76,175,128,0.9)">View All Designs</strong> to compare them side by side, or click any tab directly.</span>
+        </div>
 
         <div class="panel" style="padding:1rem">
           <div class="panel-label">Preview Settings</div>
@@ -734,7 +1092,13 @@
         </div>
 
         <!-- Pair Tabs -->
+        <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;margin-bottom:0.4rem;text-transform:uppercase;">👆 Select a tab to preview a pairing</div>
         <div class="pair-tabs" id="pairTabs"></div>
+
+        <!-- View All Button -->
+        <button class="view-all-btn" id="viewAllBtn" onclick="openAllDesigns()">
+          ⊞ View All Designs
+        </button>
 
       </div>
 
@@ -749,6 +1113,16 @@
 
 <!-- Google Fonts dynamic loader -->
 <div id="fontLoader"></div>
+
+<!-- ALL DESIGNS OVERLAY -->
+<div class="all-designs-overlay" id="allDesignsOverlay">
+  <div class="all-designs-header">
+    <div class="all-designs-title">All <em style="color:var(--gold);font-style:italic">Designs</em></div>
+    <button class="close-overlay-btn" onclick="closeAllDesigns()">✕ Close</button>
+  </div>
+  <div class="design-select-hint">👆 Click on any design to select it</div>
+  <div class="all-designs-grid" id="allDesignsGrid"></div>
+</div>
 
 <!-- HOW IT WORKS + FAQ + EXPLORE -->
 <style>
@@ -876,6 +1250,8 @@
     const vibes       = getVibes();
     const fontPref    = document.getElementById('fontPref').value;
     const numPairs    = document.getElementById('numPairs').value;
+    const lockHeading = document.getElementById('lockHeading').value.trim();
+    const lockBody    = document.getElementById('lockBody').value.trim();
 
     if (!vibes.length) { showError('Please select at least one vibe.'); return; }
 
@@ -888,9 +1264,17 @@
     loading.classList.add('active');
     errDiv.classList.remove('visible');
 
+    // Step 2 active
+    setStep(2);
+
+    const lockInstructions = [];
+    if (lockHeading) lockInstructions.push(`MUST use "${lockHeading}" as the heading font in every pairing.`);
+    if (lockBody)    lockInstructions.push(`MUST use "${lockBody}" as the body font in every pairing.`);
+
     const systemPrompt = `You are an expert typographer and brand designer. You suggest Google Fonts pairings that are beautiful, practical, and available free on Google Fonts.
 
 CRITICAL: Only suggest fonts that are 100% available on Google Fonts (fonts.google.com). Never suggest fonts that require purchase.
+${lockInstructions.length ? '\nFONT LOCK RULES:\n' + lockInstructions.join('\n') : ''}
 
 Return ONLY valid JSON — no markdown, no explanation.
 
@@ -918,6 +1302,8 @@ JSON format:
 - Industry: ${industry}
 - Vibe/personality: ${vibes.join(', ')}
 - Font preference: ${fontPref}
+${lockHeading ? `- LOCKED heading font: ${lockHeading}` : ''}
+${lockBody    ? `- LOCKED body font: ${lockBody}` : ''}
 
 Make each pairing distinct — different moods, contrasts, or typographic approaches. All fonts must be on Google Fonts.`;
 
@@ -950,8 +1336,27 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       document.getElementById('emptyState').style.display = 'none';
       document.getElementById('previewControls').style.display = 'block';
 
+      // Show view all button
+      const vab = document.getElementById('viewAllBtn');
+      if (vab) vab.classList.add('visible');
+
+      // Step 3 active
+      setStep(3);
+
+      // Mobile: show scroll button
+      const scrollBtn = document.getElementById('scrollToPreviewBtn');
+      if (scrollBtn) scrollBtn.style.display = 'flex';
+
+      // Auto scroll to preview on mobile
+      if (window.innerWidth <= 700) {
+        setTimeout(() => {
+          document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      }
+
     } catch (err) {
       showError('Error: ' + (err.message || 'Generation failed. Please retry.'));
+      setStep(1);
     } finally {
       btn.disabled = false;
       btn.textContent = '✦ Generate Font Pairings';
@@ -1168,6 +1573,60 @@ Make each pairing distinct — different moods, contrasts, or typographic approa
       btn.textContent = origText;
     }
   }
+
+  function setStep(n) {
+    [1,2,3].forEach(i => {
+      const el = document.getElementById('step'+i);
+      if (!el) return;
+      el.classList.remove('active','done');
+      if (i < n) el.classList.add('done');
+      else if (i === n) el.classList.add('active');
+    });
+  }
+
+  function openAllDesigns() {
+    const overlay = document.getElementById('allDesignsOverlay');
+    const grid    = document.getElementById('allDesignsGrid');
+    grid.innerHTML = '';
+    pairingsData.forEach((p, i) => {
+      const wrapper = document.createElement('div');
+      // Clone card content inline
+      const headingTxt = document.getElementById('customHeading').value || 'The Art of Visual Design';
+      const bodyTxt    = document.getElementById('customBody').value    || 'Great typography creates harmony between form and function.';
+      const hSize      = document.getElementById('headingSize').value + 'px';
+      const bSize      = document.getElementById('bodySize').value + 'px';
+      wrapper.className = 'preview-card';
+      wrapper.style.cursor = 'pointer';
+      wrapper.title = 'Click to select this pairing';
+      wrapper.innerHTML = `
+        <div class="preview-badge">${escHtml(p.heading_style)} + ${escHtml(p.body_style)}</div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:600">${escHtml(p.name)}</div>
+        <div class="preview-heading" style="font-family:'${escHtml(p.heading_font)}',serif;font-size:calc(${hSize} * 0.7);font-weight:${escHtml(p.heading_weight)};color:var(--text)">${escHtml(headingTxt)}</div>
+        <div class="preview-subheading" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:calc(${bSize} * 1.1);font-weight:500;color:var(--accent)">Subheading — ${escHtml(p.name)}</div>
+        <div class="preview-body" style="font-family:'${escHtml(p.body_font)}',sans-serif;font-size:${bSize};font-weight:${escHtml(p.body_weight)};color:var(--muted)">${escHtml(bodyTxt)}</div>
+        <div class="font-meta">
+          <div class="font-meta-item"><span class="font-meta-label">Heading</span><span class="font-meta-val">${escHtml(p.heading_font)}</span></div>
+          <div class="font-meta-item"><span class="font-meta-label">Body</span><span class="font-meta-val">${escHtml(p.body_font)}</span></div>
+        </div>`;
+      wrapper.addEventListener('click', () => {
+        switchPair(i);
+        closeAllDesigns();
+      });
+      grid.appendChild(wrapper);
+    });
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAllDesigns() {
+    document.getElementById('allDesignsOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close overlay with Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAllDesigns();
+  });
 
   function showError(msg) {
     const e = document.getElementById('errorMsg');
