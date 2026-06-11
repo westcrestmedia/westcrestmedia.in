@@ -131,8 +131,11 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 
 /* EDITOR AREA */
 .editor-wrap{display:none;gap:1rem;margin-bottom:1rem;}
-.editor-wrap.active{display:grid;grid-template-columns:1fr 300px;}
+.editor-wrap.active{display:grid;grid-template-columns:240px 1fr 260px;}
+@media(max-width:1100px){.editor-wrap.active{grid-template-columns:200px 1fr 220px;}}
 @media(max-width:900px){.editor-wrap.active{grid-template-columns:1fr;}}
+.sidebar-left{display:flex;flex-direction:column;gap:.75rem;}
+.sidebar-right{display:flex;flex-direction:column;gap:.75rem;}
 
 /* CANVAS CARD */
 .canvas-card{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--radius);overflow:hidden;}
@@ -314,7 +317,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
   #canvas-viewport{min-height:60vw;}
 
   /* Hide desktop sidebar entirely on mobile */
-  .sidebar{display:none !important;}
+  .sidebar,.sidebar-left,.sidebar-right{display:none !important;}
 
   /* ── MOBILE BOTTOM TOOLBAR ── */
   .mob-toolbar{
@@ -533,52 +536,8 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
   <!-- EDITOR -->
   <div class="editor-wrap" id="editor-wrap">
 
-    <!-- CANVAS -->
-    <div class="canvas-card">
-      <div class="canvas-card-header">
-        <span class="canvas-label" id="editor-filename">Edit Image</span>
-        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;" id="zoom-level">100%</span>
-      </div>
-      <div id="canvas-viewport" class="checker-bg-vp">
-        <canvas id="display-canvas"></canvas>
-        <canvas id="cursor-canvas"></canvas>
-        <!-- Processing overlay -->
-        <div class="proc-overlay" id="proc-overlay">
-          <div class="ai-ring">
-            <svg viewBox="0 0 72 72"><circle class="ring-track" cx="36" cy="36" r="30"/><circle class="ring-fill" cx="36" cy="36" r="30"/></svg>
-            <div class="ai-ring-label" id="proc-pct">AI</div>
-          </div>
-          <p class="proc-text" id="proc-title">Loading AI…</p>
-          <p class="proc-sub" id="proc-sub">First run downloads ~80MB model</p>
-          <div class="proc-stages">
-            <span class="proc-stage-row" id="proc-stage-1">① Preparing AI Engine</span>
-            <span class="proc-stage-row" id="proc-stage-2">② Downloading Model (80 MB)</span>
-            <span class="proc-stage-row" id="proc-stage-3">③ Optimising Image</span>
-            <span class="proc-stage-row" id="proc-stage-4">④ Removing Background</span>
-          </div>
-          <p class="proc-hint" id="proc-hint">💡 First time? The model downloads once<br>and is cached — much faster next time!</p>
-        </div>
-      </div>
-      <!-- Brush bar -->
-      <div class="brush-bar">
-        <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;flex-shrink:0;">Touchup:</span>
-        <button class="brush-btn" id="btn-erase"   onclick="setBrushMode('erase')"><span class="dot-e"></span> Erase</button>
-        <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')"><span class="dot-r"></span> Restore</button>
-        <div class="brush-size-group">
-          <span>Size</span>
-          <input type="range" id="brush-size" min="4" max="80" value="20" style="flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
-          <span class="slider-val" id="brush-size-val" style="min-width:34px;text-align:right;">20px</span>
-        </div>
-        <div class="brush-undo-group">
-          <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
-          <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
-        </div>
-        <span class="brush-hint-bar">Ctrl+Z undo · Scroll zoom · Space+drag pan</span>
-      </div>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+  <!-- LEFT SIDEBAR: BG Color + Photo BG -->
+  <div class="sidebar-left">
 
       <!-- BG COLOR PANEL -->
       <div class="panel" id="panel-bg">
@@ -674,6 +633,55 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
           <p class="photo-attribution">Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a></p>
         </div>
       </div>
+
+  </div><!-- /sidebar-left -->
+
+    <!-- CANVAS -->
+    <div class="canvas-card">
+      <div class="canvas-card-header">
+        <span class="canvas-label" id="editor-filename">Edit Image</span>
+        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;" id="zoom-level">100%</span>
+      </div>
+      <div id="canvas-viewport" class="checker-bg-vp">
+        <canvas id="display-canvas"></canvas>
+        <canvas id="cursor-canvas"></canvas>
+        <!-- Processing overlay -->
+        <div class="proc-overlay" id="proc-overlay">
+          <div class="ai-ring">
+            <svg viewBox="0 0 72 72"><circle class="ring-track" cx="36" cy="36" r="30"/><circle class="ring-fill" cx="36" cy="36" r="30"/></svg>
+            <div class="ai-ring-label" id="proc-pct">AI</div>
+          </div>
+          <p class="proc-text" id="proc-title">Loading AI…</p>
+          <p class="proc-sub" id="proc-sub">First run downloads ~80MB model</p>
+          <div class="proc-stages">
+            <span class="proc-stage-row" id="proc-stage-1">① Preparing AI Engine</span>
+            <span class="proc-stage-row" id="proc-stage-2">② Downloading Model (80 MB)</span>
+            <span class="proc-stage-row" id="proc-stage-3">③ Optimising Image</span>
+            <span class="proc-stage-row" id="proc-stage-4">④ Removing Background</span>
+          </div>
+          <p class="proc-hint" id="proc-hint">💡 First time? The model downloads once<br>and is cached — much faster next time!</p>
+        </div>
+      </div>
+      <!-- Brush bar -->
+      <div class="brush-bar">
+        <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;flex-shrink:0;">Touchup:</span>
+        <button class="brush-btn" id="btn-erase"   onclick="setBrushMode('erase')"><span class="dot-e"></span> Erase</button>
+        <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')"><span class="dot-r"></span> Restore</button>
+        <div class="brush-size-group">
+          <span>Size</span>
+          <input type="range" id="brush-size" min="4" max="80" value="20" style="flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
+          <span class="slider-val" id="brush-size-val" style="min-width:34px;text-align:right;">20px</span>
+        </div>
+        <div class="brush-undo-group">
+          <button class="undo-btn" id="btn-undo" onclick="undoStroke()" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
+          <button class="undo-btn" id="btn-redo" onclick="redoStroke()" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
+        </div>
+        <span class="brush-hint-bar">Ctrl+Z undo · Scroll zoom · Space+drag pan</span>
+      </div>
+    </div>
+
+  <!-- RIGHT SIDEBAR: Effects + Transform + Download -->
+  <div class="sidebar-right">
 
       <!-- EFFECTS PANEL (Shadow + Outline + Glow) -->
       <div class="panel" id="panel-shadow">
@@ -852,8 +860,8 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
         </div>
       </div>
 
-    </div>
-  </div>
+  </div><!-- /sidebar-right -->
+  </div><!-- /editor-wrap -->
 
 </div>
 
