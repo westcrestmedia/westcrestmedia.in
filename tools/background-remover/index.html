@@ -1433,7 +1433,7 @@ function renderBatchGrid() {
       const cvs = card.querySelector('canvas');
       if (cvs) cvs.getContext('2d').drawImage(item.resultCanvas, 0, 0);
     }
-    card.addEventListener('click', () => { if (item.status==='done') openEditor(item.id); });
+    card.addEventListener('click', () => { if (item.status==='done') openEditor(item.id, true); });
     grid.appendChild(card);
   });
   // Add more button
@@ -1467,7 +1467,7 @@ window.removeItem = function(id) {
     document.getElementById('proc-overlay').classList.remove('active');
     mobShowToolbar(false);
     const nextDone = items.find(i => i.status === 'done');
-    if (nextDone) openEditor(nextDone.id);
+    if (nextDone) openEditor(nextDone.id, true);
   }
   if (!items.length) {
     dropZone.classList.remove('hidden');
@@ -1484,13 +1484,13 @@ window.processAll = async function() {
   document.getElementById('btn-process-all').disabled = true;
   for (const item of toProcess) {
     await processItem(item);
+    // Only auto-open if user hasn't started working on any image yet
+    if (item.status === 'done' && !activeId) {
+      openEditor(item.id);
+    }
   }
   document.getElementById('btn-process-all').disabled = false;
   updateBatchHeader();
-  // Auto-open first done if no editor open
-  if (!activeId && items.find(i=>i.status==='done')) {
-    openEditor(items.find(i=>i.status==='done').id);
-  }
 };
 
 async function processItem(item) {
@@ -1619,7 +1619,7 @@ async function processItem(item) {
       await new Promise(r => setTimeout(r, 500));
     }
 
-    if (!activeId) openEditor(item.id);
+    // Do NOT auto-open editor here — callers (addFiles/processAll) decide when to open
   } catch (err) {
     item.status = 'error';
     console.error(err);
@@ -1639,7 +1639,7 @@ async function processItem(item) {
 }
 
 // ─── OPEN EDITOR ────────────────────────────────────────────────────
-async function openEditor(id) {
+async function openEditor(id, noScroll) {
   const item = items.find(i=>i.id==id);
   if (!item || !item.resultCanvas) return;
   activeId = id;
@@ -1770,8 +1770,10 @@ async function openEditor(id) {
 
   // Update grid highlight
   renderBatchGrid();
-  // Scroll editor into view
-  document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  // Scroll editor into view only on first open, not when user manually switches images
+  if (!noScroll) {
+    document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
 }
 
 // ─── LAYOUT ─────────────────────────────────────────────────────────
