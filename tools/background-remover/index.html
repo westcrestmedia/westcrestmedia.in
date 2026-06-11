@@ -1502,7 +1502,7 @@ async function processItem(item) {
   const procSub     = document.getElementById('proc-sub');
   const procPct     = document.getElementById('proc-pct');
 
-  const showOnCanvas = (activeId === item.id || !activeId);
+  const showOnCanvas = !activeId;
 
   // Detect if model is cached (rough check via performance / localStorage flag)
   const modelCached = localStorage.getItem('wc_model_cached') === '1';
@@ -1519,7 +1519,7 @@ async function processItem(item) {
     // Make sure the editor/canvas area is visible so the processing overlay can be seen
     document.getElementById('editor-wrap').classList.add('active');
     document.getElementById('editor-filename').textContent = item.name;
-    document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+    if (!activeId) document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
 
     setStage(1);
     procTitle.textContent = 'Preparing AI Engine…';
