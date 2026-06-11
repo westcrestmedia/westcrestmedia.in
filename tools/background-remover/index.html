@@ -1433,13 +1433,12 @@ function renderBatchGrid() {
   if (items.length < MAX_BATCH) {
     const addMore = document.createElement('div');
     addMore.className = 'batch-add-more';
-    addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span>`;
+    addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span><span style="font-size:10px;opacity:0.6;">or drag &amp; drop images here</span>`;
     addMore.addEventListener('click', () => fileIn.click());
     addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
     addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
     addMore.addEventListener('drop', e => {
-      e.preventDefault();
-      addMore.classList.remove('drag-over');
+      e.preventDefault(); addMore.classList.remove('drag-over');
       const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
       if (files.length) addFiles(files);
     });
