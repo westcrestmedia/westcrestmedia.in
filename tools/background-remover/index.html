@@ -1383,13 +1383,14 @@ async function addFiles(files) {
     updateBatchHeader();
     if (item.status === 'done') openEditor(item.id);
   } else {
-    // Multiple photos: process sequentially, open editor as soon as first one is done
+    // Multiple photos: process sequentially, open editor only for the very first done image
     const toProcess = items.filter(i => i.status === 'queued');
     document.getElementById('btn-process-all').disabled = true;
+    let firstOpened = false;
     for (const item of toProcess) {
       await processItem(item);
-      // Open editor only for the very first done image, never interrupt user after that
-      if (item.status === 'done' && !activeId && !items.some(i => i.status === 'done' && i.id !== item.id)) {
+      if (item.status === 'done' && !firstOpened) {
+        firstOpened = true;
         openEditor(item.id);
       }
     }
@@ -1482,10 +1483,11 @@ window.processAll = async function() {
   const toProcess = items.filter(i=>i.status==='queued'||i.status==='error');
   if (!toProcess.length) return;
   document.getElementById('btn-process-all').disabled = true;
+  let firstOpened = false;
   for (const item of toProcess) {
     await processItem(item);
-    // Only auto-open if user hasn't started working on any image yet
-    if (item.status === 'done' && !activeId) {
+    if (item.status === 'done' && !firstOpened) {
+      firstOpened = true;
       openEditor(item.id);
     }
   }
