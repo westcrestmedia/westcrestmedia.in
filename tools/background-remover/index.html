@@ -173,8 +173,6 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .brush-btn.mode-restore{border-color:#5b5;color:#7ddb7d;background:rgba(50,180,50,.12);}
 .dot-e{width:7px;height:7px;border-radius:50%;background:#e55;flex-shrink:0;}
 .dot-r{width:7px;height:7px;border-radius:50%;background:#5b5;flex-shrink:0;}
-.dot-h{width:7px;height:7px;border-radius:50%;background:#a78bfa;flex-shrink:0;}
-.brush-btn.mode-hair{border-color:#a78bfa;color:#c4b5fd;background:rgba(167,139,250,.12);}
 .undo-btn{display:flex;align-items:center;gap:4px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
 .undo-btn:hover:not(:disabled){border-color:var(--gold-border);color:var(--text);}
 .undo-btn:disabled{opacity:.3;cursor:not-allowed;}
@@ -669,7 +667,6 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
         <span style="font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;flex-shrink:0;">Touchup:</span>
         <button class="brush-btn" id="btn-erase"   onclick="setBrushMode('erase')"><span class="dot-e"></span> Erase</button>
         <button class="brush-btn" id="btn-restore" onclick="setBrushMode('restore')"><span class="dot-r"></span> Restore</button>
-        <button class="brush-btn" id="btn-hair"    onclick="setBrushMode('hair')" title="Brush over messy hair/fur edges to refine them"><span class="dot-h"></span> Hair Refine</button>
         <div class="brush-size-group">
           <span>Size</span>
           <input type="range" id="brush-size" min="4" max="80" value="20" style="flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark5);border-radius:99px;outline:none;cursor:pointer;" oninput="window.brushSize=+this.value;document.getElementById('brush-size-val').textContent=this.value+'px'">
@@ -1231,11 +1228,6 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
     <button class="mob-tb-btn" id="mob-btn-restore" onclick="mobSetBrush('restore')">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/><path d="M16 12l-4-4-4 4M12 8v8"/></svg>
       Restore
-    </button>
-    <!-- Hair Refine -->
-    <button class="mob-tb-btn" id="mob-btn-hair" onclick="mobSetBrush('hair')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3 C10 7, 14 10, 11 14 C9 17, 13 20, 12 22"/><path d="M8 4 C7 8, 11 11, 8 15 C6 18, 9 20, 8 22"/><path d="M16 4 C15 8, 18 11, 16 15 C14 18, 17 20, 16 22"/></svg>
-      Hair
     </button>
     <!-- BG Color -->
     <button class="mob-tb-btn" onclick="openMobSheet('bg')">
@@ -2111,30 +2103,30 @@ function touchPos(t){const dr=dc.getBoundingClientRect();const cx=t.clientX-dr.l
 function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);}
 function drawCursorRing(x,y){
   cctx.clearRect(0,0,cc.width,cc.height); if(!brushMode)return;
-  const col = brushMode==='erase'?'rgba(255,80,80,.9)':brushMode==='hair'?'rgba(167,139,250,.9)':'rgba(80,220,80,.9)';
   cctx.save(); cctx.beginPath(); cctx.arc(x,y,window.brushSize/2,0,Math.PI*2);
-  cctx.strokeStyle=col; cctx.lineWidth=1.5; cctx.stroke();
-  cctx.beginPath(); cctx.arc(x,y,1.5,0,Math.PI*2); cctx.fillStyle=col; cctx.fill(); cctx.restore();
+  cctx.strokeStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.lineWidth=1.5; cctx.stroke();
+  cctx.beginPath(); cctx.arc(x,y,1.5,0,Math.PI*2); cctx.fillStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.fill(); cctx.restore();
 }
 
 // ─── BRUSH ───────────────────────────────────────────────────────────
 function applyBrush(dispX,dispY){
   // dc coords → wCanvas coords, accounting for subjectScale+offset
   const dw=dc.width, dh=dc.height;
+  // Subject is drawn on dc at: origin=(dw-dw*subjectScale)/2+subjectX, size=dw*subjectScale
   const drawnW = dw * subjectScale;
   const drawnH = dh * subjectScale;
   const originX = (dw - drawnW) / 2 + subjectX;
   const originY = (dh - drawnH) / 2 + subjectY;
+  // Map dispX/Y back into wCanvas pixel space
   const fx = ((dispX - originX) / drawnW) * wCanvas.width;
   const fy = ((dispY - originY) / drawnH) * wCanvas.height;
+  // Brush radius in wCanvas pixels (screen px / subjectScale / zoom → wCanvas px)
   const sx = wCanvas.width / drawnW;
   const fr = (window.brushSize / 2) * sx;
-
   if (brushMode==='erase'){
     wCtx.save(); wCtx.globalCompositeOperation='destination-out';
     wCtx.beginPath(); wCtx.arc(fx,fy,fr,0,Math.PI*2); wCtx.fillStyle='rgba(0,0,0,1)'; wCtx.fill(); wCtx.restore();
-
-  } else if (brushMode==='restore'){
+  } else {
     const x0=Math.max(0,Math.floor(fx-fr)),y0=Math.max(0,Math.floor(fy-fr));
     const x1=Math.min(wCanvas.width,Math.ceil(fx+fr)),y1=Math.min(wCanvas.height,Math.ceil(fy+fr));
     const pw=x1-x0,ph=y1-y0; if(pw<=0||ph<=0)return;
@@ -2145,76 +2137,8 @@ function applyBrush(dispX,dispY){
       d[i]=od[oi];d[i+1]=od[oi+1];d[i+2]=od[oi+2];d[i+3]=od[oi+3];
     }}
     wCtx.putImageData(patch,x0,y0);
-
-  } else if (brushMode==='hair'){
-    applyHairRefine(fx, fy, fr);
   }
-
   drawComposite(); drawCursorRing(dispX,dispY);
-}
-
-// ─── HAIR REFINE ALGORITHM ───────────────────────────────────────────
-function applyHairRefine(fx, fy, fr) {
-  const x0 = Math.max(0, Math.floor(fx - fr));
-  const y0 = Math.max(0, Math.floor(fy - fr));
-  const x1 = Math.min(wCanvas.width,  Math.ceil(fx + fr));
-  const y1 = Math.min(wCanvas.height, Math.ceil(fy + fr));
-  const pw = x1 - x0, ph = y1 - y0;
-  if (pw <= 0 || ph <= 0) return;
-
-  const W  = origData.width;
-  const od = origData.data;
-
-  // Read current wCanvas patch ONCE — no getImageData inside loops
-  const patch   = wCtx.getImageData(x0, y0, pw, ph);
-  const cur     = patch.data;        // current alpha state
-  const out     = new Uint8ClampedArray(cur); // output copy
-  const fr2     = fr * fr;
-  const nr      = Math.max(2, Math.round(fr * 0.25)); // neighborhood radius
-
-  for (let py = 0; py < ph; py++) {
-    for (let px = 0; px < pw; px++) {
-      const dx = x0 + px - fx, dy = y0 + py - fy;
-      const dist2 = dx*dx + dy*dy;
-      if (dist2 > fr2) continue;
-
-      const oi = ((y0 + py) * W + (x0 + px)) * 4;
-      const origA = od[oi + 3];
-      if (origA === 0) continue; // was background in original, skip
-
-      // Brush feather
-      const brushStr = 1 - (dist2 / fr2) * 0.4;
-
-      // Find max alpha in neighborhood using already-read cur[] array
-      let nearMax = 0;
-      const nx0l = Math.max(0,   x0 + px - nr) - x0;
-      const nx1l = Math.min(pw-1, x0 + px + nr - x0);
-      const ny0l = Math.max(0,   y0 + py - nr) - y0;
-      const ny1l = Math.min(ph-1, y0 + py + nr - y0);
-      for (let ny = ny0l; ny <= ny1l; ny++) {
-        for (let nx = nx0l; nx <= nx1l; nx++) {
-          const a = cur[(ny * pw + nx) * 4 + 3];
-          if (a > nearMax) nearMax = a;
-        }
-      }
-
-      const i = (py * pw + px) * 4;
-      if (nearMax > 80 || origA > 200) {
-        out[i]   = od[oi];
-        out[i+1] = od[oi+1];
-        out[i+2] = od[oi+2];
-        const currA   = cur[i + 3];
-        const targetA = origA > 200
-          ? currA + (origA - currA) * brushStr * 0.85
-          : currA + origA * brushStr * 0.6;
-        out[i+3] = Math.min(255, Math.round(targetA));
-      }
-    }
-  }
-
-  // Write result back in one putImageData call
-  const result = new ImageData(out, pw, ph);
-  wCtx.putImageData(result, x0, y0);
 }
 
 function bakeToItem(){
@@ -2255,24 +2179,8 @@ window.redoStroke=function(){
 
 // ─── BRUSH MODE ──────────────────────────────────────────────────────
 window.setBrushMode=function(mode){
-  const btnErase   = document.getElementById('btn-erase');
-  const btnRestore = document.getElementById('btn-restore');
-  const btnHair    = document.getElementById('btn-hair');
-  if(brushMode===mode){
-    brushMode=null; updateViewportCursor();
-    btnErase.classList.remove('mode-erase');
-    btnRestore.classList.remove('mode-restore');
-    if(btnHair) btnHair.classList.remove('mode-hair');
-  } else {
-    brushMode=mode; viewport.style.cursor='none';
-    btnErase.classList.toggle('mode-erase',   mode==='erase');
-    btnRestore.classList.toggle('mode-restore',mode==='restore');
-    btnErase.classList.remove('mode-restore');
-    btnRestore.classList.remove('mode-erase');
-    if(btnHair) btnHair.classList.toggle('mode-hair', mode==='hair');
-    if(mode!=='hair'&&btnHair) btnHair.classList.remove('mode-hair');
-    if(mode==='hair'){btnErase.classList.remove('mode-erase');btnRestore.classList.remove('mode-restore');}
-  }
+  if(brushMode===mode){brushMode=null;updateViewportCursor();document.getElementById('btn-erase').classList.remove('mode-erase');document.getElementById('btn-restore').classList.remove('mode-restore');}
+  else{brushMode=mode;viewport.style.cursor='none';document.getElementById('btn-erase').classList.toggle('mode-erase',mode==='erase');document.getElementById('btn-restore').classList.toggle('mode-restore',mode==='restore');document.getElementById('btn-erase').classList.toggle('mode-restore',false);document.getElementById('btn-restore').classList.toggle('mode-erase',false);}
 };
 
 // ─── BG COLOR ────────────────────────────────────────────────────────
@@ -2856,39 +2764,28 @@ window.closeMobSheet = function() {
 
 // ── Brush mode (mobile) ──
 window.mobSetBrush = function(mode) {
-  const mBtnErase   = document.getElementById('mob-btn-erase');
-  const mBtnRestore = document.getElementById('mob-btn-restore');
-  const mBtnHair    = document.getElementById('mob-btn-hair');
   // Toggle off if same
   if (brushMode === mode || mode === null) {
     brushMode = null;
     updateViewportCursor();
-    mBtnErase.classList.remove('mode-erase');
-    mBtnRestore.classList.remove('mode-restore');
-    if (mBtnHair) mBtnHair.classList.remove('mode-hair');
+    document.getElementById('mob-btn-erase').classList.remove('mode-erase');
+    document.getElementById('mob-btn-restore').classList.remove('mode-restore');
     document.getElementById('mob-brush-bar').classList.remove('active');
     // Also sync desktop buttons
     document.getElementById('btn-erase').classList.remove('mode-erase');
     document.getElementById('btn-restore').classList.remove('mode-restore');
-    const btnHair = document.getElementById('btn-hair');
-    if (btnHair) btnHair.classList.remove('mode-hair');
     return;
   }
   brushMode = mode;
   viewport.style.cursor = 'none';
-  mBtnErase.classList.toggle('mode-erase',    mode==='erase');
-  mBtnRestore.classList.toggle('mode-restore', mode==='restore');
-  if (mBtnHair) mBtnHair.classList.toggle('mode-hair', mode==='hair');
-  // clear other modes
-  mBtnErase.classList.toggle('mode-restore', false);
-  mBtnRestore.classList.toggle('mode-erase', false);
-  if (mBtnHair && mode!=='hair') mBtnHair.classList.remove('mode-hair');
+  document.getElementById('mob-btn-erase').classList.toggle('mode-erase', mode==='erase');
+  document.getElementById('mob-btn-erase').classList.toggle('mode-restore', false);
+  document.getElementById('mob-btn-restore').classList.toggle('mode-restore', mode==='restore');
+  document.getElementById('mob-btn-restore').classList.toggle('mode-erase', false);
   document.getElementById('mob-brush-bar').classList.add('active');
   // Sync desktop
-  document.getElementById('btn-erase').classList.toggle('mode-erase',    mode==='erase');
+  document.getElementById('btn-erase').classList.toggle('mode-erase', mode==='erase');
   document.getElementById('btn-restore').classList.toggle('mode-restore', mode==='restore');
-  const btnHair = document.getElementById('btn-hair');
-  if (btnHair) btnHair.classList.toggle('mode-hair', mode==='hair');
   // Sync brush size
   const mobSz = document.getElementById('mob-brush-size');
   if (mobSz) window.brushSize = +mobSz.value;
