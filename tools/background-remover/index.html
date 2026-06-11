@@ -1286,6 +1286,7 @@ async function loadLib() {
 const MAX_BATCH = 20;
 let items = []; // { id, file, origBlob, resultCanvas, status, name, bgSnapshot }
 let activeId = null;
+let editorOpened = false; // once editor opens, never auto-open again
 
 // ─── EDITOR STATE ───────────────────────────────────────────────────
 let wCanvas = null, wCtx = null, origData = null;
@@ -1389,8 +1390,8 @@ async function addFiles(files) {
     let firstOpened = false;
     for (const item of toProcess) {
       await processItem(item);
-      if (item.status === 'done' && !firstOpened) {
-        firstOpened = true;
+      if (item.status === 'done' && !editorOpened) {
+        editorOpened = true;
         openEditor(item.id);
       }
     }
@@ -1486,8 +1487,8 @@ window.processAll = async function() {
   let firstOpened = false;
   for (const item of toProcess) {
     await processItem(item);
-    if (item.status === 'done' && !firstOpened) {
-      firstOpened = true;
+    if (item.status === 'done' && !editorOpened) {
+      editorOpened = true;
       openEditor(item.id);
     }
   }
@@ -2711,7 +2712,7 @@ window.downloadAll=async function(){
 };
 
 window.clearAll=function(){
-  items=[]; activeId=null; wCanvas=null; wCtx=null; origData=null;
+  items=[]; activeId=null; editorOpened=false; wCanvas=null; wCtx=null; origData=null;
   brushMode=null; isPainting=false; isPanning=false; eventsReady=false;
   zoom=1;panX=0;panY=0;baseW=0;baseH=0;
   undoStack=[];redoStack=[];updateUndoUI();
