@@ -126,7 +126,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 .batch-progress-bar{height:3px;background:var(--dark5);}
 .batch-progress-fill{height:100%;background:var(--gold);width:0%;transition:width .3s;}
 .batch-add-more{border:2px dashed var(--faint);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;min-height:160px;color:var(--muted);font-size:12px;transition:border-color .2s,color .2s;}
-.batch-add-more:hover{border-color:var(--gold-border);color:var(--gold);}
+.batch-add-more:hover,.batch-add-more.drag-over{border-color:var(--gold-border);color:var(--gold);}
 .batch-add-more svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;}
 
 /* EDITOR AREA */
@@ -1435,6 +1435,14 @@ function renderBatchGrid() {
     addMore.className = 'batch-add-more';
     addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span>`;
     addMore.addEventListener('click', () => fileIn.click());
+    addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
+    addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
+    addMore.addEventListener('drop', e => {
+      e.preventDefault();
+      addMore.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (files.length) addFiles(files);
+    });
     grid.appendChild(addMore);
   }
 }
