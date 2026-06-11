@@ -1008,7 +1008,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
     </label>
     <div class="photo-search-row" style="margin-bottom:8px;">
       <input type="text" id="mob-photo-query" placeholder="Search photos…" onkeydown="if(event.key==='Enter'){this.blur();mobSearchPhotos();}" onfocus="setTimeout(()=>this.scrollIntoView({behavior:'smooth',block:'center'}),300)">
-      <button onclick="mobSearchPhotos()">Search</button>
+      <button id="mob-photo-search-btn" onclick="mobSearchPhotos()">Search</button>
     </div>
     <div id="mob-photo-grid" class="photo-grid" style="max-height:220px;"></div>
     <div class="form-row" style="margin-top:8px;">
@@ -2312,10 +2312,14 @@ function appendPhotosToGrid(gridEl, photos, onPick) {
     const img = document.createElement('img');
     img.className = 'photo-thumb';
     img.crossOrigin = 'anonymous';
-    img.src = thumb;
     img.title = label || '';
-    img.loading = 'lazy';
-    img.addEventListener('click', () => onPick(img, full));
+    // Do NOT use loading="lazy" with crossOrigin — causes cache/CORS conflict
+    // Set src after crossOrigin is set
+    img.src = thumb;
+    img.addEventListener('click', () => {
+      if (img._picking) return; // prevent double-click spam
+      onPick(img, full);
+    });
     gridEl.appendChild(img);
   });
 }
@@ -2336,12 +2340,17 @@ function setupInfiniteScroll(gridEl, onLoadMore) {
 }
 
 let desktopPhotoObs = null;
+let _searchingDesktop = false;
 window.searchPhotos = async function() {
+  if (_searchingDesktop) return; // prevent spam clicks
   const q = document.getElementById('photo-query').value.trim();
   if (!q) {
     document.getElementById('photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
     return;
   }
+  _searchingDesktop = true;
+  const searchBtn = document.querySelector('.photo-search-row button');
+  if (searchBtn) { searchBtn.disabled = true; searchBtn.textContent = '…'; }
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
   // Sync to mobile
@@ -2352,6 +2361,8 @@ window.searchPhotos = async function() {
   photoSearchState = { query:q, page:1, loading:true, exhausted:false, source:'' };
 
   const result = await fetchPhotoPage(q, 1);
+  _searchingDesktop = false;
+  if (searchBtn) { searchBtn.disabled = false; searchBtn.textContent = 'Search'; }
   grid.innerHTML = '';
   if (!result || !result.photos.length) {
     grid.innerHTML = '<div class="photo-loading">No results found. Try a different search.</div>';
@@ -2382,12 +2393,17 @@ window.searchPhotos = async function() {
 };
 
 let mobPhotoObs = null;
+let _searchingMob = false;
 window.mobSearchPhotos = async function() {
+  if (_searchingMob) return;
   const q = document.getElementById('mob-photo-query').value.trim();
   if (!q) {
     document.getElementById('mob-photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
     return;
   }
+  _searchingMob = true;
+  const mobSearchBtn = document.getElementById('mob-photo-search-btn');
+  if (mobSearchBtn) { mobSearchBtn.disabled = true; mobSearchBtn.textContent = '…'; }
   const grid = document.getElementById('mob-photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
   // Sync to desktop
@@ -2398,6 +2414,8 @@ window.mobSearchPhotos = async function() {
   let mobState = { page:1, loading:true, exhausted:false };
 
   const result = await fetchPhotoPage(q, 1);
+  _searchingMob = false;
+  if (mobSearchBtn) { mobSearchBtn.disabled = false; mobSearchBtn.textContent = 'Search'; }
   grid.innerHTML = '';
   if (!result || !result.photos.length) {
     grid.innerHTML = '<div class="photo-loading">No results. Try a different search.</div>';
@@ -2452,15 +2470,25 @@ window.applyUploadedBg = async function(input) {
 };
 
 async function applyPhotoBg(el, url) {
-  document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
+  if (el._picking) return; // guard against rapid clicks
+  el._picking = true;
+  document.querySelectorAll('.photo-thumb').forEach(t => { t.classList.remove('active'); t._picking = false; });
   el.classList.add('active');
+  el.style.opacity = '0.6';
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   viewport.classList.remove('checker-bg-vp');
-  const img = await loadImg(url);
-  currentPhotoBg = { url, img };
-  currentBgColor = 'transparent';
-  updateBgTransformVisibility();
-  drawComposite();
+  try {
+    const img = await loadImg(url);
+    currentPhotoBg = { url, img };
+    currentBgColor = 'transparent';
+    updateBgTransformVisibility();
+    drawComposite();
+  } catch(e) {
+    console.warn('applyPhotoBg failed:', e);
+  } finally {
+    el.style.opacity = '';
+    el._picking = false;
+  }
 }
 
 // ─── SUBJECT TRANSFORM ───────────────────────────────────────────────
@@ -2915,7 +2943,21 @@ viewport.addEventListener('touchmove', e => {
 viewport.addEventListener('touchend', () => { mobTouchDragActive = false; }, { passive: true, capture: true });
 
 // ─── UTIL ────────────────────────────────────────────────────────────
-function loadImg(src){return new Promise(res=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.src=src;});}
+function loadImg(src){
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.crossOrigin = 'anonymous';
+    i.onload = () => res(i);
+    i.onerror = () => {
+      // Retry without crossOrigin (fallback for non-CORS sources)
+      const i2 = new Image();
+      i2.onload = () => res(i2);
+      i2.onerror = () => rej(new Error('Image load failed: ' + src));
+      i2.src = src + (src.includes('?') ? '&' : '?') + '_t=' + Date.now();
+    };
+    i.src = src;
+  });
+}
 
 </script>
 </body>
