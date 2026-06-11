@@ -1388,8 +1388,8 @@ async function addFiles(files) {
     document.getElementById('btn-process-all').disabled = true;
     for (const item of toProcess) {
       await processItem(item);
-      // Open editor immediately after first done image, then continue processing in background
-      if (item.status === 'done' && !activeId) {
+      // Open editor only for the very first done image, never interrupt user after that
+      if (item.status === 'done' && !activeId && !items.some(i => i.status === 'done' && i.id !== item.id)) {
         openEditor(item.id);
       }
     }
@@ -1519,7 +1519,7 @@ async function processItem(item) {
     // Make sure the editor/canvas area is visible so the processing overlay can be seen
     document.getElementById('editor-wrap').classList.add('active');
     document.getElementById('editor-filename').textContent = item.name;
-    if (!activeId) document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+    if (!activeId) document.getElementById('editor-wrap').classList.add('active');
 
     setStage(1);
     procTitle.textContent = 'Preparing AI Engine…';
@@ -1770,10 +1770,6 @@ async function openEditor(id, noScroll) {
 
   // Update grid highlight
   renderBatchGrid();
-  // Scroll editor into view only on first open, not when user manually switches images
-  if (!noScroll) {
-    document.getElementById('editor-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
-  }
 }
 
 // ─── LAYOUT ─────────────────────────────────────────────────────────
