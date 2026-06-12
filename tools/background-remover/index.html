@@ -1390,7 +1390,7 @@ async function addFiles(files) {
     await processItem(item);
     document.getElementById('btn-process-all').disabled = false;
     updateBatchHeader();
-    if (item.status === 'done') openEditor(item.id);
+    if (item.status === 'done' && !editorOpened && !activeId) { editorOpened = true; openEditor(item.id); }
   } else {
     // Multiple photos: process sequentially, pick queued items dynamically so add-more items are included
     document.getElementById('btn-process-all').disabled = true;
