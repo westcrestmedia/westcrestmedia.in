@@ -1375,6 +1375,14 @@ async function addFiles(files) {
   hideUploadOverlay();
 
   // Auto-process: single → direct, multi → sequential
+  // But if processing is already running, just queue — the running loop will pick them up
+  const alreadyProcessing = items.some(i => i.status === 'processing');
+  if (alreadyProcessing) {
+    renderBatchGrid();
+    updateBatchHeader();
+    return;
+  }
+
   if (isSingle) {
     // Single photo: go straight to processing
     document.getElementById('btn-process-all').disabled = true;
@@ -1384,15 +1392,15 @@ async function addFiles(files) {
     updateBatchHeader();
     if (item.status === 'done') openEditor(item.id);
   } else {
-    // Multiple photos: process sequentially, open editor only for the very first done image
-    const toProcess = items.filter(i => i.status === 'queued');
+    // Multiple photos: process sequentially, pick queued items dynamically so add-more items are included
     document.getElementById('btn-process-all').disabled = true;
     let firstOpened = false;
-    for (const item of toProcess) {
-      await processItem(item);
-      if (item.status === 'done' && !editorOpened) {
+    let next;
+    while ((next = items.find(i => i.status === 'queued'))) {
+      await processItem(next);
+      if (next.status === 'done' && !editorOpened) {
         editorOpened = true;
-        openEditor(item.id);
+        openEditor(next.id);
       }
     }
     document.getElementById('btn-process-all').disabled = false;
