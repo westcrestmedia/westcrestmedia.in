@@ -645,7 +645,10 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
     <div class="canvas-card">
       <div class="canvas-card-header">
         <span class="canvas-label" id="editor-filename">Edit Image</span>
-        <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;" id="zoom-level">100%</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;" id="zoom-level">100%</span>
+          <button id="btn-zoom-reset" onclick="resetZoom()" title="Reset zoom to 100%" style="font-size:10px;padding:2px 8px;background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold-border)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--faint)';this.style.color='var(--muted)'">Reset</button>
+        </div>
       </div>
       <div id="canvas-viewport" class="checker-bg-vp">
         <canvas id="display-canvas"></canvas>
@@ -859,6 +862,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
           <span class="panel-toggle">▾</span>
         </div>
         <div class="panel-body">
+          <p style="font-size:10px;color:var(--muted);line-height:1.5;padding:6px 8px;background:var(--dark4);border-radius:6px;margin:0;">💡 Canvas zoom/pan is for preview only. Reset to 100% before downloading, or use <b style="color:var(--text);">Transform</b> to resize & reposition.</p>
           <button class="btn-primary" style="width:100%;" onclick="downloadCurrent()">Download PNG</button>
           <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll()" id="sidebar-dl-all">Download All ZIP</button>
           <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll()">← Back / New Images</button>
@@ -1215,6 +1219,7 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
   <div class="mob-sheet-handle"></div>
   <div class="mob-sheet-title">⬇ Download</div>
   <div class="mob-sheet-body" style="display:flex;flex-direction:column;gap:8px;">
+    <p style="font-size:10px;color:var(--muted);line-height:1.5;padding:6px 8px;background:var(--dark4);border-radius:6px;margin:0;">💡 Download saves full resolution. Use <b style="color:var(--text);">Transform</b> to resize or reposition before downloading.</p>
     <button class="btn-primary" style="width:100%;" onclick="downloadCurrent();closeMobSheet();">Download PNG</button>
     <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll();closeMobSheet();">Download All ZIP</button>
     <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll();closeMobSheet();">← Back / New Images</button>
@@ -1824,6 +1829,8 @@ function renderAll() {
   cc.style.width = dw+'px'; cc.style.height = dh+'px';
   cc.style.transform = `translate(${panX}px,${panY}px)`;
   document.getElementById('zoom-level').textContent = Math.round(zoom*100)+'%';
+  const resetBtn = document.getElementById('btn-zoom-reset');
+  if (resetBtn) resetBtn.style.display = zoom === 1 && panX === 0 && panY === 0 ? 'none' : '';
   drawComposite();
 }
 
@@ -2695,6 +2702,11 @@ function buildExportCanvasForItem(item) {
   ectx.drawImage(subject, eSX, eSY, eSW, eSH);
   return exp;
 }
+
+window.resetZoom = function() {
+  zoom = 1; panX = 0; panY = 0;
+  applyZoom();
+};
 
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
