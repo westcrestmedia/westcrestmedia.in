@@ -1,30 +1,7 @@
 /**
  * auth.js — Westcrest Media Global Auth
  * ─────────────────────────────────────
- * Ek baar include karo, sab pages pe kaam karta hai.
- *
- * USAGE: Har HTML page ke <head> ya </body> se pehle:
- *   <script src="/auth.js" type="module"></script>
- *
- * OPTIONAL — Page ko sirf logged-in users ke liye restrict karo:
- *   <meta name="wm-auth" content="required" />
- *
- * OPTIONAL — Sign In button ko auto-wire karo:
- *   <a href="/login.html" data-wm-signin>Sign In</a>
- *
- * OPTIONAL — Sign Out button:
- *   <button data-wm-signout>Sign Out</button>
- *
- * OPTIONAL — Sirf logged-in users ko dikhao:
- *   <div data-wm-show="authed">...</div>   ← logged in hone pe dikhega
- *   <div data-wm-show="guest">...</div>    ← logged out hone pe dikhega
- *
- * OPTIONAL — User ka naam / avatar inject karo:
- *   <span data-wm-user="name"></span>
- *   <img data-wm-user="avatar" />
- */
-
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
 const SUPABASE_URL     = 'https://arxhryvhmnxkwqwnxoei.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyeGhyeXZobW54a3dxd254b2VpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDQxNzEsImV4cCI6MjA5NjU4MDE3MX0.0FJtAGOkCflI3ZpGm9ZdfIHWr3GHj_2xqysIMIqXonI'
