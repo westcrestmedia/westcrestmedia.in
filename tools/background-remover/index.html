@@ -297,6 +297,9 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
 
   /* ── Drop zone ── */
   .drop-zone{padding:2rem 1rem;}
+  .drop-title-desktop,.drop-sub-desktop{display:none;}
+  .drop-title-mobile,.drop-sub-mobile{display:block !important;}
+  .batch-add-more-drag-text{display:none !important;}
 
   /* ── Batch grid 2 cols ── */
   .batch-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;}
@@ -505,8 +508,10 @@ body{background:var(--dark);color:var(--text);font-family:'Syne',sans-serif;min-
     <div class="upload-icon">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </div>
-    <p class="drop-title">Drop your images here</p>
-    <p class="drop-sub">Select multiple images at once — JPG, PNG, WEBP, AVIF</p>
+    <p class="drop-title drop-title-desktop">Drop your images here</p>
+    <p class="drop-title drop-title-mobile" style="display:none;">Tap to select images</p>
+    <p class="drop-sub drop-sub-desktop">Select multiple images at once — JPG, PNG, WEBP, AVIF</p>
+    <p class="drop-sub drop-sub-mobile" style="display:none;">JPG, PNG, WEBP, AVIF</p>
     <button class="upload-btn" onclick="document.getElementById('file-in').click()">Choose Images</button>
     <div class="format-tags">
       <span class="format-tag">PEOPLE</span>
@@ -1331,13 +1336,15 @@ const fileIn   = document.getElementById('file-in');
 const dropZone = document.getElementById('drop-zone');
 
 fileIn.addEventListener('change', e => { if (e.target.files.length) addFiles(Array.from(e.target.files)); });
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
-  if (files.length) addFiles(files);
-});
+if (window.innerWidth > 768) {
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+    if (files.length) addFiles(files);
+  });
+}
 dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
 
 // ─── ADD FILES ──────────────────────────────────────────────────────
@@ -1443,15 +1450,17 @@ function renderBatchGrid() {
   if (items.length < MAX_BATCH) {
     const addMore = document.createElement('div');
     addMore.className = 'batch-add-more';
-    addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span><span style="font-size:10px;opacity:0.6;">or drag &amp; drop images here</span>`;
+    addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span><span class="batch-add-more-drag-text" style="font-size:10px;opacity:0.6;">or drag &amp; drop images here</span>`;
     addMore.addEventListener('click', () => fileIn.click());
-    addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
-    addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
-    addMore.addEventListener('drop', e => {
-      e.preventDefault(); addMore.classList.remove('drag-over');
-      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-      if (files.length) addFiles(files);
-    });
+    if (!isMobile()) {
+      addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
+      addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
+      addMore.addEventListener('drop', e => {
+        e.preventDefault(); addMore.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+        if (files.length) addFiles(files);
+      });
+    }
     grid.appendChild(addMore);
   }
 }
