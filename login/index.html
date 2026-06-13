@@ -596,7 +596,7 @@
     // ─── Google OAuth ────────────────────────────────────────────────────────
     window.loginWithGoogle = async function() {
       const next = new URLSearchParams(window.location.search).get('next') || ''
-      const redirectTo = 'https://westcrestmedia.in/login.html' + (next ? '?next=' + encodeURIComponent(next) : '')
+      const redirectTo = 'https://westcrestmedia.in/login/' + (next ? '?next=' + encodeURIComponent(next) : '')
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo }
