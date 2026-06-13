@@ -675,8 +675,17 @@
       document.getElementById('auth-error').style.display = 'none'
     }
 
-    // auth.js already session check karta hai aur redirect bhi
-    // Login.html specific: agar session hai to auth.js redirect karega automatically
+    // OAuth hash token process karo — Google login ke baad /login/ pe wapas aata hai hash ke saath
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+        redirectAfterLogin()
+      }
+    })
+
+    // Direct session check bhi karo
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) redirectAfterLogin()
+    })
   </script>
 </body>
 </html>
