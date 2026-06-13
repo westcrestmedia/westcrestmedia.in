@@ -12,7 +12,7 @@
  * Puri purani <nav>...</nav> ka HTML hata do, sirf yeh khali tag rakhna hai.
  */
 
-import { supabase, addBookmark, removeBookmark, isBookmarked } from '/auth.js'
+import { supabase } from '/auth.js'
 
 const TOOLS = [
   { col: '🖼️ Image Tools', items: [
@@ -44,8 +44,6 @@ async function renderNav() {
   const user = session?.user ?? null
   const tool = window.__WM_TOOL__ || {}
 
-  // Bookmark state
-  const bookmarked = user && tool.slug ? await isBookmarked(tool.slug) : false
 
   const dropdownCols = TOOLS.map(group => `
     <div class="tools-col">
@@ -62,7 +60,36 @@ async function renderNav() {
   const avatar = user?.user_metadata?.avatar_url || null
   const initial = name ? name.charAt(0).toUpperCase() : '?'
 
-  nav.innerHTML = `
+  // Mobile dropdown CSS inject
+  if (!document.getElementById('wm-tool-mobile-css')) {
+    const s = document.createElement('style')
+    s.id = 'wm-tool-mobile-css'
+    s.textContent = `
+      @media (max-width: 768px) {
+        .tools-dropdown {
+          position: fixed !important;
+          top: 56px !important;
+          left: 0 !important;
+          right: 0 !important;
+          width: 100vw !important;
+          transform: none !important;
+          border-radius: 0 0 12px 12px !important;
+          padding: 16px !important;
+          box-sizing: border-box !important;
+          overflow-y: auto !important;
+          max-height: calc(100vh - 56px) !important;
+        }
+        .tools-dropdown-grid {
+          grid-template-columns: 1fr !important;
+          gap: 0 !important;
+        }
+        .tools-col { min-width: unset !important; }
+      }
+    `
+    document.head.appendChild(s)
+  }
+
+  nav.innerHTML = \`
     <!-- Logo -->
     <a href="/" class="nav-logo">
       <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
@@ -80,16 +107,6 @@ async function renderNav() {
 
     <!-- Right side -->
     <div style="display:flex;align-items:center;gap:12px;margin-left:auto;">
-
-      ${tool.slug ? `
-        <!-- Bookmark button -->
-        <button id="wm-bookmark-btn" title="${bookmarked ? 'Remove bookmark' : 'Bookmark this tool'}"
-          style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;color:${bookmarked ? '#C9A84C' : 'var(--muted)'};transition:color .2s;">
-          <svg width="16" height="16" viewBox="0 0 14 14" fill="${bookmarked ? '#C9A84C' : 'none'}">
-            <path d="M3 1h8a1 1 0 0 1 1 1v10l-5-3-5 3V2a1 1 0 0 1 1-1z" stroke="#C9A84C" stroke-width="1.3" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      ` : ''}
 
       ${user ? `
         <!-- Avatar dropdown -->
@@ -137,12 +154,12 @@ async function renderNav() {
     </div>
   `
 
-  bindInteractions(user, tool, bookmarked)
+  bindInteractions(user, tool)
 }
 
 // ─── Interactions ─────────────────────────────────────────────────────────────
 
-function bindInteractions(user, tool, bookmarked) {
+function bindInteractions(user, tool) {
   // Tools dropdown toggle
   window.__toggleToolsDD = () => {
     const btn = document.getElementById('toolsBtn')
@@ -175,30 +192,6 @@ function bindInteractions(user, tool, bookmarked) {
     window.location.reload()
   })
 
-  // Bookmark toggle
-  const bookmarkBtn = document.getElementById('wm-bookmark-btn')
-  if (bookmarkBtn && tool.slug) {
-    let isMarked = bookmarked
-    bookmarkBtn.addEventListener('click', async () => {
-      if (!user) {
-        window.location.href = `/login/?next=${encodeURIComponent(window.location.pathname)}`
-        return
-      }
-      if (isMarked) {
-        await removeBookmark(tool.slug)
-        isMarked = false
-        bookmarkBtn.querySelector('path').setAttribute('fill', 'none')
-        bookmarkBtn.style.color = 'var(--muted)'
-        bookmarkBtn.title = 'Bookmark this tool'
-      } else {
-        await addBookmark({ slug: tool.slug, name: tool.name, url: tool.url, emoji: tool.emoji })
-        isMarked = true
-        bookmarkBtn.querySelector('path').setAttribute('fill', '#C9A84C')
-        bookmarkBtn.style.color = '#C9A84C'
-        bookmarkBtn.title = 'Remove bookmark'
-      }
-    })
-  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
