@@ -89,7 +89,7 @@ async function renderNav() {
     document.head.appendChild(s)
   }
 
-  nav.innerHTML = \`
+  nav.innerHTML = `
     <!-- Logo -->
     <a href="/" class="nav-logo">
       <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
