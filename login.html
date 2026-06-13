@@ -591,19 +591,20 @@
  
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
- 
-    const SUPABASE_URL = 'https://arxhryvhmnxkwqwnxoei.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyeGhyeXZobW54a3dxd254b2VpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMDQxNzEsImV4cCI6MjA5NjU4MDE3MX0.0FJtAGOkCflI3ZpGm9ZdfIHWr3GHj_2xqysIMIqXonI'
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
- 
+    import { supabase, redirectAfterLogin, getRedirectTarget } from '/auth.js'
+
+    // ─── Google OAuth ────────────────────────────────────────────────────────
     window.loginWithGoogle = async function() {
+      const next = new URLSearchParams(window.location.search).get('next') || ''
+      const redirectTo = 'https://westcrestmedia.in/login.html' + (next ? '?next=' + encodeURIComponent(next) : '')
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: 'https://westcrestmedia.in/login.html' }
+        options: { redirectTo }
       })
       if (error) showError(error.message)
     }
- 
+
+    // ─── Email Login / Signup ────────────────────────────────────────────────
     window.loginWithEmail = async function(email, password) {
       const btn = document.getElementById('email-login-btn')
       const mode = btn.dataset.mode
@@ -628,15 +629,17 @@
         btn.textContent = 'Create Account'
         return
       }
-      showUserPanel(data.user)
+      redirectAfterLogin()
     }
- 
+
+    // ─── Logout ──────────────────────────────────────────────────────────────
     window.logout = async function() {
       await supabase.auth.signOut()
       document.getElementById('user-panel').style.display = 'none'
       document.getElementById('auth-box').style.display = 'block'
     }
- 
+
+    // ─── Toggle Login / Signup mode ──────────────────────────────────────────
     window.toggleMode = function() {
       const btn = document.getElementById('email-login-btn')
       const toggle = document.getElementById('mode-toggle')
@@ -653,28 +656,12 @@
         btn.textContent = 'Sign In'
         title.textContent = 'Welcome Back'
         subtitle.textContent = 'Sign in to access your Westcrest Media account'
-        toggle.innerHTML = "Don't have an account? <span>Create one free</span>"
+        toggle.innerHTML = "Don’t have an account? <span>Create one free</span>"
       }
       hideError()
     }
- 
-    function showUserPanel(user) {
-      document.getElementById('auth-box').style.display = 'none'
-      const panel = document.getElementById('user-panel')
-      panel.style.display = 'flex'
-      const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Creator'
-      document.getElementById('user-name').textContent = name
-      const avatarImg = document.getElementById('user-avatar')
-      const avatarLetter = document.getElementById('avatar-letter')
-      if (user.user_metadata?.avatar_url) {
-        avatarImg.src = user.user_metadata.avatar_url
-        avatarImg.style.display = 'block'
-        avatarLetter.style.display = 'none'
-      } else {
-        avatarLetter.textContent = name.charAt(0).toUpperCase()
-      }
-    }
- 
+
+    // ─── UI Helpers ──────────────────────────────────────────────────────────
     function showError(msg, success = false) {
       const el = document.getElementById('auth-error')
       el.textContent = msg
@@ -683,13 +670,13 @@
       el.style.borderColor = success ? 'rgba(76,175,80,0.3)' : 'rgba(224,82,82,0.18)'
       el.style.background = success ? 'rgba(76,175,80,0.07)' : 'rgba(224,82,82,0.07)'
     }
- 
+
     function hideError() {
       document.getElementById('auth-error').style.display = 'none'
     }
- 
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) showUserPanel(session.user)
+
+    // auth.js already session check karta hai aur redirect bhi
+    // Login.html specific: agar session hai to auth.js redirect karega automatically
   </script>
 </body>
 </html>
