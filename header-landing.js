@@ -69,7 +69,7 @@ function renderNav(user) {
         </div>
       ` : `
         <!-- Guest: Sign In button -->
-        <a href="/login.html?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
+        <a href="/login/?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
       `}
 
       <div class="hamburger" id="hamburger" onclick="toggleMobile()">

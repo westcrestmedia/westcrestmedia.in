@@ -127,7 +127,7 @@ async function renderNav() {
         </div>
       ` : `
         <!-- Guest: Sign In -->
-        <a href="/login.html?next=${encodeURIComponent(window.location.pathname)}"
+        <a href="/login/?next=${encodeURIComponent(window.location.pathname)}"
           style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
           onmouseover="this.style.background='rgba(200,169,110,0.1)'"
           onmouseout="this.style.background='transparent'">
@@ -181,7 +181,7 @@ function bindInteractions(user, tool, bookmarked) {
     let isMarked = bookmarked
     bookmarkBtn.addEventListener('click', async () => {
       if (!user) {
-        window.location.href = `/login.html?next=${encodeURIComponent(window.location.pathname)}`
+        window.location.href = `/login/?next=${encodeURIComponent(window.location.pathname)}`
         return
       }
       if (isMarked) {

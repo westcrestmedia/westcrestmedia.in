@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Westcrest Media</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --gold: #C9A84C;
+      --gold-hover: #d4b560;
+      --bg: #0b0b0b;
+      --surface: #131313;
+      --surface2: #1a1a1a;
+      --border: #242424;
+      --text: #f0ede6;
+      --muted: #666;
+      --error: #e05252;
+    }
+ 
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+ 
+    body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+ 
+    /* ═══════════════════════════
+       LEFT PANEL — Brand
+    ═══════════════════════════ */
+    .brand-panel {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 52px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    /* subtle radial glow top-right */
+    .brand-panel::after {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+ 
+    /* Logo — exact match to site */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+    }
+ 
+    .logo-wrap img {
+      height: 38px;
+      width: auto;
+    }
+ 
+    /* Middle content */
+    .brand-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 0 40px;
+    }
+ 
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+ 
+    .eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+    }
+ 
+    .brand-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(30px, 3.2vw, 46px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+ 
+    .brand-headline em {
+      font-style: italic;
+      color: var(--gold);
+    }
+ 
+    .brand-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 340px;
+      margin-bottom: 44px;
+    }
+ 
+    /* Tools grid */
+    .tools-label {
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 14px;
+    }
+ 
+    .tools-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+ 
+    .tool-pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 6px 12px;
+      font-size: 11.5px;
+      color: #888;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+ 
+    .tool-pill:hover {
+      border-color: rgba(201,168,76,0.35);
+      color: var(--gold);
+    }
+ 
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      gap: 32px;
+      margin-top: 44px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+ 
+    .stat-item {}
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #444;
+      margin-top: 4px;
+    }
+ 
+    /* Footer */
+    .brand-footer {
+      font-size: 11px;
+      color: #333;
+      margin-top: 36px;
+    }
+ 
+    /* ═══════════════════════════
+       RIGHT PANEL — Form
+    ═══════════════════════════ */
+    .form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+      background: var(--bg);
+    }
+ 
+    .form-wrap {
+      width: 100%;
+      max-width: 390px;
+    }
+ 
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+ 
+    /* Form header */
+    .form-header { margin-bottom: 32px; }
+ 
+    h1#form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+ 
+    .form-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+ 
+    /* Google button */
+    .btn-google {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 3px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 20px;
+    }
+    .btn-google:hover {
+      border-color: rgba(201,168,76,0.5);
+      background: var(--surface2);
+    }
+ 
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-size: 10.5px;
+      color: #444;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+ 
+    /* Inputs */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+ 
+    label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+ 
+    input[type="email"], input[type="password"] {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus { border-color: var(--gold); }
+    input::placeholder { color: #383838; }
+ 
+    /* Primary button */
+    .btn-primary {
+      width: 100%;
+      background: var(--gold);
+      border: none;
+      border-radius: 3px;
+      color: #0a0a0a;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 12.5px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      margin-top: 4px;
+    }
+    .btn-primary:hover { background: var(--gold-hover); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+ 
+    /* Error */
+    #auth-error {
+      display: none;
+      font-size: 12.5px;
+      color: var(--error);
+      background: rgba(224,82,82,0.07);
+      border: 1px solid rgba(224,82,82,0.18);
+      border-radius: 3px;
+      padding: 10px 13px;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+ 
+    /* Toggle */
+    .mode-toggle-wrap {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #mode-toggle {
+      font-size: 12.5px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    #mode-toggle span {
+      color: var(--gold);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    #mode-toggle:hover span { color: var(--gold-hover); }
+ 
+    /* ═══════════════════════════
+       USER PANEL (after login)
+    ═══════════════════════════ */
+    #user-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0;
+      animation: fadeUp 0.4s ease;
+    }
+ 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    .avatar-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      overflow: hidden;
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+    }
+ 
+    #user-avatar {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+ 
+    .avatar-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      color: var(--gold);
+      line-height: 1;
+    }
+ 
+    .signed-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 8px;
+    }
+ 
+    #user-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+ 
+    .user-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+ 
+    .btn-go-home {
+      background: var(--gold);
+      border: none;
+      border-radius: 3px;
+      color: #0a0a0a;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-go-home:hover { background: var(--gold-hover); }
+ 
+    .btn-signout {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-signout:hover { border-color: var(--gold); color: var(--gold); }
+ 
+    /* ═══════════════════════════
+       RESPONSIVE
+    ═══════════════════════════ */
+    @media (max-width: 720px) {
+      body { grid-template-columns: 1fr; }
+      .brand-panel { display: none; }
+      .form-panel { padding: 40px 24px; align-items: flex-start; padding-top: 56px; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- ── LEFT: Brand Panel ── -->
+  <div class="brand-panel">
+ 
+    <div class="logo-wrap">
+      <img src="https://westcrestmedia.in/images/logo.png" alt="Westcrest Media" />
+    </div>
+ 
+    <div class="brand-body">
+      <p class="eyebrow">Free Tools for Creators</p>
+ 
+      <h2 class="brand-headline">
+        Craft that makes<br /><em>brands move.</em><br />Tools that make<br /><em>creators faster.</em>
+      </h2>
+ 
+      <p class="brand-sub">
+        Professional video editing &amp; motion graphics studio — plus free browser-based tools built for editors, designers &amp; content creators. No signup. No paywalls. Just open and use.
+      </p>
+ 
+      <p class="tools-label">Free Tools — 100% Free</p>
+      <div class="tools-grid">
+        <span class="tool-pill">🖼️ Image Converter</span>
+        <span class="tool-pill">✂️ BG Remover</span>
+        <span class="tool-pill">🎨 Color Palette</span>
+        <span class="tool-pill">🎬 Thumbnail Maker</span>
+        <span class="tool-pill">🎞️ LUT Preview</span>
+        <span class="tool-pill">📐 Aspect Ratio Calc</span>
+        <span class="tool-pill">🎴 Image Prompts</span>
+        <span class="tool-pill">🎥 Video Prompts</span>
+        <span class="tool-pill">🔤 Font Pairing</span>
+        <span class="tool-pill">🗜️ Image Compressor</span>
+      </div>
+ 
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Sign-ups Needed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Free Forever</div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="brand-footer">© 2025 Westcrest Media · westcrestmedia.in</div>
+  </div>
+ 
+  <!-- ── RIGHT: Form Panel ── -->
+  <div class="form-panel">
+    <div class="form-wrap">
+ 
+      <a href="https://westcrestmedia.in" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to website
+      </a>
+ 
+      <!-- Auth Box -->
+      <div id="auth-box">
+        <div class="form-header">
+          <h1 id="form-title">Welcome Back</h1>
+          <p class="form-subtitle">Sign in to access your Westcrest Media account</p>
+        </div>
+ 
+        <button class="btn-google" onclick="loginWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.013 17.64 11.706 17.64 9.2z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </button>
+ 
+        <div class="divider"><span>or</span></div>
+ 
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+ 
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') document.getElementById('email-login-btn').click()" />
+        </div>
+ 
+        <button class="btn-primary" id="email-login-btn" data-mode="login"
+          onclick="loginWithEmail(document.getElementById('email').value, document.getElementById('password').value)">
+          Sign In
+        </button>
+ 
+        <div id="auth-error"></div>
+ 
+        <div class="mode-toggle-wrap">
+          <button id="mode-toggle" onclick="toggleMode()">
+            Don't have an account? <span>Create one free</span>
+          </button>
+        </div>
+      </div>
+ 
+      <!-- User Panel -->
+      <div id="user-panel">
+        <div class="avatar-ring">
+          <img id="user-avatar" alt="Profile photo" />
+          <span class="avatar-letter" id="avatar-letter">W</span>
+        </div>
+        <p class="signed-label">Signed in as</p>
+        <p id="user-name"></p>
+        <div class="user-actions">
+          <a href="https://westcrestmedia.in" class="btn-go-home">
+            Go to Website
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <button class="btn-signout" onclick="logout()">Sign Out</button>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
+ 
+ 
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    import { supabase, redirectAfterLogin, getRedirectTarget } from '/auth.js'
+
+    // ─── Google OAuth ────────────────────────────────────────────────────────
+    window.loginWithGoogle = async function() {
+      const next = new URLSearchParams(window.location.search).get('next') || ''
+      const redirectTo = 'https://westcrestmedia.in/login.html' + (next ? '?next=' + encodeURIComponent(next) : '')
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo }
+      })
+      if (error) showError(error.message)
+    }
+
+    // ─── Email Login / Signup ────────────────────────────────────────────────
+    window.loginWithEmail = async function(email, password) {
+      const btn = document.getElementById('email-login-btn')
+      const mode = btn.dataset.mode
+      if (!email || !password) return showError('Please fill in all fields.')
+      btn.disabled = true
+      btn.textContent = mode === 'login' ? 'Signing in…' : 'Creating account…'
+      let result
+      if (mode === 'login') {
+        result = await supabase.auth.signInWithPassword({ email, password })
+      } else {
+        result = await supabase.auth.signUp({ email, password })
+      }
+      const { data, error } = result
+      btn.disabled = false
+      if (error) {
+        showError(error.message)
+        btn.textContent = mode === 'login' ? 'Sign In' : 'Create Account'
+        return
+      }
+      if (mode === 'signup') {
+        showError('✅ Check your email to confirm your account!', true)
+        btn.textContent = 'Create Account'
+        return
+      }
+      redirectAfterLogin()
+    }
+
+    // ─── Logout ──────────────────────────────────────────────────────────────
+    window.logout = async function() {
+      await supabase.auth.signOut()
+      document.getElementById('user-panel').style.display = 'none'
+      document.getElementById('auth-box').style.display = 'block'
+    }
+
+    // ─── Toggle Login / Signup mode ──────────────────────────────────────────
+    window.toggleMode = function() {
+      const btn = document.getElementById('email-login-btn')
+      const toggle = document.getElementById('mode-toggle')
+      const title = document.getElementById('form-title')
+      const subtitle = document.querySelector('.form-subtitle')
+      if (btn.dataset.mode === 'login') {
+        btn.dataset.mode = 'signup'
+        btn.textContent = 'Create Account'
+        title.textContent = 'Create Account'
+        subtitle.textContent = 'Join Westcrest Media — free tools for creators'
+        toggle.innerHTML = 'Already have an account? <span>Sign in</span>'
+      } else {
+        btn.dataset.mode = 'login'
+        btn.textContent = 'Sign In'
+        title.textContent = 'Welcome Back'
+        subtitle.textContent = 'Sign in to access your Westcrest Media account'
+        toggle.innerHTML = "Don’t have an account? <span>Create one free</span>"
+      }
+      hideError()
+    }
+
+    // ─── UI Helpers ──────────────────────────────────────────────────────────
+    function showError(msg, success = false) {
+      const el = document.getElementById('auth-error')
+      el.textContent = msg
+      el.style.display = 'block'
+      el.style.color = success ? '#4caf50' : 'var(--error)'
+      el.style.borderColor = success ? 'rgba(76,175,80,0.3)' : 'rgba(224,82,82,0.18)'
+      el.style.background = success ? 'rgba(76,175,80,0.07)' : 'rgba(224,82,82,0.07)'
+    }
+
+    function hideError() {
+      document.getElementById('auth-error').style.display = 'none'
+    }
+
+    // auth.js already session check karta hai aur redirect bhi
+    // Login.html specific: agar session hai to auth.js redirect karega automatically
+  </script>
+</body>
+</html>
