@@ -634,31 +634,22 @@
 
     .flash { animation: flashBorder 0.6s ease; }
   
-/* ── COMMON NAV ── */
-.wc-nav {
-  position: sticky; top: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 60px;
-  background: rgba(8,8,8,0.97);
-  border-bottom: 1px solid rgba(200,169,110,0.22);
-  backdrop-filter: blur(14px);
-}
-.wc-nav-logo {
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none; color: #f5f0e8;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; font-weight: 300; letter-spacing: 0.25em;
-}
-.wc-nav-logo img { height: 26px; width: auto; }
-.wc-nav-back {
-  display: flex; align-items: center; gap: 5px;
-  color: rgba(245,240,232,0.55); text-decoration: none;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
-  transition: color .2s;
-}
-.wc-nav-back:hover { color: #c8a96e; }
-.wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wc-nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:56px;background:rgba(8,8,8,0.97);border-bottom:1px solid rgba(200,169,110,0.22);backdrop-filter:blur(14px);}
+.wc-nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:#f5f0e8;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;letter-spacing:0.25em;}
+.wc-nav-logo img{height:26px;width:auto;}
+.nav-tools-btn{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;color:rgba(245,240,232,0.55);text-decoration:none;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;transition:color .2s;cursor:pointer;background:none;border:none;padding:4px 0;height:56px;}
+.nav-tools-btn:hover{color:#c8a96e;}
+.nav-tools-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;}
+.nav-tools-btn.open svg{transform:rotate(180deg);}
+.tools-dropdown{position:absolute;top:56px;left:50%;transform:translateX(-50%);background:rgba(13,13,18,0.98);backdrop-filter:blur(24px);border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:20px;display:none;z-index:300;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.tools-dropdown.open{display:block;}
+.tools-dropdown-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;}
+.tools-col{min-width:160px;}
+.tools-col-label{font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8a96e;padding:0 10px 8px;border-bottom:1px solid rgba(200,169,110,0.22);margin-bottom:6px;}
+.tools-dropdown a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.72rem;color:rgba(245,240,232,0.55);text-decoration:none;transition:all .18s;white-space:nowrap;}
+.tools-dropdown a:hover{background:rgba(200,169,110,0.15);color:#c8a96e;}
+.tools-dropdown a.current-tool{opacity:0.35;pointer-events:none;}
+.tool-icon{font-size:0.9rem;width:20px;text-align:center;}
 
 
 /* ── BOTTOM NAV BAR ── */
@@ -831,11 +822,64 @@
 </script>
 </head>
 <body>
+
+<script src="/auth.js" type="module"></script>
+
 <nav class="wc-nav">
-  <a href="https://westcrestmedia.in/" class="wc-nav-logo"><img src="../../images/w_logo.svg" alt="Westcrest Media"></a>
-  <a href="https://westcrestmedia.in/" class="wc-nav-back">
-    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    Back to Home
+  <!-- LEFT: Logo -->
+  <a href="https://westcrestmedia.in/" class="wc-nav-logo">
+    <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
+  </a>
+
+  <!-- CENTER: All Tools dropdown trigger -->
+  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDropdown()">
+    All Tools
+    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+
+  <!-- DROPDOWN MEGA MENU -->
+  <div class="tools-dropdown" id="toolsDropdown">
+    <div class="tools-dropdown-grid">
+
+      <!-- Column 1: Image Tools -->
+      <div class="tools-col">
+        <div class="tools-col-label">🖼️ Image Tools</div>
+        <a href="/tools/image-converter/"><span class="tool-icon">🖼️</span>Image Converter</a>
+        <a href="/tools/image-compressor/"><span class="tool-icon">⚡</span>Image Compressor</a>
+        <a href="/tools/background-remover/"><span class="tool-icon">✂️</span>Background Remover</a>
+        <a href="/tools/color-palette/"><span class="tool-icon">🎨</span>Color Palette</a>
+      </div>
+
+      <!-- Column 2: Video Tools -->
+      <div class="tools-col">
+        <div class="tools-col-label">🎬 Video Tools</div>
+        <a href="/tools/thumbnail-maker/"><span class="tool-icon">🎬</span>Thumbnail Maker</a>
+        <a href="/tools/lut-studio/"><span class="tool-icon">🎞️</span>LUT Studio</a>
+        <a href="/tools/aspect-ratio/" class="current-tool"><span class="tool-icon">📐</span>Aspect Ratio Calc</a>
+      </div>
+
+      <!-- Column 3: AI & Other -->
+      <div class="tools-col">
+        <div class="tools-col-label">✨ AI & Other</div>
+        <a href="/tools/image-prompt/"><span class="tool-icon">🎴</span>Image Prompts</a>
+        <a href="/tools/video-prompt/"><span class="tool-icon">🎥</span>Video Prompts</a>
+        <a href="/tools/font-pairing/"><span class="tool-icon">🔤</span>Font Pairing</a>
+        <a href="/tools/png-to-pdf.html"><span class="tool-icon">📄</span>PNG to PDF</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Sign In / Avatar -->
+  <a href="/login.html" data-wm-signin data-wm-show="guest"
+     style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8a96e;text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
+     onmouseover="this.style.background='rgba(200,169,110,0.1)'"
+     onmouseout="this.style.background='transparent'">
+    Sign In
+  </a>
+  <a href="/login/dashboard.html" data-wm-show="authed"
+     style="display:none;width:32px;height:32px;background:rgba(200,169,110,0.12);border:1.5px solid #c8a96e;border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#c8a96e;text-decoration:none;font-family:'Syne',sans-serif;">
+    <span data-wm-user="avatar"></span>
   </a>
 </nav>
 <div class="container">
@@ -1141,9 +1185,13 @@ function fmtNum(n) {
 
 // ── CALCULATE ────────────────────────────────────────
 function calculate() {
-  const w = parseFloat(document.getElementById('inputW').value);
-  const h = parseFloat(document.getElementById('inputH').value);
-  if (!w || !h || w <= 0 || h <= 0) { resetUI(); return; }
+  const rawW = parseFloat(document.getElementById('inputW').value);
+  const rawH = parseFloat(document.getElementById('inputH').value);
+  if (!rawW || !rawH || rawW <= 0 || rawH <= 0) { resetUI(); return; }
+
+  // Convert inputs to pixels for ratio calculation
+  const { w, h } = getInputsInPx();
+  if (!w || !h) { resetUI(); return; }
 
   state.w = w; state.h = h;
   state.ratio = w / h;
@@ -1155,7 +1203,7 @@ function calculate() {
   // Update ratio display
   document.getElementById('ratioDisplay').textContent = ratioStr;
 
-  // Update preview
+  // Update preview (always uses px internally)
   updatePreview(w, h, ratioStr);
 
   // Update result cards
@@ -1163,7 +1211,19 @@ function calculate() {
   document.getElementById('res-simplified').textContent = ratioStr;
   document.getElementById('res-percent').textContent =
     ((w / (w + h)) * 100).toFixed(1) + '%';
-  document.getElementById('res-pixels').textContent = fmtNum(Math.round(w * h));
+
+  // Total area: show in correct unit
+  if (state.unit === 'px') {
+    document.getElementById('res-pixels').textContent = fmtNum(Math.round(w * h));
+    document.getElementById('rc-pixels').querySelector('.rc-label').textContent = 'Total Pixels';
+  } else if (state.unit === '%') {
+    document.getElementById('res-pixels').textContent = (rawW * rawH).toFixed(1) + ' %²';
+    document.getElementById('rc-pixels').querySelector('.rc-label').textContent = 'Total Area';
+  } else {
+    const area = (rawW * rawH).toFixed(2);
+    document.getElementById('res-pixels').textContent = area + ' ' + state.unit + '²';
+    document.getElementById('rc-pixels').querySelector('.rc-label').textContent = 'Total Area';
+  }
 
   // Flash result cards
   document.querySelectorAll('.result-card').forEach((el, i) => {
@@ -1180,7 +1240,7 @@ function calculate() {
   // Update scale
   updateScale();
 
-  // Update preset highlights
+  // Update preset highlights — always compare in px
   highlightPresets(w, h);
 }
 
@@ -1199,10 +1259,15 @@ function updatePreview(w, h, ratioStr) {
 
   box.style.width = bw + 'px';
   box.style.height = bh + 'px';
-  document.getElementById('previewDims').textContent = `${Math.round(w)} × ${Math.round(h)}`;
+
+  // Show dims in current unit
+  const rawW = parseFloat(document.getElementById('inputW').value);
+  const rawH = parseFloat(document.getElementById('inputH').value);
+  const u = getUnitLabel();
+  document.getElementById('previewDims').textContent = `${rawW}${u} × ${rawH}${u}`;
   document.getElementById('previewRatioTag').textContent = ratioStr;
-  document.getElementById('arrowW').textContent = `← ${Math.round(w)}px →`;
-  document.getElementById('arrowH').textContent = `↑ ${Math.round(h)}px ↓`;
+  document.getElementById('arrowW').textContent = `← ${rawW}${u} →`;
+  document.getElementById('arrowH').textContent = `↑ ${rawH}${u} ↓`;
 }
 
 // ── SIZES TABLE ──────────────────────────────────────
@@ -1229,21 +1294,23 @@ function updateScale() {
   if (!state.ratio) return;
   const sw = parseFloat(document.getElementById('scaleW').value);
   const sh = parseFloat(document.getElementById('scaleH').value);
+  // Scale calculator always works in px
+  const u = 'px';
 
   if (sw && !sh) {
     const newH = Math.round(sw / state.ratio);
     document.getElementById('scaleVal').textContent = `Height = ${newH}px`;
     document.getElementById('scaleLabel').textContent =
-      `${Math.round(sw)} × ${newH} — same ${(state.w/state.h).toFixed(2)}:1 ratio`;
+      `${Math.round(sw)}px × ${newH}px — same ${(state.ratio).toFixed(2)}:1 ratio`;
   } else if (sh && !sw) {
     const newW = Math.round(sh * state.ratio);
     document.getElementById('scaleVal').textContent = `Width = ${newW}px`;
     document.getElementById('scaleLabel').textContent =
-      `${newW} × ${Math.round(sh)} — same ${(state.w/state.h).toFixed(2)}:1 ratio`;
+      `${newW}px × ${Math.round(sh)}px — same ${(state.ratio).toFixed(2)}:1 ratio`;
   } else if (sw && sh) {
     const expectedH = Math.round(sw / state.ratio);
     document.getElementById('scaleVal').textContent =
-      `${Math.round(sw)} × ${Math.round(sh)}`;
+      `${Math.round(sw)}px × ${Math.round(sh)}px`;
     document.getElementById('scaleLabel').textContent =
       Math.abs(sh - expectedH) < 2
         ? '✓ Matches your aspect ratio'
@@ -1300,7 +1367,18 @@ document.getElementById('inputW').addEventListener('input', function() {
   lastChanged = 'w';
   const locked = document.getElementById('lockRatio').checked;
   if (locked && state.ratio && this.value) {
-    document.getElementById('inputH').value = Math.round(this.value / state.ratio);
+    const rawW = parseFloat(this.value);
+    if (state.unit === 'px') {
+      document.getElementById('inputH').value = Math.round(rawW / state.ratio);
+    } else if (state.unit === '%') {
+      // width% / height% ratio differs since references are different (1920 vs 1080)
+      // keep pixel ratio: rawW% of 1920 / ratio = heightPx, then convert to %
+      const wPx = (rawW / 100) * 1920;
+      const hPx = wPx / state.ratio;
+      document.getElementById('inputH').value = (hPx / 1080 * 100).toFixed(1);
+    } else {
+      document.getElementById('inputH').value = (rawW / state.ratio).toFixed(2);
+    }
   }
   calculate();
 });
@@ -1309,7 +1387,16 @@ document.getElementById('inputH').addEventListener('input', function() {
   lastChanged = 'h';
   const locked = document.getElementById('lockRatio').checked;
   if (locked && state.ratio && this.value) {
-    document.getElementById('inputW').value = Math.round(this.value * state.ratio);
+    const rawH = parseFloat(this.value);
+    if (state.unit === 'px') {
+      document.getElementById('inputW').value = Math.round(rawH * state.ratio);
+    } else if (state.unit === '%') {
+      const hPx = (rawH / 100) * 1080;
+      const wPx = hPx * state.ratio;
+      document.getElementById('inputW').value = (wPx / 1920 * 100).toFixed(1);
+    } else {
+      document.getElementById('inputW').value = (rawH * state.ratio).toFixed(2);
+    }
   }
   calculate();
 });
@@ -1339,11 +1426,75 @@ document.querySelectorAll('.preset-chip').forEach(chip => {
 });
 
 // ── UNIT SWITCHER ─────────────────────────────────────
+// Conversion factors to pixels (at 96 DPI)
+const UNIT_TO_PX = { px: 1, cm: 37.7953, 'in': 96, '%': null };
+
+function getInputsInPx() {
+  const rawW = parseFloat(document.getElementById('inputW').value);
+  const rawH = parseFloat(document.getElementById('inputH').value);
+  if (!rawW || !rawH) return { w: null, h: null };
+  if (state.unit === '%') {
+    // % means width% of a 1920 reference width, height% of 1080 reference
+    return { w: (rawW / 100) * 1920, h: (rawH / 100) * 1080 };
+  }
+  const factor = UNIT_TO_PX[state.unit] || 1;
+  return { w: rawW * factor, h: rawH * factor };
+}
+
+function pxToUnit(px) {
+  if (state.unit === 'px') return Math.round(px);
+  if (state.unit === '%') return (px / 1920 * 100).toFixed(1);
+  return (px / UNIT_TO_PX[state.unit]).toFixed(2);
+}
+
+function getUnitLabel() {
+  return state.unit === '%' ? '%' : state.unit;
+}
+
 document.querySelectorAll('.unit-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
+    const prevUnit = state.unit;
     state.unit = this.dataset.unit;
+
+    // Convert existing input values to new unit
+    const wEl = document.getElementById('inputW');
+    const hEl = document.getElementById('inputH');
+    const wPx = parseFloat(wEl.value);
+    const hPx = parseFloat(hEl.value);
+
+    if (wPx && hPx) {
+      // Convert from previous unit to px first, then to new unit
+      let wInPx, hInPx;
+      if (prevUnit === '%') {
+        wInPx = (wPx / 100) * 1920;
+        hInPx = (hPx / 100) * 1080;
+      } else {
+        const prevFactor = UNIT_TO_PX[prevUnit] || 1;
+        wInPx = wPx * prevFactor;
+        hInPx = hPx * prevFactor;
+      }
+
+      if (state.unit === 'px') {
+        wEl.value = Math.round(wInPx);
+        hEl.value = Math.round(hInPx);
+      } else if (state.unit === '%') {
+        wEl.value = (wInPx / 1920 * 100).toFixed(1);
+        hEl.value = (hInPx / 1080 * 100).toFixed(1);
+      } else {
+        const newFactor = UNIT_TO_PX[state.unit];
+        wEl.value = (wInPx / newFactor).toFixed(2);
+        hEl.value = (hInPx / newFactor).toFixed(2);
+      }
+
+      // Update labels
+      document.querySelector('[for="inputW"], .input-group label').textContent = 'WIDTH';
+      document.querySelectorAll('.input-group label')[0].textContent = 'WIDTH (' + getUnitLabel() + ')';
+      document.querySelectorAll('.input-group label')[1].textContent = 'HEIGHT (' + getUnitLabel() + ')';
+
+      calculate();
+    }
   });
 });
 
@@ -1373,6 +1524,35 @@ window.addEventListener('resize', () => {
   const wrap  = document.getElementById('sizesTableWrap');
   btn.style.display = isMob ? 'block' : 'none';
   if (!isMob) wrap.style.display = 'block';
+});
+</script>
+
+<script>
+function toggleToolsDropdown() {
+  const btn = document.getElementById('toolsBtn');
+  const menu = document.getElementById('toolsDropdown');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    menu.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('toolsBtn');
+  const menu = document.getElementById('toolsDropdown');
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('toolsDropdown').classList.remove('open');
+    document.getElementById('toolsBtn').classList.remove('open');
+  }
 });
 </script>
 </body>

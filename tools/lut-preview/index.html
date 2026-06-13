@@ -416,6 +416,21 @@ input[type=file]{display:none}
 .wc-nav-back:hover { color: #c8a96e; }
 .wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+/* TOOLS DROPDOWN */
+.nav-tools-btn{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;color:rgba(245,240,232,0.55);font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;transition:color .2s;cursor:pointer;background:none;border:none;padding:4px 0;height:60px;}
+.nav-tools-btn:hover{color:#c8a96e;}
+.nav-tools-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;}
+.nav-tools-btn.open svg{transform:rotate(180deg);}
+.tools-dropdown{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(13,13,18,0.98);backdrop-filter:blur(24px);border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:20px;display:none;z-index:300;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.tools-dropdown.open{display:block;}
+.tools-dropdown-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;}
+.tools-col{min-width:160px;}
+.tools-col-label{font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8a96e;padding:0 10px 8px;border-bottom:1px solid rgba(200,169,110,0.22);margin-bottom:6px;}
+.tools-dropdown a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.72rem;color:rgba(245,240,232,0.55);text-decoration:none;transition:all .18s;white-space:nowrap;}
+.tools-dropdown a:hover{background:rgba(200,169,110,0.15);color:#c8a96e;}
+.tools-dropdown a.current-tool{opacity:0.35;pointer-events:none;}
+.tool-icon{font-size:0.9rem;width:20px;text-align:center;}
+
 
 /* ══════════════════════════════════════════
    MOBILE UI  ≤768px — completely separate layout
@@ -665,13 +680,51 @@ input[type=file]{display:none}
 </script>
 </head>
 <body>
+<script src="/auth.js" type="module"></script>
 <nav class="wc-nav">
   <a href="https://westcrestmedia.in/" class="wc-nav-logo">
-    <img src="../../images/w_logo.svg" alt="Westcrest Media">
+    <img src="/images/w_logo.svg" alt="Westcrest Media">
   </a>
-  <a href="https://westcrestmedia.in/" class="wc-nav-back">
-    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    Back to Home
+
+  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDropdown()">
+    All Tools
+    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+
+  <div class="tools-dropdown" id="toolsDropdown">
+    <div class="tools-dropdown-grid">
+      <div class="tools-col">
+        <div class="tools-col-label">🖼️ Image Tools</div>
+        <a href="/tools/image-converter/"><span class="tool-icon">🖼️</span>Image Converter</a>
+        <a href="/tools/image-compressor/"><span class="tool-icon">⚡</span>Image Compressor</a>
+        <a href="/tools/background-remover/"><span class="tool-icon">✂️</span>Background Remover</a>
+        <a href="/tools/color-palette/"><span class="tool-icon">🎨</span>Color Palette</a>
+      </div>
+      <div class="tools-col">
+        <div class="tools-col-label">🎬 Video Tools</div>
+        <a href="/tools/thumbnail-maker/"><span class="tool-icon">🎬</span>Thumbnail Maker</a>
+        <a href="/tools/lut-studio/" class="current-tool"><span class="tool-icon">🎞️</span>LUT Studio</a>
+        <a href="/tools/aspect-ratio/"><span class="tool-icon">📐</span>Aspect Ratio Calc</a>
+      </div>
+      <div class="tools-col">
+        <div class="tools-col-label">✨ AI & Other</div>
+        <a href="/tools/image-prompt/"><span class="tool-icon">🎴</span>Image Prompts</a>
+        <a href="/tools/video-prompt/"><span class="tool-icon">🎥</span>Video Prompts</a>
+        <a href="/tools/font-pairing/"><span class="tool-icon">🔤</span>Font Pairing</a>
+        <a href="/tools/png-to-pdf.html"><span class="tool-icon">📄</span>PNG to PDF</a>
+      </div>
+    </div>
+  </div>
+
+  <a href="/login.html" data-wm-signin data-wm-show="guest"
+     style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#c8a96e;text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
+     onmouseover="this.style.background='rgba(200,169,110,0.1)'"
+     onmouseout="this.style.background='transparent'">
+    Sign In
+  </a>
+  <a href="/login/dashboard.html" data-wm-show="authed"
+     style="display:none;width:32px;height:32px;background:rgba(200,169,110,0.12);border:1.5px solid #c8a96e;border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#c8a96e;text-decoration:none;font-family:'Syne',sans-serif;">
+    <span data-wm-user="avatar"></span>
   </a>
 </nav>
 
@@ -1857,6 +1910,29 @@ document.getElementById('imgInput').addEventListener('change', () => {
 window.addEventListener('DOMContentLoaded', mobShow);
 window.addEventListener('resize', () => {
   if(isMobile()){ mobShow(); if(srcImage) mobRedraw(); }
+});
+</script>
+
+<script>
+function toggleToolsDropdown() {
+  const btn = document.getElementById('toolsBtn');
+  const menu = document.getElementById('toolsDropdown');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) { menu.classList.remove('open'); btn.classList.remove('open'); }
+  else { menu.classList.add('open'); btn.classList.add('open'); }
+}
+document.addEventListener('click', function(e) {
+  const btn = document.getElementById('toolsBtn');
+  const menu = document.getElementById('toolsDropdown');
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open'); btn.classList.remove('open');
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('toolsDropdown').classList.remove('open');
+    document.getElementById('toolsBtn').classList.remove('open');
+  }
 });
 </script>
 </body>
