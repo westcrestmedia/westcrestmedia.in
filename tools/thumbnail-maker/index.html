@@ -14,7 +14,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thumbnail Maker — Westcrest</title>
+<title>Thumbnail Maker | Westcrest</title>
 <meta name="description" content="Create professional YouTube and social media thumbnails in your browser. No upload needed.">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
@@ -31,7 +31,7 @@
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="https://westcrestmedia.in/tools/thumbnail-maker/">
-<meta property="og:title"       content="Free Thumbnail Maker — YouTube & Social Media | Westcrest Media">
+<meta property="og:title"       content="Free Thumbnail Maker | YouTube & Social Media | Westcrest Media">
 <meta property="og:description" content="Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD. No upload needed.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta property="og:locale"      content="en_GB">
@@ -40,7 +40,7 @@
 <!-- Twitter Card -->
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@WestcrestMedia">
-<meta name="twitter:title"       content="Free Thumbnail Maker — YouTube & Social Media | Westcrest Media">
+<meta name="twitter:title"       content="Free Thumbnail Maker | YouTube & Social Media | Westcrest Media">
 <meta name="twitter:description" content="Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD.">
 <meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <style>
@@ -595,7 +595,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Free Thumbnail Maker — YouTube & Social Media",
+  "name": "Free Thumbnail Maker | YouTube & Social Media",
   "url": "https://westcrestmedia.in/tools/thumbnail-maker/",
   "description": "Create professional YouTube and social media thumbnails in your browser. Add text, images, shapes and export in HD.",
   "publisher": { "@type": "Organization", "name": "Westcrest Media", "url": "https://westcrestmedia.in" }
@@ -607,25 +607,17 @@
 </head>
 <body>
 <nav class="wc-nav">
-  <a href="https://westcrestmedia.in/" class="wc-nav-logo">
-    <img src="../../images/w_logo.svg" alt="Westcrest Media">
-    Westcrest Media
-  </a>
+  <a href="https://westcrestmedia.in/" class="wc-nav-logo"><img src="../../images/w_logo.svg" alt="Westcrest Media"></a>
   <a href="https://westcrestmedia.in/" class="wc-nav-back">
     <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     Back to Home
   </a>
 </nav>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo" style="font-family:'Syne',sans-serif;">THUMBCRAFT <span>by Westcrest</span></div>
-  <div class="header-actions">
-    <button class="btn" onclick="clearCanvas()">🗑 Clear</button>
-    <button class="btn" onclick="undo()">↩ Undo</button>
-    <button class="btn btn-success" onclick="exportPNG()">⬇ Export PNG</button>
-    <button class="btn btn-primary" onclick="exportJPG()">⬇ Export JPG</button>
-  </div>
+<!-- TOOL HERO -->
+<div style="text-align:center;padding:1.1rem 1.5rem 0.6rem;border-bottom:1px solid rgba(200,169,110,0.12);">
+  <p style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(200,169,110,0.7);margin-bottom:.3rem">Free Tool · No Upload · No Limits</p>
+  <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,3.4rem);font-weight:400;letter-spacing:-.01em;color:#f5f0e8;line-height:1.2;margin:0">Thumbnail <em style="font-style:italic;color:#c8a96e">Maker</em></h1>
 </div>
 
 <!-- PLATFORM BAR -->
@@ -644,6 +636,14 @@
     <input type="number" id="ch" placeholder="H" value="720" min="100" max="4096">
     <button class="btn" style="padding:4px 10px;font-size:11px;" onclick="applyCustom()">Apply</button>
   </div>
+</div>
+
+<!-- ACTION BAR -->
+<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+  <button class="btn" onclick="clearCanvas()">🗑 Clear</button>
+  <button class="btn" onclick="undo()">↩ Undo</button>
+  <button class="btn btn-success" onclick="exportPNG()">⬇ Export PNG</button>
+  <button class="btn btn-primary" onclick="exportJPG()">⬇ Export JPG</button>
 </div>
 
 <!-- MAIN -->
@@ -917,15 +917,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
-<nav class="wc-bottom-nav">
-  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
-  <div class="wc-bn-divider"></div>
-  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
-  <div class="wc-bn-divider"></div>
-  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
-</nav>
-
-<!-- HOW IT WORKS + FAQ + EXPLORE — same style as Font Pairing Tool -->
+<!-- HOW IT WORKS + FAQ + EXPLORE | same style as Font Pairing Tool -->
 <style>
 .wc-section { width:100%; max-width:1200px; margin:0 auto; padding:0 2.5rem 4rem; }
 .wc-sec-tag { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#c8a96e; margin-bottom:.5rem; display:block; padding:0; }
@@ -963,7 +955,7 @@
     <div class="wc-step">
       <p class="wc-step-n">01</p>
       <h4>Choose Your Platform</h4>
-      <p>Pick from YouTube, Instagram, Twitter or Facebook presets — or enter a custom size. Canvas adjusts instantly.</p>
+      <p>Pick from YouTube, Instagram, Twitter or Facebook presets | or enter a custom size. Canvas adjusts instantly.</p>
     </div>
     <div class="wc-step">
       <p class="wc-step-n">02</p>
@@ -973,7 +965,7 @@
     <div class="wc-step">
       <p class="wc-step-n">03</p>
       <h4>Export in HD</h4>
-      <p>Download as PNG or JPG at full resolution. No account, no watermark — everything runs locally in your browser.</p>
+      <p>Download as PNG or JPG at full resolution. No account, no watermark | everything runs locally in your browser.</p>
     </div>
   </div>
 </section>
@@ -985,7 +977,7 @@
   <div style="border-top:1px solid rgba(245,240,232,0.12);">
   <div class="wc-faq-item" onclick="this.classList.toggle('open')">
     <div class="wc-faq-q">Is the thumbnail maker free to use? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="wc-faq-a">Yes — completely free, no account required. Everything runs in your browser with no server upload.</div>
+    <div class="wc-faq-a">Yes | completely free, no account required. Everything runs in your browser with no server upload.</div>
   </div>
   <div class="wc-faq-item" onclick="this.classList.toggle('open')">
     <div class="wc-faq-q">What image formats can I export? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
@@ -997,7 +989,7 @@
   </div>
   <div class="wc-faq-item" onclick="this.classList.toggle('open')">
     <div class="wc-faq-q">Are my images uploaded to a server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="wc-faq-a">No — images never leave your device. All editing happens locally in your browser using the Canvas API.</div>
+    <div class="wc-faq-a">No | images never leave your device. All editing happens locally in your browser using the Canvas API.</div>
   </div>
   </div>
 </section>
@@ -1019,12 +1011,12 @@
     </a>
     <a href="https://westcrestmedia.in/tools/background-remover/" class="wc-tool-card">
       <div class="wc-tool-icon">✂️</div>
-      <div><div class="wc-tool-name">Background Remover</div><div class="wc-tool-desc">Remove BG from images in seconds.</div></div>
+      <div><div class="wc-tool-name">AI Background Remover Pro</div><div class="wc-tool-desc">Remove backgrounds, add shadows, reposition subjects and export creator-ready images.</div></div>
       <span class="wc-tool-arrow">→</span>
     </a>
     <a href="https://westcrestmedia.in/tools/lut-preview/" class="wc-tool-card">
       <div class="wc-tool-icon">🎞️</div>
-      <div><div class="wc-tool-name">LUT Preview</div><div class="wc-tool-desc">Preview colour grades on your footage.</div></div>
+      <div><div class="wc-tool-name">LUT Studio</div><div class="wc-tool-desc">Create, preview, customize and export professional LUTs online.</div></div>
       <span class="wc-tool-arrow">→</span>
     </a>
   </div>

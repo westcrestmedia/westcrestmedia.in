@@ -14,8 +14,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LUT Preview Tool — Westcrest</title>
-<meta name="description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<title>LUT Studio | Westcrest</title>
+<meta name="description" content="Create, preview, customize and export professional LUTs online. Apply cinematic colour grades to your photos and export as .cube file for DaVinci Resolve.">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
@@ -29,18 +29,18 @@
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="https://westcrestmedia.in/tools/lut-preview/">
-<meta property="og:title"       content="LUT Preview Tool — Westcrest Media">
-<meta property="og:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<meta property="og:title"       content="LUT Studio | Westcrest Media">
+<meta property="og:description" content="Create, preview, customize and export professional LUTs online. Apply cinematic colour grades and export as .cube file for DaVinci Resolve.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta property="og:locale"      content="en_GB">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:locale:alternate" content="en_CA">
 <!-- Twitter Card -->
 <meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="LUT Preview Tool — Westcrest Media">
-<meta name="twitter:description" content="Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.">
+<meta name="twitter:title"       content="LUT Studio | Westcrest Media">
+<meta name="twitter:description" content="Create, preview, customize and export professional LUTs online. Apply cinematic colour grades and export as .cube for DaVinci Resolve.">
 <meta name="twitter:image"       content="https://westcrestmedia.in/images/og-image.jpg">
-<meta name="keywords" content="LUT preview tool, cinematic LUT, colour grading online, free LUT tool, .cube file export, DaVinci Resolve LUT, photo colour grade">
+<meta name="keywords" content="LUT studio online, LUT preview tool, create LUT online, cinematic LUT, colour grading online, free LUT tool, .cube file export, DaVinci Resolve LUT, photo colour grade, professional LUT maker">
 <meta name="theme-color" content="#C9A84C">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap');
@@ -404,8 +404,6 @@ input[type=file]{display:none}
 .wc-nav-logo {
   display: flex; align-items: center; gap: 10px;
   text-decoration: none; color: #f5f0e8;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; font-weight: 300; letter-spacing: 0.25em;
 }
 .wc-nav-logo img { height: 26px; width: auto; }
 .wc-nav-back {
@@ -417,54 +415,6 @@ input[type=file]{display:none}
 }
 .wc-nav-back:hover { color: #c8a96e; }
 .wc-nav-back svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-
-/* ── BOTTOM NAV BAR ── */
-.wc-bottom-nav {
-  position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: rgba(12,12,16,0.92);
-  border: 1px solid rgba(200,169,110,0.3);
-  border-radius: 99px;
-  padding: 6px 8px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-.wc-bottom-nav a {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(220,210,195,0.7);
-  text-decoration: none;
-  font-family: 'DM Mono', monospace, sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 99px;
-  transition: all 0.18s;
-  white-space: nowrap;
-}
-.wc-bottom-nav a:hover {
-  color: #c8a96e;
-  background: rgba(200,169,110,0.1);
-}
-.wc-bottom-nav .wc-bn-divider {
-  width: 1px;
-  height: 16px;
-  background: rgba(200,169,110,0.2);
-  flex-shrink: 0;
-}
-@media (max-width: 480px) {
-  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
-  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
-}
 
 
 /* ══════════════════════════════════════════
@@ -691,9 +641,6 @@ input[type=file]{display:none}
     text-align: center;
   }
 
-  /* Hide desktop .wc-bottom-nav, use footer links on mobile */
-  .wc-bottom-nav { display: none !important; }
-
   /* Explore tools — stack to 1 col on very small */
   .wc-explore-grid { grid-template-columns: repeat(2,1fr) !important; }
 }
@@ -705,13 +652,13 @@ input[type=file]{display:none}
 
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"LUT Preview Tool","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Preview and apply LUTs to your images online. Export .cube files free. Tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"LUT Studio","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Create, preview, customize and export professional LUTs online. Apply cinematic colour grades and export .cube files free. Tool by Westcrest Media.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Preview Tool","item":"https://westcrestmedia.in/tools/lut-preview/"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Studio","item":"https://westcrestmedia.in/tools/lut-preview/"}]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","name":"LUT Preview Tool — Westcrest Media","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Preview and apply cinematic LUT colour grades to your photos. Export as .cube file for DaVinci Resolve.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Preview Tool","item":"https://westcrestmedia.in/tools/lut-preview/"}]}}
+{"@context":"https://schema.org","@type":"WebPage","name":"LUT Studio — Westcrest Media","url":"https://westcrestmedia.in/tools/lut-preview/","description":"Create, preview, customize and export professional LUTs online. Apply cinematic colour grades to your photos and export as .cube file for DaVinci Resolve.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"LUT Studio","item":"https://westcrestmedia.in/tools/lut-preview/"}]}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a LUT?","acceptedAnswer":{"@type":"Answer","text":"A LUT (Look-Up Table) is a colour grading preset that maps the colours in your image to a new set of colours. They are widely used in film, photography, and video production to achieve consistent cinematic looks."}},{"@type":"Question","name":"Can I use my own .cube LUT file?","acceptedAnswer":{"@type":"Answer","text":"Yes! Click the + .CUBE FILE button in the header or drag and drop a .cube file onto the tool. Your custom LUT will be applied instantly and you can also export it back as a .cube."}},{"@type":"Question","name":"Does this work with DaVinci Resolve?","acceptedAnswer":{"@type":"Answer","text":"Yes. The exported .cube files are standard 33x33x33 3D LUTs, fully compatible with DaVinci Resolve, Adobe Premiere Pro, Final Cut Pro, and most other professional editing software."}},{"@type":"Question","name":"Is my image uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely in your browser using the HTML5 Canvas API. Your image never leaves your device with no server uploads and no data stored."}}]}
@@ -721,13 +668,18 @@ input[type=file]{display:none}
 <nav class="wc-nav">
   <a href="https://westcrestmedia.in/" class="wc-nav-logo">
     <img src="../../images/w_logo.svg" alt="Westcrest Media">
-    Westcrest Media
   </a>
   <a href="https://westcrestmedia.in/" class="wc-nav-back">
     <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     Back to Home
   </a>
 </nav>
+
+<!-- TOOL HERO -->
+<div style="text-align:center;padding:1.1rem 1.5rem 0.6rem;border-bottom:1px solid rgba(200,169,110,0.12);">
+  <p style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(200,169,110,0.7);margin-bottom:.3rem">Free Tool · No Upload · No Limits</p>
+  <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,3.4rem);font-weight:400;letter-spacing:-.01em;color:#f5f0e8;line-height:1.2;margin:0">LUT <em style="font-style:italic;color:#c8a96e">Studio</em></h1>
+</div>
 
 <!-- HEADER -->
 <div class="header">
@@ -961,7 +913,7 @@ input[type=file]{display:none}
 
 <!-- Mobile LUT chips -->
 <div id="mobLutSection" style="display:none;">
-  <div class="mob-ctrl-title">Built-in LUTs — scroll to browse</div>
+  <div class="mob-ctrl-title">Built-in LUTs · scroll to browse</div>
   <div id="mobLutScroll"></div>
 </div>
 
@@ -1058,7 +1010,7 @@ input[type=file]{display:none}
   <div class="wc-steps">
     <div class="wc-step"><p class="wc-step-n">01</p><h4>Load Your Image</h4><p>Upload any JPG, PNG, or WEBP photo. You can also drag and drop directly onto the tool.</p></div>
     <div class="wc-step"><p class="wc-step-n">02</p><h4>Choose a LUT Grade</h4><p>Select from 10+ built-in cinematic LUTs or upload your own .cube file. Adjust intensity, exposure, contrast, and saturation in real time.</p></div>
-    <div class="wc-step"><p class="wc-step-n">03</p><h4>Export PNG or .CUBE</h4><p>Download the graded image as a PNG, or export the LUT itself as a .cube file — ready to use in DaVinci Resolve or Premiere Pro.</p></div>
+    <div class="wc-step"><p class="wc-step-n">03</p><h4>Export PNG or .CUBE</h4><p>Download the graded image as a PNG, or export the LUT itself as a .cube file, ready to use in DaVinci Resolve or Premiere Pro.</p></div>
   </div>
 </section>
 
@@ -1080,7 +1032,7 @@ input[type=file]{display:none}
   </div>
   <div class="wc-faq-item" onclick="this.classList.toggle('open')">
     <div class="wc-faq-q">Is my image uploaded to a server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-    <div class="wc-faq-a">No. All processing happens entirely in your browser using the HTML5 Canvas API. Your image never leaves your device — no server uploads, no data stored.</div>
+    <div class="wc-faq-a">No. All processing happens entirely in your browser using the HTML5 Canvas API. Your image never leaves your device. No server uploads, no data stored.</div>
   </div>
 </section>
 
@@ -1091,7 +1043,7 @@ input[type=file]{display:none}
   <div class="wc-explore-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.2rem;">
     <a href="https://westcrestmedia.in/tools/background-remover/" style="text-decoration:none;" class="wc-tool-card">
       <div class="wc-tool-icon">✂️</div>
-      <div><div class="wc-tool-name">Background Remover</div><div class="wc-tool-desc">Remove backgrounds from any photo instantly.</div></div>
+      <div><div class="wc-tool-name">AI Background Remover Pro</div><div class="wc-tool-desc">Remove backgrounds, add shadows, reposition subjects and export creator-ready images.</div></div>
       <span class="wc-tool-arrow">→</span>
     </a>
     <a href="https://westcrestmedia.in/tools/image-prompt/" style="text-decoration:none;" class="wc-tool-card">
@@ -1121,14 +1073,6 @@ input[type=file]{display:none}
     <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
   </div>
 </footer>
-
-<nav class="wc-bottom-nav">
-  <a href="https://westcrestmedia.in/"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
-  <div class="wc-bn-divider"></div>
-  <a href="https://westcrestmedia.in/#tools"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="7" height="7"/><rect x="15" y="3" width="7" height="7"/><rect x="15" y="14" width="7" height="7"/><rect x="2" y="14" width="7" height="7"/></svg>All Tools</a>
-  <div class="wc-bn-divider"></div>
-  <a href="https://westcrestmedia.in/#contact"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact</a>
-</nav>
 
 <script>
 // ─── STATE ──────────────────────────────────────────────
@@ -1714,7 +1658,7 @@ function exportCubeFile(){
 
   setTimeout(()=>{
     let lines = [];
-    lines.push('# Generated by Westcrest LUT Preview Tool');
+    lines.push('# Generated by Westcrest LUT Studio');
     lines.push('# westcrestmedia.in');
     lines.push('# LUT Name: WC_' + name);
     lines.push('# Baked: Exposure=' + exposure + ' Contrast=' + contrast + ' Saturation=' + Math.round(saturation*100) + ' Intensity=' + Math.round(intensity*100) + '%');
