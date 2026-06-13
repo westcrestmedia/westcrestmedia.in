@@ -533,48 +533,6 @@
   .tool-footer a { color: var(--text-muted); text-decoration: none; font-size: 12px; }
   .tool-footer a:hover { color: var(--gold); }
   .footer-links { display: flex; gap: 1.5rem; }
-
-  /* FLOATING BOTTOM NAV */
-  .float-nav {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    background: rgba(18,18,24,0.92);
-    border: 1px solid rgba(200,169,110,0.25);
-    border-radius: 99px;
-    backdrop-filter: blur(16px);
-    padding: 10px 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-  }
-  .float-nav a {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: rgba(245,240,232,0.55);
-    text-decoration: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 4px 14px;
-    border-radius: 99px;
-    transition: color 0.2s, background 0.2s;
-    white-space: nowrap;
-  }
-  .float-nav a:hover { color: var(--gold); }
-  .float-nav .fn-divider {
-    width: 1px;
-    height: 14px;
-    background: rgba(200,169,110,0.2);
-    margin: 0 2px;
-  }
-  .float-nav svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  body { padding-bottom: 80px; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -584,55 +542,15 @@
 </head>
 <body>
 
-<script src="/auth.js" type="module"></script>
+<!-- HEADER SCRIPT -->
+<script type="module">
+  import '/header-tool.js'
+  window.__WM_TOOL__ = { slug: 'image-converter', name: 'Image Converter', emoji: '🖼️', url: '/tools/image-converter/' }
+</script>
 
 <!-- NAV -->
-<nav class="tool-nav">
-  <a href="https://westcrestmedia.in/" class="logo">
-    <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
-  </a>
-
-  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDropdown()">
-    All Tools
-    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
-
-  <div class="tools-dropdown" id="toolsDropdown">
-    <div class="tools-dropdown-grid">
-      <div class="tools-col">
-        <div class="tools-col-label">🖼️ Image Tools</div>
-        <a href="/tools/image-converter/" class="current-tool"><span class="tool-icon">🖼️</span>Image Converter</a>
-        <a href="/tools/image-compressor/"><span class="tool-icon">⚡</span>Image Compressor</a>
-        <a href="/tools/background-remover/"><span class="tool-icon">✂️</span>Background Remover</a>
-        <a href="/tools/color-palette/"><span class="tool-icon">🎨</span>Color Palette</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">🎬 Video Tools</div>
-        <a href="/tools/thumbnail-maker/"><span class="tool-icon">🎬</span>Thumbnail Maker</a>
-        <a href="/tools/lut-studio/"><span class="tool-icon">🎞️</span>LUT Studio</a>
-        <a href="/tools/aspect-ratio/"><span class="tool-icon">📐</span>Aspect Ratio Calc</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">✨ AI & Other</div>
-        <a href="/tools/image-prompt/"><span class="tool-icon">🎴</span>Image Prompts</a>
-        <a href="/tools/video-prompt/"><span class="tool-icon">🎥</span>Video Prompts</a>
-        <a href="/tools/font-pairing/"><span class="tool-icon">🔤</span>Font Pairing</a>
-        <a href="/tools/png-to-pdf.html"><span class="tool-icon">📄</span>PNG to PDF</a>
-      </div>
-    </div>
-  </div>
-
-  <a href="/login.html" data-wm-signin data-wm-show="guest"
-     style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
-     onmouseover="this.style.background='rgba(200,169,110,0.1)'"
-     onmouseout="this.style.background='transparent'">
-    Sign In
-  </a>
-  <a href="/login/dashboard.html" data-wm-show="authed"
-     style="display:none;width:32px;height:32px;background:rgba(200,169,110,0.12);border:1.5px solid var(--gold);border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--gold);text-decoration:none;font-family:'Syne',sans-serif;">
-    <span data-wm-user="avatar"></span>
-  </a>
-</nav>
+<!-- NAV -->
+<nav class="nav" id="tool-nav"></nav>
 
 <!-- HERO -->
 <section class="tool-hero">
@@ -814,24 +732,6 @@
     <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
   </div>
 </footer>
-
-<!-- FLOATING NAV -->
-<nav class="float-nav">
-  <a href="https://westcrestmedia.in/">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    Home
-  </a>
-  <div class="fn-divider"></div>
-  <a href="https://westcrestmedia.in/#tools">
-    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    All Tools
-  </a>
-  <div class="fn-divider"></div>
-  <a href="https://westcrestmedia.in/#contact">
-    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    Contact
-  </a>
-</nav>
 
 <script>
 // jsPDF loaded via CDN

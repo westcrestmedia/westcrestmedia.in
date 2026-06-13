@@ -211,54 +211,14 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:non
 </head>
 <body>
 
-<script src="/auth.js" type="module"></script>
+<!-- HEADER SCRIPT -->
+<script type="module">
+  import '/header-tool.js'
+  window.__WM_TOOL__ = { slug: 'image-compressor', name: 'Image Compressor', emoji: '⚡', url: '/tools/image-compressor/' }
+</script>
 
-<nav class="nav">
-  <a href="https://westcrestmedia.in/" class="nav-logo">
-    <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
-  </a>
-
-  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDropdown()">
-    All Tools
-    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
-
-  <div class="tools-dropdown" id="toolsDropdown">
-    <div class="tools-dropdown-grid">
-      <div class="tools-col">
-        <div class="tools-col-label">🖼️ Image Tools</div>
-        <a href="/tools/image-converter/"><span class="tool-icon">🖼️</span>Image Converter</a>
-        <a href="/tools/image-compressor/" class="current-tool"><span class="tool-icon">⚡</span>Image Compressor</a>
-        <a href="/tools/background-remover/"><span class="tool-icon">✂️</span>Background Remover</a>
-        <a href="/tools/color-palette/"><span class="tool-icon">🎨</span>Color Palette</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">🎬 Video Tools</div>
-        <a href="/tools/thumbnail-maker/"><span class="tool-icon">🎬</span>Thumbnail Maker</a>
-        <a href="/tools/lut-studio/"><span class="tool-icon">🎞️</span>LUT Studio</a>
-        <a href="/tools/aspect-ratio/"><span class="tool-icon">📐</span>Aspect Ratio Calc</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">✨ AI & Other</div>
-        <a href="/tools/image-prompt/"><span class="tool-icon">🎴</span>Image Prompts</a>
-        <a href="/tools/video-prompt/"><span class="tool-icon">🎥</span>Video Prompts</a>
-        <a href="/tools/font-pairing/"><span class="tool-icon">🔤</span>Font Pairing</a>
-        <a href="/tools/png-to-pdf.html"><span class="tool-icon">📄</span>PNG to PDF</a>
-      </div>
-    </div>
-  </div>
-
-  <a href="/login.html" data-wm-signin data-wm-show="guest"
-     style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
-     onmouseover="this.style.background='rgba(200,169,110,0.1)'"
-     onmouseout="this.style.background='transparent'">
-    Sign In
-  </a>
-  <a href="/login/dashboard.html" data-wm-show="authed"
-     style="display:none;width:32px;height:32px;background:rgba(200,169,110,0.12);border:1.5px solid var(--gold);border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--gold);text-decoration:none;font-family:'Syne',sans-serif;">
-    <span data-wm-user="avatar"></span>
-  </a>
-</nav>
+<!-- NAV -->
+<nav class="nav" id="tool-nav"></nav>
 
 <section class="hero">
   <div class="hero-badge"><div class="pulse"></div>Universal · Any Format · Batch Mode</div>

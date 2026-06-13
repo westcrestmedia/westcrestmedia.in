@@ -75,8 +75,6 @@
   --muted:    rgba(245,240,232,0.55);
   --danger:   #e05555;
   --success:  #4caf80;
-  --nav-h:    60px;
-  --bottom-nav-clearance: 80px;
 }
 
 /* ─── RESET ─────────────────────────────────────────── */
@@ -88,7 +86,6 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
-  padding-bottom: var(--bottom-nav-clearance);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -403,29 +400,6 @@ select:focus { border-color: var(--gold); }
 .footer-links a { color: #6a6258; text-decoration: none; font-size: 11px; white-space: nowrap; transition: color .2s; }
 .footer-links a:hover { color: var(--gold); }
 
-/* ─── BOTTOM NAV ─────────────────────────────────────── */
-.wc-bottom-nav {
-  position: fixed; bottom: 1.25rem; left: 50%;
-  transform: translateX(-50%); z-index: 9999;
-  display: flex; align-items: center; gap: .25rem;
-  background: rgba(12,12,16,0.95);
-  border: 1px solid rgba(200,169,110,0.3);
-  border-radius: 99px; padding: 6px 8px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  max-width: calc(100vw - 2rem);
-}
-.wc-bottom-nav a {
-  display: flex; align-items: center; gap: 5px;
-  color: rgba(220,210,195,0.7); text-decoration: none;
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 7px 14px; border-radius: 99px;
-  transition: all 0.18s; white-space: nowrap; min-height: 36px;
-}
-.wc-bottom-nav a:hover, .wc-bottom-nav a:focus { color: var(--gold); background: rgba(200,169,110,0.1); }
-.wc-bn-divider { width: 1px; height: 16px; background: rgba(200,169,110,0.2); flex-shrink: 0; }
-
 /* ════════════════════════════════════════════════════════
    RESPONSIVE BREAKPOINTS
    ════════════════════════════════════════════════════════ */
@@ -459,8 +433,6 @@ select:focus { border-color: var(--gold); }
 /* ── Small mobile ≤400px ─────────────────────────────── */
 @media(max-width:400px){
   .nav-logo span { display: none; }
-  .wc-bottom-nav { bottom: 0.75rem; padding: 5px 6px; }
-  .wc-bottom-nav a { font-size: 9px; padding: 5px 10px; gap: 4px; }
   .container { padding: 1.25rem 0.75rem 1rem; }
   .section, .wc-section { padding: 0 0.75rem 2rem; }
   .shot-grid { grid-template-columns: repeat(4,1fr); }
@@ -483,55 +455,15 @@ select:focus { border-color: var(--gold); }
 </head>
 <body>
 
-<script src="/auth.js" type="module"></script>
+<!-- HEADER SCRIPT -->
+<script type="module">
+  import '/header-tool.js'
+  window.__WM_TOOL__ = { slug: 'video-prompt', name: 'Video Prompt Generator', emoji: '🎥', url: '/tools/video-prompt/' }
+</script>
 
 <!-- NAV -->
-<nav class="tool-nav">
-  <a href="https://westcrestmedia.in/" class="logo">
-    <img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;">
-  </a>
-
-  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDropdown()">
-    All Tools
-    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
-
-  <div class="tools-dropdown" id="toolsDropdown">
-    <div class="tools-dropdown-grid">
-      <div class="tools-col">
-        <div class="tools-col-label">🖼️ Image Tools</div>
-        <a href="/tools/image-converter/"><span class="tool-icon">🖼️</span>Image Converter</a>
-        <a href="/tools/image-compressor/"><span class="tool-icon">⚡</span>Image Compressor</a>
-        <a href="/tools/background-remover/"><span class="tool-icon">✂️</span>Background Remover</a>
-        <a href="/tools/color-palette/"><span class="tool-icon">🎨</span>Color Palette</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">🎬 Video Tools</div>
-        <a href="/tools/thumbnail-maker/"><span class="tool-icon">🎬</span>Thumbnail Maker</a>
-        <a href="/tools/lut-studio/"><span class="tool-icon">🎞️</span>LUT Studio</a>
-        <a href="/tools/aspect-ratio/"><span class="tool-icon">📐</span>Aspect Ratio Calc</a>
-      </div>
-      <div class="tools-col">
-        <div class="tools-col-label">✨ AI & Other</div>
-        <a href="/tools/image-prompt/"><span class="tool-icon">🎴</span>Image Prompts</a>
-        <a href="/tools/video-prompt/" class="current-tool"><span class="tool-icon">🎥</span>Video Prompts</a>
-        <a href="/tools/font-pairing/"><span class="tool-icon">🔤</span>Font Pairing</a>
-        <a href="/tools/png-to-pdf.html"><span class="tool-icon">📄</span>PNG to PDF</a>
-      </div>
-    </div>
-  </div>
-
-  <a href="/login.html" data-wm-signin data-wm-show="guest"
-     style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;"
-     onmouseover="this.style.background='rgba(200,169,110,0.1)'"
-     onmouseout="this.style.background='transparent'">
-    Sign In
-  </a>
-  <a href="/login/dashboard.html" data-wm-show="authed"
-     style="display:none;width:32px;height:32px;background:rgba(200,169,110,0.12);border:1.5px solid var(--gold);border-radius:50%;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--gold);text-decoration:none;font-family:'Syne',sans-serif;">
-    <span data-wm-user="avatar"></span>
-  </a>
-</nav>
+<!-- NAV -->
+<nav class="nav" id="tool-nav"></nav>
 
 <div class="container">
 
@@ -791,7 +723,6 @@ select:focus { border-color: var(--gold); }
   </div>
 </footer>
 
-<!-- BOTTOM NAV -->
 <script>
   let numVariations = 1;
 
