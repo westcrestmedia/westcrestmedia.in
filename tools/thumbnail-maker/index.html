@@ -82,12 +82,24 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:46px;display:flex;align-items:center;gap:10px;}
 .header-actions{margin-left:auto;display:flex;gap:6px;align-items:center;}
 
-/* STICKY TOP WRAPPER */
+/* STICKY NAV */
 .sticky-top{position:sticky;top:0;z-index:190;}
 .nav{height:56px;background:rgba(8,8,8,0.97);border-bottom:1px solid rgba(200,169,110,0.22);}
 
-/* TOOLBAR */
+/* HERO */
+.hero-section{text-align:center;padding:2.5rem 1.5rem 2rem;max-width:640px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(200,169,110,0.15);border:1px solid rgba(200,169,110,0.22);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 15px;border-radius:99px;margin-bottom:1.2rem;}
+.pulse{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5.5vw,3.4rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:.8rem;}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{color:rgba(245,240,232,0.55);font-size:15px;line-height:1.65;font-weight:300;}
+
+/* STICKY TOOLBAR */
+.sticky-toolbar{position:sticky;top:56px;z-index:180;}
 .toolbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;}
+.toolbar .spacer{flex:1;}
+.toolbar-btn{font-size:12px;}
 .btn{padding:6px 14px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 .btn:hover{background:var(--bg4);border-color:var(--accent);}
 .btn-primary{background:var(--gold);border-color:var(--gold);color:var(--bg);}
@@ -97,10 +109,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .btn-danger{background:rgba(255,80,80,0.1);border-color:rgba(255,80,80,0.3);color:#ff7070;}
 .btn-danger:hover{background:rgba(255,80,80,0.2);}
 
-/* TOOLBAR (clean - dropdown buttons only) */
-.toolbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;}
-.toolbar .spacer{flex:1;}
-.toolbar-btn{font-size:12px;}
+/* FORMAT/ALIGN MODALS */
 .format-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
 .plat-btn{padding:8px 10px;border-radius:var(--radius);font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all 0.15s;white-space:nowrap;text-align:center;}
 .plat-btn:hover{border-color:var(--accent);color:var(--accent);}
@@ -112,7 +121,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 .align-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 
 /* MAIN */
-.main{display:flex;flex:1;overflow:hidden;height:calc(100vh - 102px);}
+.main{display:flex;flex:1;overflow:hidden;height:calc(100vh - 56px - 46px);}
 
 /* LEFT PANEL */
 .left-panel{width:258px;min-width:258px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
@@ -341,7 +350,17 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 <div class="sticky-top">
 <!-- NAV -->
 <nav class="nav" id="tool-nav"></nav>
+</div><!-- /sticky-top -->
 
+<!-- HERO -->
+<section class="hero-section">
+  <div class="hero-badge"><div class="pulse"></div>Free Tool · No Upload · No Limits</div>
+  <h1 class="hero-title">Thumbnail <em>Maker Pro</em></h1>
+  <p class="hero-sub">Design YouTube & social media thumbnails in your browser. Add text, images, shapes and effects — export as PNG, JPG or WebP instantly.</p>
+</section>
+
+<!-- STICKY TOOLBAR -->
+<div class="sticky-toolbar">
 <!-- TOOLBAR -->
 <div class="toolbar">
   <div class="hdr-group">
@@ -363,8 +382,12 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
   <button class="zoom-btn" onclick="zoom(-0.15)" style="border-radius:6px;width:24px;height:24px;">−</button>
   <span id="zoomLabel2" style="font-size:11px;font-weight:700;min-width:32px;text-align:center;color:var(--text);">60%</span>
   <button class="zoom-btn" onclick="zoom(0.15)" style="border-radius:6px;width:24px;height:24px;">+</button>
+  <div class="hdr-sep"></div>
+  <button class="btn btn-success" onclick="exportPNG()">PNG</button>
+  <button class="btn" onclick="exportWebP()" style="font-size:10px;padding:5px 10px;">WebP</button>
+  <button class="btn btn-primary" onclick="exportJPG()">JPG</button>
 </div>
-</div><!-- /sticky-top -->
+</div><!-- /sticky-toolbar -->
 
 <!-- FORMAT MODAL -->
 <div class="modal-overlay" id="formatModal" onclick="if(event.target===this)this.classList.remove('show')">
