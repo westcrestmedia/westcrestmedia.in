@@ -354,6 +354,10 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 }
 
 /* ========== APP MODE (MOBILE FULL-SCREEN EDITOR) ========== */
+.app-top-bar{display:none;}
+.app-bottom-nav{display:none;}
+.app-sheet-backdrop{display:none;}
+
 @media(max-width:768px){
   body.app-mode .hero-section,
   body.app-mode .sticky-toolbar,
@@ -366,15 +370,32 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
   body.app-mode .nav-tools-btn{display:none !important;}
 
   body.app-mode .main{
-    height:calc(100dvh - 50px - 56px) !important;
+    height:calc(100dvh - 50px - 56px - 40px) !important;
     flex-direction:column !important;
     overflow:hidden !important;
   }
+  body.app-mode .app-top-bar{
+    display:flex !important;align-items:center;gap:6px;
+    height:40px;padding:0 8px;background:var(--bg2);
+    border-bottom:1px solid var(--border);flex-shrink:0;
+    overflow-x:auto;scrollbar-width:none;
+  }
+  body.app-mode .app-top-bar::-webkit-scrollbar{display:none;}
+  .app-top-btn{
+    flex-shrink:0;background:var(--bg3);border:1px solid var(--border2);
+    color:var(--text);border-radius:6px;padding:5px 10px;font-size:11px;
+    font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Syne',sans-serif;
+  }
+  .app-top-btn:active{background:var(--bg4);}
+  .app-top-spacer{flex:1;min-width:8px;}
+  .app-top-zoom{font-size:11px;font-weight:700;color:var(--text);min-width:34px;text-align:center;flex-shrink:0;}
+
   body.app-mode .canvas-area{
     order:1 !important;width:100% !important;height:100% !important;
     min-height:unset !important;padding:10px !important;
     border-bottom:none !important;background:#06060a !important;
   }
+  body.app-mode .zoom-bar{display:none !important;}
   body.app-mode .canvas-wrapper{transform-origin:center center !important;}
 
   /* Panels become bottom sheets */
@@ -403,13 +424,13 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 
   /* Sheet backdrop */
   .app-sheet-backdrop{
-    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:399;
+    position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:399;
   }
   body.app-mode .app-sheet-backdrop.show{display:block;}
 
   /* BOTTOM APP NAV BAR */
   .app-bottom-nav{
-    display:none;position:fixed;left:0;right:0;bottom:0;height:56px;z-index:500;
+    position:fixed;left:0;right:0;bottom:0;height:56px;z-index:500;
     background:rgba(10,10,12,0.98);backdrop-filter:blur(16px);
     border-top:1px solid rgba(200,169,110,0.22);
     align-items:stretch;justify-content:space-around;
@@ -1184,6 +1205,18 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
   </div>
 </div>
 
+<!-- APP MODE TOP BAR -->
+<div class="app-top-bar" id="appTopBar">
+  <button class="app-top-btn" onclick="undo()" title="Undo">↩</button>
+  <button class="app-top-btn" onclick="redo()" title="Redo">↪</button>
+  <button class="app-top-btn" onclick="openModal('formatModal')" title="Format"><span id="appFormatLabel">1280×720</span> ▾</button>
+  <div class="app-top-spacer"></div>
+  <button class="app-top-btn" onclick="zoomMobile(-0.15)">−</button>
+  <span class="app-top-zoom" id="appZoomLabel">60%</span>
+  <button class="app-top-btn" onclick="zoomMobile(0.15)">+</button>
+  <button class="app-top-btn" onclick="fitCanvasToMobile(true)">Fit</button>
+</div>
+
 <!-- CANVAS -->
 <div class="canvas-area" id="canvasArea">
   <div class="canvas-wrapper" id="canvasWrapper">
@@ -1713,6 +1746,8 @@ function applyCanvasScale() {
   document.getElementById('zoomLabel2').textContent = pct;
   document.getElementById('canvasInfo').textContent = canvasW+'×'+canvasH;
   document.getElementById('canvasInfo2').textContent = canvasW+' × '+canvasH+' px';
+  const az=document.getElementById('appZoomLabel'); if(az) az.textContent=pct;
+  const af=document.getElementById('appFormatLabel'); if(af) af.textContent=canvasW+'×'+canvasH;
   redraw(); // changing canvas.width/height clears the buffer - always redraw after
 }
 
@@ -2986,12 +3021,21 @@ document.addEventListener('keydown',e=>{
 
 // ===================== MOBILE CANVAS FIT =====================
 function fitCanvasToMobile(){
-  if(window.innerWidth>768){document.getElementById('canvasWrapper').style.transform='';return;}
-  const wrapper=document.getElementById('canvasWrapper'),area=document.querySelector('.canvas-area');
-  if(!wrapper||!area)return;
-  const availW=area.clientWidth-16;
-  if(canvasW>availW){const sc=availW/canvasW;wrapper.style.transformOrigin='top center';wrapper.style.transform='scale('+sc+')';wrapper.style.width=canvasW+'px';area.style.minHeight=(canvasH*sc+16)+'px';}
-  else{wrapper.style.transform='';area.style.minHeight='';}
+  const wrapper=document.getElementById('canvasWrapper');
+  if(window.innerWidth>768){wrapper.style.transform='';return;}
+  wrapper.style.transform='';
+  fitCanvas();
+  updateAppZoomLabel();
+}
+function zoomMobile(delta){
+  zoom(delta);
+  updateAppZoomLabel();
+}
+function updateAppZoomLabel(){
+  const el=document.getElementById('appZoomLabel');
+  if(el) el.textContent=Math.round(scale*100)+'%';
+  const fl=document.getElementById('appFormatLabel');
+  if(fl) fl.textContent=canvasW+'×'+canvasH;
 }
 window.addEventListener('resize',fitCanvasToMobile);
 
