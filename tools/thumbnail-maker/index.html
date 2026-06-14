@@ -783,6 +783,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 
       <div class="section-title">Fill (Text Color)</div>
       <div class="form-row">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <input type="checkbox" id="txtFillEnabled" checked onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
+          <label for="txtFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
+        </div>
         <label class="form-label">Fill Type</label>
         <select class="form-input" id="txtFillType" onchange="updateSelectedText();toggleTxtFillUI()">
           <option value="solid">Solid Color</option>
@@ -811,6 +815,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 
       <div class="section-title">Stroke (Outline)</div>
       <div class="form-row">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <input type="checkbox" id="txtStrokeEnabled" onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
+          <label for="txtStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
+        </div>
         <div class="color-row">
           <input type="color" id="txtOutlineColor" value="#000000" oninput="updateSelectedText()">
           <input class="form-input" type="number" id="txtOutlineWidth" value="0" min="0" max="40" placeholder="Width px" oninput="updateSelectedText()">
@@ -892,6 +900,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
     <div class="tab-pane" id="pane-shape">
       <div class="section-title">Fill</div>
       <div class="form-row">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <input type="checkbox" id="shapeFillEnabled" checked onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
+          <label for="shapeFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
+        </div>
         <label class="form-label">Fill Type</label>
         <select class="form-input" id="shapeFillType" onchange="updateShapeProps();toggleShapeFillUI()">
           <option value="solid">Solid Color</option>
@@ -923,6 +935,10 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 
       <div class="section-title">Stroke (Border)</div>
       <div class="form-row">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <input type="checkbox" id="shapeStrokeEnabled" onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
+          <label for="shapeStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
+        </div>
         <div class="color-row">
           <input type="color" id="shapeBorder" value="#ffffff" oninput="updateShapeProps()">
           <input class="form-input" type="number" id="shapeBorderW" value="0" min="0" max="50" placeholder="Width px" oninput="updateShapeProps()">
@@ -945,20 +961,34 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 
       <div class="section-title">Glow / Shadow</div>
       <div class="form-row">
+        <label class="form-label">Glow Color</label>
         <div class="color-row">
           <input type="color" id="shapeGlowColor" value="#c8a96e" oninput="updateShapeProps()">
-          <input class="form-input" type="number" id="shapeGlowSize" value="0" min="0" max="100" placeholder="Glow size" oninput="updateShapeProps()">
+          <input class="form-input" type="text" id="shapeGlowColorHex" value="#c8a96e" oninput="syncShapeGlowColor()">
         </div>
       </div>
-      <div class="form-row-2">
-        <div>
-          <label class="form-label">Shadow Blur</label>
-          <input class="form-input" type="number" id="shapeShadowBlur" value="0" min="0" max="80" oninput="updateShapeProps()">
+      <div class="form-row">
+        <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="shapeGlowVal">0</span></div>
+        <input type="range" id="shapeGlowSize" min="0" max="100" value="0" oninput="updateShapeProps();document.getElementById('shapeGlowVal').textContent=this.value">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Shadow Color</label>
+        <div class="color-row">
+          <input type="color" id="shapeShadowColor" value="#000000" oninput="updateShapeProps()">
+          <input class="form-input" type="text" id="shapeShadowColorHex" value="#000000" oninput="syncShapeShadowColor()">
         </div>
-        <div>
-          <label class="form-label">Shadow Color</label>
-          <input type="color" id="shapeShadowColor" value="#000000" oninput="updateShapeProps()" style="width:100%;height:30px;">
-        </div>
+      </div>
+      <div class="form-row">
+        <div class="inline-lv"><label class="form-label">Shadow Blur</label><span class="inline-val" id="shapeShadowBlurVal">0</span></div>
+        <input type="range" id="shapeShadowBlur" min="0" max="80" value="0" oninput="updateShapeProps();document.getElementById('shapeShadowBlurVal').textContent=this.value">
+      </div>
+      <div class="form-row">
+        <div class="inline-lv"><label class="form-label">Shadow X</label><span class="inline-val" id="shapeShadowXVal">4</span></div>
+        <input type="range" id="shapeShadowX" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowXVal').textContent=this.value">
+      </div>
+      <div class="form-row">
+        <div class="inline-lv"><label class="form-label">Shadow Y</label><span class="inline-val" id="shapeShadowYVal">4</span></div>
+        <input type="range" id="shapeShadowY" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowYVal').textContent=this.value">
       </div>
 
       <div class="section-title">Quick Color Palette</div>
@@ -1248,22 +1278,55 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield;}
 
       <div class="section-title">Drop Shadow</div>
       <div class="blur-controls">
-        <div class="form-row-3">
-          <div><label class="form-label">Blur</label><input class="form-input" type="number" id="fxShadowBlur" value="0" min="0" max="80" oninput="updateFx()"></div>
-          <div><label class="form-label">X</label><input class="form-input" type="number" id="fxShadowX" value="4" min="-50" max="50" oninput="updateFx()"></div>
-          <div><label class="form-label">Y</label><input class="form-input" type="number" id="fxShadowY" value="4" min="-50" max="50" oninput="updateFx()"></div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Blur (Softness)</label><span class="inline-val" id="fxShadowBlurVal">0</span></div>
+          <input type="range" id="fxShadowBlur" min="0" max="80" value="0" oninput="updateFx();document.getElementById('fxShadowBlurVal').textContent=this.value">
         </div>
-        <div class="color-row">
-          <input type="color" id="fxShadowColor" value="#000000" oninput="updateFx()">
-          <input class="form-input" type="number" id="fxShadowOpacity" value="80" min="0" max="100" placeholder="Opacity" oninput="updateFx()">
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Spread (Distance)</label><span class="inline-val" id="fxShadowSpreadVal">0</span></div>
+          <input type="range" id="fxShadowSpread" min="0" max="60" value="0" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowSpreadVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Angle (Direction)</label><span class="inline-val" id="fxShadowAngleVal">135°</span></div>
+          <input type="range" id="fxShadowAngle" min="0" max="360" value="135" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowAngleVal').textContent=this.value+'°'">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="fxShadowOpVal">80%</span></div>
+          <input type="range" id="fxShadowOpacity" min="0" max="100" value="80" oninput="updateFx();document.getElementById('fxShadowOpVal').textContent=this.value+'%'">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Offset X</label><span class="inline-val" id="fxShadowXVal">4</span></div>
+          <input type="range" id="fxShadowX" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowXVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Offset Y</label><span class="inline-val" id="fxShadowYVal">4</span></div>
+          <input type="range" id="fxShadowY" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowYVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Shadow Color</label>
+          <div class="color-row">
+            <input type="color" id="fxShadowColor" value="#000000" oninput="updateFx()">
+            <input class="form-input" type="text" id="fxShadowColorHex" value="#000000" oninput="syncFxShadowColor()">
+          </div>
         </div>
       </div>
 
       <div class="section-title">Glow Effect</div>
       <div class="blur-controls">
-        <div class="color-row" style="margin-bottom:6px;">
-          <input type="color" id="fxGlowColor" value="#c8a96e" oninput="updateFx()">
-          <input class="form-input" type="number" id="fxGlowSize" value="0" min="0" max="100" placeholder="Glow px" oninput="updateFx()">
+        <div class="form-row">
+          <label class="form-label">Glow Color</label>
+          <div class="color-row">
+            <input type="color" id="fxGlowColor" value="#c8a96e" oninput="updateFx()">
+            <input class="form-input" type="text" id="fxGlowColorHex" value="#c8a96e" oninput="syncFxGlowColor()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="fxGlowVal">0</span></div>
+          <input type="range" id="fxGlowSize" min="0" max="100" value="0" oninput="updateFx();document.getElementById('fxGlowVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Glow Intensity</label><span class="inline-val" id="fxGlowIntVal">50%</span></div>
+          <input type="range" id="fxGlowIntensity" min="0" max="100" value="50" oninput="updateFx();document.getElementById('fxGlowIntVal').textContent=this.value+'%'">
         </div>
       </div>
 
@@ -2015,7 +2078,8 @@ function redraw() {
       ctx.shadowOffsetX=layer.shadowX||0; ctx.shadowOffsetY=layer.shadowY||0;
     }
     if(layer.glowSize>0 && layer.type==='shape') {
-      ctx.shadowColor=layer.glowColor||'#ffffff'; ctx.shadowBlur=layer.glowSize;
+      const glowAlpha=(layer.glowIntensity!=null?layer.glowIntensity:50)/100;
+      ctx.shadowColor=hexToRgba(layer.glowColor||'#ffffff',glowAlpha); ctx.shadowBlur=layer.glowSize;
     }
 
     // Clip-based masks (shape crops)
@@ -2190,23 +2254,25 @@ function drawText(layer) {
   lines.forEach((line,li) => {
     const ty = startY+li*lineGap;
     // Outline stroke
-    if(layer.outlineWidth>0){
+    if(layer.outlineWidth>0 && layer.strokeEnabled!==false){
       ctx.strokeStyle=layer.outlineColor||'#000';
       ctx.lineWidth=layer.outlineWidth*2;ctx.lineJoin='round';
       ctx.strokeText(line,tx,ty);
     }
     // Fill
-    const fillType = layer.txtFillType||'solid';
-    if(fillType==='transparent'){/* skip fill */}
-    else if(fillType==='gradient'&&layer.grad1&&layer.grad2){
-      const dirs={'to right':[layer.x,ty,layer.x+layer.w,ty],'to bottom':[tx,layer.y,tx,layer.y+layer.h],'to bottom right':[layer.x,layer.y,layer.x+layer.w,layer.y+layer.h]};
-      const d=dirs[layer.txtGradDir||'to right']||[layer.x,ty,layer.x+layer.w,ty];
-      const grd=ctx.createLinearGradient(...d);
-      grd.addColorStop(0,layer.grad1); grd.addColorStop(1,layer.grad2);
-      ctx.fillStyle=grd;
-    } else {ctx.fillStyle=layer.color||'#ffffff';}
-
-    if(fillType!=='transparent') ctx.fillText(line,tx,ty);
+    if(layer.fillEnabled===false){/* skip fill */}
+    else {
+      const fillType = layer.txtFillType||'solid';
+      if(fillType==='transparent'){/* skip fill */}
+      else if(fillType==='gradient'&&layer.grad1&&layer.grad2){
+        const dirs={'to right':[layer.x,ty,layer.x+layer.w,ty],'to bottom':[tx,layer.y,tx,layer.y+layer.h],'to bottom right':[layer.x,layer.y,layer.x+layer.w,layer.y+layer.h]};
+        const d=dirs[layer.txtGradDir||'to right']||[layer.x,ty,layer.x+layer.w,ty];
+        const grd=ctx.createLinearGradient(...d);
+        grd.addColorStop(0,layer.grad1); grd.addColorStop(1,layer.grad2);
+        ctx.fillStyle=grd;
+      } else {ctx.fillStyle=layer.color||'#ffffff';}
+      if(fillType!=='transparent') ctx.fillText(line,tx,ty);
+    }
 
     // Underline
     if(layer.underline){const m=ctx.measureText(line);const ux=layer.align==='center'?tx-m.width/2:layer.align==='right'?tx-m.width:tx;ctx.beginPath();ctx.strokeStyle=layer.color||'#fff';ctx.lineWidth=Math.max(1,layer.size/20);ctx.moveTo(ux,ty+layer.size*.6);ctx.lineTo(ux+m.width,ty+layer.size*.6);ctx.stroke();}
@@ -2317,7 +2383,10 @@ function clipPathForShape(shape,x,y,w,h){
 function drawShape(layer) {
   ctx.save();
   // Glow/shadow
-  if(layer.glowSize>0){ctx.shadowColor=layer.glowColor||'#fff';ctx.shadowBlur=layer.glowSize;}
+  if(layer.glowSize>0){
+    const glowAlpha=(layer.glowIntensity!=null?layer.glowIntensity:50)/100;
+    ctx.shadowColor=hexToRgba(layer.glowColor||'#fff',glowAlpha);ctx.shadowBlur=layer.glowSize;
+  }
   if(layer.shadowBlur>0){ctx.shadowColor=hexToRgba(layer.shadowColor||'#000',0.8);ctx.shadowBlur=layer.shadowBlur;ctx.shadowOffsetX=layer.shadowX||4;ctx.shadowOffsetY=layer.shadowY||4;}
 
   // Fill style
@@ -2363,8 +2432,8 @@ function drawShape(layer) {
   } else {
     ctx.beginPath();
     (shapeFns[layer.shape]||shapeFns.rect)();
-    if(layer.fillType!=='none') ctx.fill();
-    if(bw>0) ctx.stroke();
+    if(layer.fillEnabled!==false && layer.fillType!=='none') ctx.fill();
+    if(layer.strokeEnabled!==false && bw>0) ctx.stroke();
   }
   ctx.setLineDash([]);
   ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
@@ -2485,7 +2554,7 @@ function onRightClick(e){e.preventDefault();if(selectedIndex<0)return;const m=do
 function hideCtx(){document.getElementById('ctxMenu').style.display='none';}
 
 // ===================== ADD LAYERS =====================
-function newLayerBase(extra){return{opacity:100,rotation:0,visible:true,blendMode:'source-over',skewX:0,skewY:0,fxBlur:0,fxBlurType:'gaussian',fxMotionAngle:0,shadowBlur:0,shadowX:4,shadowY:4,shadowColor:'#000000',fxShadowOpacity:80,glowSize:0,glowColor:'#c8a96e',mask:'none',...extra};}
+function newLayerBase(extra){return{opacity:100,rotation:0,visible:true,blendMode:'source-over',skewX:0,skewY:0,fxBlur:0,fxBlurType:'gaussian',fxMotionAngle:0,shadowBlur:0,shadowX:4,shadowY:4,shadowColor:'#000000',fxShadowOpacity:80,shadowAngle:135,shadowSpread:6,glowSize:0,glowColor:'#c8a96e',glowIntensity:50,mask:'none',fillEnabled:true,strokeEnabled:false,...extra};}
 
 function addText(preset){
   saveHistory();
@@ -2637,6 +2706,9 @@ function toggleDrawingMode(){
 
 function paintAt(x,y,isStart){
   if(selectedIndex<0||layers[selectedIndex].type!=='draw')return;
+  // Clamp coordinates within canvas bounds
+  x=Math.max(0,Math.min(x,canvasW));
+  y=Math.max(0,Math.min(y,canvasH));
   const layer=layers[selectedIndex];
   const dctx=layer.drawCanvas.getContext('2d');
   const {type,color,size,opacity}=brushSettings;
@@ -2729,10 +2801,12 @@ function updateSelectedText(){
   l.fontWeight=document.getElementById('txtWeight').value;
   l.color=document.getElementById('txtColor').value;
   document.getElementById('txtColorHex').value=l.color;
+  l.fillEnabled=document.getElementById('txtFillEnabled').checked;
   l.txtFillType=document.getElementById('txtFillType').value;
   l.grad1=document.getElementById('txtGrad1').value;
   l.grad2=document.getElementById('txtGrad2').value;
   l.txtGradDir=document.getElementById('txtGradDir').value;
+  l.strokeEnabled=document.getElementById('txtStrokeEnabled').checked;
   l.letterSpacing=parseInt(document.getElementById('txtSpacing').value)||0;
   l.lineH=parseFloat(document.getElementById('txtLineH').value)||1.2;
   l.outlineColor=document.getElementById('txtOutlineColor').value;
@@ -2779,6 +2853,21 @@ function toggleTextStyle(style){
 
 function highlightFont(){const val=document.getElementById('txtFont').value;document.querySelectorAll('.font-preview-btn').forEach(b=>{b.classList.toggle('active',b.dataset.fontName===val);});}
 
+function syncFxShadowColor(){const v=document.getElementById('fxShadowColorHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('fxShadowColor').value=v;updateFx();}}
+function syncFxGlowColor(){const v=document.getElementById('fxGlowColorHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('fxGlowColor').value=v;updateFx();}}
+function syncShapeGlowColor(){const v=document.getElementById('shapeGlowColorHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('shapeGlowColor').value=v;updateShapeProps();}}
+function syncShapeShadowColor(){const v=document.getElementById('shapeShadowColorHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('shapeShadowColor').value=v;updateShapeProps();}}
+function syncShadowAngleXY(){
+  const angle=parseInt(document.getElementById('fxShadowAngle').value)||135;
+  const spread=parseInt(document.getElementById('fxShadowSpread').value)||0;
+  const rad=angle*Math.PI/180;
+  const x=Math.round(Math.cos(rad)*spread);
+  const y=Math.round(Math.sin(rad)*spread);
+  const xs=document.getElementById('fxShadowX');const ys=document.getElementById('fxShadowY');
+  if(xs){xs.value=x;const xv=document.getElementById('fxShadowXVal');if(xv)xv.textContent=x;}
+  if(ys){ys.value=y;const yv=document.getElementById('fxShadowYVal');if(yv)yv.textContent=y;}
+}
+
 function syncColor(prefix){
   if(prefix==='txtShadow'){const v=document.getElementById('txtShadowColorHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('txtShadowColor').value=v;updateSelectedText();}return;}
   const v=document.getElementById(prefix+'ColorHex').value;
@@ -2788,14 +2877,19 @@ function syncColor(prefix){
 function updateShapeProps(){
   if(selectedIndex<0||layers[selectedIndex].type!=='shape')return;
   const l=layers[selectedIndex];
+  l.fillEnabled=document.getElementById('shapeFillEnabled').checked;
   l.fillType=document.getElementById('shapeFillType').value;
   l.fill=document.getElementById('shapeFill').value;document.getElementById('shapeFillHex').value=l.fill;
   l.gradC1=document.getElementById('shapeGrad1').value;l.gradC2=document.getElementById('shapeGrad2').value;
   l.gradDir=document.getElementById('shapeGradDir').value;
+  l.strokeEnabled=document.getElementById('shapeStrokeEnabled').checked;
   l.borderColor=document.getElementById('shapeBorder').value;l.borderWidth=parseInt(document.getElementById('shapeBorderW').value)||0;
   l.dashStyle=document.getElementById('shapeDash').value;l.cornerRadius=parseInt(document.getElementById('shapeCorner').value)||0;
   l.glowColor=document.getElementById('shapeGlowColor').value;l.glowSize=parseInt(document.getElementById('shapeGlowSize').value)||0;
-  l.shadowBlur=parseInt(document.getElementById('shapeShadowBlur').value)||0;l.shadowColor=document.getElementById('shapeShadowColor').value;
+  l.shadowBlur=parseInt(document.getElementById('shapeShadowBlur').value)||0;
+  l.shadowColor=document.getElementById('shapeShadowColor').value;
+  l.shadowX=parseInt(document.getElementById('shapeShadowX').value)||4;
+  l.shadowY=parseInt(document.getElementById('shapeShadowY').value)||4;
   redraw();
 }
 function syncShapeFill(){const v=document.getElementById('shapeFillHex').value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('shapeFill').value=v;if(selectedIndex>=0){layers[selectedIndex].fill=v;redraw();}}}
@@ -2913,12 +3007,24 @@ function updateFx(){
   document.getElementById('motionBlurAngle').style.display=l.fxBlurType==='motion'?'block':'none';
   l.fxMotionAngle=parseInt(document.getElementById('fxMotionAngle').value)||0;
   l.shadowBlur=parseInt(document.getElementById('fxShadowBlur').value)||0;
-  l.shadowX=parseInt(document.getElementById('fxShadowX').value)||0;
-  l.shadowY=parseInt(document.getElementById('fxShadowY').value)||0;
+  l.shadowAngle=parseInt(document.getElementById('fxShadowAngle').value)||135;
+  l.shadowSpread=parseInt(document.getElementById('fxShadowSpread').value)||0;
+  // Auto-compute X/Y from angle+spread, allow manual X/Y to override
+  const rad=l.shadowAngle*Math.PI/180;
+  const autoX=Math.round(Math.cos(rad)*l.shadowSpread);
+  const autoY=Math.round(Math.sin(rad)*l.shadowSpread);
+  // Only auto-sync X/Y when spread or angle was the trigger
+  const xSlider=document.getElementById('fxShadowX');
+  const ySlider=document.getElementById('fxShadowY');
+  l.shadowX=parseInt(xSlider.value)||autoX;
+  l.shadowY=parseInt(ySlider.value)||autoY;
   l.shadowColor=document.getElementById('fxShadowColor').value;
+  const shCol=document.getElementById('fxShadowColorHex');if(shCol)shCol.value=l.shadowColor;
   l.fxShadowOpacity=parseInt(document.getElementById('fxShadowOpacity').value)||80;
   l.glowColor=document.getElementById('fxGlowColor').value;
+  const glCol=document.getElementById('fxGlowColorHex');if(glCol)glCol.value=l.glowColor;
   l.glowSize=parseInt(document.getElementById('fxGlowSize').value)||0;
+  l.glowIntensity=parseInt(document.getElementById('fxGlowIntensity').value)||50;
   l.opacity=parseInt(document.getElementById('fxOpacity').value)||100;
   l.blendMode=document.getElementById('fxBlend').value;
   l.rotation=parseInt(document.getElementById('fxRotation').value)||0;
@@ -2944,8 +3050,16 @@ function updateFxPanel(){
   if(selectedIndex<0)return;const l=layers[selectedIndex];
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
   set('fxBlur',l.fxBlur||0);document.getElementById('fxBlurVal').textContent=l.fxBlur||0;
-  set('fxShadowBlur',l.shadowBlur||0);set('fxShadowX',l.shadowX||0);set('fxShadowY',l.shadowY||0);
-  set('fxGlowSize',l.glowSize||0);
+  set('fxShadowBlur',l.shadowBlur||0);const sbv=document.getElementById('fxShadowBlurVal');if(sbv)sbv.textContent=l.shadowBlur||0;
+  set('fxShadowAngle',l.shadowAngle!=null?l.shadowAngle:135);const sav=document.getElementById('fxShadowAngleVal');if(sav)sav.textContent=(l.shadowAngle!=null?l.shadowAngle:135)+'°';
+  set('fxShadowSpread',l.shadowSpread||0);const spv=document.getElementById('fxShadowSpreadVal');if(spv)spv.textContent=l.shadowSpread||0;
+  set('fxShadowX',l.shadowX||0);const sxv=document.getElementById('fxShadowXVal');if(sxv)sxv.textContent=l.shadowX||0;
+  set('fxShadowY',l.shadowY||0);const syv=document.getElementById('fxShadowYVal');if(syv)syv.textContent=l.shadowY||0;
+  set('fxShadowOpacity',l.fxShadowOpacity!=null?l.fxShadowOpacity:80);const sop=document.getElementById('fxShadowOpVal');if(sop)sop.textContent=(l.fxShadowOpacity!=null?l.fxShadowOpacity:80)+'%';
+  if(l.shadowColor){set('fxShadowColor',l.shadowColor);set('fxShadowColorHex',l.shadowColor);}
+  set('fxGlowSize',l.glowSize||0);const gv=document.getElementById('fxGlowVal');if(gv)gv.textContent=l.glowSize||0;
+  set('fxGlowIntensity',l.glowIntensity!=null?l.glowIntensity:50);const giv=document.getElementById('fxGlowIntVal');if(giv)giv.textContent=(l.glowIntensity!=null?l.glowIntensity:50)+'%';
+  if(l.glowColor){set('fxGlowColor',l.glowColor);set('fxGlowColorHex',l.glowColor);}
   set('fxOpacity',l.opacity||100);document.getElementById('fxOpVal').textContent=(l.opacity||100)+'%';
   set('fxRotation',l.rotation||0);document.getElementById('rotVal').textContent=(l.rotation||0)+'°';
   set('fxSkewX',l.skewX||0);document.getElementById('skewXVal').textContent=(l.skewX||0)+'°';
@@ -2994,6 +3108,8 @@ function updateRightPanel(){
     set('txtGlowSize',l.glowSize||0);set('txtOpacity',l.opacity||100);
     document.getElementById('txtOpVal').textContent=(l.opacity||100)+'%';
     document.getElementById('txtFillType').value=l.txtFillType||'solid';
+    const tfe=document.getElementById('txtFillEnabled');if(tfe)tfe.checked=l.fillEnabled!==false;
+    const tse=document.getElementById('txtStrokeEnabled');if(tse)tse.checked=l.strokeEnabled===true;
     document.getElementById('txtBgBox').checked=l.bgBox||false;
     if(l.bgBoxColor)set('txtBgBoxColor',l.bgBoxColor);
     set('txtBgBoxPad',l.bgBoxPad||10);set('txtBgBoxRadius',l.bgBoxRadius||0);
@@ -3005,6 +3121,19 @@ function updateRightPanel(){
     set('shapeBorder',l.borderColor||'#ffffff');set('shapeBorderW',l.borderWidth||0);
     document.getElementById('shapeFillType').value=l.fillType||'solid';
     set('shapeCorner',l.cornerRadius||0);document.getElementById('cornerVal').textContent=l.cornerRadius||0;
+    const sfe=document.getElementById('shapeFillEnabled');if(sfe)sfe.checked=l.fillEnabled!==false;
+    const sse=document.getElementById('shapeStrokeEnabled');if(sse)sse.checked=l.strokeEnabled===true;
+    // sync shape glow/shadow sliders
+    const sgv=document.getElementById('shapeShadowBlurVal');if(sgv)sgv.textContent=l.shadowBlur||0;
+    const sgxv=document.getElementById('shapeShadowXVal');if(sgxv)sgxv.textContent=l.shadowX!=null?l.shadowX:4;
+    const sgyv=document.getElementById('shapeShadowYVal');if(sgyv)sgyv.textContent=l.shadowY!=null?l.shadowY:4;
+    const sglv=document.getElementById('shapeGlowVal');if(sglv)sglv.textContent=l.glowSize||0;
+    const shapeSB=document.getElementById('shapeShadowBlur');if(shapeSB)shapeSB.value=l.shadowBlur||0;
+    const shapeSX=document.getElementById('shapeShadowX');if(shapeSX)shapeSX.value=l.shadowX!=null?l.shadowX:4;
+    const shapeSY=document.getElementById('shapeShadowY');if(shapeSY)shapeSY.value=l.shadowY!=null?l.shadowY:4;
+    const shapeGL=document.getElementById('shapeGlowSize');if(shapeGL)shapeGL.value=l.glowSize||0;
+    if(l.shadowColor){set('shapeShadowColor',l.shadowColor);set('shapeShadowColorHex',l.shadowColor);}
+    if(l.glowColor){set('shapeGlowColor',l.glowColor);set('shapeGlowColorHex',l.glowColor);}
     toggleShapeFillUI();
   }
   if(l.type==='image'){
