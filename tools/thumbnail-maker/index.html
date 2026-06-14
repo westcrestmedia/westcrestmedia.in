@@ -337,6 +337,80 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
   .template-grid{grid-template-columns:repeat(2,1fr) !important;}
   .add-btns{grid-template-columns:repeat(3,1fr) !important;}
 }
+
+/* ========== APP MODE (MOBILE FULL-SCREEN EDITOR) ========== */
+@media(max-width:768px){
+  body.app-mode .hero-section,
+  body.app-mode .sticky-toolbar,
+  body.app-mode .page-sections,
+  body.app-mode footer,
+  body.app-mode .mobile-tool-strip{display:none !important;}
+
+  body.app-mode .sticky-top{position:relative;}
+  body.app-mode .nav{height:50px;}
+  body.app-mode .nav-tools-btn{display:none !important;}
+
+  body.app-mode .main{
+    height:calc(100dvh - 50px - 56px) !important;
+    flex-direction:column !important;
+    overflow:hidden !important;
+  }
+  body.app-mode .canvas-area{
+    order:1 !important;width:100% !important;height:100% !important;
+    min-height:unset !important;padding:10px !important;
+    border-bottom:none !important;background:#06060a !important;
+  }
+  body.app-mode .canvas-wrapper{transform-origin:center center !important;}
+
+  /* Panels become bottom sheets */
+  body.app-mode .left-panel,
+  body.app-mode .right-panel{
+    position:fixed !important;left:0 !important;right:0 !important;bottom:56px !important;
+    width:100% !important;min-width:unset !important;
+    max-height:60vh !important;
+    border:none !important;border-top:1px solid var(--border2) !important;
+    border-radius:16px 16px 0 0 !important;
+    box-shadow:0 -8px 32px rgba(0,0,0,0.5) !important;
+    z-index:400 !important;
+    transform:translateY(100%) !important;
+    transition:transform .28s ease !important;
+    order:initial !important;
+  }
+  body.app-mode .left-panel.sheet-open,
+  body.app-mode .right-panel.sheet-open{transform:translateY(0) !important;}
+
+  /* Drag handle on sheets */
+  body.app-mode .left-panel::before,
+  body.app-mode .right-panel::before{
+    content:'';display:block;width:36px;height:4px;border-radius:3px;
+    background:var(--border2);margin:8px auto 4px;flex-shrink:0;
+  }
+
+  /* Sheet backdrop */
+  .app-sheet-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:399;
+  }
+  body.app-mode .app-sheet-backdrop.show{display:block;}
+
+  /* BOTTOM APP NAV BAR */
+  .app-bottom-nav{
+    display:none;position:fixed;left:0;right:0;bottom:0;height:56px;z-index:500;
+    background:rgba(10,10,12,0.98);backdrop-filter:blur(16px);
+    border-top:1px solid rgba(200,169,110,0.22);
+    align-items:stretch;justify-content:space-around;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  body.app-mode .app-bottom-nav{display:flex !important;}
+  .app-nav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;background:none;border:none;color:var(--text2);
+    font-family:'Syne',sans-serif;font-size:9.5px;font-weight:700;
+    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+    transition:color .15s;
+  }
+  .app-nav-btn .anicon{font-size:18px;line-height:1;}
+  .app-nav-btn.active,.app-nav-btn:active{color:var(--gold);}
+}
 </style>
 </head>
 <body>
@@ -460,7 +534,7 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 <div class="main">
 
 <!-- LEFT PANEL -->
-<div class="left-panel">
+<div class="left-panel" id="leftPanelEl">
   <div class="panel-tabs-wrap">
     <button class="tab-scroll-btn" onclick="scrollTabs('leftTabs',-1)">‹</button>
     <div class="panel-tabs" id="leftTabs">
@@ -1109,7 +1183,7 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 </div>
 
 <!-- RIGHT PANEL -->
-<div class="right-panel">
+<div class="right-panel" id="rightPanelEl">
   <div class="section-title" style="margin-top:0">Selected Object</div>
   <div id="selNone" style="font-size:11px;color:var(--text3);text-align:center;padding:12px 0;">Click an object to select</div>
 
@@ -1180,6 +1254,19 @@ input[type="color"]{width:34px;height:26px;border-radius:5px;border:1px solid va
 </div>
 
 </div><!-- end .main -->
+
+<!-- APP MODE: SHEET BACKDROP -->
+<div class="app-sheet-backdrop" id="appSheetBackdrop" onclick="closeAppSheets()"></div>
+
+<!-- APP MODE: BOTTOM NAV BAR -->
+<div class="app-bottom-nav" id="appBottomNav">
+  <button class="app-nav-btn" id="appNavTools" onclick="toggleAppSheet('left')"><span class="anicon">🧰</span>Tools</button>
+  <button class="app-nav-btn" onclick="addText()"><span class="anicon">T</span>Text</button>
+  <button class="app-nav-btn" onclick="triggerUpload()"><span class="anicon">🖼</span>Image</button>
+  <button class="app-nav-btn" id="appNavProps" onclick="toggleAppSheet('right')"><span class="anicon">⚙️</span>Edit</button>
+  <button class="app-nav-btn" onclick="exportPNG()"><span class="anicon">⬇</span>Export</button>
+</div>
+
 
 <!-- MOBILE TOOL STRIP (BG remover style) -->
 <div class="mobile-tool-strip" id="mobileStrip">
@@ -2745,7 +2832,51 @@ function loadProject(e){
   };reader.readAsText(file);e.target.value='';
 }
 
-// ===================== MISC =====================
+// ===================== APP MODE (MOBILE) =====================
+function toggleAppSheet(which){
+  const left=document.getElementById('leftPanelEl');
+  const right=document.getElementById('rightPanelEl');
+  const backdrop=document.getElementById('appSheetBackdrop');
+  const btnTools=document.getElementById('appNavTools');
+  const btnProps=document.getElementById('appNavProps');
+  const target = which==='left' ? left : right;
+  const isOpen = target.classList.contains('sheet-open');
+
+  left.classList.remove('sheet-open');
+  right.classList.remove('sheet-open');
+  btnTools.classList.remove('active');
+  btnProps.classList.remove('active');
+
+  if(!isOpen){
+    target.classList.add('sheet-open');
+    backdrop.classList.add('show');
+    (which==='left'?btnTools:btnProps).classList.add('active');
+  } else {
+    backdrop.classList.remove('show');
+  }
+}
+function closeAppSheets(){
+  document.getElementById('leftPanelEl').classList.remove('sheet-open');
+  document.getElementById('rightPanelEl').classList.remove('sheet-open');
+  document.getElementById('appSheetBackdrop').classList.remove('show');
+  document.getElementById('appNavTools').classList.remove('active');
+  document.getElementById('appNavProps').classList.remove('active');
+}
+function initAppMode(){
+  if(window.matchMedia('(max-width:768px)').matches){
+    document.body.classList.add('app-mode');
+    setTimeout(fitCanvasToMobile, 50);
+  }
+}
+window.addEventListener('resize', ()=>{
+  const isMobile = window.matchMedia('(max-width:768px)').matches;
+  document.body.classList.toggle('app-mode', isMobile);
+  if(!isMobile) closeAppSheets();
+  setTimeout(fitCanvasToMobile, 50);
+});
+initAppMode();
+
+
 function clearCanvas(){if(!confirm('Clear all layers?'))return;saveHistory();layers=[];selectedIndex=-1;updateLayerList();updateRightPanel();redraw();}
 
 function switchTab(el,pane){
