@@ -84,7 +84,22 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-he
 
 /* STICKY NAV */
 .sticky-top{position:sticky;top:0;z-index:190;}
-.nav{height:56px;background:rgba(8,8,8,0.97);border-bottom:1px solid rgba(200,169,110,0.22);}
+.nav{height:56px;background:rgba(8,8,8,0.97);border-bottom:1px solid rgba(200,169,110,0.22);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;position:relative;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#f5f0e8;}
+.nav-logo img{height:26px;width:auto;}
+.nav-tools-btn{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;color:rgba(245,240,232,0.55);font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;transition:color .2s;cursor:pointer;background:none;border:none;padding:4px 0;height:56px;}
+.nav-tools-btn:hover{color:#c8a96e;}
+.nav-tools-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;}
+.nav-tools-btn.open svg{transform:rotate(180deg);}
+.tools-dropdown{position:absolute;top:56px;left:50%;transform:translateX(-50%);background:rgba(13,13,18,0.98);backdrop-filter:blur(24px);border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:20px;display:none;z-index:300;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.tools-dropdown.open{display:block;}
+.tools-dropdown-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;}
+.tools-col{min-width:160px;}
+.tools-col-label{font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:#c8a96e;padding:0 10px 8px;border-bottom:1px solid rgba(200,169,110,0.22);margin-bottom:6px;}
+.tools-dropdown a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;font-family:'Syne',sans-serif;font-size:0.72rem;color:rgba(245,240,232,0.55);text-decoration:none;transition:all .18s;white-space:nowrap;}
+.tools-dropdown a:hover{background:rgba(200,169,110,0.15);color:#c8a96e;}
+.tools-dropdown a.current-tool{opacity:0.35;pointer-events:none;}
+.tool-icon{font-size:0.9rem;width:20px;text-align:center;}
 
 /* HERO */
 .hero-section{text-align:center;padding:2.5rem 1.5rem 2rem;max-width:640px;margin:0 auto;}
