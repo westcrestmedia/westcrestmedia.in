@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Westcrest Media</title>
+  <meta name="wm-auth" content="required" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-dim: rgba(201,168,76,0.15);
+      --bg: #0c0c0c;
+      --surface: #111111;
+      --surface2: #161616;
+      --border: #1e1e1e;
+      --text: #e8e4dc;
+      --muted: #555;
+      --muted2: #333;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .dash-nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 56px;
+      background: rgba(12,12,12,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .dash-nav-logo img { height: 24px; }
+    .dash-nav-right { display: flex; align-items: center; gap: 16px; }
+    .dash-nav-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+      text-decoration: none; transition: color .2s;
+    }
+    .dash-nav-link:hover { color: var(--gold); }
+    .dash-signout-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+      background: none; border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 2px;
+      cursor: pointer; transition: color .2s, border-color .2s;
+    }
+    .dash-signout-btn:hover { color: #e05252; border-color: rgba(224,82,82,0.3); }
+
+    /* ── LAYOUT ── */
+    .dash-wrap {
+      max-width: 960px; margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── PROFILE ── */
+    .profile-card {
+      display: flex; align-items: center; gap: 24px;
+      padding: 32px; margin-bottom: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      position: relative; overflow: hidden;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700;
+      color: var(--gold); flex-shrink: 0; overflow: hidden;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-info { flex: 1; }
+    .profile-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .profile-email {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    .profile-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 4px 10px; border-radius: 2px;
+      margin-top: 10px; display: inline-block;
+    }
+
+    /* ── SECTION ── */
+    .dash-section { margin-bottom: 48px; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; color: var(--muted);
+    }
+
+    /* ── BOOKMARKS GRID ── */
+    .bookmarks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .bookmark-card {
+      display: flex; flex-direction: column;
+      padding: 20px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color .2s, background .2s;
+      position: relative; group: true;
+    }
+    .bookmark-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      background: var(--surface2);
+    }
+    .bookmark-emoji { font-size: 1.4rem; margin-bottom: 10px; }
+    .bookmark-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--text); line-height: 1.3;
+    }
+    .bookmark-remove {
+      position: absolute; top: 10px; right: 10px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted2); font-size: 14px;
+      opacity: 0; transition: opacity .15s, color .15s;
+      line-height: 1;
+    }
+    .bookmark-card:hover .bookmark-remove { opacity: 1; }
+    .bookmark-remove:hover { color: #e05252; }
+
+    /* ── DOWNLOADS LIST ── */
+    .downloads-list { display: flex; flex-direction: column; gap: 8px; }
+    .download-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color .2s;
+    }
+    .download-row:hover { border-color: var(--muted2); }
+    .download-icon {
+      width: 32px; height: 32px; border-radius: 4px;
+      background: var(--gold-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .download-info { flex: 1; min-width: 0; }
+    .download-file {
+      font-size: 0.82rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .download-tool {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; color: var(--muted);
+      margin-top: 2px;
+    }
+    .download-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      padding: 48px 24px; text-align: center;
+      border: 1px dashed var(--muted2);
+      border-radius: 6px;
+    }
+    .empty-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.4; }
+    .empty-text {
+      font-size: 0.82rem; color: var(--muted);
+      line-height: 1.6;
+    }
+    .empty-link {
+      display: inline-block; margin-top: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      text-decoration: none;
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 8px 18px; border-radius: 2px;
+      transition: background .2s;
+    }
+    .empty-link:hover { background: var(--gold-dim); }
+
+    /* ── LOADING ── */
+    .loading-row {
+      height: 56px; border-radius: 6px;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .dash-nav { padding: 0 16px; }
+      .dash-wrap { padding: 28px 16px 60px; }
+      .profile-card { flex-direction: column; text-align: center; padding: 24px; }
+      .bookmarks-grid { grid-template-columns: repeat(2, 1fr); }
+      .download-time { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="dash-nav">
+    <a href="/" class="dash-nav-logo">
+      <img src="/images/w_logo.svg" alt="Westcrest Media" />
+    </a>
+    <div class="dash-nav-right">
+      <a href="/tools/background-remover/" class="dash-nav-link">Tools</a>
+      <button class="dash-signout-btn" id="signout-btn">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="dash-wrap">
+
+    <!-- PROFILE -->
+    <div class="profile-card" id="profile-card">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profile-name">—</div>
+        <div class="profile-email" id="profile-email">—</div>
+        <div class="profile-badge">Creator</div>
+      </div>
+    </div>
+
+    <!-- BOOKMARKS -->
+    <div class="dash-section" id="bookmarks">
+      <div class="section-header">
+        <div class="section-title">Bookmarked Tools</div>
+        <div class="section-count" id="bookmark-count">—</div>
+      </div>
+      <div id="bookmarks-content">
+        <div class="loading-row"></div>
+        <div class="loading-row" style="width:70%"></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOADS -->
+    <div class="dash-section" id="downloads">
+      <div class="section-header">
+        <div class="section-title">Download History</div>
+        <div class="section-count" id="download-count">—</div>
+      </div>
+      <div id="downloads-content">
+        <div class="loading-row"></div>
+        <div class="loading-row" style="width:85%"></div>
+        <div class="loading-row" style="width:60%"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/auth.js" type="module"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    import { supabase, goToLogin } from '/auth.js'
+
+    // ── Auth check ────────────────────────────────────────────────────────────
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { goToLogin(); }
+
+    const user = session.user
+    const name   = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Creator'
+    const avatar = user.user_metadata?.avatar_url || null
+    const email  = user.email || ''
+
+    // ── Profile ───────────────────────────────────────────────────────────────
+    document.getElementById('profile-name').textContent = name
+    document.getElementById('profile-email').textContent = email
+    const avatarEl = document.getElementById('profile-avatar')
+    if (avatar) {
+      avatarEl.innerHTML = '<img src="' + avatar + '" alt="' + name + '" />'
+    } else {
+      avatarEl.textContent = name.charAt(0).toUpperCase()
+    }
+
+    // ── Sign out ──────────────────────────────────────────────────────────────
+    document.getElementById('signout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      window.location.href = '/'
+    })
+
+    // ── Bookmarks ─────────────────────────────────────────────────────────────
+    async function loadBookmarks() {
+      const { data, error } = await supabase
+        .from('bookmarks')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      const container = document.getElementById('bookmarks-content')
+      const countEl   = document.getElementById('bookmark-count')
+
+      if (error || !data || data.length === 0) {
+        countEl.textContent = '0 tools'
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔖</div><div class="empty-text">No bookmarks yet.<br/>Bookmark tools you use often.</div><a href="/" class="empty-link">Browse Tools</a></div>'
+        return
+      }
+
+      countEl.textContent = data.length + ' tool' + (data.length !== 1 ? 's' : '')
+      container.innerHTML = '<div class="bookmarks-grid">' +
+        data.map(b => '<a href="' + b.tool_url + '" class="bookmark-card" data-slug="' + b.tool_slug + '">' +
+          '<button class="bookmark-remove" title="Remove" data-slug="' + b.tool_slug + '">✕</button>' +
+          '<div class="bookmark-emoji">' + (b.tool_emoji || '🛠️') + '</div>' +
+          '<div class="bookmark-name">' + b.tool_name + '</div>' +
+        '</a>').join('') +
+      '</div>'
+
+      // Remove bookmark handlers
+      container.querySelectorAll('.bookmark-remove').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault(); e.stopPropagation()
+          const slug = btn.dataset.slug
+          await supabase.from('bookmarks').delete()
+            .eq('user_id', user.id).eq('tool_slug', slug)
+          loadBookmarks()
+        })
+      })
+    }
+
+    // ── Downloads ─────────────────────────────────────────────────────────────
+    async function loadDownloads() {
+      const { data, error } = await supabase
+        .from('downloads')
+        .select('*')
+        .order('downloaded_at', { ascending: false })
+        .limit(50)
+
+      const container = document.getElementById('downloads-content')
+      const countEl   = document.getElementById('download-count')
+
+      if (error || !data || data.length === 0) {
+        countEl.textContent = '0 files'
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📥</div><div class="empty-text">No downloads yet.<br/>Files you export from tools will appear here.</div><a href="/" class="empty-link">Try a Tool</a></div>'
+        return
+      }
+
+      countEl.textContent = data.length + ' file' + (data.length !== 1 ? 's' : '')
+
+      function timeAgo(dateStr) {
+        const diff = Date.now() - new Date(dateStr).getTime()
+        const m = Math.floor(diff / 60000)
+        if (m < 1) return 'just now'
+        if (m < 60) return m + 'm ago'
+        const h = Math.floor(m / 60)
+        if (h < 24) return h + 'h ago'
+        return Math.floor(h / 24) + 'd ago'
+      }
+
+      const toolEmojis = {
+        'image-converter': '🖼️', 'image-compressor': '⚡',
+        'background-remover': '✂️', 'color-palette': '🎨',
+        'thumbnail-maker': '🎬', 'lut-preview': '🎞️',
+        'aspect-ratio': '📐', 'image-prompt': '🎴',
+        'video-prompt': '🎥', 'font-pairing': '🔤', 'png-to-pdf': '📄'
+      }
+
+      container.innerHTML = '<div class="downloads-list">' +
+        data.map(d => '<div class="download-row">' +
+          '<div class="download-icon">' + (toolEmojis[d.tool_slug] || '📄') + '</div>' +
+          '<div class="download-info">' +
+            '<div class="download-file">' + d.file_name + '</div>' +
+            '<div class="download-tool">' + d.tool_name + '</div>' +
+          '</div>' +
+          '<div class="download-time">' + timeAgo(d.downloaded_at) + '</div>' +
+        '</div>').join('') +
+      '</div>'
+    }
+
+    // ── Hash navigation (#bookmarks / #downloads) ─────────────────────────────
+    if (window.location.hash) {
+      const el = document.querySelector(window.location.hash)
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
+    }
+
+    // Load both
+    loadBookmarks()
+    loadDownloads()
+  </script>
+</body>
+</html>
