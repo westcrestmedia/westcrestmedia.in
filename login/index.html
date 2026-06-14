@@ -677,7 +677,7 @@
 
     // OAuth hash token process karo — Google login ke baad /login/ pe wapas aata hai hash ke saath
     supabase.auth.onAuthStateChange((event, session) => {
-      if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+      if (session && event === 'SIGNED_IN') {
         redirectAfterLogin()
       }
     })
