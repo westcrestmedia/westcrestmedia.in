@@ -915,7 +915,7 @@
     .footer-logo span { color: var(--gold); }
     .footer-tagline { font-size: 0.72rem; color: var(--white-dim); letter-spacing: 0.08em; margin-top: 6px; }
     .footer-links-group { display: flex; gap: 80px; }
-    .footer-col h4 { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .footer-col h3.footer-col-heading, .footer-col h4 { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; font-weight: 600; }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .footer-col a { font-size: 0.78rem; color: var(--white-dim); text-decoration: none; transition: color 0.3s; }
     .footer-col a:hover { color: var(--white); }
@@ -1165,12 +1165,12 @@
 
   <!-- LOADER -->
   <div id="loader">
-    <img src="images/logo.gif" alt="Westcrest Media" style="height:180px; width:auto; object-fit:contain;" class="loader-logo" />
+    <img src="images/logo.gif" alt="Westcrest Media" width="180" height="180" style="height:180px; width:auto; object-fit:contain;" class="loader-logo" />
   </div>
 
   <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-close-btn" onclick="closeMobile()">✕</button>
+    <button class="mobile-close-btn" aria-label="Close navigation menu" onclick="closeMobile()">✕</button>
     <a href="/#tools" onclick="closeMobile()">Tools</a>
     <a href="/#services" onclick="closeMobile()">Services</a>
     <a href="/#portfolio" onclick="closeMobile()">Portfolio</a>
@@ -1186,6 +1186,8 @@
 
   <!-- NAV -->
   <nav id="navbar"></nav>
+
+  <main>
 
   <!-- HERO -->
   <section id="hero">
@@ -1430,7 +1432,7 @@
         <!-- Row 2: Coming Soon (Motion) -->
         <div class="portfolio-item" style="background:var(--surface); display:flex; align-items:center; justify-content:center; aspect-ratio:unset; min-height:320px;">
           <div style="text-align:center; color:var(--white-dim);">
-            <img src="images/w_logo.svg" alt="W" style="height:48px; width:auto; object-fit:contain; opacity:0.15; margin-bottom:12px;"/>
+            <img src="images/w_logo.svg" alt="W" width="48" height="48" style="height:48px; width:auto; object-fit:contain; opacity:0.15; margin-bottom:12px;"/>
             <div style="font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.4;">Coming Soon</div>
           </div>
         </div>
@@ -1467,8 +1469,8 @@
             </div>
           </div>
           <div class="carousel-dots-auto"></div>
-          <button class="carousel-arrow carousel-prev">←</button>
-          <button class="carousel-arrow carousel-next">→</button>
+          <button class="carousel-arrow carousel-prev" aria-label="Previous slide">←</button>
+          <button class="carousel-arrow carousel-next" aria-label="Next slide">→</button>
         </div>
       </div>
 
@@ -1713,10 +1715,10 @@
         </div>
       </div>
       <div style="display:flex; gap:8px; margin-top:32px; justify-content:center;" id="testimDots">
-        <button class="testim-dot active" onclick="testimGoTo(0)"></button>
-        <button class="testim-dot" onclick="testimGoTo(1)"></button>
-        <button class="testim-dot" onclick="testimGoTo(2)"></button>
-        <button class="testim-dot" onclick="testimGoTo(3)"></button>
+        <button class="testim-dot active" aria-label="Go to testimonial 1" onclick="testimGoTo(0)"></button>
+        <button class="testim-dot" aria-label="Go to testimonial 2" onclick="testimGoTo(1)"></button>
+        <button class="testim-dot" aria-label="Go to testimonial 3" onclick="testimGoTo(2)"></button>
+        <button class="testim-dot" aria-label="Go to testimonial 4" onclick="testimGoTo(3)"></button>
       </div>
     </div>
   </section>
@@ -1769,7 +1771,7 @@
         </div>
         <div class="reveal reveal-delay-2">
           <div id="form-success" style="display:none; text-align:center; padding:48px 24px;">
-            <div style="margin-bottom:20px;"><img src="images/w_logo.svg" alt="W" style="height:80px; width:auto; object-fit:contain;"/></div>
+            <div style="margin-bottom:20px;"><img src="images/w_logo.svg" alt="Westcrest Media" width="80" height="80" style="height:80px; width:auto; object-fit:contain;"/></div>
             <h3 style="font-family:var(--font-display); font-size:1.6rem; color:var(--gold); margin-bottom:16px; letter-spacing:0.05em;">Message Received!</h3>
             <p style="color:var(--white-dim); font-size:0.85rem; line-height:1.8; margin-bottom:8px;">Thank you for reaching out. We'll get back to you shortly.</p>
             <p style="color:var(--white-dim); font-size:0.85rem; line-height:1.8; margin-bottom:32px;">For a faster response, feel free to message us on WhatsApp.</p>
@@ -1784,20 +1786,20 @@
           <form id="contact-form-el" class="contact-form" onsubmit="handleSubmit(event)">
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">First Name</label>
+                <label class="form-label" for="cf-fname">First Name</label>
                 <input id="cf-fname" class="form-input" type="text" placeholder="Your name" required />
               </div>
               <div class="form-group">
-                <label class="form-label">Last Name</label>
+                <label class="form-label" for="cf-lname">Last Name</label>
                 <input id="cf-lname" class="form-input" type="text" placeholder="Last name" />
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Email Address</label>
+              <label class="form-label" for="cf-email">Email Address</label>
               <input id="cf-email" class="form-input" type="email" placeholder="your@email.com" required />
             </div>
             <div class="form-group">
-              <label class="form-label">Service Required</label>
+              <label class="form-label" for="cf-service">Service Required</label>
               <select id="cf-service" class="form-select">
                 <option value="">Select a service...</option>
                 <option>Video Editing</option>
@@ -1811,7 +1813,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Project Details</label>
+              <label class="form-label" for="cf-message">Project Details</label>
               <textarea id="cf-message" class="form-textarea" placeholder="Tell us about your project — timeline, budget, goals, references..." required></textarea>
             </div>
             <button type="submit" class="btn-primary" style="border:none; cursor:pointer; width:100%; text-align:center;">Send Message</button>
@@ -1821,17 +1823,19 @@
     </div>
   </section>
 
+  </main>
+
   <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-top">
         <div>
-          <img src="images/logo.png" alt="Westcrest Media" style="height:110px; width:auto; object-fit:contain; mix-blend-mode:lighten;" />
+          <img src="images/logo.png" alt="Westcrest Media" width="110" height="110" style="height:110px; width:auto; object-fit:contain; mix-blend-mode:lighten;" />
           <div class="footer-tagline">Premium Video & Motion Studio</div>
         </div>
         <div class="footer-links-group">
           <div class="footer-col">
-            <h4>Services</h4>
+            <h3 class="footer-col-heading">Services</h3>
             <ul>
               <li><a href="#services">Video Editing</a></li>
               <li><a href="#services">Motion Graphics</a></li>
@@ -1840,7 +1844,7 @@
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Shop</h4>
+            <h3 class="footer-col-heading">Shop</h3>
             <ul>
               <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">AE Plugins</a></li>
               <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">LUT Packs</a></li>
@@ -1849,7 +1853,7 @@
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Company</h4>
+            <h3 class="footer-col-heading">Company</h3>
             <ul>
               <li><a href="/about/">About Us</a></li>
               <li><a href="/blog/">Blog</a></li>
