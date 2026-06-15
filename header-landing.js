@@ -52,11 +52,11 @@ function renderNav(user) {
       <li><a href="#process">Process</a></li>
       <li><a href="/about/">About</a></li>
       <li><a href="/blog/">Blog</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" style="min-height:48px;display:inline-flex;align-items:center;padding-top:14px;padding-bottom:14px;">Contact</a></li>
     </ul>
 
     <div class="nav-right">
-      <a href="#contact" class="nav-cta">Start a Project</a>
+      <a href="#contact" class="nav-cta" style="min-height:48px;display:inline-flex;align-items:center;">Start a Project</a>
 
       ${user ? `
         <!-- Logged in: avatar dropdown -->
