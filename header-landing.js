@@ -72,7 +72,7 @@ function renderNav(user) {
         <a href="/login/?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
       `}
 
-      <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()">
+      <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()" style="background:none;border:none;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;">
         <span></span><span></span><span></span>
       </button>
     </div>
