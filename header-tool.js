@@ -52,12 +52,12 @@ async function renderNav() {
   const initial = name ? name.charAt(0).toUpperCase() : '?'
 
   const avatarHTML = avatar
-    ? '<img src="' + avatar + '" style="width:100%;height:100%;object-fit:cover;" />'
+    ? '<img src="' + avatar + '" alt="' + name + '" width="32" height="32" style="width:100%;height:100%;object-fit:cover;" />'
     : initial
 
   const rightHTML = user
     ? '<div style="position:relative;">' +
-        '<button id="wm-avatar-btn" aria-label="Account" aria-expanded="false" style="width:32px;height:32px;border-radius:50%;border:1.5px solid #C9A84C;cursor:pointer;background:rgba(200,169,110,0.12);overflow:hidden;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-weight:700;font-size:13px;padding:0;font-family:Syne,sans-serif;">' +
+        '<button id="wm-avatar-btn" aria-label="Account menu" aria-expanded="false" style="width:32px;height:32px;border-radius:50%;border:1.5px solid #C9A84C;cursor:pointer;background:rgba(200,169,110,0.12);overflow:hidden;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-weight:700;font-size:13px;padding:0;font-family:Syne,sans-serif;">' +
           avatarHTML +
         '</button>' +
         '<div id="wm-dropdown" style="display:none;position:absolute;right:0;top:calc(100% + 10px);width:220px;background:#131313;border:1px solid #242424;border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;overflow:hidden;">' +
@@ -77,8 +77,8 @@ async function renderNav() {
     : '<a href="/login/?next=' + encodeURIComponent(window.location.pathname) + '" style="font-family:DM Mono,monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;" onmouseover="this.style.background=\'rgba(200,169,110,0.1)\'" onmouseout="this.style.background=\'transparent\'">Sign In</a>'
 
   nav.innerHTML =
-    '<a href="/" class="nav-logo"><img src="/images/w_logo.svg" alt="Westcrest Media" style="height:26px;"></a>' +
-    '<button class="nav-tools-btn" id="toolsBtn" onclick="window.__toggleToolsDD()">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
+    '<a href="/" class="nav-logo"><img src="/images/w_logo.svg" alt="Westcrest Media" width="26" height="26" style="height:26px;"></a>' +
+    '<button class="nav-tools-btn" id="toolsBtn" aria-label="Toggle tools menu" aria-expanded="false" onclick="window.__toggleToolsDD()">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
     '<div class="tools-dropdown" id="toolsDropdown"><div class="tools-dropdown-grid">' + dropdownCols + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;margin-left:auto;">' + rightHTML + '</div>'
 
@@ -99,14 +99,20 @@ function bindInteractions(user) {
     var dd  = document.getElementById('toolsDropdown')
     if (!dd) return
     var open = dd.classList.toggle('open')
-    if (btn) btn.classList.toggle('open', open)
+    if (btn) {
+      btn.classList.toggle('open', open)
+      btn.setAttribute('aria-expanded', open)
+    }
   }
   document.addEventListener('click', function(e) {
     if (!e.target.closest('#toolsBtn') && !e.target.closest('#toolsDropdown')) {
       var dd = document.getElementById('toolsDropdown')
       var btn = document.getElementById('toolsBtn')
       if (dd) dd.classList.remove('open')
-      if (btn) btn.classList.remove('open')
+      if (btn) {
+        btn.classList.remove('open')
+        btn.setAttribute('aria-expanded', false)
+      }
     }
   })
 
@@ -115,10 +121,13 @@ function bindInteractions(user) {
   if (avatarBtn && dd) {
     avatarBtn.addEventListener('click', function(e) {
       e.stopPropagation()
-      dd.style.display = dd.style.display === 'block' ? 'none' : 'block'
+      var open = dd.style.display === 'block'
+      dd.style.display = open ? 'none' : 'block'
+      avatarBtn.setAttribute('aria-expanded', !open)
     })
     document.addEventListener('click', function() {
       if (dd) dd.style.display = 'none'
+      if (avatarBtn) avatarBtn.setAttribute('aria-expanded', false)
     })
   }
 
