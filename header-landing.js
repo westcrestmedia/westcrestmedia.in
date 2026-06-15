@@ -139,6 +139,15 @@ function bindDropdown() {
   })
 }
 
+// ─── Active nav link ──────────────────────────────────────────────────────────
+
+function initActiveNav() {
+  const path = window.location.pathname
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === path) a.classList.add('active')
+  })
+}
+
 // ─── Scroll shrink ────────────────────────────────────────────────────────────
 
 function initScroll() {
@@ -155,6 +164,7 @@ async function init() {
   const { data: { session } } = await supabase.auth.getSession()
   renderNav(session?.user ?? null)
   initScroll()
+  initActiveNav()
 
   supabase.auth.onAuthStateChange((_e, session) => {
     renderNav(session?.user ?? null)
