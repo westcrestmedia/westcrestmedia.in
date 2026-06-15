@@ -1,6 +1,6 @@
 {
-  "name": "Westcrest Media",
-  "short_name": "WcMedia",
+  "name": "MyWebSite",
+  "short_name": "MySite",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#1a1612",
-  "background_color": "#1a1612",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
