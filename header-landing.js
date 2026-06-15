@@ -21,7 +21,7 @@ function renderNav(user) {
 
   document.getElementById('navbar').innerHTML = `
     <a href="/" class="nav-logo">
-      <img src="/images/logo.png" alt="Westcrest Media" style="height:52px;width:auto;object-fit:contain;mix-blend-mode:lighten;display:block;" />
+      <img src="/images/logo.png" alt="Westcrest Media" width="180" height="52" style="height:52px;width:auto;object-fit:contain;mix-blend-mode:lighten;display:block;" />
     </a>
 
     <ul class="nav-links">
@@ -63,7 +63,7 @@ function renderNav(user) {
         <div id="wm-avatar-wrap" style="position:relative;">
           <button id="wm-avatar-btn" aria-label="Account menu" aria-expanded="false"
             style="width:36px;height:36px;border-radius:50%;border:1.5px solid #C9A84C;cursor:pointer;background:#1a1a1a;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:14px;font-weight:600;padding:0;transition:border-color .2s,box-shadow .2s;">
-            ${avatar ? `<img src="${avatar}" alt="${name}" style="width:100%;height:100%;object-fit:cover;" />` : initial}
+            ${avatar ? `<img src="${avatar}" alt="${name}" width="36" height="36" style="width:100%;height:100%;object-fit:cover;" />` : initial}
           </button>
           ${dropdownHTML(name, user.email)}
         </div>
@@ -72,9 +72,9 @@ function renderNav(user) {
         <a href="/login/?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
       `}
 
-      <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+      <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   `
 
