@@ -79,7 +79,7 @@ async function renderNav() {
 
   nav.innerHTML =
     '<a href="/" class="nav-logo" style="margin-right:16px;"><img src="/images/w_logo.svg" alt="Westcrest Media" width="26" height="26" style="height:26px;"></a>' +
-    '<button class="nav-tools-btn" id="toolsBtn" aria-label="Toggle tools menu" aria-expanded="false" onclick="window.__toggleToolsDD()">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
+    '<button class="nav-tools-btn" id="toolsBtn" aria-label="Toggle tools menu" aria-expanded="false" onclick="window.__toggleToolsDD()" style="position:static!important;left:auto!important;transform:none!important;">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
     '<div class="tools-dropdown" id="toolsDropdown"><div class="tools-dropdown-grid">' + dropdownCols + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;margin-left:auto;">' + rightHTML + '</div>'
 
