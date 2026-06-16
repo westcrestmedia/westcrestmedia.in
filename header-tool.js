@@ -87,7 +87,7 @@ async function renderNav() {
   if (!document.getElementById('wm-tool-nav-css')) {
     var n = document.createElement('style')
     n.id = 'wm-tool-nav-css'
-    n.textContent = '#tool-nav{display:flex!important;align-items:center!important;justify-content:flex-start!important;}#tool-nav .nav-logo{flex-shrink:0;margin-right:8px;}#tool-nav .nav-tools-btn{flex-shrink:0;}#tool-nav>div:last-child{margin-left:auto!important;flex-shrink:0;}'
+    n.textContent = '#tool-nav{display:flex!important;align-items:center!important;justify-content:space-between!important;}#tool-nav .nav-logo{flex-shrink:0;}#tool-nav .nav-tools-btn{position:absolute!important;left:50%!important;transform:translateX(-50%)!important;flex-shrink:0;}#tool-nav>div:last-child{flex-shrink:0;margin-left:auto;}'
     document.head.appendChild(n)
   }
 
