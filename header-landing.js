@@ -44,6 +44,7 @@ function renderNav(user) {
           <div class="dropdown-divider"></div>
           <a href="/tools/font-pairing/"><span class="drop-icon-sm">🔤</span>Font Pairing Tool</a>
           <a href="/tools/png-to-pdf.html"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
+          <a href="/tools/image-resizer-pro/"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
         </div>
       </li>
       <li><a href="#services">Services</a></li>

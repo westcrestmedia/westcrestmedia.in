@@ -28,6 +28,7 @@ const TOOLS = [
     { slug: 'video-prompt',       name: 'Video Prompts',          emoji: '🎥', url: '/tools/video-prompt/' },
     { slug: 'font-pairing',       name: 'Font Pairing',           emoji: '🔤', url: '/tools/font-pairing/' },
     { slug: 'png-to-pdf',         name: 'PNG to PDF',             emoji: '📄', url: '/tools/png-to-pdf.html' },
+    { slug: 'image-resizer-pro',   name: 'Image Resizer Pro',      emoji: '📐', url: '/tools/image-resizer-pro/' },
   ]},
 ]
 
