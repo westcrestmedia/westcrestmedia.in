@@ -521,15 +521,29 @@
       background: rgba(200,169,110,0.06);
       transition: background 0.3s, border-color 0.3s, color 0.3s;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
     }
     .nav-signin:hover { background: rgba(200,169,110,0.14); border-color: var(--gold); color: var(--gold2); }
 
     .nav-cta {
-      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--bg); background: var(--gold);
-      padding: 10px 24px; text-decoration: none;
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 2px;
+      border: 1px solid var(--gold);
       transition: background 0.3s, transform 0.2s;
-      min-height: 48px; display: inline-flex; align-items: center;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
     }
     .nav-cta:hover { background: var(--gold2); transform: translateY(-1px); }
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
