@@ -19,21 +19,21 @@ function renderNav(user) {
         <div class="dropdown-menu" style="width:580px;padding:20px;display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f0f0f;border:1px solid #1e1e1e;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.7);z-index:999;">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;">
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🖼️ Image Tools</div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🖼️ Image Tools</div>
               <a href="/tools/image-converter/" style="${ddItem}"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
               <a href="/tools/image-compressor/" style="${ddItem}"><span class="drop-icon-sm">⚡</span>Image Compressor</a>
               <a href="/tools/background-remover/" style="${ddItem}"><span class="drop-icon-sm">✂️</span>Background Remover</a>
               <a href="/tools/image-resizer-pro/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
             </div>
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🎬 Video Tools</div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🎬 Video Tools</div>
               <a href="/tools/thumbnail-maker/" style="${ddItem}"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
               <a href="/tools/lut-preview/" style="${ddItem}"><span class="drop-icon-sm">🎞️</span>LUT Studio</a>
               <a href="/tools/aspect-ratio/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Aspect Ratio Calc</a>
               <a href="/tools/color-palette/" style="${ddItem}"><span class="drop-icon-sm">🎨</span>Color Palette</a>
             </div>
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">✨ AI & Other</div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">✨ AI & Other</div>
               <a href="/tools/image-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎴</span>Image Prompts</a>
               <a href="/tools/video-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎥</span>Video Prompts</a>
               <a href="/tools/font-pairing/" style="${ddItem}"><span class="drop-icon-sm">🔤</span>Font Pairing</a>
