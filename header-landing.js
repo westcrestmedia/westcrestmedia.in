@@ -116,8 +116,15 @@ function initToolsDropdown() {
   const dd = li?.querySelector('.dropdown-menu')
   if (!li || !dd) return
 
-  li.addEventListener('mouseenter', () => { dd.style.display = 'block' })
-  li.addEventListener('mouseleave', () => { dd.style.display = 'none' })
+  let closeTimer = null
+
+  const openDD  = () => { clearTimeout(closeTimer); dd.style.display = 'block' }
+  const closeDD = () => { closeTimer = setTimeout(() => { dd.style.display = 'none' }, 150) }
+
+  li.addEventListener('mouseenter', openDD)
+  li.addEventListener('mouseleave', closeDD)
+  dd.addEventListener('mouseenter', openDD)
+  dd.addEventListener('mouseleave', closeDD)
 
   // Hover effect on links
   dd.querySelectorAll('a').forEach(a => {
