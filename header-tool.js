@@ -78,7 +78,7 @@ async function renderNav() {
     : '<a href="/login/?next=' + encodeURIComponent(window.location.pathname) + '" style="font-family:DM Mono,monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;transition:background .2s;" onmouseover="this.style.background=\'rgba(200,169,110,0.1)\'" onmouseout="this.style.background=\'transparent\'">Sign In</a>'
 
   nav.innerHTML =
-    '<a href="/" class="nav-logo"><img src="/images/w_logo.svg" alt="Westcrest Media" width="26" height="26" style="height:26px;"></a>' +
+    '<a href="/" class="nav-logo" style="margin-right:16px;"><img src="/images/w_logo.svg" alt="Westcrest Media" width="26" height="26" style="height:26px;"></a>' +
     '<button class="nav-tools-btn" id="toolsBtn" aria-label="Toggle tools menu" aria-expanded="false" onclick="window.__toggleToolsDD()">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
     '<div class="tools-dropdown" id="toolsDropdown"><div class="tools-dropdown-grid">' + dropdownCols + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;margin-left:auto;">' + rightHTML + '</div>'
