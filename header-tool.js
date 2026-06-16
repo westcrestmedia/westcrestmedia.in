@@ -16,19 +16,19 @@ const TOOLS = [
     { slug: 'image-converter',    name: 'Image Converter',        emoji: '🖼️', url: '/tools/image-converter/' },
     { slug: 'image-compressor',   name: 'Image Compressor',       emoji: '⚡', url: '/tools/image-compressor/' },
     { slug: 'background-remover', name: 'Background Remover',     emoji: '✂️', url: '/tools/background-remover/' },
-    { slug: 'color-palette',      name: 'Color Palette',          emoji: '🎨', url: '/tools/color-palette/' },
+    { slug: 'image-resizer-pro',  name: 'Image Resizer Pro',      emoji: '📐', url: '/tools/image-resizer-pro/' },
   ]},
   { col: '🎬 Video Tools', items: [
     { slug: 'thumbnail-maker',    name: 'Thumbnail Maker',        emoji: '🎬', url: '/tools/thumbnail-maker/' },
     { slug: 'lut-preview',        name: 'LUT Studio',             emoji: '🎞️', url: '/tools/lut-preview/' },
     { slug: 'aspect-ratio',       name: 'Aspect Ratio Calc',      emoji: '📐', url: '/tools/aspect-ratio/' },
+    { slug: 'color-palette',      name: 'Color Palette',          emoji: '🎨', url: '/tools/color-palette/' },
   ]},
   { col: '✨ AI & Other', items: [
     { slug: 'image-prompt',       name: 'Image Prompts',          emoji: '🎴', url: '/tools/image-prompt/' },
     { slug: 'video-prompt',       name: 'Video Prompts',          emoji: '🎥', url: '/tools/video-prompt/' },
     { slug: 'font-pairing',       name: 'Font Pairing',           emoji: '🔤', url: '/tools/font-pairing/' },
     { slug: 'png-to-pdf',         name: 'PNG to PDF',             emoji: '📄', url: '/tools/png-to-pdf.html' },
-    { slug: 'image-resizer-pro',   name: 'Image Resizer Pro',      emoji: '📐', url: '/tools/image-resizer-pro/' },
   ]},
 ]
 
@@ -82,6 +82,14 @@ async function renderNav() {
     '<button class="nav-tools-btn" id="toolsBtn" aria-label="Toggle tools menu" aria-expanded="false" onclick="window.__toggleToolsDD()">All Tools<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
     '<div class="tools-dropdown" id="toolsDropdown"><div class="tools-dropdown-grid">' + dropdownCols + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;margin-left:auto;">' + rightHTML + '</div>'
+
+  // Nav alignment fix — override any tool page CSS
+  if (!document.getElementById('wm-tool-nav-css')) {
+    var n = document.createElement('style')
+    n.id = 'wm-tool-nav-css'
+    n.textContent = '#tool-nav{display:flex!important;align-items:center!important;justify-content:flex-start!important;}#tool-nav .nav-logo{flex-shrink:0;margin-right:8px;}#tool-nav .nav-tools-btn{flex-shrink:0;}#tool-nav>div:last-child{margin-left:auto!important;flex-shrink:0;}'
+    document.head.appendChild(n)
+  }
 
   // Mobile dropdown CSS
   if (!document.getElementById('wm-tool-mobile-css')) {

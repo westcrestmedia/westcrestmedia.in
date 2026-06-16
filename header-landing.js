@@ -1,18 +1,8 @@
 /**
  * header-landing.js — Landing Page Header
- * ────────────────────────────────────────
- * Landing page ke <body> ke shuru mein paste karo:
- *
- *   <script src="/header-landing.js" type="module"></script>
- *   <nav id="navbar"></nav>
- *
- * Puri <nav id="navbar">...</nav> ka HTML hata do existing se,
- * sirf yeh khali tag rakhna hai.
  */
 
 import { supabase, getRedirectTarget, redirectAfterLogin } from '/auth.js'
-
-// ─── Nav HTML inject ──────────────────────────────────────────────────────────
 
 function renderNav(user) {
   const name   = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
@@ -26,25 +16,30 @@ function renderNav(user) {
 
     <ul class="nav-links">
       <li class="nav-dropdown"><a href="#tools">Tools</a>
-        <div class="dropdown-menu">
-          <div class="dropdown-label">Image Tools</div>
-          <a href="/tools/image-converter/"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
-          <a href="/tools/image-compressor/"><span class="drop-icon-sm">⚡</span>Image Compressor</a>
-          <a href="/tools/background-remover/"><span class="drop-icon-sm">✂️</span>Background Remover</a>
-          <a href="/tools/color-palette/"><span class="drop-icon-sm">🎨</span>Color Palette Generator</a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-label">Video Tools</div>
-          <a href="/tools/thumbnail-maker/"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
-          <a href="/tools/lut-preview/"><span class="drop-icon-sm">🎞️</span>LUT Preview Tool</a>
-          <a href="/tools/aspect-ratio/"><span class="drop-icon-sm">📐</span>Aspect Ratio Calculator</a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-label">AI Prompt Tools</div>
-          <a href="/tools/image-prompt/"><span class="drop-icon-sm">🎴</span>Image Prompt Generator</a>
-          <a href="/tools/video-prompt/"><span class="drop-icon-sm">🎥</span>Video Prompt Generator</a>
-          <div class="dropdown-divider"></div>
-          <a href="/tools/font-pairing/"><span class="drop-icon-sm">🔤</span>Font Pairing Tool</a>
-          <a href="/tools/png-to-pdf.html"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
-          <a href="/tools/image-resizer-pro/"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
+        <div class="dropdown-menu" style="width:580px;padding:20px;display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f0f0f;border:1px solid #1e1e1e;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.7);z-index:999;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;">
+            <div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🖼️ Image Tools</div>
+              <a href="/tools/image-converter/" style="${ddItem}"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
+              <a href="/tools/image-compressor/" style="${ddItem}"><span class="drop-icon-sm">⚡</span>Image Compressor</a>
+              <a href="/tools/background-remover/" style="${ddItem}"><span class="drop-icon-sm">✂️</span>Background Remover</a>
+              <a href="/tools/image-resizer-pro/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
+            </div>
+            <div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🎬 Video Tools</div>
+              <a href="/tools/thumbnail-maker/" style="${ddItem}"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
+              <a href="/tools/lut-preview/" style="${ddItem}"><span class="drop-icon-sm">🎞️</span>LUT Studio</a>
+              <a href="/tools/aspect-ratio/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Aspect Ratio Calc</a>
+              <a href="/tools/color-palette/" style="${ddItem}"><span class="drop-icon-sm">🎨</span>Color Palette</a>
+            </div>
+            <div>
+              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#444;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">✨ AI & Other</div>
+              <a href="/tools/image-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎴</span>Image Prompts</a>
+              <a href="/tools/video-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎥</span>Video Prompts</a>
+              <a href="/tools/font-pairing/" style="${ddItem}"><span class="drop-icon-sm">🔤</span>Font Pairing</a>
+              <a href="/tools/png-to-pdf.html" style="${ddItem}"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
+            </div>
+          </div>
         </div>
       </li>
       <li><a href="#services">Services</a></li>
@@ -60,7 +55,6 @@ function renderNav(user) {
       <a href="#contact" class="nav-cta">Start a Project</a>
 
       ${user ? `
-        <!-- Logged in: avatar dropdown -->
         <div id="wm-avatar-wrap" style="position:relative;">
           <button id="wm-avatar-btn" aria-label="Account menu" aria-expanded="false"
             style="width:36px;height:36px;border-radius:50%;border:1.5px solid #C9A84C;cursor:pointer;background:#1a1a1a;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:14px;font-weight:600;padding:0;transition:border-color .2s,box-shadow .2s;">
@@ -69,7 +63,6 @@ function renderNav(user) {
           ${dropdownHTML(name, user.email)}
         </div>
       ` : `
-        <!-- Guest: Sign In button -->
         <a href="/login/?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
       `}
 
@@ -80,9 +73,10 @@ function renderNav(user) {
   `
 
   bindDropdown()
+  initToolsDropdown()
 }
 
-// ─── Dropdown HTML ────────────────────────────────────────────────────────────
+const ddItem = `display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:5px;font-size:0.75rem;color:#888;text-decoration:none;transition:all .15s;font-family:'DM Sans',sans-serif;`
 
 function dropdownHTML(name, email) {
   return `
@@ -117,7 +111,26 @@ function dropdownHTML(name, email) {
 
 const ddLink = `display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:'Syne',sans-serif;transition:color .15s;`
 
-// ─── Bind interactions ────────────────────────────────────────────────────────
+function initToolsDropdown() {
+  const li = document.querySelector('.nav-dropdown')
+  const dd = li?.querySelector('.dropdown-menu')
+  if (!li || !dd) return
+
+  li.addEventListener('mouseenter', () => { dd.style.display = 'block' })
+  li.addEventListener('mouseleave', () => { dd.style.display = 'none' })
+
+  // Hover effect on links
+  dd.querySelectorAll('a').forEach(a => {
+    a.addEventListener('mouseenter', () => {
+      a.style.background = 'rgba(201,168,76,0.08)'
+      a.style.color = '#C9A84C'
+    })
+    a.addEventListener('mouseleave', () => {
+      a.style.background = 'transparent'
+      a.style.color = '#888'
+    })
+  })
+}
 
 function bindDropdown() {
   const btn = document.getElementById('wm-avatar-btn')
@@ -140,16 +153,12 @@ function bindDropdown() {
   })
 }
 
-// ─── Active nav link ──────────────────────────────────────────────────────────
-
 function initActiveNav() {
   const path = window.location.pathname
   document.querySelectorAll('.nav-links a').forEach(a => {
     if (a.getAttribute('href') === path) a.classList.add('active')
   })
 }
-
-// ─── Scroll shrink ────────────────────────────────────────────────────────────
 
 function initScroll() {
   const nav = document.getElementById('navbar')
@@ -158,8 +167,6 @@ function initScroll() {
     nav.classList.toggle('scrolled', window.scrollY > 40)
   }, { passive: true })
 }
-
-// ─── Init ─────────────────────────────────────────────────────────────────────
 
 async function init() {
   const { data: { session } } = await supabase.auth.getSession()
