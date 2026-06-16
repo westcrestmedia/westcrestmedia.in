@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer Pro | Resize Any Image to Any Size | Westcrest Media</title>
+<meta name="description" content="Resize images to any dimension — custom width and height, presets, aspect ratio lock, bulk batch resize, crop modes, DPI control and more. Free, private, no upload.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/images/w_logo.svg">
+<link rel="canonical" href="https://westcrestmedia.in/tools/image-resizer/">
+<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/image-resizer/">
+<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/image-resizer/">
+<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/image-resizer/">
+<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/image-resizer/">
+<link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/image-resizer/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://westcrestmedia.in/tools/image-resizer/" />
+<meta property="og:title" content="Image Resizer Pro | Resize Any Image to Any Size | Westcrest Media" />
+<meta property="og:description" content="Resize images to any dimension. Custom px, presets, aspect ratio lock, batch resize, DPI control and more. Free, private, no upload." />
+<meta property="og:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="og:locale:alternate" content="en_CA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Image Resizer Pro | Westcrest Media" />
+<meta name="twitter:description" content="Resize any image to any dimension. Presets, batch mode, DPI control, watermark and more. Free, private, no upload." />
+<meta name="twitter:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+<meta name="keywords" content="image resizer, resize image, resize image online, bulk image resize, batch image resize, image resize tool, change image dimensions, image resizer free, resize jpg png webp" />
+<meta name="theme-color" content="#C9A84C" />
+
+<!-- WebApplication Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Image Resizer Pro","url":"https://westcrestmedia.in/tools/image-resizer/","description":"Resize images to any dimension. Custom px, presets, aspect ratio lock, batch resize, DPI control and more. Free, private, no upload.","applicationCategory":"DesignApplication","operatingSystem":"Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"creator":{"@type":"Organization","name":"Westcrest Media","url":"https://westcrestmedia.in"}}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Resizer Pro","item":"https://westcrestmedia.in/tools/image-resizer/"}]}
+</script>
+
+<!-- WebPage Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Image Resizer Pro | Resize Any Image to Any Size | Westcrest Media","url":"https://westcrestmedia.in/tools/image-resizer/","description":"Resize images to any dimension. Custom px, presets, aspect ratio lock, batch resize, DPI control and more. Free, private, no upload.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Resizer Pro","item":"https://westcrestmedia.in/tools/image-resizer/"}]}}
+</script>
+
+<!-- FAQPage Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What image formats does the resizer support?","acceptedAnswer":{"@type":"Answer","text":"The Image Resizer Pro supports JPG, PNG, WEBP, GIF, BMP, and AVIF formats. You can upload any of these and export to your chosen output format."}},{"@type":"Question","name":"Can I resize multiple images at once?","acceptedAnswer":{"@type":"Answer","text":"Yes! The tool supports batch mode — upload up to 50 images and resize them all at once with your chosen settings. Download individually or as a single ZIP file."}},{"@type":"Question","name":"Does resizing upload my images to a server?","acceptedAnswer":{"@type":"Answer","text":"Never. All resizing happens locally inside your browser using the Canvas API. Your images never leave your device, keeping everything 100% private."}},{"@type":"Question","name":"Can I maintain the aspect ratio while resizing?","acceptedAnswer":{"@type":"Answer","text":"Yes. The aspect ratio lock is enabled by default. When you change the width, the height updates automatically and vice versa. You can also unlock it to set custom dimensions freely."}}]}
+</script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GQ0X1DD0DP');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --gold:#c8a96e;--gold2:#e8c98e;--gold-dim:rgba(200,169,110,0.1);--gold-border:rgba(200,169,110,0.2);
+  --dark:#0e0e14;--dark2:#14141c;--dark3:#1a1a24;--dark4:#1e1e2a;--dark5:#24243200;
+  --text:#f5f0e8;--muted:rgba(245,240,232,0.5);--faint:rgba(245,240,232,0.07);
+  --green:#6fbf6f;--green-dim:rgba(111,191,111,0.12);--red:#d06060;
+  --sidebar:320px;--nav:54px;
+  --r:12px;--rs:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;}
+html{overflow-x:hidden;}
+body{overflow-x:hidden;}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:var(--nav);background:rgba(8,8,10,0.97);border-bottom:1px solid var(--gold-border);backdrop-filter:blur(14px);}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--gold);}
+.nav-logo img{height:24px;}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;}
+.nav-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.nav-badge{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;font-family:'DM Mono',monospace;letter-spacing:.05em;}
+.nav-tools-btn{display:flex;align-items:center;gap:5px;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:color .2s;cursor:pointer;background:none;border:none;height:var(--nav);}
+.nav-tools-btn:hover{color:var(--gold);}
+.nav-tools-btn svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;}
+.nav-tools-btn.open svg{transform:rotate(180deg);}
+.tools-dropdown{position:absolute;top:var(--nav);right:1rem;background:rgba(13,13,18,0.98);backdrop-filter:blur(24px);border:1px solid var(--gold-border);border-radius:12px;padding:18px;display:none;z-index:300;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.tools-dropdown.open{display:block;}
+.tools-dropdown-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 20px;}
+.tools-col-label{font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:0 10px 7px;border-bottom:1px solid var(--gold-border);margin-bottom:5px;}
+.tools-dropdown a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:0.7rem;color:var(--muted);text-decoration:none;transition:all .18s;white-space:nowrap;}
+.tools-dropdown a:hover{background:var(--gold-dim);color:var(--gold);}
+.tools-dropdown a.current-tool{opacity:.35;pointer-events:none;}
+
+/* ── APP SHELL ── */
+.app-shell{display:flex;height:calc(100vh - var(--nav));}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);min-width:var(--sidebar);height:100%;display:flex;flex-direction:column;background:var(--dark2);border-right:1px solid var(--gold-border);overflow:hidden;}
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 0 2rem;}
+.sidebar-scroll::-webkit-scrollbar{width:4px;}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:99px;}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent;}
+
+/* ── DROPZONE in sidebar ── */
+.sidebar-drop{margin:10px 12px;background:var(--dark3);border:2px dashed var(--gold-border);border-radius:var(--r);padding:1.4rem 1rem;text-align:center;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.sidebar-drop:hover,.sidebar-drop.drag-over{border-color:var(--gold);background:rgba(200,169,110,.04);}
+.dz-icon{width:40px;height:40px;background:var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;}
+.dz-icon svg{width:18px;height:18px;fill:none;stroke:var(--gold);stroke-width:1.8;}
+.dz-title{font-size:13px;font-weight:600;margin-bottom:.25rem;}
+.dz-sub{font-size:11px;color:var(--muted);margin-bottom:.9rem;line-height:1.5;}
+.btn-upload{background:transparent;border:1.5px solid var(--gold);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;padding:6px 16px;border-radius:var(--rs);cursor:pointer;transition:all .2s;display:inline-block;}
+.btn-upload:hover{background:var(--gold-dim);}
+#file-in{display:none;}
+
+/* ── SECTION ACCORDION ── */
+.acc{border-bottom:1px solid var(--faint);overflow:hidden;}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;transition:background .15s;}
+.acc-head:hover{background:var(--dark3);}
+.acc-head-left{display:flex;align-items:center;gap:8px;}
+.acc-icon{font-size:14px;width:18px;text-align:center;}
+.acc-title{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
+.acc-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);background:var(--gold-dim);padding:1px 8px;border-radius:99px;}
+.acc-chev{width:12px;height:12px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;flex-shrink:0;}
+.acc.open .acc-chev{transform:rotate(180deg);}
+.acc-body{display:none;padding:0 14px 14px;}
+.acc.open .acc-body{display:block;}
+
+/* ── FORM ELEMENTS ── */
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.row.three{grid-template-columns:1fr 1fr 1fr;}
+.row.single{grid-template-columns:1fr;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.inp{background:var(--dark4);border:1.5px solid var(--gold-border);color:var(--text);font-family:'DM Mono',monospace;font-size:13.5px;padding:8px 11px;border-radius:var(--rs);width:100%;outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--gold);}
+.sel{background:var(--dark4);border:1.5px solid var(--gold-border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12.5px;padding:8px 11px;border-radius:var(--rs);cursor:pointer;width:100%;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.sel:focus{border-color:var(--gold);}
+.inp-row{display:flex;gap:6px;align-items:center;}
+.inp-row .inp{flex:1;}
+
+/* lock btn */
+.lock-btn{background:var(--dark4);border:1.5px solid var(--gold-border);color:var(--muted);width:32px;height:32px;border-radius:var(--rs);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
+.lock-btn.on{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.lock-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* range */
+.range-row{display:flex;align-items:center;gap:8px;}
+input[type=range]{flex:1;height:3px;-webkit-appearance:none;appearance:none;background:rgba(200,169,110,0.2);border-radius:99px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--gold);border-radius:50%;cursor:pointer;}
+.range-val{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--gold);min-width:38px;text-align:right;}
+
+/* toggle */
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--faint);}
+.tog-row:last-child{border-bottom:none;}
+.tog-label{font-size:12.5px;color:var(--muted);}
+.tog{position:relative;width:32px;height:17px;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;}
+.tog-sl{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:99px;cursor:pointer;transition:.2s;}
+.tog-sl:before{content:'';position:absolute;width:11px;height:11px;background:var(--muted);border-radius:50%;left:3px;top:3px;transition:.2s;}
+.tog input:checked+.tog-sl{background:var(--gold-dim);border:1px solid var(--gold);}
+.tog input:checked+.tog-sl:before{transform:translateX(15px);background:var(--gold);}
+
+/* presets */
+.ptabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+.ptab{background:var(--dark4);border:1px solid var(--faint);color:var(--muted);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:99px;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;}
+.ptab:hover{border-color:var(--gold-border);color:var(--text);}
+.ptab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.pbtn{background:var(--dark4);border:1px solid var(--faint);color:var(--muted);padding:7px 9px;border-radius:6px;cursor:pointer;text-align:left;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.pbtn:hover{border-color:var(--gold-border);color:var(--text);}
+.pbtn.on{border-color:var(--gold);background:var(--gold-dim);color:var(--gold);}
+.pbtn-name{font-size:11.5px;font-weight:600;display:block;margin-bottom:1px;}
+.pbtn-dim{font-family:'DM Mono',monospace;font-size:9.5px;opacity:.7;display:block;}
+
+/* color swatches */
+.swatches{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.sw{width:22px;height:22px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
+.sw.on{border-color:var(--gold);}
+.sw.transparent-sw{background:repeating-conic-gradient(#2a2a36 0% 25%,#1c1c26 0% 50%) 0 0/8px 8px;border:1.5px dashed var(--gold-border);}
+#custom-bg-inp{width:24px;height:22px;border-radius:5px;border:1.5px solid var(--gold-border);cursor:pointer;padding:0;background:none;}
+
+/* watermark */
+.wm-type-row{display:flex;gap:5px;margin-bottom:10px;}
+.wm-tab{flex:1;background:var(--dark4);border:1px solid var(--faint);color:var(--muted);font-size:10px;font-weight:600;padding:6px;border-radius:var(--rs);cursor:pointer;text-align:center;transition:all .18s;font-family:'DM Sans',sans-serif;}
+.wm-tab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.wm-panel{display:none;}
+.wm-panel.on{display:block;}
+
+/* filename */
+.fname-preview{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);background:var(--dark4);border:1px solid var(--gold-border);padding:7px 10px;border-radius:var(--rs);margin-top:6px;word-break:break-all;}
+
+/* ── DPI SECTION ── */
+.dpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px;}
+.dpi-btn{background:var(--dark4);border:1.5px solid var(--faint);color:var(--muted);padding:8px 9px;border-radius:6px;cursor:pointer;text-align:center;transition:all .15s;font-family:'DM Mono',monospace;font-size:12.5px;font-weight:600;}
+.dpi-btn:hover{border-color:var(--gold-border);color:var(--text);}
+.dpi-btn.on{border-color:var(--gold);background:var(--gold-dim);color:var(--gold);}
+.dpi-label{font-size:9px;display:block;font-family:'DM Sans',sans-serif;color:var(--muted);margin-top:1px;text-transform:uppercase;letter-spacing:.05em;}
+
+/* ── SIDEBAR ACTION BAR ── */
+.sidebar-actions{padding:10px 12px;border-top:1px solid var(--gold-border);background:var(--dark2);flex-shrink:0;}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:9px 17px;border-radius:var(--rs);cursor:pointer;transition:all .2s;border:1.5px solid;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
+.btn-gold{background:var(--gold);color:#0a0a0f;border-color:var(--gold);}
+.btn-gold:hover{opacity:.88;transform:translateY(-1px);}
+.btn-outline{background:transparent;border-color:var(--gold-border);color:var(--muted);}
+.btn-outline:hover{border-color:var(--gold);color:var(--text);}
+.btn-danger{background:transparent;border-color:rgba(220,50,50,.25);color:var(--red);}
+.btn-danger:hover{border-color:rgba(220,50,50,.5);}
+.btn:disabled{opacity:.35;pointer-events:none;}
+.btn-sm{font-size:11px;padding:6px 12px;}
+.btn-full{width:100%;justify-content:center;margin-bottom:6px;}
+
+/* ── TOPBAR ACTION BAR (Resize / Zip / Clear, relocated top-right) ── */
+.topbar-actionbar{display:flex;align-items:center;gap:9px;}
+.btn-topbar{font-family:'DM Sans',sans-serif;font-weight:700;border-radius:var(--rs);cursor:pointer;transition:all .2s;border:1.5px solid;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;}
+.btn-topbar:disabled{opacity:.35;pointer-events:none;}
+.btn-topbar-gold{background:var(--gold);color:#0a0a0f;border-color:var(--gold);font-size:14.5px;padding:13px 28px;letter-spacing:.02em;}
+.btn-topbar-gold:hover{opacity:.88;transform:translateY(-1px);}
+.btn-topbar-outline{background:transparent;border-color:var(--gold-border);color:var(--text);font-size:12.5px;padding:11px 19px;}
+.btn-topbar-outline:hover{border-color:var(--gold);background:var(--gold-dim);color:var(--gold);}
+.btn-topbar-danger{background:transparent;border-color:rgba(220,50,50,.35);color:var(--red);font-size:12.5px;padding:11px 19px;}
+.btn-topbar-danger:hover{border-color:rgba(220,50,50,.7);background:rgba(220,50,50,.1);}
+
+/* ── MAIN CANVAS AREA ── */
+.main-canvas{flex:1;height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--dark);}
+
+/* ── CANVAS TOPBAR ── */
+.canvas-topbar{display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;min-height:78px;border-bottom:1px solid var(--faint);flex-shrink:0;gap:1rem;flex-wrap:wrap;row-gap:10px;}
+.canvas-info-chips{display:flex;gap:0;align-items:stretch;flex-wrap:wrap;}
+.cic{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);padding:0 20px;border-right:1px solid var(--faint);display:flex;flex-direction:column;justify-content:center;gap:3px;min-height:78px;}
+.cic:first-child{padding-left:0;}
+.cic .cic-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);opacity:.7;}
+.cic strong{color:var(--text);font-size:19px;font-weight:700;}
+.cic.highlight strong{color:var(--gold);}
+.cic .cic-sub{font-size:11px;color:var(--green);margin-top:1px;font-weight:600;}
+.canvas-topbar-actions{display:flex;gap:14px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+
+/* ── IMAGE STRIP ── */
+.img-strip{display:none;flex-shrink:0;background:var(--dark2);border-bottom:2px solid var(--gold-border);padding:10px 14px;gap:10px;overflow-x:auto;align-items:center;min-height:96px;}
+.img-strip.on{display:flex;}
+.img-strip::-webkit-scrollbar{height:3px;}
+.img-strip::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:99px;}
+.strip-item{position:relative;flex-shrink:0;width:76px;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid transparent;transition:all .18s;}
+.strip-item:hover{border-color:var(--gold-border);}
+.strip-item.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,0.3);}
+.strip-item.done-strip{border-color:rgba(111,191,111,0.5);}
+.strip-item.editing-strip{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,0.4);animation:strip-pulse 1.5s ease-in-out infinite;}
+@keyframes strip-pulse{0%,100%{box-shadow:0 0 0 3px rgba(200,169,110,0.4);}50%{box-shadow:0 0 0 5px rgba(200,169,110,0.15);}}
+.strip-item img{width:76px;height:60px;object-fit:cover;display:block;background:var(--dark3);}
+.strip-item-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);font-size:7px;font-family:'DM Mono',monospace;color:var(--muted);padding:3px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.strip-item-status{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;}
+.strip-item-status.done{background:var(--green);color:#000;}
+.strip-item-status.pending{background:var(--dark4);color:var(--muted);}
+.strip-item-status.editing{background:var(--gold);color:#000;}
+.strip-remove{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:rgba(200,60,60,0.85);color:#fff;font-size:9px;display:none;align-items:center;justify-content:center;cursor:pointer;border:none;line-height:1;}
+.strip-item:hover .strip-remove{display:flex;}
+.strip-add{flex-shrink:0;width:60px;height:60px;border-radius:8px;border:1.5px dashed var(--gold-border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gold);font-size:22px;transition:all .2s;background:none;}
+.strip-add:hover{border-color:var(--gold);background:var(--gold-dim);}
+.strip-label-header{flex-shrink:0;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;padding-right:4px;border-right:1px solid var(--faint);margin-right:4px;align-self:center;}
+
+/* ── CANVAS WORKSPACE ── */
+.canvas-workspace{flex:1;overflow:auto;display:flex;flex-direction:column;padding:1.25rem;}
+.canvas-workspace::-webkit-scrollbar{width:6px;height:6px;}
+.canvas-workspace::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:99px;}
+
+/* ── RE-EDIT BANNER ── */
+.reedit-banner{display:none;align-items:center;justify-content:space-between;gap:1rem;background:rgba(200,169,110,0.1);border:2px solid var(--gold);border-radius:var(--r);padding:16px 20px;margin-bottom:1rem;flex-wrap:wrap;}
+.reedit-banner.on{display:flex;}
+.reedit-info{display:flex;align-items:center;gap:12px;}
+.reedit-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse2{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.reedit-text{font-size:17px;color:var(--text);font-weight:700;}
+.reedit-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.reedit-actions{display:flex;gap:10px;}
+.btn-done-edit{background:var(--green);color:#000;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--rs);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .2s;}
+.btn-done-edit:hover{opacity:.88;transform:translateY(-1px);}
+.btn-cancel-edit{background:transparent;border:1.5px solid var(--faint);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:10px 16px;border-radius:var(--rs);cursor:pointer;transition:all .2s;}
+.btn-cancel-edit:hover{border-color:var(--gold-border);color:var(--text);}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(111,191,111,0.4);}50%{box-shadow:0 0 0 8px rgba(111,191,111,0);}}
+
+/* ── EMPTY STATE ── */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem;gap:1rem;opacity:.6;}
+.empty-icon{width:64px;height:64px;background:var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:.5rem;}
+.empty-icon svg{width:28px;height:28px;fill:none;stroke:var(--gold);stroke-width:1.5;}
+.empty-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:600;}
+.empty-sub{font-size:13.5px;color:var(--muted);max-width:310px;line-height:1.6;}
+
+/* ── SINGLE PREVIEW ── */
+.single-preview{display:none;}
+.single-preview.on{display:flex;flex-direction:column;gap:1rem;}
+.preview-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.pcard{background:var(--dark2);border:1px solid var(--gold-border);border-radius:var(--r);overflow:hidden;}
+.pcard-head{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:9px 13px;border-bottom:1px solid var(--faint);display:flex;justify-content:space-between;align-items:center;}
+.pcard-head span{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--gold);font-weight:400;letter-spacing:0;}
+.pcard-img{display:flex;align-items:center;justify-content:center;padding:.75rem;min-height:220px;background-image:repeating-conic-gradient(#1a1a24 0% 25%,#111118 0% 50%);background-size:12px 12px;cursor:pointer;position:relative;}
+.pcard-img:hover .pcard-zoom{opacity:1;}
+.pcard-zoom{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);border:1px solid var(--gold-border);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.pcard-img img{max-width:100%;max-height:280px;object-fit:contain;display:block;}
+.pcard-foot{padding:8px 13px;font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);border-top:1px solid var(--faint);display:flex;justify-content:space-between;}
+
+/* ── SINGLE ACTIONS BAR ── */
+.single-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0;}
+
+/* ── BATCH GRID ── */
+.batch-section{display:none;}
+.batch-section.on{display:flex;flex-direction:column;gap:1rem;}
+.batch-topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.batch-stat{font-size:12.5px;color:var(--muted);font-family:'DM Mono',monospace;}
+.batch-stat strong{color:var(--gold);}
+.batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.85rem;}
+.bcard{background:var(--dark2);border:1.5px solid var(--gold-border);border-radius:var(--r);overflow:hidden;transition:all .2s;cursor:pointer;}
+.bcard:hover{border-color:var(--gold);transform:translateY(-2px);}
+.bcard.done{border-color:rgba(111,191,111,0.3);}
+.bcard-thumb-wrap{position:relative;height:148px;background-image:repeating-conic-gradient(#1a1a24 0% 25%,#111118 0% 50%);background-size:10px 10px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.bcard-thumb{width:100%;height:100%;object-fit:cover;}
+.bcard-remove{position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(0,0,0,0.7);border:1px solid rgba(220,80,80,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .2s;color:var(--red);font-size:13px;z-index:2;}
+.bcard:hover .bcard-remove{opacity:1;}
+.bcard-remove:hover{background:rgba(220,80,80,0.2);border-color:var(--red);}
+.bcard-inner{padding:12px;}
+.bcard-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.bcard-dims{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:2px;}
+.bcard-size{font-size:11px;color:var(--muted);}
+.bcard-foot{padding:8px 11px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.status{font-size:10.5px;padding:3px 9px;border-radius:20px;background:var(--dark3);color:var(--muted);font-weight:600;}
+.status.done{color:var(--green);background:var(--green-dim);}
+.status.working{color:var(--gold);animation:blink 1s ease infinite;}
+.status.error{color:var(--red);background:rgba(208,96,96,.1);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+.btn-dl-sm{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);padding:5px 13px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-dl-sm:hover{background:var(--gold);color:#000;}
+.btn-dl-sm:disabled{opacity:.35;pointer-events:none;}
+.btn-edit-sm{background:rgba(200,169,110,0.15);border:1.5px solid var(--gold-border);color:var(--gold);padding:5px 13px;border-radius:20px;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-edit-sm:hover{background:var(--gold);color:#000;border-color:var(--gold);}
+
+/* ── OVERLAY / SPINNER ── */
+.overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(10,10,16,0.95);align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(10px);}
+.overlay.on{display:flex;}
+.ov-ring{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold-border);border-top-color:var(--gold);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ov-title{font-size:14px;font-weight:600;letter-spacing:.04em;font-family:'Syne',sans-serif;}
+.ov-sub{font-size:11px;color:var(--muted);font-weight:300;}
+.ov-bar{width:200px;height:2px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;}
+.ov-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:width .15s;}
+.ov-result{font-family:'DM Mono',monospace;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transform:scale(.6);transition:all .45s cubic-bezier(.34,1.2,.64,1);}
+.ov-result.on{opacity:1;transform:scale(1);}
+
+/* ── CANVAS MODAL (zoom preview) ── */
+.canvas-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;flex-direction:column;gap:1rem;backdrop-filter:blur(8px);}
+.canvas-modal.on{display:flex;}
+.cm-header{display:flex;align-items:center;justify-content:space-between;width:min(90vw,900px);padding:0 4px;}
+.cm-title{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.1em;}
+.cm-close{background:none;border:1px solid var(--gold-border);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cm-close:hover{border-color:var(--gold);color:var(--text);}
+.cm-img-wrap{max-width:90vw;max-height:80vh;background-image:repeating-conic-gradient(#1a1a24 0% 25%,#111118 0% 50%);background-size:12px 12px;border-radius:var(--r);overflow:hidden;border:1px solid var(--gold-border);}
+.cm-img-wrap img{max-width:90vw;max-height:80vh;object-fit:contain;display:block;}
+.cm-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:center;}
+
+/* ── TOOLTIP ── */
+.tip{position:relative;display:inline-flex;}
+.tip-text{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);color:var(--text);font-size:10px;white-space:nowrap;padding:4px 10px;border-radius:5px;border:1px solid var(--gold-border);pointer-events:none;z-index:100;}
+.tip:hover .tip-text{display:block;}
+
+/* ── STATUS INFO ── */
+.info-pill{display:inline-flex;align-items:center;gap:5px;background:var(--dark3);border:1px solid var(--faint);border-radius:99px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:10.5px;color:var(--muted);}
+.info-pill.done{border-color:var(--green-dim);color:var(--green);}
+
+/* ── ADD MORE ── */
+.add-more-bar{display:none;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--faint);flex-shrink:0;}
+.add-more-bar.on{display:flex;}
+
+/* scrollbar for batch area */
+.canvas-workspace{scrollbar-width:thin;scrollbar-color:var(--gold-border) transparent;}
+
+/* responsive: on small screen sidebar collapses */
+@media(max-width:768px){
+  .sidebar{width:100%;min-width:unset;height:auto;max-height:40vh;}
+  .app-shell{flex-direction:column;}
+  html,body{overflow:auto;}
+  .main-canvas{min-height:60vh;}
+}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{padding:8px 14px 4px;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--faint);background:rgba(200,169,110,0.03);}
+
+/* ── HERO SECTION ── */
+.hero-section{text-align:center;padding:2.5rem 1.5rem 1.8rem;max-width:720px;margin:0 auto;margin-top:var(--nav);}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 15px;border-radius:99px;margin-bottom:1.3rem;font-family:'DM Mono',monospace;}
+.hero-pulse{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:heroPulse 2s ease-in-out infinite;}
+@keyframes heroPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.hero-section h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:.75rem;}
+.hero-section h1 em{font-style:italic;color:var(--gold);}
+.hero-section p{color:var(--muted);font-size:13.5px;line-height:1.65;margin-bottom:1.1rem;font-weight:300;font-family:'DM Sans',sans-serif;}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+.hero-pill{background:var(--dark3);border:1px solid var(--faint);color:var(--muted);font-size:10px;padding:3px 11px;border-radius:99px;font-weight:500;font-family:'DM Sans',sans-serif;}
+
+/* ── CONTENT SECTIONS (How To, FAQ, Explore) ── */
+.content-section{max-width:900px;margin:0 auto;padding:0 1.25rem 4rem;}
+.sec-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-family:'DM Mono',monospace;}
+.sec-heading{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;margin-bottom:2rem;}
+.sec-heading em{font-style:italic;color:var(--gold);}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+@media(max-width:580px){.steps-grid{grid-template-columns:1fr;}}
+.step-card{background:var(--dark2);border:1px solid var(--gold-border);border-radius:14px;padding:1.4rem;}
+.step-num{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);margin-bottom:.6rem;font-family:'DM Mono',monospace;}
+.step-card h4{font-size:14px;font-weight:600;margin-bottom:.4rem;font-family:'Syne',sans-serif;}
+.step-card p{font-size:13px;color:var(--muted);line-height:1.55;font-weight:300;font-family:'DM Sans',sans-serif;}
+
+/* ── OTHER TOOLS ── */
+.tool-card{display:flex;align-items:center;gap:10px;background:var(--dark2);border:1px solid var(--gold-border);border-radius:14px;padding:12px 14px;transition:all .2s;text-decoration:none;}
+.tool-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.tool-card-icon{font-size:1.5rem;flex-shrink:0;}
+.tool-card-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;font-family:'Syne',sans-serif;}
+.tool-card-desc{font-size:11px;color:var(--muted);line-height:1.4;font-family:'DM Sans',sans-serif;}
+.tool-card-arrow{margin-left:auto;font-size:14px;color:var(--gold);transition:transform .2s;}
+.tool-card:hover .tool-card-arrow{transform:translateX(3px);}
+
+/* ── FAQ ── */
+.faq-item{border-bottom:1px solid var(--faint);}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;cursor:pointer;font-size:14px;font-weight:500;gap:1rem;font-family:'DM Sans',sans-serif;}
+.faq-q svg{width:15px;height:15px;fill:none;stroke:var(--muted);stroke-width:2;transition:transform .2s;flex-shrink:0;}
+.faq-item.open .faq-q svg{transform:rotate(180deg);}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.6;font-weight:300;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s;font-family:'DM Sans',sans-serif;}
+.faq-item.open .faq-a{max-height:160px;padding-bottom:.9rem;}
+
+/* ── DPI EXPLAINER ── */
+.dpi-info{background:var(--dark4);border:1px solid var(--gold-border);border-radius:6px;padding:8px 10px;margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5;}
+.dpi-info strong{color:var(--gold);}
+
+/* ── BATCH DETAIL BAR ── */
+.batch-detail-bar{display:none;background:var(--dark2);border:1.5px solid var(--gold);border-radius:var(--r);padding:14px 18px;margin-bottom:1rem;gap:14px;align-items:center;flex-wrap:wrap;}
+.batch-detail-bar.on{display:flex;}
+.bdb-thumb{width:64px;height:64px;object-fit:cover;border-radius:8px;background:var(--dark3);flex-shrink:0;cursor:pointer;}
+.bdb-info{flex:1;min-width:160px;}
+.bdb-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;}
+.bdb-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.bdb-chip{font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:20px;background:var(--dark3);border:1px solid var(--faint);color:var(--muted);}
+.bdb-chip.gold{color:var(--gold);border-color:var(--gold-border);background:var(--gold-dim);}
+.bdb-chip.green{color:var(--green);border-color:rgba(111,191,111,0.3);background:var(--green-dim);}
+.bdb-actions{display:flex;gap:7px;align-items:center;flex-shrink:0;}
+.bdb-zoom{background:var(--dark3);border:1px solid var(--gold-border);color:var(--gold);padding:6px 15px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.bdb-zoom:hover{background:var(--gold-dim);}
+.bdb-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:3px;line-height:1;transition:color .2s;}
+.bdb-close:hover{color:var(--text);}
+
+/* ── LIGHTBOX ── */
+.lightbox{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.93);align-items:center;justify-content:center;flex-direction:column;gap:.75rem;backdrop-filter:blur(10px);}
+.lightbox.on{display:flex;}
+.lightbox-img{max-width:90vw;max-height:82vh;object-fit:contain;border-radius:var(--rs);border:1px solid var(--gold-border);}
+.lightbox-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:center;}
+.lightbox-close{position:absolute;top:1rem;right:1.25rem;background:rgba(0,0,0,0.5);border:1px solid var(--gold-border);color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.lightbox-close:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── BCARD SELECTED ── */
+.bcard.selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,169,110,0.2);}
+</style>
+</head>
+<body>
+
+<!-- HEADER SCRIPT -->
+<script type="module">
+  import '/header-tool.js'
+  window.__WM_TOOL__ = { slug: 'image-resizer', name: 'Image Resizer Pro', emoji: '↔️', url: '/tools/image-resizer/' }
+</script>
+
+<!-- NAV -->
+<nav class="nav" id="tool-nav"></nav>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-badge"><div class="hero-pulse"></div>Pro Resizer · Batch Mode · DPI Control</div>
+  <h1>Resize <em>Any Image</em><br>Any Size. Any Format.</h1>
+  <p>Custom dimensions, social media presets, aspect ratio lock, watermark, grayscale, sharpening and full DPI control. Batch resize up to 50 images at once. Free, private, no upload.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">50 Presets</span>
+    <span class="hero-pill">Batch 50 Images</span>
+    <span class="hero-pill">Aspect Lock</span>
+    <span class="hero-pill">DPI Control</span>
+    <span class="hero-pill">Watermark</span>
+    <span class="hero-pill">ZIP Download</span>
+    <span class="hero-pill">100% Private</span>
+  </div>
+</section>
+
+<!-- APP SHELL -->
+<div class="app-shell">
+
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <aside class="sidebar">
+
+    <!-- DROP ZONE -->
+    <div class="sidebar-drop" id="dropZone">
+      <div class="dz-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <p class="dz-title">Drop image(s) here</p>
+      <p class="dz-sub">JPG · PNG · WEBP · GIF · BMP · AVIF<br>Up to 50 images · 100% private</p>
+      <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('file-in').click()">Choose Files</button>
+    </div>
+    <div class="add-more-bar" id="addMoreBar">
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-in').click()" style="flex:1;justify-content:center;">+ Add More Images</button>
+    </div>
+    <input type="file" id="file-in" accept="image/*" multiple>
+
+    <div class="sidebar-scroll">
+
+      <!-- ① DIMENSIONS -->
+      <div class="acc open" id="accDims">
+        <div class="acc-head" onclick="toggleAcc('accDims')">
+          <div class="acc-head-left"><span class="acc-icon">↔️</span><span class="acc-title">Dimensions</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="row" style="margin-bottom:8px;">
+            <div class="fg">
+              <label>Resize Mode</label>
+              <select class="sel" id="mode" onchange="onModeChange()">
+                <option value="exact">Exact Dimensions (px)</option>
+                <option value="percent">Percentage (%)</option>
+                <option value="width-only">Width Only — auto height</option>
+                <option value="height-only">Height Only — auto width</option>
+                <option value="fit">Fit Within Box</option>
+                <option value="cover">Cover &amp; Crop to Box</option>
+                <option value="contain">Contain + Padding</option>
+                <option value="longest">Scale by Longest Side</option>
+                <option value="shortest">Scale by Shortest Side</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Output Format</label>
+              <select class="sel" id="outFmt" onchange="updateFnamePreview()">
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp" selected>WEBP</option>
+                <option value="image/gif">GIF</option>
+                <option value="image/bmp">BMP</option>
+              </select>
+            </div>
+          </div>
+          <div id="grpPx">
+            <div class="row" style="margin-bottom:6px;">
+              <div class="fg">
+                <label>Width (px)</label>
+                <div class="inp-row">
+                  <input class="inp" type="number" id="inpW" placeholder="1920" min="1" max="16000" oninput="onW()">
+                  <button class="lock-btn on" id="lockBtn" title="Lock aspect ratio" onclick="toggleLock()">
+                    <svg id="lockIco" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="fg" id="grpH">
+                <label>Height (px)</label>
+                <input class="inp" type="number" id="inpH" placeholder="1080" min="1" max="16000" oninput="onH()">
+              </div>
+            </div>
+          </div>
+          <div id="grpPct" style="display:none;" class="row single">
+            <div class="fg"><label>Scale (%)</label><input class="inp" type="number" id="inpPct" value="50" min="1" max="1000" oninput="updateOutInfo()"></div>
+          </div>
+          <div class="fg" style="margin-top:6px;">
+            <label>Output Quality</label>
+            <div class="range-row">
+              <input type="range" id="qualRange" min="10" max="100" value="92" oninput="document.getElementById('qualVal').innerText=this.value+'%';updateOutInfo()">
+              <span class="range-val" id="qualVal">92%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② PRESETS -->
+      <div class="acc" id="accPresets">
+        <div class="acc-head" onclick="toggleAcc('accPresets')">
+          <div class="acc-head-left"><span class="acc-icon">📐</span><span class="acc-title">Size Presets</span><span class="acc-meta">50+</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="ptabs" id="ptabs">
+            <button class="ptab on" onclick="showCat('social',this)">Social</button>
+            <button class="ptab" onclick="showCat('print',this)">Print</button>
+            <button class="ptab" onclick="showCat('web',this)">Web</button>
+            <button class="ptab" onclick="showCat('video',this)">Video</button>
+            <button class="ptab" onclick="showCat('device',this)">Device</button>
+            <button class="ptab" onclick="showCat('ecom',this)">eComm</button>
+          </div>
+          <div class="pgrid" id="pgrid"></div>
+        </div>
+      </div>
+
+      <!-- ③ DPI & RESOLUTION -->
+      <div class="acc" id="accDpi">
+        <div class="acc-head" onclick="toggleAcc('accDpi')">
+          <div class="acc-head-left"><span class="acc-icon">🖨️</span><span class="acc-title">DPI / Resolution</span><span class="acc-meta">Print & Screen</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="fg" style="margin-bottom:10px;">
+            <label>DPI (Dots Per Inch) Preset</label>
+            <div class="dpi-grid">
+              <button class="dpi-btn" onclick="setDpi(72,this)">72<span class="dpi-label">Screen / Web</span></button>
+              <button class="dpi-btn" onclick="setDpi(96,this)">96<span class="dpi-label">Windows Screen</span></button>
+              <button class="dpi-btn on" onclick="setDpi(150,this)">150<span class="dpi-label">Medium Print</span></button>
+              <button class="dpi-btn" onclick="setDpi(300,this)">300<span class="dpi-label">High Print</span></button>
+              <button class="dpi-btn" onclick="setDpi(600,this)">600<span class="dpi-label">Pro / Offset</span></button>
+              <button class="dpi-btn" onclick="setDpi(0,this)">Custom<span class="dpi-label">Enter below</span></button>
+            </div>
+          </div>
+          <div class="row single" id="dpiCustomRow" style="display:none;">
+            <div class="fg"><label>Custom DPI Value</label><input class="inp" type="number" id="customDpiVal" value="150" min="1" max="2400" placeholder="e.g. 150"></div>
+          </div>
+          <div class="fg" style="margin-bottom:8px;">
+            <label>Embed DPI Metadata</label>
+            <div class="tog-row" style="border:none;padding:4px 0;">
+              <span class="tog-label" style="font-size:10px;">Write DPI into EXIF (JPEG only)</span>
+              <label class="tog"><input type="checkbox" id="embedDpi" checked><span class="tog-sl"></span></label>
+            </div>
+          </div>
+          <div class="dpi-info">
+            <strong>72 DPI</strong> — Web & screen displays<br>
+            <strong>150 DPI</strong> — Standard printing<br>
+            <strong>300 DPI</strong> — High-quality print / photos<br>
+            <strong>600 DPI</strong> — Professional offset / magazines<br>
+            <em style="font-size:9px;">Note: Browser canvas changes pixel count; true DPI metadata embed works for JPEG output.</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- ④ ADVANCED -->
+      <div class="acc" id="accAdv">
+        <div class="acc-head" onclick="toggleAcc('accAdv')">
+          <div class="acc-head-left"><span class="acc-icon">🔧</span><span class="acc-title">Advanced</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="row" style="margin-bottom:10px;">
+            <div class="fg">
+              <label>Rotation</label>
+              <select class="sel" id="advRot">
+                <option value="0">No Rotation</option>
+                <option value="90">90° Clockwise</option>
+                <option value="180">180°</option>
+                <option value="270">270° Clockwise</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Background Colour</label>
+              <div class="swatches">
+                <div class="sw on" style="background:#ffffff;" onclick="setSwatch(this,'#ffffff')"></div>
+                <div class="sw" style="background:#000000;" onclick="setSwatch(this,'#000000')"></div>
+                <div class="sw transparent-sw" onclick="setSwatch(this,'transparent')" title="Transparent"></div>
+                <div class="sw" style="background:#c8a96e;" onclick="setSwatch(this,'#c8a96e')"></div>
+                <input type="color" id="custom-bg-inp" value="#ffffff" onchange="setSwatch(null,this.value)" title="Custom colour">
+              </div>
+            </div>
+          </div>
+          <div class="tog-row"><span class="tog-label">Allow Upscale</span><label class="tog"><input type="checkbox" id="advUp" checked><span class="tog-sl"></span></label></div>
+          <div class="tog-row"><span class="tog-label">Convert to Grayscale</span><label class="tog"><input type="checkbox" id="advGray"><span class="tog-sl"></span></label></div>
+          <div class="tog-row"><span class="tog-label">Apply Sharpening</span><label class="tog"><input type="checkbox" id="advSharp"><span class="tog-sl"></span></label></div>
+          <div class="tog-row"><span class="tog-label">Flip Horizontal</span><label class="tog"><input type="checkbox" id="advFlipH"><span class="tog-sl"></span></label></div>
+          <div class="tog-row"><span class="tog-label">Flip Vertical</span><label class="tog"><input type="checkbox" id="advFlipV"><span class="tog-sl"></span></label></div>
+          <div class="tog-row">
+            <span class="tog-label">Add Padding</span>
+            <label class="tog"><input type="checkbox" id="advPad" onchange="document.getElementById('padRow').style.display=this.checked?'':'none'"><span class="tog-sl"></span></label>
+          </div>
+          <div id="padRow" style="display:none;padding-top:8px;">
+            <div class="fg"><label>Padding Amount (px)</label><input class="inp" type="number" id="padAmt" value="20" min="0" max="500"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ WATERMARK -->
+      <div class="acc" id="accWm">
+        <div class="acc-head" onclick="toggleAcc('accWm')">
+          <div class="acc-head-left"><span class="acc-icon">©</span><span class="acc-title">Watermark</span><span class="acc-meta">Optional</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="wm-type-row">
+            <button class="wm-tab on" id="wmTabNone" onclick="setWmTab('none')">None</button>
+            <button class="wm-tab" id="wmTabText" onclick="setWmTab('text')">Text</button>
+            <button class="wm-tab" id="wmTabImg" onclick="setWmTab('img')">Image</button>
+          </div>
+          <div class="wm-panel on" id="wmPanelNone"></div>
+          <div class="wm-panel" id="wmPanelText">
+            <div class="fg" style="margin-bottom:8px;">
+              <label>Watermark Text</label>
+              <input class="inp" type="text" id="wmText" value="© Westcrest Media" placeholder="Your text here">
+            </div>
+            <div class="row three" style="margin-bottom:8px;">
+              <div class="fg"><label>Font Size (px)</label><input class="inp" type="number" id="wmSize" value="28" min="8" max="200"></div>
+              <div class="fg"><label>Colour</label><input class="inp" type="color" id="wmColor" value="#ffffff" style="height:32px;padding:2px 6px;cursor:pointer;"></div>
+              <div class="fg"><label>Opacity (%)</label><input class="inp" type="number" id="wmOpacity" value="60" min="5" max="100"></div>
+            </div>
+            <div class="row">
+              <div class="fg">
+                <label>Position</label>
+                <select class="sel" id="wmPos">
+                  <option value="bottom-right">Bottom Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="top-right">Top Right</option>
+                  <option value="top-left">Top Left</option>
+                  <option value="center">Centre</option>
+                  <option value="tile">Tile (Repeat)</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label>Font</label>
+                <select class="sel" id="wmFont">
+                  <option value="Syne">Syne</option>
+                  <option value="serif">Serif</option>
+                  <option value="monospace">Monospace</option>
+                  <option value="sans-serif">Sans-serif</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="wm-panel" id="wmPanelImg">
+            <div class="fg" style="margin-bottom:8px;">
+              <label>Watermark Image (PNG recommended)</label>
+              <input class="inp" type="file" id="wmImgFile" accept="image/*" style="padding:5px 8px;cursor:pointer;">
+            </div>
+            <div class="row">
+              <div class="fg"><label>Size (% of width)</label><input class="inp" type="number" id="wmImgSize" value="20" min="5" max="80"></div>
+              <div class="fg"><label>Opacity (%)</label><input class="inp" type="number" id="wmImgOpacity" value="70" min="5" max="100"></div>
+            </div>
+            <div class="fg" style="margin-top:8px;">
+              <label>Position</label>
+              <select class="sel" id="wmImgPos">
+                <option value="bottom-right">Bottom Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="top-right">Top Right</option>
+                <option value="top-left">Top Left</option>
+                <option value="center">Centre</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ OUTPUT & FILENAME -->
+      <div class="acc" id="accOut">
+        <div class="acc-head" onclick="toggleAcc('accOut')">
+          <div class="acc-head-left"><span class="acc-icon">💾</span><span class="acc-title">Output &amp; Filename</span></div>
+          <svg class="acc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="row" style="margin-bottom:8px;">
+            <div class="fg"><label>Prefix</label><input class="inp" type="text" id="fnPrefix" value="resized" oninput="updateFnamePreview()"></div>
+            <div class="fg">
+              <label>Pattern</label>
+              <select class="sel" id="fnPattern" onchange="updateFnamePreview()">
+                <option value="{prefix}_{name}_{w}x{h}">prefix_name_WxH</option>
+                <option value="{prefix}_{w}x{h}_{name}">prefix_WxH_name</option>
+                <option value="{prefix}_{name}">prefix_name</option>
+                <option value="{name}_{w}x{h}">name_WxH</option>
+                <option value="{prefix}_{index}">prefix_001…</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label>Preview</label><div class="fname-preview" id="fnamePreview">resized_photo_1920x1080.webp</div></div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar-scroll -->
+
+  </aside>
+
+  <!-- ══════════════ MAIN CANVAS ══════════════ -->
+  <main class="main-canvas">
+
+    <!-- CANVAS TOPBAR -->
+    <div class="canvas-topbar">
+      <div class="canvas-info-chips">
+        <div class="cic">
+          <span class="cic-label">Original</span>
+          <strong id="iOrigDim">—</strong>
+        </div>
+        <div class="cic">
+          <span class="cic-label">Format</span>
+          <strong id="iFormat">—</strong>
+        </div>
+        <div class="cic">
+          <span class="cic-label">Out Format</span>
+          <strong id="iOutFmt">—</strong>
+        </div>
+        <div class="cic">
+          <span class="cic-label">Input Size</span>
+          <strong id="iSize">—</strong>
+        </div>
+        <div class="cic highlight">
+          <span class="cic-label">Output Dims</span>
+          <strong id="iOutDim">—</strong>
+        </div>
+        <div class="cic highlight">
+          <span class="cic-label">Output Size</span>
+          <strong id="iOutSize">—</strong>
+          <span class="cic-sub" id="iSavePct"></span>
+        </div>
+        <div class="cic">
+          <span class="cic-label">DPI</span>
+          <strong id="iDpi">150</strong>
+        </div>
+      </div>
+      <div class="canvas-topbar-actions" id="canvasActions">
+        <span id="batchStatBadge" style="display:none;" class="info-pill"><strong id="batchTxt">0/0</strong>&nbsp;resized</span>
+        <div class="topbar-actionbar" id="sidebarActions">
+          <button class="btn-topbar btn-topbar-outline" id="btnDl" onclick="dlSingle()" disabled>⬇ Download</button>
+          <button class="btn-topbar btn-topbar-danger" onclick="clearAll()">✕ Clear</button>
+          <button class="btn-topbar btn-topbar-gold" id="btnResize" onclick="doResize()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Resize
+          </button>
+        </div>
+        <div class="topbar-actionbar" id="sidebarBatchActions" style="display:none;">
+          <button class="btn-topbar btn-topbar-outline" id="btnZip" onclick="dlZip()" style="display:none;">⬇ ZIP All</button>
+          <button class="btn-topbar btn-topbar-danger" onclick="clearAll()">✕ Clear All</button>
+          <button class="btn-topbar btn-topbar-gold" onclick="resizeAll()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Resize All
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE STRIP (multi-image always visible) -->
+    <div class="img-strip" id="imgStrip">
+      <span class="strip-label-header">Images</span>
+      <!-- filled by renderStrip() -->
+      <button class="strip-add" onclick="document.getElementById('file-in').click()" title="Add more images">+</button>
+    </div>
+
+    <!-- CANVAS WORKSPACE -->
+    <div class="canvas-workspace" id="canvasWorkspace">
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1115.71 8h1.79a4.5 4.5 0 010 9H5"/><path d="M12 12v9"/><path d="M8 17l4-4 4 4"/></svg></div>
+        <div class="empty-title">Drop images to get started</div>
+        <div class="empty-sub">Upload one or multiple images. Configure settings in the left panel, then resize with one click.</div>
+        <div style="display:flex;gap:8px;margin-top:.5rem;flex-wrap:wrap;justify-content:center;">
+          <span class="info-pill">✓ 100% Private</span>
+          <span class="info-pill">✓ No Upload</span>
+          <span class="info-pill">✓ Batch Ready</span>
+          <span class="info-pill">✓ DPI Control</span>
+        </div>
+      </div>
+
+      <!-- RE-EDIT BANNER -->
+      <div class="reedit-banner" id="reeditBanner">
+        <div class="reedit-info">
+          <div class="reedit-dot"></div>
+          <div>
+            <div class="reedit-text">✏️ Re-editing: <span id="reeditName">—</span></div>
+            <div class="reedit-sub">Make changes in the left panel, then click Resize → Done when finished</div>
+          </div>
+        </div>
+        <div class="reedit-actions">
+          <button class="btn-cancel-edit" onclick="cancelEdit()">Cancel</button>
+          <button class="btn-done-edit" id="btnDoneEdit" onclick="finishEdit()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Done Editing
+          </button>
+        </div>
+      </div>
+
+      <!-- SINGLE IMAGE PREVIEW -->
+      <div class="single-preview" id="singlePreview">
+        <div class="single-actions" id="singleActions">
+          <span id="singleFileName" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;"></span>
+          <button class="btn btn-danger btn-sm" onclick="removeSingle()" style="margin-left:auto;">✕ Remove</button>
+        </div>
+        <div class="preview-compare">
+          <div class="pcard">
+            <div class="pcard-head">Original <span id="origBadge">—</span></div>
+            <div class="pcard-img" onclick="openModal('orig')">
+              <img id="origImg" src="" alt="original">
+              <span class="pcard-zoom">🔍 Click to zoom</span>
+            </div>
+            <div class="pcard-foot"><span id="origDimF">—</span><span id="origSizeF">—</span></div>
+          </div>
+          <div class="pcard">
+            <div class="pcard-head">Resized Output <span id="outBadge">—</span></div>
+            <div class="pcard-img" id="outImgWrap" onclick="openModal('out')">
+              <img id="outImg" src="" alt="output" style="display:none;">
+              <div id="outPlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.4;">
+                <svg width="32" height="32" fill="none" stroke="var(--gold)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span style="font-size:11px;color:var(--muted);">Click Resize to preview</span>
+              </div>
+              <span class="pcard-zoom">🔍 Click to zoom</span>
+            </div>
+            <div class="pcard-foot"><span id="outDimF">—</span><span id="outSizeF">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BATCH GRID -->
+      <div class="batch-section" id="batchSection">
+        <div class="batch-topbar">
+          <span class="batch-stat">📦 <strong id="batchCount">0</strong> images · <strong id="batchDone">0</strong> resized</span>
+          <div style="display:flex;gap:6px;"></div>
+        </div>
+        <!-- BATCH DETAIL BAR -->
+        <div class="batch-detail-bar" id="batchDetailBar">
+          <img class="bdb-thumb" id="bdbThumb" src="" alt="" onclick="openLightbox()">
+          <div class="bdb-info">
+            <div class="bdb-name" id="bdbName">—</div>
+            <div class="bdb-chips">
+              <span class="bdb-chip gold" id="bdbFmtIn">—</span>
+              <span class="bdb-chip" style="color:var(--muted);">→</span>
+              <span class="bdb-chip gold" id="bdbFmtOut">—</span>
+              <span class="bdb-chip" id="bdbSizeIn">—</span>
+              <span class="bdb-chip green" id="bdbSizeOut" style="display:none">—</span>
+              <span class="bdb-chip green" id="bdbSaved" style="display:none">—</span>
+              <span class="bdb-chip" id="bdbDims">—</span>
+            </div>
+          </div>
+          <div class="bdb-actions">
+            <button class="bdb-zoom" onclick="openLightbox()">🔍 Full View</button>
+            <button class="bdb-close" onclick="closeDetailBar()" title="Close">✕</button>
+          </div>
+        </div>
+        <div class="batch-grid" id="batchGrid"></div>
+      </div>
+
+    </div><!-- /canvas-workspace -->
+  </main>
+
+</div><!-- /app-shell -->
+
+<!-- CANVAS ZOOM MODAL -->
+<div class="canvas-modal" id="canvasModal" onclick="if(event.target===this)closeModal()">
+  <div class="cm-header">
+    <span class="cm-title" id="cmTitle">ORIGINAL</span>
+    <button class="cm-close" onclick="closeModal()">✕</button>
+  </div>
+  <div class="cm-img-wrap">
+    <img id="cmImg" src="" alt="">
+  </div>
+  <div class="cm-meta" id="cmMeta"></div>
+</div>
+
+<!-- LIGHTBOX (batch full view) -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-meta" id="lightboxMeta"></div>
+</div>
+
+<!-- PROCESSING OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="ov-ring"></div>
+  <div class="ov-title" id="ovTitle">Processing…</div>
+  <div class="ov-sub" id="ovSub"></div>
+  <div class="ov-bar"><div class="ov-fill" id="ovFill"></div></div>
+  <div class="ov-result" id="ovResult"></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="content-section" style="padding-top:3rem;">
+  <p class="sec-tag">How Image Resizing Works</p>
+  <h2 class="sec-heading">Resize <em>in Three</em> Simple Steps</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <h4>Upload Your Image</h4>
+      <p>Drop in any JPG, PNG, WEBP, GIF or BMP. Upload a single image or up to 50 images at once for batch resizing. Your files never leave your device.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <h4>Set Your Dimensions</h4>
+      <p>Enter custom width and height in pixels, choose a percentage scale, or pick from 50 ready-made presets for social media, print, web, video and more.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <h4>Download Your Result</h4>
+      <p>Click Resize and download your perfectly sized image instantly. Batch jobs can be downloaded as a single ZIP file in one click.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="content-section" style="padding-top:0;">
+  <p class="sec-tag">Questions</p>
+  <h2 class="sec-heading">Frequently <em>Asked</em></h2>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">What image formats does the resizer support? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">The Image Resizer Pro supports JPG, PNG, WEBP, GIF, BMP and AVIF. Upload any of these formats and export to your chosen output format in one step.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I resize multiple images at once? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Yes! Upload up to 50 images and resize them all with the same settings in one click. Download each image individually or grab them all as a single ZIP file.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Are my images uploaded to a server? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Never. All resizing happens entirely inside your browser using the Canvas API. Your images never leave your device, so everything stays completely private.</div></div>
+  <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Can I lock the aspect ratio while resizing? <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><div class="faq-a">Yes. Aspect ratio lock is on by default — change the width and the height adjusts automatically, and vice versa. You can turn it off anytime to enter fully custom dimensions.</div></div>
+</section>
+
+<!-- EXPLORE OUR TOOLS -->
+<section class="content-section" style="padding-bottom:2rem;">
+  <p class="sec-tag">More Free Tools</p>
+  <h2 class="sec-heading">Explore Our <em>Tools</em></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.2rem;">
+    <a href="https://westcrestmedia.in/tools/image-compressor/" class="tool-card"><div class="tool-card-icon">⚡</div><div><div class="tool-card-name">Image Compressor</div><div class="tool-card-desc">Compress any image format. Batch compress and convert in one step.</div></div><span class="tool-card-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/background-remover/" class="tool-card"><div class="tool-card-icon">✂️</div><div><div class="tool-card-name">AI Background Remover Pro</div><div class="tool-card-desc">Remove backgrounds, add shadows and export creator-ready images.</div></div><span class="tool-card-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/color-palette/" class="tool-card"><div class="tool-card-icon">🎨</div><div><div class="tool-card-name">Color Palette Generator</div><div class="tool-card-desc">Extract beautiful palettes from any image instantly.</div></div><span class="tool-card-arrow">→</span></a>
+    <a href="https://westcrestmedia.in/tools/image-prompt/" class="tool-card"><div class="tool-card-icon">🎲</div><div><div class="tool-card-name">Image Prompt Generator</div><div class="tool-card-desc">AI prompts for Midjourney and DALL·E ready in seconds.</div></div><span class="tool-card-arrow">→</span></a>
+  </div>
+  <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;font-family:'DM Mono',monospace;">View All Tools →</a>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <p style="font-size:12px;color:#6a6258;margin:0;">© 2026 Westcrest Media</p>
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
+    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
+    <a href="https://westcrestmedia.in/#contact" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
+  </div>
+</footer>
+
+<script>
+let items=[], singleResult=null, AR=null, locked=true, bg='#ffffff', wmMode='none', wmImgEl=null, dpiValue=150;
+
+// ═══════════════ PRESETS ═══════════════
+const PRESETS={
+  social:[
+    {n:'Instagram Post',w:1080,h:1080},{n:'Instagram Story',w:1080,h:1920},
+    {n:'Instagram Reel',w:1080,h:1920},{n:'Instagram Landscape',w:1080,h:566},
+    {n:'Facebook Cover',w:820,h:312},{n:'Facebook Post',w:1200,h:630},
+    {n:'Twitter/X Post',w:1200,h:675},{n:'Twitter/X Header',w:1500,h:500},
+    {n:'LinkedIn Cover',w:1584,h:396},{n:'LinkedIn Post',w:1200,h:627},
+    {n:'Pinterest Pin',w:1000,h:1500},{n:'YouTube Thumb',w:1280,h:720},
+    {n:'TikTok Cover',w:1080,h:1920},{n:'WhatsApp DP',w:500,h:500},
+  ],
+  print:[
+    {n:'A4 Portrait',w:2480,h:3508},{n:'A4 Landscape',w:3508,h:2480},
+    {n:'A5 Portrait',w:1748,h:2480},{n:'A3 Portrait',w:3508,h:4961},
+    {n:'US Letter',w:2550,h:3300},{n:'Business Card',w:1050,h:600},
+    {n:'Postcard',w:1872,h:1271},{n:'Banner 6×2ft',w:5400,h:1800},
+  ],
+  web:[
+    {n:'HD 720p',w:1280,h:720},{n:'Full HD 1080p',w:1920,h:1080},
+    {n:'2K',w:2560,h:1440},{n:'4K',w:3840,h:2160},
+    {n:'Square 800',w:800,h:800},{n:'Square 512',w:512,h:512},
+    {n:'Favicon 32',w:32,h:32},{n:'Favicon 64',w:64,h:64},
+    {n:'OG Image',w:1200,h:630},{n:'Hero Banner',w:1920,h:600},
+    {n:'Blog Header',w:1200,h:400},{n:'Avatar 256',w:256,h:256},
+  ],
+  video:[
+    {n:'720p HD',w:1280,h:720},{n:'1080p FHD',w:1920,h:1080},
+    {n:'1440p 2K',w:2560,h:1440},{n:'4K UHD',w:3840,h:2160},
+    {n:'Vertical 9:16',w:1080,h:1920},{n:'Square 1:1',w:1080,h:1080},
+    {n:'4:3 Classic',w:1024,h:768},{n:'21:9 Ultra',w:2560,h:1080},
+  ],
+  device:[
+    {n:'iPhone 15',w:1179,h:2556},{n:'iPhone 14',w:1170,h:2532},
+    {n:'Samsung S23',w:1080,h:2340},{n:'iPad Air',w:1640,h:2360},
+    {n:'iPad Pro 12.9"',w:2048,h:2732},{n:'MacBook 13"',w:2560,h:1600},
+    {n:'Desktop FHD',w:1920,h:1080},{n:'Apple Watch 44',w:368,h:448},
+  ],
+  ecom:[
+    {n:'Amazon Main',w:1000,h:1000},{n:'Amazon Detail',w:1500,h:1500},
+    {n:'eBay Main',w:1600,h:1600},{n:'Shopify Product',w:2048,h:2048},
+    {n:'Etsy Listing',w:2000,h:2000},{n:'WooCommerce',w:800,h:800},
+    {n:'Flipkart',w:1000,h:1000},{n:'Meesho',w:900,h:900},
+  ]
+};
+
+let activeCat='social', activePreset=null;
+
+function showCat(cat, tabEl) {
+  activeCat=cat;
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  if(tabEl) tabEl.classList.add('on');
+  const grid=document.getElementById('pgrid');
+  grid.innerHTML=PRESETS[cat].map(p=>`
+    <button class="pbtn ${activePreset&&activePreset.w===p.w&&activePreset.h===p.h?'on':''}"
+      onclick="applyPreset(${p.w},${p.h},'${p.n}',this)">
+      <span class="pbtn-name">${p.n}</span>
+      <span class="pbtn-dim">${p.w} × ${p.h}</span>
+    </button>`).join('');
+}
+
+function applyPreset(w,h,name,el) {
+  activePreset={w,h,name};
+  document.getElementById('inpW').value=w;
+  document.getElementById('inpH').value=h;
+  document.getElementById('mode').value='exact';
+  onModeChange();
+  locked=false; updateLockUI();
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  if(el) el.classList.add('on');
+  updateOutInfo();
+}
+showCat('social', document.querySelector('.ptab'));
+
+// ═══════════════ DPI ═══════════════
+function setDpi(val, el) {
+  document.querySelectorAll('.dpi-btn').forEach(b=>b.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const customRow = document.getElementById('dpiCustomRow');
+  if(val===0) {
+    customRow.style.display='';
+    dpiValue=+document.getElementById('customDpiVal').value||150;
+  } else {
+    customRow.style.display='none';
+    dpiValue=val;
+  }
+  document.getElementById('iDpi').innerText=dpiValue;
+}
+document.getElementById('customDpiVal').addEventListener('input',e=>{
+  dpiValue=+e.target.value||150;
+  document.getElementById('iDpi').innerText=dpiValue;
+});
+
+// ═══════════════ ACCORDION ═══════════════
+function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+
+// ═══════════════ MODE ═══════════════
+function onModeChange() {
+  const m=document.getElementById('mode').value;
+  const isPct=m==='percent';
+  const noH=['width-only','longest','shortest'].includes(m);
+  const noW=m==='height-only';
+  document.getElementById('grpPx').style.display=isPct?'none':'';
+  document.getElementById('grpPct').style.display=isPct?'':'none';
+  if(!isPct){
+    document.getElementById('grpH').style.display=noH?'none':'';
+    const wInp=document.getElementById('inpW').parentElement.parentElement;
+    wInp.style.display=noW?'none':'';
+  }
+  updateOutInfo();
+}
+
+// ═══════════════ LOCK ═══════════════
+function toggleLock(){locked=!locked;updateLockUI();}
+function updateLockUI(){
+  const b=document.getElementById('lockBtn');
+  b.classList.toggle('on',locked);
+  document.getElementById('lockIco').innerHTML=locked
+    ?'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>'
+    :'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/>';
+}
+function onW(){if(locked&&AR){const w=+document.getElementById('inpW').value;if(w)document.getElementById('inpH').value=Math.round(w/AR);}updateOutInfo();}
+function onH(){if(locked&&AR){const h=+document.getElementById('inpH').value;if(h)document.getElementById('inpW').value=Math.round(h*AR);}updateOutInfo();}
+
+// ═══════════════ BG / SWATCHES ═══════════════
+function setSwatch(el,color){
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));
+  if(el)el.classList.add('on');
+  bg=color;
+}
+
+// ═══════════════ WATERMARK TABS ═══════════════
+function setWmTab(t){
+  wmMode=t;
+  ['none','text','img'].forEach(x=>{
+    const key=x.charAt(0).toUpperCase()+x.slice(1);
+    document.getElementById('wmTab'+key).classList.toggle('on',x===t);
+    document.getElementById('wmPanel'+key).classList.toggle('on',x===t);
+  });
+}
+
+document.getElementById('wmImgFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const img=new Image();img.onload=()=>{wmImgEl=img;};img.src=URL.createObjectURL(f);
+});
+
+// ═══════════════ FILENAME PREVIEW ═══════════════
+function updateFnamePreview(){
+  const prefix=document.getElementById('fnPrefix').value||'resized';
+  const pattern=document.getElementById('fnPattern').value;
+  const fmt=document.getElementById('outFmt').value;
+  const ext={'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/gif':'.gif','image/bmp':'.bmp'}[fmt]||'.webp';
+  const w=document.getElementById('inpW').value||'1920';
+  const h=document.getElementById('inpH').value||'1080';
+  const name='photo';
+  let fname=pattern.replace('{prefix}',prefix).replace('{name}',name).replace('{w}',w).replace('{h}',h).replace('{index}','001');
+  document.getElementById('fnamePreview').innerText=fname+ext;
+}
+updateFnamePreview();
+
+// ═══════════════ DROP ZONE ═══════════════
+const DZ=document.getElementById('dropZone');
+DZ.addEventListener('dragenter',e=>{e.preventDefault();DZ.classList.add('drag-over');});
+DZ.addEventListener('dragover',e=>{e.preventDefault();});
+DZ.addEventListener('dragleave',e=>{if(!DZ.contains(e.relatedTarget))DZ.classList.remove('drag-over');});
+DZ.addEventListener('drop',e=>{
+  e.preventDefault();DZ.classList.remove('drag-over');
+  const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  if(files.length)addFiles(files);
+});
+DZ.addEventListener('click',e=>{if(e.target===document.getElementById('file-in')||e.target.closest('button'))return;document.getElementById('file-in').click();});
+document.getElementById('file-in').addEventListener('change',e=>{
+  if(e.target.files.length)addFiles(Array.from(e.target.files));
+  e.target.value='';
+});
+
+// Main area also accepts drops
+document.getElementById('canvasWorkspace').addEventListener('dragover',e=>{e.preventDefault();});
+document.getElementById('canvasWorkspace').addEventListener('drop',e=>{
+  e.preventDefault();
+  const files=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  if(files.length)addFiles(files);
+});
+
+// ═══════════════ STRIP RENDER ═══════════════
+function renderStrip(){
+  const strip=document.getElementById('imgStrip');
+  if(items.length===0){strip.classList.remove('on');return;}
+  strip.classList.add('on');
+  // Remove old strip items (keep label header and add button)
+  Array.from(strip.querySelectorAll('.strip-item')).forEach(el=>el.remove());
+  const addBtn=strip.querySelector('.strip-add');
+  items.forEach(it=>{
+    const isEditing=editingId===it.id;
+    const div=document.createElement('div');
+    div.className='strip-item'+(it.status==='done'?' done-strip':'')+(isEditing?' editing-strip':'');
+    div.title=it.name;
+    div.innerHTML=`
+      <img src="${it.result?URL.createObjectURL(it.result.blob):it.url}" alt="">
+      <div class="strip-item-status ${it.status==='done'?'done':isEditing?'editing':'pending'}">${it.status==='done'?'✓':isEditing?'✏':'·'}</div>
+      <div class="strip-item-label">${it.name.length>12?it.name.slice(0,10)+'…':it.name}</div>
+      <button class="strip-remove" onclick="removeItem('${it.id}',event)" title="Remove">✕</button>`;
+    div.addEventListener('click',()=>{
+      if(editingId&&editingId!==it.id)return; // block switching while editing another
+      if(it.status==='done'||it.status==='pending'){
+        // Switch active preview in batch
+        renderBatch();
+      }
+    });
+    strip.insertBefore(div,addBtn);
+  });
+}
+async function addFiles(files){
+  const toAdd=files.slice(0,50-items.length);
+  for(const f of toAdd){
+    const url=URL.createObjectURL(f);
+    const dims=await getDims(f);
+    items.push({id:crypto.randomUUID(),file:f,name:f.name,origSize:f.size,
+      origW:dims.w,origH:dims.h,url,result:null,status:'pending'});
+  }
+  if(items.length===1) initSingle();
+  else initBatch();
+}
+
+function getDims(file){
+  return new Promise(res=>{
+    const img=new Image(),u=URL.createObjectURL(file);
+    img.onload=()=>{URL.revokeObjectURL(u);res({w:img.naturalWidth,h:img.naturalHeight});};
+    img.src=u;
+  });
+}
+
+function initSingle(){
+  const it=items[0];
+  AR=it.origW/it.origH;
+  if(!document.getElementById('inpW').value){
+    document.getElementById('inpW').value=it.origW;
+    document.getElementById('inpH').value=it.origH;
+  }
+  // topbar
+  document.getElementById('iOrigDim').innerText=`${it.origW}×${it.origH}px`;
+  document.getElementById('iFormat').innerText=it.name.split('.').pop().toUpperCase();
+  document.getElementById('iOutFmt').innerText=getOutFmtLabel();
+  document.getElementById('iSize').innerText=fmt(it.origSize);
+  // views
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('singlePreview').classList.add('on');
+  document.getElementById('batchSection').classList.remove('on');
+  document.getElementById('origImg').src=it.url;
+  document.getElementById('origBadge').innerText=`${it.origW}×${it.origH}`;
+  document.getElementById('origDimF').innerText=`${it.origW} × ${it.origH} px`;
+  document.getElementById('origSizeF').innerText=fmt(it.origSize);
+  document.getElementById('singleFileName').innerText=it.name;
+  // sidebar actions
+  document.getElementById('sidebarActions').style.display='';
+  document.getElementById('sidebarBatchActions').style.display='none';
+  document.getElementById('addMoreBar').classList.add('on');
+  document.getElementById('batchStatBadge').style.display='none';
+  document.getElementById('btnDl').disabled=true;
+  // reset output pane
+  document.getElementById('outImg').style.display='none';
+  document.getElementById('outPlaceholder').style.display='flex';
+  document.getElementById('outBadge').innerText='—';
+  document.getElementById('outDimF').innerText='—';
+  document.getElementById('outSizeF').innerText='—';
+  updateOutInfo();
+  renderStrip();
+}
+
+function initBatch(){
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('singlePreview').classList.remove('on');
+  document.getElementById('batchSection').classList.add('on');
+  // topbar
+  document.getElementById('iOrigDim').innerText=`${items.length} images`;
+  document.getElementById('iFormat').innerText='Batch';
+  document.getElementById('iOutFmt').innerText=getOutFmtLabel();
+  document.getElementById('iSize').innerText='—';
+  document.getElementById('iOutDim').innerText='—';
+  document.getElementById('batchStatBadge').style.display='';
+  // sidebar actions
+  document.getElementById('sidebarActions').style.display='none';
+  document.getElementById('sidebarBatchActions').style.display='';
+  document.getElementById('addMoreBar').classList.add('on');
+  renderBatch();
+  updateBatchHead();
+  renderStrip();
+}
+
+// ═══════════════ REMOVE ═══════════════
+function removeSingle(){
+  if(!items.length)return;
+  URL.revokeObjectURL(items[0].url);
+  items=[];singleResult=null;AR=null;
+  clearUI();
+}
+
+function removeItem(id,e){
+  e.stopPropagation();
+  const idx=items.findIndex(i=>i.id===id);
+  if(idx<0)return;
+  URL.revokeObjectURL(items[idx].url);
+  items.splice(idx,1);
+  if(items.length===0){clearUI();return;}
+  if(items.length===1){editingId=null;document.getElementById('reeditBanner').classList.remove('on');initSingle();return;}
+  renderBatch();updateBatchHead();renderStrip();
+}
+
+// ═══════════════ CLEAR ALL ═══════════════
+function clearAll(){
+  items.forEach(i=>{if(i.url)URL.revokeObjectURL(i.url);});
+  items=[];singleResult=null;AR=null;
+  clearUI();
+}
+
+function clearUI(){
+  ['iOrigDim','iFormat','iOutFmt','iSize','iOutDim','iOutSize'].forEach(id=>document.getElementById(id).innerText='—');
+  document.getElementById('iSavePct').innerText='';
+  document.getElementById('iDpi').innerText=dpiValue;
+  document.getElementById('emptyState').style.display='';
+  document.getElementById('singlePreview').classList.remove('on');
+  document.getElementById('batchSection').classList.remove('on');
+  document.getElementById('batchGrid').innerHTML='';
+  document.getElementById('sidebarActions').style.display='';
+  document.getElementById('sidebarBatchActions').style.display='none';
+  document.getElementById('btnDl').disabled=true;
+  document.getElementById('addMoreBar').classList.remove('on');
+  document.getElementById('batchStatBadge').style.display='none';
+  document.getElementById('inpW').value='';
+  document.getElementById('inpH').value='';
+  document.getElementById('imgStrip').classList.remove('on');
+  document.getElementById('batchDetailBar').classList.remove('on');
+  selectedBatchId=null;
+  editingId=null;
+  document.getElementById('reeditBanner').classList.remove('on');
+}
+
+// ═══════════════ OUTPUT INFO ═══════════════
+function updateOutInfo(){
+  if(!items.length)return;
+  const it=items[0];
+  const d=calcDims(it.origW,it.origH);
+  document.getElementById('iOutDim').innerText=`${d.w}×${d.h}px`;
+  document.getElementById('outBadge').innerText=`${d.w}×${d.h}`;
+  document.getElementById('outDimF').innerText=`${d.w} × ${d.h} px`;
+  updateFnamePreview();
+}
+
+// ═══════════════ CALC DIMS ═══════════════
+function calcDims(ow,oh){
+  const m=document.getElementById('mode').value;
+  const up=document.getElementById('advUp').checked;
+  let tw=+document.getElementById('inpW').value||ow;
+  let th=+document.getElementById('inpH').value||oh;
+  const pct=+document.getElementById('inpPct').value||100;
+  const ar=ow/oh;
+  let rw,rh;
+  if(m==='percent'){rw=Math.round(ow*pct/100);rh=Math.round(oh*pct/100);}
+  else if(m==='width-only'||m==='longest'||m==='shortest'){if(!up)tw=Math.min(tw,ow);rw=tw;rh=Math.round(tw/ar);}
+  else if(m==='height-only'){if(!up)th=Math.min(th,oh);rh=th;rw=Math.round(th*ar);}
+  else if(m==='fit'||m==='contain'){
+    if(!up){tw=Math.min(tw,ow);th=Math.min(th,oh);}
+    const s=Math.min(tw/ow,th/oh);rw=Math.round(ow*s);rh=Math.round(oh*s);
+  }
+  else if(m==='cover'){if(!up){tw=Math.min(tw,ow);th=Math.min(th,oh);}rw=tw;rh=th;}
+  else{if(!up){tw=Math.min(tw,ow);th=Math.min(th,oh);}rw=tw;rh=th;}
+  return{w:Math.max(1,rw),h:Math.max(1,rh)};
+}
+
+// ═══════════════ CORE RESIZE ═══════════════
+async function processFile(file,origW,origH){
+  const m=document.getElementById('mode').value;
+  const fmt2=document.getElementById('outFmt').value;
+  const q=+document.getElementById('qualRange').value/100;
+  const rot=+document.getElementById('advRot').value;
+  const flipH=document.getElementById('advFlipH').checked;
+  const flipV=document.getElementById('advFlipV').checked;
+  const gray=document.getElementById('advGray').checked;
+  const sharp=document.getElementById('advSharp').checked;
+  const pad=document.getElementById('advPad').checked;
+  const padAmt=+document.getElementById('padAmt').value||20;
+
+  const d=calcDims(origW,origH);
+  let rw=d.w,rh=d.h;
+  const tw=+document.getElementById('inpW').value||rw;
+  const th=+document.getElementById('inpH').value||rh;
+
+  const img=await loadImg(file);
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+
+  let cw,ch;
+  if(m==='cover'){cw=tw;ch=th;}
+  else if(m==='contain'||m==='fit'){cw=tw;ch=th;}
+  else{cw=rw;ch=rh;}
+  if(pad){cw+=padAmt*2;ch+=padAmt*2;}
+  if(rot===90||rot===270){[cw,ch]=[ch,cw];}
+  canvas.width=cw;canvas.height=ch;
+
+  if(bg==='transparent'){ctx.clearRect(0,0,cw,ch);}
+  else{ctx.fillStyle=bg;ctx.fillRect(0,0,cw,ch);}
+
+  ctx.save();
+  ctx.translate(cw/2,ch/2);
+  if(rot)ctx.rotate(rot*Math.PI/180);
+  if(flipH)ctx.scale(-1,1);
+  if(flipV)ctx.scale(1,-1);
+
+  if(m==='cover'){
+    const scW=tw/origW,scH=th/origH,sc=Math.max(scW,scH);
+    const dw=origW*sc,dh=origH*sc;
+    ctx.drawImage(img,-dw/2,-dh/2,dw,dh);
+  }else if(m==='contain'||m==='fit'){
+    ctx.drawImage(img,-rw/2,-rh/2,rw,rh);
+  }else{
+    ctx.drawImage(img,pad?-rw/2:-(rw/2),pad?-rh/2:-(rh/2),rw,rh);
+  }
+  ctx.restore();
+
+  if(gray)applyGray(ctx,cw,ch);
+  if(sharp)applySharpen(ctx,cw,ch);
+  if(wmMode==='text')applyTextWM(ctx,cw,ch);
+  else if(wmMode==='img'&&wmImgEl)applyImgWM(ctx,cw,ch);
+
+  let blob=await toBlob(canvas,fmt2,q);
+
+  // DPI embed for JPEG
+  if(fmt2==='image/jpeg'&&document.getElementById('embedDpi').checked){
+    blob=await embedJpegDpi(blob,dpiValue);
+  }
+
+  return{blob,w:cw,h:ch};
+}
+
+// ═══════════════ DPI EMBED (JPEG JFIF/EXIF) ═══════════════
+async function embedJpegDpi(blob,dpi){
+  try{
+    const ab=await blob.arrayBuffer();
+    const arr=new Uint8Array(ab);
+    // Find JFIF APP0 marker (FF E0) and patch DPI fields
+    // JFIF header: FF D8 FF E0 [len2] JFIF\0 [version2] [units] [Xdensity2] [Ydensity2]
+    if(arr[0]===0xFF&&arr[1]===0xD8&&arr[2]===0xFF&&arr[3]===0xE0){
+      const modified=new Uint8Array(arr);
+      modified[11]=1; // units = DPI (1=dots per inch)
+      modified[12]=(dpi>>8)&0xFF;
+      modified[13]=dpi&0xFF;
+      modified[14]=(dpi>>8)&0xFF;
+      modified[15]=dpi&0xFF;
+      return new Blob([modified],{type:'image/jpeg'});
+    }
+    return blob;
+  }catch(e){return blob;}
+}
+
+function loadImg(file){
+  return new Promise((res,rej)=>{
+    const img=new Image(),u=URL.createObjectURL(file);
+    img.onload=()=>{URL.revokeObjectURL(u);res(img);};
+    img.onerror=rej;img.src=u;
+  });
+}
+function toBlob(canvas,type,q){return new Promise(r=>canvas.toBlob(r,type,q));}
+
+function applyGray(ctx,w,h){
+  const d=ctx.getImageData(0,0,w,h);
+  for(let i=0;i<d.data.length;i+=4){
+    const g=d.data[i]*.299+d.data[i+1]*.587+d.data[i+2]*.114;
+    d.data[i]=d.data[i+1]=d.data[i+2]=g;
+  }
+  ctx.putImageData(d,0,0);
+}
+
+function applySharpen(ctx,w,h){
+  const id=ctx.getImageData(0,0,w,h);
+  const src=new Uint8ClampedArray(id.data);
+  const k=[-1,-1,-1,-1,9,-1,-1,-1,-1];
+  for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
+    let r=0,g=0,b=0;
+    for(let ky=-1;ky<=1;ky++)for(let kx=-1;kx<=1;kx++){
+      const p=((y+ky)*w+(x+kx))*4,ki=(ky+1)*3+(kx+1);
+      r+=src[p]*k[ki];g+=src[p+1]*k[ki];b+=src[p+2]*k[ki];
+    }
+    const i=(y*w+x)*4;
+    id.data[i]=Math.min(255,Math.max(0,r));
+    id.data[i+1]=Math.min(255,Math.max(0,g));
+    id.data[i+2]=Math.min(255,Math.max(0,b));
+  }
+  ctx.putImageData(id,0,0);
+}
+
+function applyTextWM(ctx,cw,ch){
+  const text=document.getElementById('wmText').value||'© Westcrest Media';
+  const size=+document.getElementById('wmSize').value||28;
+  const color=document.getElementById('wmColor').value;
+  const opacity=+document.getElementById('wmOpacity').value/100;
+  const pos=document.getElementById('wmPos').value;
+  const font=document.getElementById('wmFont').value;
+  ctx.save();ctx.globalAlpha=opacity;ctx.fillStyle=color;
+  ctx.font=`${size}px ${font}`;ctx.textBaseline='bottom';
+  const pad=size*0.6;const tw=ctx.measureText(text).width;
+  if(pos==='tile'){
+    ctx.globalAlpha=opacity*0.4;ctx.rotate(-Math.PI/6);
+    for(let y=-ch;y<cw+ch;y+=size*3)for(let x=-cw;x<cw*2;x+=tw+size*2)ctx.fillText(text,x,y);
+  }else{
+    let x,y;ctx.textBaseline='alphabetic';
+    if(pos==='bottom-right'){x=cw-tw-pad;y=ch-pad;}
+    else if(pos==='bottom-left'){x=pad;y=ch-pad;}
+    else if(pos==='top-right'){x=cw-tw-pad;y=size+pad;}
+    else if(pos==='top-left'){x=pad;y=size+pad;}
+    else{x=(cw-tw)/2;y=(ch+size)/2;}
+    ctx.shadowColor='rgba(0,0,0,0.4)';ctx.shadowBlur=4;
+    ctx.fillText(text,x,y);
+  }
+  ctx.restore();
+}
+
+function applyImgWM(ctx,cw,ch){
+  const sizeP=+document.getElementById('wmImgSize').value/100;
+  const opacity=+document.getElementById('wmImgOpacity').value/100;
+  const pos=document.getElementById('wmImgPos').value;
+  const wmW=cw*sizeP;const wmH=wmW*(wmImgEl.naturalHeight/wmImgEl.naturalWidth);
+  const pad=Math.min(cw,ch)*0.03;
+  let x,y;
+  if(pos==='bottom-right'){x=cw-wmW-pad;y=ch-wmH-pad;}
+  else if(pos==='bottom-left'){x=pad;y=ch-wmH-pad;}
+  else if(pos==='top-right'){x=cw-wmW-pad;y=pad;}
+  else if(pos==='top-left'){x=pad;y=pad;}
+  else{x=(cw-wmW)/2;y=(ch-wmH)/2;}
+  ctx.save();ctx.globalAlpha=opacity;ctx.drawImage(wmImgEl,x,y,wmW,wmH);ctx.restore();
+}
+
+// ═══════════════ SINGLE RESIZE ═══════════════
+async function doResize(){
+  if(items.length===0)return;
+  // If in batch editing mode, resize just the editing item
+  if(editingId){
+    const it=items.find(i=>i.id===editingId);
+    if(!it)return;
+    showOverlay('Resizing…',it.name.slice(0,30));
+    try{
+      const r=await processFile(it.file,it.origW,it.origH);
+      it.result=r;it.status='done';
+      const url=URL.createObjectURL(r.blob);
+      const outImg=document.getElementById('outImg');
+      outImg.src=url;outImg.style.display='block';
+      document.getElementById('outPlaceholder').style.display='none';
+      document.getElementById('outBadge').innerText=`${r.w}×${r.h}`;
+      document.getElementById('outDimF').innerText=`${r.w} × ${r.h} px`;
+      document.getElementById('outSizeF').innerText=fmt(r.blob.size);
+      // Update topbar output info
+      document.getElementById('iOutDim').innerText=`${r.w}×${r.h}px`;
+      document.getElementById('iOutSize').innerText=fmt(r.blob.size);
+      const saved=it.origSize-r.blob.size;
+      const pct=Math.round(saved/it.origSize*100);
+      document.getElementById('iSavePct').innerText=saved>0?`▼ ${pct}% saved`:'';
+      singleResult={blob:r.blob,name:it.name,w:r.w,h:r.h,url};
+      document.getElementById('btnDl').disabled=false;
+      showResult(`${r.w}×${r.h}`);
+      // Show done button prominently
+      document.getElementById('btnDoneEdit').style.animation='pulse-green 1s ease 2';
+    }catch(e){hideOverlay();alert('Could not resize.');}
+    return;
+  }
+  if(items.length>1){resizeAll();return;}
+  const it=items[0];
+  showOverlay('Resizing…',it.name.slice(0,30));
+  try{
+    const r=await processFile(it.file,it.origW,it.origH);
+    it.result=r;it.status='done';
+    const url=URL.createObjectURL(r.blob);
+    const outImg=document.getElementById('outImg');
+    outImg.src=url;outImg.style.display='block';
+    document.getElementById('outPlaceholder').style.display='none';
+    document.getElementById('outBadge').innerText=`${r.w}×${r.h}`;
+    document.getElementById('outDimF').innerText=`${r.w} × ${r.h} px`;
+    document.getElementById('outSizeF').innerText=fmt(r.blob.size);
+    // Update topbar output info
+    document.getElementById('iOutDim').innerText=`${r.w}×${r.h}px`;
+    document.getElementById('iOutSize').innerText=fmt(r.blob.size);
+    const saved=it.origSize-r.blob.size;
+    const pct=Math.round(saved/it.origSize*100);
+    document.getElementById('iSavePct').innerText=saved>0?`▼ ${pct}% saved`:'';
+    singleResult={blob:r.blob,name:it.name,w:r.w,h:r.h,url};
+    document.getElementById('btnDl').disabled=false;
+    showResult(`${r.w}×${r.h}`);
+  }catch(e){hideOverlay();alert('Could not resize. Try a different format.');}
+}
+
+function dlSingle(){
+  if(!singleResult)return;
+  const ext=getExt();
+  dl(singleResult.blob,buildFname(singleResult.name,singleResult.w,singleResult.h,1)+ext);
+}
+
+// Done editing — go back to batch view
+function finishEdit(){
+  editingId=null;
+  document.getElementById('reeditBanner').classList.remove('on');
+  singleResult=null;
+  // Back to batch
+  document.getElementById('singlePreview').classList.remove('on');
+  document.getElementById('batchSection').classList.add('on');
+  document.getElementById('sidebarActions').style.display='none';
+  document.getElementById('sidebarBatchActions').style.display='';
+  renderBatch();updateBatchHead();
+  // Restore batch topbar
+  document.getElementById('iOrigDim').innerText=`${items.length} images`;
+  document.getElementById('iFormat').innerText='Batch';
+  document.getElementById('iSize').innerText='—';
+  document.getElementById('iOutDim').innerText='—';
+  document.getElementById('iOutSize').innerText='—';
+  document.getElementById('iSavePct').innerText='';
+  // Highlight strip
+  renderStrip();
+}
+
+// Cancel editing — restore item's previous state and go back to batch
+function cancelEdit(){
+  if(editingId){
+    const it=items.find(i=>i.id===editingId);
+    if(it){ it.status=it.result?'done':'pending'; }
+    editingId=null;
+  }
+  document.getElementById('reeditBanner').classList.remove('on');
+  singleResult=null;
+  document.getElementById('singlePreview').classList.remove('on');
+  document.getElementById('batchSection').classList.add('on');
+  document.getElementById('sidebarActions').style.display='none';
+  document.getElementById('sidebarBatchActions').style.display='';
+  renderBatch();updateBatchHead();
+  document.getElementById('iOrigDim').innerText=`${items.length} images`;
+  document.getElementById('iFormat').innerText='Batch';
+  document.getElementById('iSize').innerText='—';
+  document.getElementById('iOutDim').innerText='—';
+  document.getElementById('iOutSize').innerText='—';
+  document.getElementById('iSavePct').innerText='';
+  renderStrip();
+}
+
+// ═══════════════ BATCH ═══════════════
+let selectedBatchId=null;
+let lightboxSrc=null;
+
+function getOutFmtLabel(){
+  return{'image/jpeg':'JPG','image/png':'PNG','image/webp':'WEBP','image/gif':'GIF','image/bmp':'BMP'}[document.getElementById('outFmt').value]||'WEBP';
+}
+
+function renderBatch(){
+  const g=document.getElementById('batchGrid');
+  if(!items.length){g.innerHTML='';return;}
+  g.innerHTML=items.map(it=>`
+    <div class="bcard ${it.status==='done'?'done':''} ${selectedBatchId===it.id?'selected':''}" onclick="selectBatchCard('${it.id}')">
+      <div class="bcard-thumb-wrap">
+        <img class="bcard-thumb" src="${it.result?URL.createObjectURL(it.result.blob):it.url}" alt="">
+        <div class="bcard-remove" onclick="removeItem('${it.id}',event)" title="Remove">✕</div>
+      </div>
+      <div class="bcard-inner">
+        <div class="bcard-name" title="${it.name}">${it.name.length>26?it.name.slice(0,23)+'…':it.name}</div>
+        <div class="bcard-dims">${it.origW}×${it.origH}${it.result?` → ${it.result.w}×${it.result.h}`:''}</div>
+        <div class="bcard-size">${fmt(it.origSize)}${it.result?` → ${fmt(it.result.blob.size)}`:''}</div>
+      </div>
+      <div class="bcard-foot">
+        <span class="status ${it.status}">${
+          it.status==='pending'?'⏳ Pending':
+          it.status==='working'?'🔄 Resizing…':
+          it.status==='done'?'✅ Done':'❌ Error'
+        }</span>
+        <div style="display:flex;gap:4px;">
+          ${it.status==='done'?`<button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')">✏ Re-edit</button>`:''}
+          <button class="btn-dl-sm" onclick="event.stopPropagation();dlItem('${it.id}')" ${it.status!=='done'?'disabled':''}>⬇</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function selectBatchCard(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  selectedBatchId=id;
+  renderBatch();
+  // populate detail bar
+  const outFmt=getOutFmtLabel();
+  const src=it.result?URL.createObjectURL(it.result.blob):it.url;
+  lightboxSrc=src;
+  document.getElementById('bdbThumb').src=src;
+  document.getElementById('bdbName').innerText=it.name;
+  document.getElementById('bdbFmtIn').innerText=it.name.split('.').pop().toUpperCase();
+  document.getElementById('bdbFmtOut').innerText=outFmt;
+  document.getElementById('bdbSizeIn').innerText=fmt(it.origSize);
+  const sizeOut=document.getElementById('bdbSizeOut');
+  const saved=document.getElementById('bdbSaved');
+  const dims=document.getElementById('bdbDims');
+  // Also sync the main top info chips so this single image's details
+  // show in place of the generic "Batch" summary, even with multiple photos loaded.
+  document.getElementById('iOrigDim').innerText=`${it.origW}×${it.origH}px`;
+  document.getElementById('iFormat').innerText=it.name.split('.').pop().toUpperCase();
+  document.getElementById('iOutFmt').innerText=outFmt;
+  document.getElementById('iSize').innerText=fmt(it.origSize);
+  if(it.result){
+    sizeOut.innerText='→ '+fmt(it.result.blob.size);sizeOut.style.display='';
+    const pct=((1-it.result.blob.size/it.origSize)*100).toFixed(1);
+    saved.innerText='▼ '+pct+'% saved';saved.style.display='';
+    dims.innerText=`${it.result.w}×${it.result.h}px`;
+    document.getElementById('iOutDim').innerText=`${it.result.w}×${it.result.h}px`;
+    document.getElementById('iOutSize').innerText=fmt(it.result.blob.size);
+    document.getElementById('iSavePct').innerText='▼ '+pct+'% saved';
+    document.getElementById('lightboxMeta').innerText=`${it.name} · ${it.origW}×${it.origH} → ${it.result.w}×${it.result.h} · ${fmt(it.origSize)} → ${fmt(it.result.blob.size)} (${pct}% smaller)`;
+  }else{
+    sizeOut.style.display='none';saved.style.display='none';
+    dims.innerText=`${it.origW}×${it.origH}px`;
+    document.getElementById('iOutDim').innerText='—';
+    document.getElementById('iOutSize').innerText='—';
+    document.getElementById('iSavePct').innerText='Not resized yet';
+    document.getElementById('lightboxMeta').innerText=`${it.name} · ${it.origW}×${it.origH} · ${fmt(it.origSize)} · Not yet resized`;
+  }
+  document.getElementById('batchDetailBar').classList.add('on');
+  document.getElementById('batchDetailBar').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeDetailBar(){
+  selectedBatchId=null;
+  document.getElementById('batchDetailBar').classList.remove('on');
+  renderBatch();
+  // Restore the generic batch summary in the top info chips
+  document.getElementById('iOrigDim').innerText=`${items.length} images`;
+  document.getElementById('iFormat').innerText='Batch';
+  document.getElementById('iOutFmt').innerText=getOutFmtLabel();
+  document.getElementById('iSize').innerText='—';
+  document.getElementById('iOutDim').innerText='—';
+  document.getElementById('iOutSize').innerText='—';
+  document.getElementById('iSavePct').innerText='';
+}
+
+function openLightbox(){
+  if(!lightboxSrc)return;
+  document.getElementById('lightboxImg').src=lightboxSrc;
+  document.getElementById('lightbox').classList.add('on');
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('on');}
+
+function updateBatchHead(){
+  const done=items.filter(i=>i.status==='done').length;
+  document.getElementById('batchCount').innerText=items.length;
+  document.getElementById('batchDone').innerText=done;
+  document.getElementById('batchTxt').innerText=`${done}/${items.length}`;
+  document.getElementById('batchStatBadge').style.display='';
+  document.getElementById('btnZip').style.display=done>1?'':'none';
+}
+
+async function resizeAll(){
+  const pending=items.filter(i=>i.status==='pending');
+  if(!pending.length){
+    // Re-resize all (user changed settings after done)
+    items.forEach(i=>i.status='pending');
+    renderBatch();
+    return resizeAll();
+  }
+  for(let idx=0;idx<pending.length;idx++){
+    const it=pending[idx];
+    it.status='working';renderBatch();
+    showOverlay(`Resizing ${idx+1}/${pending.length}`,it.name.slice(0,28));
+    try{
+      const r=await processFile(it.file,it.origW,it.origH);
+      it.result=r;it.status='done';
+    }catch(e){it.status='error';}
+    renderBatch();updateBatchHead();
+  }
+  hideOverlay();
+  renderStrip();
+}
+
+// ═══ RE-EDIT STATE ═══
+let editingId=null; // id of item currently being re-edited
+
+// Edit an individual batch item — switch to single-edit mode for it, keep all other items
+function editItem(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  editingId=id;
+  it.status='editing';
+  AR=it.origW/it.origH;
+  // Set sidebar inputs to match this image
+  document.getElementById('inpW').value=it.origW;
+  document.getElementById('inpH').value=it.origH;
+  // Topbar
+  document.getElementById('iOrigDim').innerText=`${it.origW}×${it.origH}px`;
+  document.getElementById('iFormat').innerText=it.name.split('.').pop().toUpperCase();
+  document.getElementById('iSize').innerText=fmt(it.origSize);
+  document.getElementById('iOutDim').innerText='—';
+  document.getElementById('iOutSize').innerText='—';
+  document.getElementById('iSavePct').innerText='';
+  // Show single preview for this item
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('batchSection').classList.remove('on');
+  document.getElementById('singlePreview').classList.add('on');
+  document.getElementById('origImg').src=it.url;
+  document.getElementById('origBadge').innerText=`${it.origW}×${it.origH}`;
+  document.getElementById('origDimF').innerText=`${it.origW} × ${it.origH} px`;
+  document.getElementById('origSizeF').innerText=fmt(it.origSize);
+  document.getElementById('singleFileName').innerText=it.name;
+  // Reset output pane
+  document.getElementById('outImg').style.display='none';
+  document.getElementById('outPlaceholder').style.display='flex';
+  document.getElementById('outBadge').innerText='—';
+  document.getElementById('outDimF').innerText='—';
+  document.getElementById('outSizeF').innerText='—';
+  // Switch sidebar to single actions
+  document.getElementById('sidebarActions').style.display='';
+  document.getElementById('sidebarBatchActions').style.display='none';
+  document.getElementById('btnDl').disabled=true;
+  singleResult=null;
+  // Show re-edit banner
+  document.getElementById('reeditName').innerText=it.name.length>30?it.name.slice(0,27)+'…':it.name;
+  document.getElementById('reeditBanner').classList.add('on');
+  updateOutInfo();
+}
+
+window.dlItem=(id)=>{
+  const it=items.find(i=>i.id===id);
+  if(!it||!it.result)return;
+  const ext=getExt();
+  dl(it.result.blob,buildFname(it.name,it.result.w,it.result.h,items.indexOf(it)+1)+ext);
+};
+
+async function dlZip(){
+  const done=items.filter(i=>i.status==='done');
+  if(!done.length)return;
+  const zip=new JSZip();
+  const ext=getExt();
+  done.forEach((it,idx)=>zip.file(buildFname(it.name,it.result.w,it.result.h,idx+1)+ext,it.result.blob));
+  const b=await zip.generateAsync({type:'blob'});
+  dl(b,'westcrest_resized.zip');
+}
+
+// ═══════════════ CANVAS MODAL ═══════════════
+function openModal(type){
+  const modal=document.getElementById('canvasModal');
+  const img=document.getElementById('cmImg');
+  const title=document.getElementById('cmTitle');
+  const meta=document.getElementById('cmMeta');
+  if(type==='orig'&&items.length){
+    img.src=items[0].url;
+    title.innerText='ORIGINAL IMAGE';
+    meta.innerText=`${items[0].origW} × ${items[0].origH} px · ${fmt(items[0].origSize)}`;
+  }else if(type==='out'&&singleResult){
+    img.src=singleResult.url;
+    title.innerText='RESIZED OUTPUT';
+    meta.innerText=`${singleResult.w} × ${singleResult.h} px · ${fmt(singleResult.blob.size)} · ${dpiValue} DPI`;
+  }else return;
+  modal.classList.add('on');
+}
+
+function openBatchModal(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  const modal=document.getElementById('canvasModal');
+  const img=document.getElementById('cmImg');
+  document.getElementById('cmTitle').innerText=it.status==='done'?'RESIZED OUTPUT':'ORIGINAL IMAGE';
+  img.src=it.status==='done'?URL.createObjectURL(it.result.blob):it.url;
+  document.getElementById('cmMeta').innerText=
+    it.status==='done'
+      ?`${it.result.w} × ${it.result.h} px · ${fmt(it.result.blob.size)} · ${dpiValue} DPI`
+      :`${it.origW} × ${it.origH} px · ${fmt(it.origSize)} · Original`;
+  modal.classList.add('on');
+}
+
+function closeModal(){document.getElementById('canvasModal').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeLightbox();}});
+
+// Update iOutFmt when output format changes
+document.getElementById('outFmt').addEventListener('change',()=>{
+  document.getElementById('iOutFmt').innerText=getOutFmtLabel();
+  updateFnamePreview();
+});
+
+// ═══════════════ OVERLAY ═══════════════
+let _ovInterval;
+function showOverlay(title,sub){
+  document.getElementById('ovTitle').innerText=title;
+  document.getElementById('ovSub').innerText=sub||'';
+  document.getElementById('ovFill').style.width='0%';
+  document.getElementById('ovResult').classList.remove('on');
+  document.getElementById('overlay').classList.add('on');
+  let p=0;
+  clearInterval(_ovInterval);
+  _ovInterval=setInterval(()=>{p=Math.min(88,p+Math.random()*10);document.getElementById('ovFill').style.width=p+'%';},80);
+}
+function showResult(txt){
+  clearInterval(_ovInterval);
+  document.getElementById('ovFill').style.width='100%';
+  document.getElementById('ovTitle').innerText='Done ✓';
+  document.getElementById('ovResult').innerText=txt;
+  document.getElementById('ovResult').classList.add('on');
+  setTimeout(hideOverlay,900);
+}
+function hideOverlay(){clearInterval(_ovInterval);document.getElementById('overlay').classList.remove('on');}
+
+// ═══════════════ UTILS ═══════════════
+function fmt(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(2)+'MB';}
+function getExt(){return{'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/gif':'.gif','image/bmp':'.bmp'}[document.getElementById('outFmt').value]||'.webp';}
+function buildFname(origName,w,h,idx){
+  const prefix=document.getElementById('fnPrefix').value||'resized';
+  const pattern=document.getElementById('fnPattern').value;
+  const name=origName.replace(/\.[^.]+$/,'');
+  const idxStr=String(idx).padStart(3,'0');
+  return pattern.replace('{prefix}',prefix).replace('{name}',name).replace('{w}',w).replace('{h}',h).replace('{index}',idxStr);
+}
+function dl(blob,fname){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();}
+
+// ═══════════════ NAV ═══════════════
+function toggleNav(){
+  const b=document.getElementById('toolsBtn'),m=document.getElementById('toolsDropdown');
+  const open=m.classList.contains('open');
+  m.classList.toggle('open',!open);b.classList.toggle('open',!open);
+}
+document.addEventListener('click',e=>{
+  const b=document.getElementById('toolsBtn'),m=document.getElementById('toolsDropdown');
+  if(b&&m&&!b.contains(e.target)&&!m.contains(e.target)){m.classList.remove('open');b.classList.remove('open');}
+});
+</script>
+</body>
+</html>
