@@ -56,7 +56,7 @@ function renderNav(user) {
     </ul>
 
     <div class="nav-right">
-      <a href="#contact" class="nav-cta" style="display:inline-flex;align-items:center;height:36px;padding-top:0;padding-bottom:0;box-sizing:border-box;">Start a Project</a>
+      <a href="#contact" class="nav-cta">Start a Project</a>
 
       ${user ? `
         <!-- Logged in: avatar dropdown -->
@@ -160,22 +160,8 @@ function initScroll() {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
-function injectNavStyles() {
-  if (document.getElementById('wm-nav-styles')) return
-  const style = document.createElement('style')
-  style.id = 'wm-nav-styles'
-  style.textContent = `
-    @media (max-width: 768px) {
-      .nav-cta { display: none !important; }
-      .nav-links a { min-height: 48px; display: inline-flex; align-items: center; }
-    }
-  `
-  document.head.appendChild(style)
-}
-
 async function init() {
   const { data: { session } } = await supabase.auth.getSession()
-  injectNavStyles()
   renderNav(session?.user ?? null)
   initScroll()
   initActiveNav()
