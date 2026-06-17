@@ -21,7 +21,7 @@ const TOOLS = [
     { slug: 'image-prompt',       name: 'Image Prompts',          emoji: '🎴', url: '/tools/image-prompt/' },
     { slug: 'video-prompt',       name: 'Video Prompts',          emoji: '🎥', url: '/tools/video-prompt/' },
     { slug: 'font-pairing',       name: 'Font Pairing',           emoji: '🔤', url: '/tools/font-pairing/' },
-    { slug: 'png-to-pdf',         name: 'PNG to PDF',             emoji: '📄', url: '/tools/png-to-pdf.html' },
+    { slug: 'pdf-studio',         name: 'PDF Studio',             emoji: '📑', url: '/tools/pdf-studio/' },
   ]},
 ]
 

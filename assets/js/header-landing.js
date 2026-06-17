@@ -37,7 +37,7 @@ function renderNav(user) {
               <a href="/tools/image-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎴</span>Image Prompts</a>
               <a href="/tools/video-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎥</span>Video Prompts</a>
               <a href="/tools/font-pairing/" style="${ddItem}"><span class="drop-icon-sm">🔤</span>Font Pairing</a>
-              <a href="/tools/png-to-pdf.html" style="${ddItem}"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
+              <a href="/tools/pdf-studio/" style="${ddItem}"><span class="drop-icon-sm">📑</span>PDF Studio</a>
             </div>
           </div>
         </div>
