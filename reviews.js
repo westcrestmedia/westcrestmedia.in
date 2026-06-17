@@ -1,22 +1,3 @@
-/**
- * reviews.js — Westcrest Media Landing Page Reviews
- * ───────────────────────────────────────────────────
- * Landing page pe inject karo:
- *
- *   <div id="wm-reviews"></div>
- *   <script type="module">
- *     window.__WM_TOOL__ = { slug: 'background-remover', name: 'Background Remover' }
- *   </script>
- *   <script type="module" src="/reviews.js"></script>
- *
- * RULES:
- * - Har submit → naya INSERT (upsert nahi)
- * - is_approved = false hamesha (admin approve karega)
- * - Agar user ka pending review hai → form nahi dikhta
- * - Approved hone ke baad user dobara review de sakta hai
- * - Edit button nahi hai
- */
-
 import { supabase } from '/auth.js'
 
 const GOLD       = '#C9A84C'
