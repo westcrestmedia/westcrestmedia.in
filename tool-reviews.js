@@ -7,6 +7,12 @@
  *   <script type="module" src="/tool-reviews.js"></script>
  *
  * window.__WM_TOOL__ pehle se set hona chahiye (header-tool.js se)
+ *
+ * CHANGES:
+ * - Ab user har baar naya review INSERT kar sakta hai (no edit/update)
+ * - Har submit pe is_approved = false (approval required hamesha)
+ * - Agar user ka koi pending review hai to form nahi dikhta, sirf message
+ * - Approved reviews sab dikhte hain (user ke purane bhi)
  */
 
 import { supabase } from '/auth.js'
@@ -63,10 +69,9 @@ async function init() {
   const tool = window.__WM_TOOL__ || {}
   if (!tool.slug) return
 
-  // Inject global CSS once
   injectCSS()
 
-  // Fetch session + reviews in parallel
+  // Session + approved reviews fetch karo
   const [{ data: { session } }, { data: reviews }] = await Promise.all([
     supabase.auth.getSession(),
     supabase
@@ -77,30 +82,31 @@ async function init() {
       .order('created_at', { ascending: false })
   ])
 
-  const user        = session?.user ?? null
-  const list        = reviews || []
-  const average     = avg(list)
-  const totalRating = list.length
+  const user    = session?.user ?? null
+  const list    = reviews || []
+  const average = avg(list)
+  const total   = list.length
 
-  // Check if user already reviewed
-  let userReview = null
+  // Check karo user ka koi PENDING review hai is tool pe
+  let hasPendingReview = false
   if (user) {
-    const { data } = await supabase
+    const { data: pendingData } = await supabase
       .from('reviews')
-      .select('*')
+      .select('id')
       .eq('tool_slug', tool.slug)
       .eq('user_id', user.id)
-      .maybeSingle()
-    userReview = data
+      .eq('is_approved', false)
+      .limit(1)
+    hasPendingReview = !!(pendingData && pendingData.length > 0)
   }
 
-  root.innerHTML = buildSection(tool, list, average, totalRating, user, userReview)
-  bindEvents(tool, user, userReview)
+  root.innerHTML = buildSection(tool, list, average, total, user, hasPendingReview)
+  bindEvents(tool, user)
 }
 
-function buildSection(tool, list, average, totalRating, user, userReview) {
-  const ratingBar = buildRatingBar(list, average, totalRating)
-  const formBlock = buildForm(user, userReview)
+function buildSection(tool, list, average, total, user, hasPendingReview) {
+  const ratingBar   = buildRatingBar(list, average, total)
+  const formBlock   = buildForm(user, hasPendingReview)
   const reviewCards = list.length
     ? list.map(r => buildCard(r)).join('')
     : `<div style="text-align:center;padding:2rem;color:${MUTED};font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;">No reviews yet. Be the first!</div>`
@@ -115,11 +121,11 @@ function buildSection(tool, list, average, totalRating, user, userReview) {
         <div class="wm-reviews-eyebrow">User Reviews</div>
         <h2 class="wm-reviews-title">${escHtml(tool.name)}</h2>
       </div>
-      ${totalRating > 0 ? `
+      ${total > 0 ? `
       <div class="wm-reviews-avg">
         <div class="wm-avg-number">${average.toFixed(1)}</div>
         <div class="wm-avg-stars">${stars(Math.round(average))}</div>
-        <div class="wm-avg-count">${totalRating} review${totalRating !== 1 ? 's' : ''}</div>
+        <div class="wm-avg-count">${total} review${total !== 1 ? 's' : ''}</div>
       </div>` : ''}
     </div>
 
@@ -127,7 +133,7 @@ function buildSection(tool, list, average, totalRating, user, userReview) {
 
       <!-- Left: Rating breakdown + Form -->
       <div class="wm-reviews-left">
-        ${totalRating > 0 ? ratingBar : ''}
+        ${total > 0 ? ratingBar : ''}
         ${formBlock}
       </div>
 
@@ -162,7 +168,8 @@ function buildRatingBar(list, average, total) {
   return `<div class="wm-rating-bars">${bars}</div>`
 }
 
-function buildForm(user, userReview) {
+function buildForm(user, hasPendingReview) {
+  // Not logged in
   if (!user) {
     return `
     <div class="wm-form-card wm-login-prompt">
@@ -173,37 +180,34 @@ function buildForm(user, userReview) {
     </div>`
   }
 
-  if (userReview && !userReview.is_approved) {
+  // Pending review hai — form band rakho
+  if (hasPendingReview) {
     return `
     <div class="wm-form-card" style="text-align:center;">
       <div style="font-size:1.5rem;margin-bottom:0.5rem;">⏳</div>
       <div style="color:${TEXT};font-size:0.85rem;">Your review is pending approval.</div>
-      <div style="color:${MUTED};font-size:0.75rem;margin-top:0.4rem;">We'll notify you once it's live.</div>
+      <div style="color:${MUTED};font-size:0.75rem;margin-top:0.4rem;">Once approved, you can leave another review anytime.</div>
+      <a href="/dashboard/#my-reviews" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
     </div>`
   }
 
-  const editing     = !!userReview
-  const initRating  = userReview?.rating || 0
-  const initText    = userReview?.review_text || ''
-
+  // Fresh form — no edit mode ab
   return `
   <div class="wm-form-card">
-    <div class="wm-form-title">${editing ? 'Edit Your Review' : 'Write a Review'}</div>
+    <div class="wm-form-title">Write a Review</div>
 
     <div class="wm-star-input" id="wm-star-input">
-      ${stars(0, true, initRating)}
+      ${stars(0, true, 0)}
     </div>
-    <div class="wm-star-hint" id="wm-star-hint">${initRating ? starLabel(initRating) : 'Tap to rate'}</div>
-    <input type="hidden" id="wm-rating-val" value="${initRating}">
+    <div class="wm-star-hint" id="wm-star-hint">Tap to rate</div>
+    <input type="hidden" id="wm-rating-val" value="0">
 
     <textarea id="wm-review-text" class="wm-textarea"
       placeholder="Tell others what you think about this tool…"
-      maxlength="500">${escHtml(initText)}</textarea>
-    <div class="wm-char-count"><span id="wm-char-num">${initText.length}</span>/500</div>
+      maxlength="500"></textarea>
+    <div class="wm-char-count"><span id="wm-char-num">0</span>/500</div>
 
-    <button class="wm-submit-btn" id="wm-submit-btn">
-      ${editing ? 'Update Review' : 'Submit Review'}
-    </button>
+    <button class="wm-submit-btn" id="wm-submit-btn">Submit Review</button>
     <div id="wm-form-msg" class="wm-form-msg"></div>
   </div>`
 }
@@ -234,14 +238,14 @@ function starLabel(n) {
 
 /* ─── EVENTS ──────────────────────────────────────────── */
 
-function bindEvents(tool, user, userReview) {
+function bindEvents(tool, user) {
   // Star interaction
-  const starInput  = document.getElementById('wm-star-input')
-  const ratingVal  = document.getElementById('wm-rating-val')
-  const starHint   = document.getElementById('wm-star-hint')
+  const starInput = document.getElementById('wm-star-input')
+  const ratingVal = document.getElementById('wm-rating-val')
+  const starHint  = document.getElementById('wm-star-hint')
 
   if (starInput) {
-    let currentRating = parseInt(ratingVal?.value || '0')
+    let currentRating = 0
 
     starInput.addEventListener('mouseover', e => {
       const s = e.target.closest('.wm-star')
@@ -275,7 +279,7 @@ function bindEvents(tool, user, userReview) {
     })
   }
 
-  // Submit
+  // Submit — HAMESHA INSERT, kabhi UPDATE nahi
   const submitBtn = document.getElementById('wm-submit-btn')
   const formMsg   = document.getElementById('wm-form-msg')
 
@@ -296,6 +300,7 @@ function bindEvents(tool, user, userReview) {
       const u = session?.user
       if (!u) { showMsg(formMsg, 'Please sign in first.', 'error'); return }
 
+      // Hamesha naya INSERT — is_approved: false
       const payload = {
         tool_slug:   tool.slug,
         tool_name:   tool.name,
@@ -303,33 +308,33 @@ function bindEvents(tool, user, userReview) {
         review_text: text,
         user_name:   u.user_metadata?.full_name || u.email?.split('@')[0] || 'Anonymous',
         user_avatar: u.user_metadata?.avatar_url || null,
-        is_approved: false,
+        user_id:     u.id,
+        is_approved: false,   // ← hamesha false, tumhare approval ke baad show hoga
       }
 
-      let error
-      if (userReview) {
-        // Update
-        const res = await supabase
-          .from('reviews')
-          .update(payload)
-          .eq('id', userReview.id)
-        error = res.error
-      } else {
-        // Insert
-        const res = await supabase
-          .from('reviews')
-          .insert({ ...payload, user_id: u.id })
-        error = res.error
-      }
+      const { error } = await supabase.from('reviews').insert(payload)
 
       if (error) {
         showMsg(formMsg, 'Something went wrong. Try again.', 'error')
         submitBtn.disabled = false
-        submitBtn.textContent = userReview ? 'Update Review' : 'Submit Review'
+        submitBtn.textContent = 'Submit Review'
       } else {
         showMsg(formMsg, '✓ Review submitted! It will appear after approval.', 'success')
         submitBtn.disabled = true
         submitBtn.textContent = 'Submitted ✓'
+        // Form hide karo, pending message dikhao
+        setTimeout(() => {
+          const formCard = submitBtn.closest('.wm-form-card')
+          if (formCard) {
+            formCard.innerHTML = `
+              <div style="text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">⏳</div>
+                <div style="color:${TEXT};font-size:0.85rem;">Your review is pending approval.</div>
+                <div style="color:${MUTED};font-size:0.75rem;margin-top:0.4rem;">Once approved, you can leave another review anytime.</div>
+                <a href="/dashboard/#my-reviews" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
+              </div>`
+          }
+        }, 2000)
       }
     })
   }
@@ -388,9 +393,7 @@ function injectCSS() {
   gap: 1rem;
   flex-wrap: wrap;
 }
-.wm-reviews-avg {
-  text-align: center;
-}
+.wm-reviews-avg { text-align: center; }
 .wm-avg-number {
   font-family: 'Cormorant Garamond', serif;
   font-size: 3rem;
@@ -411,10 +414,7 @@ function injectCSS() {
   gap: 2.5rem;
   align-items: start;
 }
-/* Rating bars */
-.wm-rating-bars {
-  margin-bottom: 1.5rem;
-}
+.wm-rating-bars { margin-bottom: 1.5rem; }
 .wm-bar-row {
   display: flex;
   align-items: center;
@@ -449,7 +449,6 @@ function injectCSS() {
   width: 16px;
   flex-shrink: 0;
 }
-/* Form card */
 .wm-form-card {
   background: ${CARD_BG};
   border: 1px solid ${GOLD_BORDER};
@@ -529,7 +528,6 @@ function injectCSS() {
   margin-top: 0.75rem;
   text-align: center;
 }
-/* Review cards */
 .wm-reviews-right {
   display: flex;
   flex-direction: column;
@@ -584,11 +582,8 @@ function injectCSS() {
   color: rgba(245,240,232,0.75);
   line-height: 1.6;
 }
-/* Responsive */
 @media (max-width: 768px) {
-  .wm-reviews-body {
-    grid-template-columns: 1fr;
-  }
+  .wm-reviews-body { grid-template-columns: 1fr; }
   .wm-reviews-section { padding: 3rem 1rem 4rem; }
 }
   `
