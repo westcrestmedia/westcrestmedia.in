@@ -142,7 +142,7 @@
       border-radius: 6px;
       text-decoration: none;
       transition: border-color .2s, background .2s;
-      position: relative; group: true;
+      position: relative;
     }
     .bookmark-card:hover {
       border-color: rgba(201,168,76,0.3);
@@ -197,6 +197,85 @@
       flex-shrink: 0;
     }
 
+    /* ── REVIEWS LIST ── */
+    .reviews-list { display: flex; flex-direction: column; gap: 10px; }
+    .review-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color .2s;
+      position: relative;
+    }
+    .review-row:hover { border-color: var(--muted2); }
+    .review-tool-icon {
+      width: 36px; height: 36px; border-radius: 6px;
+      background: var(--gold-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .review-info { flex: 1; min-width: 0; }
+    .review-top-row {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap; margin-bottom: 4px;
+    }
+    .review-tool-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text);
+    }
+    .review-stars {
+      display: flex; gap: 2px;
+    }
+    .review-star {
+      font-size: 0.75rem;
+      color: var(--gold);
+    }
+    .review-star.empty {
+      color: rgba(201,168,76,0.2);
+    }
+    /* Status badges */
+    .review-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.5rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px; border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .review-badge.pending {
+      color: #f0a500;
+      background: rgba(240,165,0,0.1);
+      border: 1px solid rgba(240,165,0,0.25);
+    }
+    .review-badge.approved {
+      color: #6fcf97;
+      background: rgba(111,207,151,0.08);
+      border: 1px solid rgba(111,207,151,0.2);
+    }
+    .review-text-preview {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; color: var(--muted);
+      line-height: 1.5;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .review-meta-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 4px;
+    }
+    .review-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem; color: var(--muted);
+    }
+    .review-tool-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem; letter-spacing: 0.1em;
+      color: var(--gold); text-decoration: none;
+      opacity: 0; transition: opacity .15s;
+    }
+    .review-row:hover .review-tool-link { opacity: 1; }
+
     /* ── EMPTY STATE ── */
     .empty-state {
       padding: 48px 24px; text-align: center;
@@ -237,6 +316,7 @@
       .profile-card { flex-direction: column; text-align: center; padding: 24px; }
       .bookmarks-grid { grid-template-columns: repeat(2, 1fr); }
       .download-time { display: none; }
+      .review-tool-link { display: none; }
     }
   </style>
 </head>
@@ -278,6 +358,18 @@
       </div>
     </div>
 
+    <!-- MY REVIEWS -->
+    <div class="dash-section" id="my-reviews">
+      <div class="section-header">
+        <div class="section-title">My Reviews</div>
+        <div class="section-count" id="reviews-count">—</div>
+      </div>
+      <div id="reviews-content">
+        <div class="loading-row"></div>
+        <div class="loading-row" style="width:80%"></div>
+      </div>
+    </div>
+
     <!-- DOWNLOADS -->
     <div class="dash-section" id="downloads">
       <div class="section-header">
@@ -302,7 +394,7 @@
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { goToLogin(); }
 
-    const user = session.user
+    const user   = session.user
     const name   = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Creator'
     const avatar = user.user_metadata?.avatar_url || null
     const email  = user.email || ''
@@ -322,6 +414,42 @@
       await supabase.auth.signOut()
       window.location.href = '/'
     })
+
+    // ── Tool emoji map ─────────────────────────────────────────────────────────
+    const toolEmojis = {
+      'image-converter':    '🖼️',
+      'image-compressor':   '⚡',
+      'background-remover': '✂️',
+      'color-palette':      '🎨',
+      'thumbnail-maker':    '🎬',
+      'lut-preview':        '🎞️',
+      'aspect-ratio':       '📐',
+      'image-prompt':       '🎴',
+      'video-prompt':       '🎥',
+      'font-pairing':       '🔤',
+      'png-to-pdf':         '📄'
+    }
+
+    // ── timeAgo helper ─────────────────────────────────────────────────────────
+    function timeAgo(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime()
+      const m = Math.floor(diff / 60000)
+      if (m < 1)  return 'just now'
+      if (m < 60) return m + 'm ago'
+      const h = Math.floor(m / 60)
+      if (h < 24) return h + 'h ago'
+      const d = Math.floor(h / 24)
+      if (d < 30) return d + 'd ago'
+      const mo = Math.floor(d / 30)
+      return mo + 'mo ago'
+    }
+
+    // ── Star renderer ──────────────────────────────────────────────────────────
+    function renderStars(rating) {
+      return [1,2,3,4,5].map(i =>
+        '<span class="review-star' + (i <= rating ? '' : ' empty') + '">★</span>'
+      ).join('')
+    }
 
     // ── Bookmarks ─────────────────────────────────────────────────────────────
     async function loadBookmarks() {
@@ -348,7 +476,6 @@
         '</a>').join('') +
       '</div>'
 
-      // Remove bookmark handlers
       container.querySelectorAll('.bookmark-remove').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           e.preventDefault(); e.stopPropagation()
@@ -358,6 +485,65 @@
           loadBookmarks()
         })
       })
+    }
+
+    // ── My Reviews ────────────────────────────────────────────────────────────
+    async function loadReviews() {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      const container = document.getElementById('reviews-content')
+      const countEl   = document.getElementById('reviews-count')
+
+      if (error || !data || data.length === 0) {
+        countEl.textContent = '0 reviews'
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">⭐</div><div class="empty-text">No reviews yet.<br/>Use a tool and share your experience.</div><a href="/" class="empty-link">Browse Tools</a></div>'
+        return
+      }
+
+      // Count pending vs approved
+      const pendingCount  = data.filter(r => !r.is_approved).length
+      const approvedCount = data.filter(r => r.is_approved).length
+      let countText = data.length + ' review' + (data.length !== 1 ? 's' : '')
+      if (pendingCount > 0) {
+        countText += ' · <span style="color:#f0a500;">' + pendingCount + ' pending</span>'
+      }
+      countEl.innerHTML = countText
+
+      container.innerHTML = '<div class="reviews-list">' +
+        data.map(r => {
+          const emoji    = toolEmojis[r.tool_slug] || '🛠️'
+          const badge    = r.is_approved
+            ? '<span class="review-badge approved">✓ Approved</span>'
+            : '<span class="review-badge pending">⏳ Pending</span>'
+          const toolUrl  = '/tools/' + r.tool_slug + '/'
+          const preview  = r.review_text
+            ? '<div class="review-text-preview">' + r.review_text + '</div>'
+            : '<div class="review-text-preview" style="font-style:italic;opacity:0.5;">No text added</div>'
+
+          return '<div class="review-row">' +
+            '<div class="review-tool-icon">' + emoji + '</div>' +
+            '<div class="review-info">' +
+              '<div class="review-top-row">' +
+                '<span class="review-tool-name">' + (r.tool_name || r.tool_slug) + '</span>' +
+                '<span class="review-stars">' + renderStars(r.rating) + '</span>' +
+                badge +
+              '</div>' +
+              preview +
+              '<div class="review-meta-row">' +
+                '<span class="review-time">' + timeAgo(r.created_at) + '</span>' +
+                (r.is_approved
+                  ? '<a href="' + toolUrl + '" class="review-tool-link">View on tool →</a>'
+                  : '<span style="font-family:\'DM Mono\',monospace;font-size:0.55rem;color:var(--muted);">Awaiting admin approval</span>'
+                ) +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        }).join('') +
+      '</div>'
     }
 
     // ── Downloads ─────────────────────────────────────────────────────────────
@@ -379,24 +565,6 @@
 
       countEl.textContent = data.length + ' file' + (data.length !== 1 ? 's' : '')
 
-      function timeAgo(dateStr) {
-        const diff = Date.now() - new Date(dateStr).getTime()
-        const m = Math.floor(diff / 60000)
-        if (m < 1) return 'just now'
-        if (m < 60) return m + 'm ago'
-        const h = Math.floor(m / 60)
-        if (h < 24) return h + 'h ago'
-        return Math.floor(h / 24) + 'd ago'
-      }
-
-      const toolEmojis = {
-        'image-converter': '🖼️', 'image-compressor': '⚡',
-        'background-remover': '✂️', 'color-palette': '🎨',
-        'thumbnail-maker': '🎬', 'lut-preview': '🎞️',
-        'aspect-ratio': '📐', 'image-prompt': '🎴',
-        'video-prompt': '🎥', 'font-pairing': '🔤', 'png-to-pdf': '📄'
-      }
-
       container.innerHTML = '<div class="downloads-list">' +
         data.map(d => '<div class="download-row">' +
           '<div class="download-icon">' + (toolEmojis[d.tool_slug] || '📄') + '</div>' +
@@ -409,14 +577,15 @@
       '</div>'
     }
 
-    // ── Hash navigation (#bookmarks / #downloads) ─────────────────────────────
+    // ── Hash navigation (#bookmarks / #downloads / #my-reviews) ───────────────
     if (window.location.hash) {
       const el = document.querySelector(window.location.hash)
       if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300)
     }
 
-    // Load both
+    // Load all
     loadBookmarks()
+    loadReviews()
     loadDownloads()
   </script>
 </body>
