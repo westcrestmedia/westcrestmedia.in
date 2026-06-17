@@ -1,12 +1,5 @@
 /**
  * header-tool.js — Tool Pages Header
- * Har tool page ke body mein:
- *
- *   <nav class="[original-class]" id="tool-nav"></nav>
- *   <script type="module">
- *     import '/header-tool.js'
- *     window.__WM_TOOL__ = { slug: 'background-remover', name: 'Background Remover', emoji: '✂️', url: '/tools/background-remover/' }
- *   </script>
  */
 
 import { supabase } from '/auth.js'
