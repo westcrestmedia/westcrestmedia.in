@@ -1,18 +1,5 @@
 /**
  * tool-reviews.js — Tool Page Review Section
- *
- * Har tool page ke </body> se pehle add karo:
- *
- *   <div id="wm-reviews-root"></div>
- *   <script type="module" src="/tool-reviews.js"></script>
- *
- * window.__WM_TOOL__ pehle se set hona chahiye (header-tool.js se)
- *
- * CHANGES:
- * - Ab user har baar naya review INSERT kar sakta hai (no edit/update)
- * - Har submit pe is_approved = false (approval required hamesha)
- * - Agar user ka koi pending review hai to form nahi dikhta, sirf message
- * - Approved reviews sab dikhte hain (user ke purane bhi)
  */
 
 import { supabase } from '/auth.js'
@@ -187,7 +174,7 @@ function buildForm(user, hasPendingReview) {
       <div style="font-size:1.5rem;margin-bottom:0.5rem;">⏳</div>
       <div style="color:${TEXT};font-size:0.85rem;">Your review is pending approval.</div>
       <div style="color:${MUTED};font-size:0.75rem;margin-top:0.4rem;">Once approved, you can leave another review anytime.</div>
-      <a href="/dashboard/#my-reviews" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
+      <a href="/dashboard/" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
     </div>`
   }
 
@@ -331,7 +318,7 @@ function bindEvents(tool, user) {
                 <div style="font-size:1.5rem;margin-bottom:0.5rem;">⏳</div>
                 <div style="color:${TEXT};font-size:0.85rem;">Your review is pending approval.</div>
                 <div style="color:${MUTED};font-size:0.75rem;margin-top:0.4rem;">Once approved, you can leave another review anytime.</div>
-                <a href="/dashboard/#my-reviews" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
+                <a href="/dashboard/" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;color:${GOLD};text-decoration:none;">View in Dashboard →</a>
               </div>`
           }
         }, 2000)
