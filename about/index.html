@@ -327,7 +327,7 @@
     .footer-logo span { color:var(--gold); }
     .footer-tagline { font-size:0.72rem; color:var(--white-dim); letter-spacing:0.08em; margin-top:6px; }
     .footer-links-group { display:flex; gap:80px; }
-    .footer-col h4 { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+    .footer-col h3.footer-col-heading, .footer-col h4 { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; font-weight:600; }
     .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
     .footer-col a { font-size:0.78rem; color:var(--white-dim); text-decoration:none; transition:color 0.3s; }
     .footer-col a:hover { color:var(--white); }
@@ -349,13 +349,13 @@
 
   <!-- LOADER -->
   <div id="loader">
-    <img src="/images/logo.gif" alt="Westcrest Media" style="height:180px;width:auto;object-fit:contain;" />
+    <img src="/images/logo.gif" alt="Westcrest Media" width="180" height="180" style="height:180px;width:auto;object-fit:contain;" />
     <div class="loader-bar"></div>
   </div>
 
   <!-- MOBILE MENU -->
   <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-close-btn" onclick="closeMobile()">✕</button>
+    <button class="mobile-close-btn" aria-label="Close navigation menu" onclick="closeMobile()">✕</button>
     <a href="/#tools" onclick="closeMobile()">Tools</a>
     <a href="/#services" onclick="closeMobile()">Services</a>
     <a href="/#portfolio" onclick="closeMobile()">Portfolio</a>
@@ -369,7 +369,7 @@
   <!-- NAV -->
   <nav id="navbar">
     <a href="/" class="nav-logo">
-      <img src="/images/logo.png" alt="Westcrest Media" />
+      <img src="/images/logo.png" alt="Westcrest Media" width="180" height="52" style="height:52px;width:auto;" />
     </a>
     <ul class="nav-links">
       <li class="nav-dropdown"><a href="/#tools">Tools</a>
@@ -401,12 +401,13 @@
       <li><a href="/#contact">Contact</a></li>
     </ul>
     <a href="/#contact" class="nav-cta">Start a Project</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()" style="background:none;border:none;padding:0;cursor:pointer;">
       <span></span><span></span><span></span>
-    </div>
+    </button>
   </nav>
 
   <!-- PAGE HERO -->
+  <main>
   <section class="page-hero">
     <div class="page-hero-bg"></div>
     <div class="page-hero-grid"></div>
@@ -456,7 +457,7 @@
 
         <!-- PHOTO -->
         <div class="about-visual">
-          <img src="../images/wcm about photo.png" alt="Westcrest Media — Founder" loading="eager" />
+          <img src="../images/wcm about photo.png" alt="Westcrest Media — Founder" width="600" height="750" loading="eager" />
           <div class="about-visual-frame"></div>
           <div class="about-visual-caption">
             <span class="about-visual-caption-name">Westcrest Media</span>
@@ -548,17 +549,19 @@
     </div>
   </section>
 
+  </main>
+
   <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-top">
         <div>
-          <img src="/images/logo.png" alt="Westcrest Media" style="height:110px;width:auto;object-fit:contain;mix-blend-mode:lighten;" />
+          <img src="/images/logo.png" alt="Westcrest Media" width="110" height="110" style="height:110px;width:auto;object-fit:contain;mix-blend-mode:lighten;" />
           <div class="footer-tagline">Built by a Creator, for Creators</div>
         </div>
         <div class="footer-links-group">
           <div class="footer-col">
-            <h4>Tools</h4>
+            <h3 class="footer-col-heading">Tools</h3>
             <ul>
               <li><a href="/tools/image-converter/">Image Converter</a></li>
               <li><a href="/tools/background-remover/">Background Remover</a></li>
@@ -567,7 +570,7 @@
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Shop</h4>
+            <h3 class="footer-col-heading">Shop</h3>
             <ul>
               <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">AE Plugins</a></li>
               <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">LUT Packs</a></li>
@@ -576,7 +579,7 @@
             </ul>
           </div>
           <div class="footer-col">
-            <h4>Company</h4>
+            <h3 class="footer-col-heading">Company</h3>
             <ul>
               <li><a href="/about/">About Us</a></li>
               <li><a href="/blog/">Blog</a></li>
@@ -587,7 +590,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <div class="footer-copy">© 2025 Westcrest Media. All rights reserved.</div>
+        <div class="footer-copy">© 2026 Westcrest Media. All rights reserved.</div>
         <div class="social-links">
           <!-- Instagram -->
           <a class="social-link" href="https://www.instagram.com/westcrestmedia/" target="_blank" title="Instagram">
