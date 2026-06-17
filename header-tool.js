@@ -67,9 +67,9 @@ async function renderNav() {
             '<div style="color:#555;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + user.email + '</div>' +
           '</div>' +
           '<div style="padding:6px 0;">' +
-            '<a href="/dashboard.html" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Dashboard</a>' +
-            '<a href="/dashboard.html#bookmarks" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Bookmarks</a>' +
-            '<a href="/dashboard.html#downloads" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Downloads</a>' +
+            '<a href="/dashboard/" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Dashboard</a>' +
+            '<a href="/dashboard/#bookmarks" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Bookmarks</a>' +
+            '<a href="/dashboard/#downloads" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:Syne,sans-serif;">Downloads</a>' +
             '<div style="height:1px;background:#1e1e1e;margin:4px 0;"></div>' +
             '<button id="wm-signout-btn" style="display:flex;align-items:center;gap:10px;padding:9px 16px;color:#666;font-size:12.5px;font-family:Syne,sans-serif;background:none;border:none;cursor:pointer;width:100%;text-align:left;">Sign Out</button>' +
           '</div>' +

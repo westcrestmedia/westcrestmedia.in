@@ -87,15 +87,15 @@ function dropdownHTML(name, email) {
         <div style="color:#555;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${email}</div>
       </div>
       <div style="padding:6px 0;">
-        <a href="/dashboard.html" style="${ddLink}">
+        <a href="/dashboard/" style="${ddLink}">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
           Dashboard
         </a>
-        <a href="/dashboard.html#bookmarks" style="${ddLink}">
+        <a href="/dashboard/#bookmarks" style="${ddLink}">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h8a1 1 0 0 1 1 1v10l-5-3-5 3V2a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
           Bookmarks
         </a>
-        <a href="/dashboard.html#downloads" style="${ddLink}">
+        <a href="/dashboard/#downloads" style="${ddLink}">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Downloads
         </a>
