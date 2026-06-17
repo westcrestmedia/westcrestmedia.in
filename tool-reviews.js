@@ -1,20 +1,3 @@
-/**
- * tool-reviews.js — Tool Page Review Section
- *
- * Har tool page ke </body> se pehle add karo:
- *
- *   <div id="wm-reviews-root"></div>
- *   <script type="module" src="/tool-reviews.js"></script>
- *
- * window.__WM_TOOL__ pehle se set hona chahiye (header-tool.js se)
- *
- * CHANGES:
- * - Ab user har baar naya review INSERT kar sakta hai (no edit/update)
- * - Har submit pe is_approved = false (approval required hamesha)
- * - Agar user ka koi pending review hai to form nahi dikhta, sirf message
- * - Approved reviews sab dikhte hain (user ke purane bhi)
- */
-
 import { supabase } from '/auth.js'
 
 const GOLD        = '#C9A84C'
