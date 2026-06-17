@@ -1,3 +1,8 @@
+/**
+ * reviews.js — Westcrest Media Landing Page Reviews
+ *
+ */
+
 import { supabase } from '/auth.js'
 
 const GOLD       = '#C9A84C'
