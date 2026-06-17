@@ -3,7 +3,7 @@
  *
  */
 
-import { supabase } from '/auth.js'
+import { supabase } from '/assets/js/auth.js'
 
 const GOLD       = '#C9A84C'
 const GOLD_DIM   = 'rgba(201,168,76,0.08)'

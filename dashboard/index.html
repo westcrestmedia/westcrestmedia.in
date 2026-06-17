@@ -385,10 +385,10 @@
 
   </div>
 
-  <script src="/auth.js" type="module"></script>
+  <script src="/assets/js/auth.js" type="module"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-    import { supabase, goToLogin } from '/auth.js'
+    import { supabase, goToLogin } from '/assets/js/auth.js'
 
     // ── Auth check ────────────────────────────────────────────────────────────
     const { data: { session } } = await supabase.auth.getSession()

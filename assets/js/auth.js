@@ -2,7 +2,7 @@
  * auth.js — Westcrest Media Global Auth
  * ─────────────────────────────────────
  * Har HTML page ke </body> se pehle include karo:
- *   <script src="/auth.js" type="module"></script>
+ *   <script src="/assets/js/auth.js" type="module"></script>
  *
  * ATTRIBUTES (kisi bhi element pe):
  *   data-wm-signin        → href auto-set hoga with ?next=

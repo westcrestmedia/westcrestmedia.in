@@ -2,7 +2,7 @@
  * header-landing.js — Landing Page Header
  */
 
-import { supabase, getRedirectTarget, redirectAfterLogin } from '/auth.js'
+import { supabase, getRedirectTarget, redirectAfterLogin } from '/assets/js/auth.js'
 
 function renderNav(user) {
   const name   = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''

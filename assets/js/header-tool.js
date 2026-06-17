@@ -2,7 +2,7 @@
  * header-tool.js — Tool Pages Header
  */
 
-import { supabase } from '/auth.js'
+import { supabase } from '/assets/js/auth.js'
 
 const TOOLS = [
   { col: '🖼️ Image Tools', items: [

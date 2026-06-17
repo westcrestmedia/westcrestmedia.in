@@ -2,7 +2,7 @@
  * tool-reviews.js — Tool Page Review Section
  */
 
-import { supabase } from '/auth.js'
+import { supabase } from '/assets/js/auth.js'
 
 const GOLD        = '#C9A84C'
 const GOLD_DIM    = 'rgba(200,169,110,0.15)'
