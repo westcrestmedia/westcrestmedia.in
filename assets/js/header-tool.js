@@ -35,8 +35,15 @@ async function renderNav() {
 
   const dropdownCols = TOOLS.map(function(group) {
     const links = group.items.map(function(t) {
-      const isCurrent = t.slug === tool.slug ? ' class="current-tool"' : ''
-      return '<a href="' + t.url + '"' + isCurrent + '><span class="tool-icon">' + t.emoji + '</span>' + t.name + '</a>'
+      const isCurrent = t.slug === tool.slug
+      if (isCurrent) {
+        return '<a style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:0.7rem;text-decoration:none;white-space:nowrap;color:#C9A84C;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);pointer-events:none;cursor:default;position:relative;padding-left:20px;" class="current-tool">' +
+          '<span style="position:absolute;left:7px;top:50%;transform:translateY(-50%);width:3px;height:14px;background:#C9A84C;border-radius:2px;"></span>' +
+          '<span class="tool-icon">' + t.emoji + '</span>' + t.name +
+          '<span style="font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;font-family:DM Mono,monospace;color:#C9A84C;opacity:0.7;margin-left:auto;padding-left:8px;">Open</span>' +
+        '</a>'
+      }
+      return '<a href="' + t.url + '"><span class="tool-icon">' + t.emoji + '</span>' + t.name + '</a>'
     }).join('')
     return '<div class="tools-col"><div class="tools-col-label">' + group.col + '</div>' + links + '</div>'
   }).join('')

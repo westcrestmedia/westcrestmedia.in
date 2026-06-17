@@ -23,22 +23,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;}
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;padding:0 1.25rem;height:var(--nav);background:rgba(8,8,10,0.97);border-bottom:1px solid var(--gold-border);backdrop-filter:blur(14px);gap:0;}
-.nav-logo{display:flex;align-items:center;text-decoration:none;}
-.nav-logo img{height:32px;}
-.nav-tools-btn{display:flex;align-items:center;gap:5px;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;background:none;border:none;height:var(--nav);position:absolute;left:50%;transform:translateX(-50%);transition:color .2s;}
-.nav-tools-btn:hover{color:var(--gold);}
-.nav-tools-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;}
-.nav-tools-btn.open svg{transform:rotate(180deg);}
-.tools-dropdown{position:fixed;top:var(--nav);left:50%;transform:translateX(-50%);background:rgba(13,13,18,0.98);backdrop-filter:blur(24px);border:1px solid var(--gold-border);border-radius:12px;padding:18px;display:none;z-index:600;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
-.tools-dropdown.open{display:block;}
-.tools-dropdown-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 20px;}
-.tools-col-label{font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:0 10px 7px;border-bottom:1px solid var(--gold-border);margin-bottom:5px;}
-.tools-dropdown a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:0.7rem;color:var(--muted);text-decoration:none;transition:all .18s;white-space:nowrap;}
-.tools-dropdown a:hover{background:var(--gold-dim);color:var(--gold);}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.nav-badge{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;font-family:'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;}
+
 
 /* APP SHELL */
 .app{display:flex;height:calc(100vh - var(--nav));margin-top:var(--nav);}
@@ -225,43 +210,13 @@ html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-se
 /* PAGE SIZE SELECTOR */
 .size-chips{display:flex;gap:5px;flex-wrap:wrap;}
 </style>
+<script>window.__WM_TOOL__ = { slug: 'pdf-studio' }</script>
+<script src="/assets/js/header-tool.js" type="module"></script>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="nav">
-  <a href="/" class="nav-logo"><img src="/images/w_logo.svg" alt="Westcrest Media" width="26" height="26"></a>
-  <button class="nav-tools-btn" id="toolsBtn" onclick="toggleToolsDD()">All Tools
-    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
-  <div class="tools-dropdown" id="toolsDropdown">
-    <div class="tools-dropdown-grid">
-      <div><div class="tools-col-label">🖼️ Image Tools</div>
-        <a href="/tools/image-converter/">🖼️ Image Converter</a>
-        <a href="/tools/image-compressor/">⚡ Image Compressor</a>
-        <a href="/tools/background-remover/">✂️ Background Remover</a>
-        <a href="/tools/image-resizer-pro/">📐 Image Resizer Pro</a>
-      </div>
-      <div><div class="tools-col-label">🎬 Video Tools</div>
-        <a href="/tools/thumbnail-maker/">🎬 Thumbnail Maker</a>
-        <a href="/tools/lut-preview/">🎞️ LUT Studio</a>
-        <a href="/tools/aspect-ratio/">📐 Aspect Ratio Calc</a>
-        <a href="/tools/color-palette/">🎨 Color Palette</a>
-      </div>
-      <div><div class="tools-col-label">✨ AI & Other</div>
-        <a href="/tools/image-prompt/">🎴 Image Prompts</a>
-        <a href="/tools/video-prompt/">🎥 Video Prompts</a>
-        <a href="/tools/font-pairing/">🔤 Font Pairing</a>
-        <a href="/tools/png-to-pdf.html">📄 PNG to PDF</a>
-        <a href="/tools/pdf-studio-pro/" class="current-tool">📑 PDF Studio Pro</a>
-      </div>
-    </div>
-  </div>
-  <div class="nav-right">
-    <span class="nav-badge">All-in-One PDF</span>
-    <a href="/login/" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:7px 16px;border:1px solid rgba(200,169,110,0.4);border-radius:2px;">Sign In</a>
-  </div>
-</nav>
+<nav id="tool-nav"></nav>
 
 <!-- APP -->
 <div class="app">
@@ -1766,18 +1721,7 @@ function toast(msg, type='success') {
 }
 
 // ── NAV DROPDOWN ──
-function toggleToolsDD() {
-  const btn=document.getElementById('toolsBtn'), dd=document.getElementById('toolsDropdown');
-  const open=dd.classList.toggle('open');
-  btn.classList.toggle('open',open);
-  btn.setAttribute('aria-expanded',open);
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#toolsBtn')&&!e.target.closest('#toolsDropdown')){
-    document.getElementById('toolsDropdown')?.classList.remove('open');
-    document.getElementById('toolsBtn')?.classList.remove('open');
-  }
-});
+
 
 // ── DRAG & DROP on upload zones ──
 function bindDragDrop() {
