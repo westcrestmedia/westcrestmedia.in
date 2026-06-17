@@ -1,3 +1,7 @@
+/**
+ * tool-reviews.js — Tool Page Review Section
+ */
+
 import { supabase } from '/auth.js'
 
 const GOLD        = '#C9A84C'
