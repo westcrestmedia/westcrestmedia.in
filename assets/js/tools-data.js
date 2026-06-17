@@ -44,21 +44,21 @@ const WC_TOOLS = [
   {
     name: "Image Prompt Generator",
     desc: "AI prompts for Midjourney, DALL·E & more.",
-    icon: "🎲",
+    icon: "🎰",
     url: "https://westcrestmedia.in/tools/image-prompt/",
     related: ["video-prompt", "color-palette", "font-pairing", "thumbnail-maker"]
   },
   {
     name: "LUT Studio",
     desc: "Preview, customize and export professional LUTs online.",
-    icon: "🎬",
+    icon: "🎞️",
     url: "https://westcrestmedia.in/tools/lut-preview/",
     related: ["video-prompt", "thumbnail-maker", "color-palette", "aspect-ratio"]
   },
   {
-    name: "Thumbnail Maker",
+    name: "Video Thumbnail Maker",
     desc: "Create eye-catching YouTube & social media thumbnails.",
-    icon: "🖼️",
+    icon: "🎬",
     url: "https://westcrestmedia.in/tools/thumbnail-maker/",
     related: ["color-palette", "font-pairing", "image-resizer-pro", "lut-preview"]
   },
@@ -72,14 +72,14 @@ const WC_TOOLS = [
   {
     name: "Image Resizer Pro",
     desc: "Resize images to any dimension. Batch support.",
-    icon: "📏",
+    icon: "↔️",
     url: "https://westcrestmedia.in/tools/image-resizer-pro/",
     related: ["image-compressor", "image-converter", "aspect-ratio", "thumbnail-maker"]
   },
   {
     name: "PDF Studio",
     desc: "Merge, split, compress and convert PDFs online.",
-    icon: "📄",
+    icon: "📑",
     url: "https://westcrestmedia.in/tools/pdf-studio/",
     related: ["image-converter", "image-compressor", "aspect-ratio", "font-pairing"]
   },
