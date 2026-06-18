@@ -22,6 +22,8 @@
 <meta property="og:description" content="Free online image converter. Convert JPG, PNG, WEBP, HEIC, AVIF, BMP, TIFF, GIF to any format. 100% browser-side.">
 <meta property="og:image"       content="https://westcrestmedia.in/images/og-image.jpg">
 <meta property="og:locale"      content="en_GB">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="en_CA">
 
 <!-- Twitter -->
 <meta name="twitter:card"        content="summary_large_image">
@@ -42,16 +44,22 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Are my images uploaded to any server?","acceptedAnswer":{"@type":"Answer","text":"No. All conversion happens entirely in your browser using the Canvas API. Your images never leave your device."}},{"@type":"Question","name":"Is there a file size or count limit?","acceptedAnswer":{"@type":"Answer","text":"No limits at all. Convert as many images as you want, any size."}},{"@type":"Question","name":"What formats are supported?","acceptedAnswer":{"@type":"Answer","text":"Input: JPG, PNG, WEBP, AVIF, BMP, TIFF, GIF, SVG, ICO, HEIC, WBMP. Output: JPG, PNG, WEBP, AVIF, BMP, GIF, TIFF, ICO, SVG, WBMP, and PDF."}},{"@type":"Question","name":"Will the quality be affected?","acceptedAnswer":{"@type":"Answer","text":"You can control output quality using the quality slider (10-100%). For lossless formats like PNG, full quality is always preserved."}},{"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"Yes, fully optimized for mobile browsers. Upload from your camera roll or files app."}}]}
 </script>
 
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Image Format Converter | Free Online Tool | Westcrest Media","url":"https://westcrestmedia.in/tools/image-converter/","description":"Free online image converter. Convert JPG, PNG, WEBP, HEIC, AVIF, BMP, TIFF, GIF to any format. 100% browser-side.","isPartOf":{"@type":"WebSite","name":"Westcrest Media","url":"https://westcrestmedia.in"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://westcrestmedia.in/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://westcrestmedia.in/#tools"},{"@type":"ListItem","position":3,"name":"Image Converter","item":"https://westcrestmedia.in/tools/image-converter/"}]}}
+</script>
+
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQ0X1DD0DP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-GQ0X1DD0DP', { send_page_view: true });
+  gtag('config', 'G-GQ0X1DD0DP', { send_page_view: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 
 <!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 
 <!-- Stylesheets -->
@@ -217,8 +225,8 @@
 <script src="/assets/js/tools-data.js"></script>
 <script src="/assets/js/explore-tools.js"></script>
 
-<!-- REVIEWS (injected by shared script) -->
-<div id="reviews-section"></div>
+<!-- REVIEWS -->
+<div id="wm-reviews-root"></div>
 <script type="module" src="/assets/js/tool-reviews.js"></script>
 
 <!-- FOOTER (injected by shared script) -->
