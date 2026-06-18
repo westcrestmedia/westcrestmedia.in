@@ -37,10 +37,9 @@ async function renderNav() {
     const links = group.items.map(function(t) {
       const isCurrent = t.slug === tool.slug
       if (isCurrent) {
-        return '<a style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:0.7rem;text-decoration:none;white-space:nowrap;color:#C9A84C;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);pointer-events:none;cursor:default;position:relative;padding-left:20px;" class="current-tool">' +
-          '<span style="position:absolute;left:7px;top:50%;transform:translateY(-50%);width:3px;height:14px;background:#C9A84C;border-radius:2px;"></span>' +
+        return '<a class="current-tool">' +
           '<span class="tool-icon">' + t.emoji + '</span>' + t.name +
-          '<span style="font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;font-family:DM Mono,monospace;color:#C9A84C;opacity:0.7;margin-left:auto;padding-left:8px;">Open</span>' +
+          '<span class="current-tool-badge">Open</span>' +
         '</a>'
       }
       return '<a href="' + t.url + '"><span class="tool-icon">' + t.emoji + '</span>' + t.name + '</a>'
@@ -83,21 +82,7 @@ async function renderNav() {
     '<div class="tools-dropdown" id="toolsDropdown"><div class="tools-dropdown-grid">' + dropdownCols + '</div></div>' +
     '<div style="display:flex;align-items:center;gap:12px;margin-left:auto;">' + rightHTML + '</div>'
 
-  // Nav alignment fix — override any tool page CSS
-  if (!document.getElementById('wm-tool-nav-css')) {
-    var n = document.createElement('style')
-    n.id = 'wm-tool-nav-css'
-    n.textContent = '#tool-nav{display:flex!important;align-items:center!important;justify-content:space-between!important;}#tool-nav .nav-logo{flex-shrink:0;}#tool-nav .nav-tools-btn{position:absolute!important;left:50%!important;transform:translateX(-50%)!important;flex-shrink:0;}#tool-nav>div:last-child{flex-shrink:0;margin-left:auto;}'
-    document.head.appendChild(n)
-  }
 
-  // Mobile dropdown CSS
-  if (!document.getElementById('wm-tool-mobile-css')) {
-    var s = document.createElement('style')
-    s.id = 'wm-tool-mobile-css'
-    s.textContent = '@media(max-width:768px){.tools-dropdown{position:fixed!important;top:56px!important;left:0!important;right:0!important;width:100vw!important;transform:none!important;border-radius:0 0 12px 12px!important;padding:16px!important;box-sizing:border-box!important;overflow-y:auto!important;max-height:calc(100vh - 56px)!important;}.tools-dropdown-grid{grid-template-columns:1fr!important;gap:0!important;}.tools-col{min-width:unset!important;}}'
-    document.head.appendChild(s)
-  }
 
   bindInteractions(user)
 }

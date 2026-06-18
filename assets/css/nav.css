@@ -1,0 +1,185 @@
+/**
+ * nav.css — Global Tool Pages Navigation
+ * Include this in every tool page <head>
+ * Pair with: <script src="/assets/js/header-tool.js" type="module"></script>
+ */
+
+/* ── NAV BAR ── */
+#tool-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  height: 66px;
+  background: rgba(8, 8, 10, 0.97);
+  border-bottom: 1px solid rgba(200, 169, 110, 0.2);
+  backdrop-filter: blur(14px);
+  gap: 0;
+}
+
+/* ── LOGO ── */
+#tool-nav .nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+#tool-nav .nav-logo img {
+  height: 32px;
+}
+
+/* ── ALL TOOLS BUTTON ── */
+#tool-nav .nav-tools-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(245, 240, 232, 0.5);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  border: none;
+  height: 66px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+#tool-nav .nav-tools-btn:hover {
+  color: #C9A84C;
+}
+#tool-nav .nav-tools-btn svg {
+  width: 13px; height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s;
+}
+#tool-nav .nav-tools-btn.open svg {
+  transform: rotate(180deg);
+}
+
+/* ── TOOLS DROPDOWN ── */
+#tool-nav .tools-dropdown {
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 13, 18, 0.98);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  border-radius: 12px;
+  padding: 18px;
+  display: none;
+  z-index: 600;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+#tool-nav .tools-dropdown.open {
+  display: block;
+}
+#tool-nav .tools-dropdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 20px;
+}
+
+/* ── DROPDOWN COLUMN LABEL ── */
+#tool-nav .tools-col-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  padding: 0 10px 7px;
+  border-bottom: 1px solid rgba(200, 169, 110, 0.2);
+  margin-bottom: 5px;
+}
+
+/* ── DROPDOWN LINKS ── */
+#tool-nav .tools-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: rgba(245, 240, 232, 0.5);
+  text-decoration: none;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+#tool-nav .tools-dropdown a:not(.current-tool):hover {
+  background: rgba(200, 169, 110, 0.1);
+  color: #C9A84C;
+}
+
+/* ── CURRENT / ACTIVE TOOL ── */
+#tool-nav .tools-dropdown a.current-tool {
+  color: #C9A84C;
+  background: rgba(200, 169, 110, 0.12);
+  border: 1px solid rgba(200, 169, 110, 0.25);
+  pointer-events: none;
+  cursor: default;
+  position: relative;
+  padding-left: 20px;
+}
+#tool-nav .tools-dropdown a.current-tool::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 14px;
+  background: #C9A84C;
+  border-radius: 2px;
+}
+
+/* ── CURRENT TOOL "OPEN" BADGE ── */
+#tool-nav .tools-dropdown a.current-tool .current-tool-badge {
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  color: #C9A84C;
+  opacity: 0.7;
+  margin-left: auto;
+  padding-left: 8px;
+}
+
+/* ── NAV RIGHT (auth) ── */
+#tool-nav > div:last-child {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  #tool-nav .tools-dropdown {
+    position: fixed;
+    top: 66px;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    transform: none;
+    border-radius: 0 0 12px 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: calc(100vh - 66px);
+  }
+  #tool-nav .tools-dropdown-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  #tool-nav .tools-col {
+    min-width: unset;
+  }
+}

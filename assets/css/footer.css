@@ -1,0 +1,40 @@
+/**
+ * footer.css — Site-wide Footer
+ * Include on every page: tools, landing, blog, about
+ * Pair with: footer.js (renders footer HTML automatically)
+ */
+
+.site-footer {
+  border-top: 1px solid rgba(200, 169, 110, 0.15);
+  padding: 0 1.25rem;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.site-footer p {
+  font-size: 11px;
+  color: #6a6258;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.footer-links a {
+  color: #6a6258;
+  text-decoration: none;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--gold);
+}

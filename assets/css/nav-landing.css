@@ -1,0 +1,123 @@
+/**
+ * nav-landing.css — Landing Page Navigation
+ * Include in landing page <head>
+ * Pair with: <script src="/assets/js/header-landing.js" type="module"></script>
+ */
+
+/* ── TOOLS DROPDOWN PANEL ── */
+.dropdown-menu {
+  width: 580px;
+  padding: 20px;
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f0f0f;
+  border: 1px solid #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  z-index: 999;
+}
+.dropdown-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 24px;
+}
+
+/* ── DROPDOWN COLUMN LABEL ── */
+.dropdown-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C9A84C;
+  padding: 0 8px 8px;
+  border-bottom: 1px solid #1e1e1e;
+  margin-bottom: 6px;
+}
+
+/* ── DROPDOWN LINKS ── */
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #888;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.dropdown-menu a:hover {
+  background: rgba(201, 168, 76, 0.08);
+  color: #C9A84C;
+}
+
+/* ── USER DROPDOWN PANEL ── */
+.wm-user-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 220px;
+  background: #131313;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  overflow: hidden;
+}
+.wm-user-dropdown-header {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid #1e1e1e;
+}
+.wm-user-dropdown-name {
+  color: #f0ede6;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wm-user-dropdown-email {
+  color: #555;
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wm-user-dropdown-body {
+  padding: 6px 0;
+}
+.wm-user-dropdown-divider {
+  height: 1px;
+  background: #1e1e1e;
+  margin: 4px 0;
+}
+
+/* ── USER DROPDOWN LINKS ── */
+.wm-dd-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  color: #999;
+  font-size: 12.5px;
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  transition: color 0.15s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.wm-dd-link:hover {
+  color: #C9A84C;
+}
+.wm-dd-link.signout {
+  color: #666;
+}

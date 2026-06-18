@@ -1,0 +1,619 @@
+/**
+ * tools-common.css — Westcrest Media
+ * Shared styles for ALL tool pages.
+ * Load after global.css and nav.css.
+ *
+ * Sections:
+ *  1. Page shell
+ *  2. Tool hero
+ *  3. Tool body / sections
+ *  4. Drop zone
+ *  5. Settings panel
+ *  6. Buttons
+ *  7. Action bar
+ *  8. File list & items
+ *  9. Status badges
+ * 10. Spinner
+ * 11. Pro-tip banner
+ * 12. How-it-works steps
+ * 13. FAQ accordion
+ * 14. Explore-tools cards
+ */
+
+/* ─────────────────────────────────────────
+   1. PAGE SHELL
+───────────────────────────────────────── */
+
+/* Push content below fixed nav (66px) */
+body {
+  padding-top: 66px;
+}
+
+/* ─────────────────────────────────────────
+   2. TOOL HERO
+───────────────────────────────────────── */
+.tool-hero {
+  text-align: center;
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.tool-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 15px;
+  border-radius: 99px;
+  margin-bottom: 1.5rem;
+  font-family: 'DM Mono', monospace;
+}
+
+.tool-hero__badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: wm-pulse 2s ease-in-out infinite;
+}
+
+.tool-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.tool-hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.tool-hero__desc {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tool-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tool-hero__pill {
+  background: var(--dark-3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  padding: 4px 13px;
+  border-radius: 99px;
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────────
+   3. TOOL BODY / SECTIONS
+───────────────────────────────────────── */
+
+/* Main tool content wrapper */
+.tool-body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+/* Generic content section (how-it-works, faq, explore) */
+.tool-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.section-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  font-family: 'DM Mono', monospace;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  margin-bottom: 2rem;
+  line-height: 1.2;
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ─────────────────────────────────────────
+   4. DROP ZONE
+───────────────────────────────────────── */
+.drop-zone {
+  background: var(--dark-2);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.04);
+}
+
+.drop-zone__icon {
+  width: 52px;
+  height: 52px;
+  background: var(--gold-dim);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.drop-zone__icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.drop-zone__title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.drop-zone__sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 1.4rem;
+}
+
+.drop-zone__browse {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 9px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+}
+
+.drop-zone__browse:hover {
+  background: var(--gold-dim);
+  transform: translateY(-1px);
+}
+
+.drop-zone__formats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 1.25rem;
+}
+
+.format-tag {
+  background: var(--dark-3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────
+   5. SETTINGS PANEL
+───────────────────────────────────────── */
+.settings-panel {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 540px) {
+  .settings-panel { grid-template-columns: 1fr; }
+}
+
+.settings-panel__label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.7rem;
+}
+
+/* ─────────────────────────────────────────
+   6. BUTTONS
+───────────────────────────────────────── */
+.btn {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.btn--primary {
+  background: var(--gold);
+  color: #0a0a0f;
+  border-color: var(--gold);
+}
+.btn--primary:hover  { opacity: 0.88; transform: translateY(-1px); }
+.btn--primary:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+.btn--ghost:hover { border-color: var(--gold-border); color: var(--gold-light); }
+
+.btn--danger {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+.btn--danger:hover { border-color: rgba(255, 70, 70, 0.35); color: var(--red); }
+
+/* ─────────────────────────────────────────
+   7. ACTION BAR
+───────────────────────────────────────── */
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.action-bar__count {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.action-bar__count strong {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.action-bar__btns {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+/* ─────────────────────────────────────────
+   8. FILE LIST & ITEMS
+───────────────────────────────────────── */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-item {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-item.is-done  { border-color: rgba(40, 200, 100, 0.18); }
+.file-item.is-error { border-color: rgba(255, 70, 70, 0.18); }
+
+.file-thumb {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--dark-4);
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.file-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* Per-file download button (appears after conversion) */
+.dl-btn {
+  background: transparent;
+  border: 1px solid rgba(40, 200, 100, 0.3);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  padding: 5px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dl-btn:hover { background: var(--green-dim); }
+
+/* Remove button */
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px 7px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.remove-btn:hover { color: var(--red); background: var(--red-dim); }
+
+/* ─────────────────────────────────────────
+   9. STATUS BADGES
+───────────────────────────────────────── */
+.file-status {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-pending    { background: var(--dark-4); color: var(--text-muted); }
+.status-converting { background: rgba(201, 168, 76, 0.10); color: var(--gold);  border: 1px solid rgba(201, 168, 76, 0.20); }
+.status-done       { background: var(--green-dim);           color: var(--green); border: 1px solid rgba(40, 200, 100, 0.20); }
+.status-error      { background: var(--red-dim);             color: var(--red);   border: 1px solid rgba(255, 70, 70, 0.20); }
+
+/* ─────────────────────────────────────────
+   10. SPINNER
+───────────────────────────────────────── */
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(201, 168, 76, 0.25);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  display: inline-block;
+  animation: wm-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+/* ─────────────────────────────────────────
+   11. PRO-TIP BANNER
+───────────────────────────────────────── */
+.pro-tip {
+  display: none;
+  background: rgba(201, 168, 76, 0.05);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  margin-bottom: 1rem;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.pro-tip strong {
+  color: rgba(240, 237, 230, 0.72);
+}
+
+/* ─────────────────────────────────────────
+   12. HOW-IT-WORKS STEPS
+───────────────────────────────────────── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 560px) {
+  .steps-grid { grid-template-columns: 1fr; }
+}
+
+.step-card {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  transition: border-color 0.2s, transform 0.18s;
+}
+
+.step-card:hover {
+  border-color: var(--gold-border);
+  transform: translateY(-2px);
+}
+
+.step-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.6rem;
+}
+
+.step-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.step-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ─────────────────────────────────────────
+   13. FAQ ACCORDION
+───────────────────────────────────────── */
+.faq-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+  cursor: pointer;
+}
+
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 1rem;
+  user-select: none;
+}
+
+.faq-q svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.25s;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.faq-item.is-open .faq-q svg {
+  transform: rotate(180deg);
+  stroke: var(--gold);
+}
+
+.faq-a {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.2s;
+}
+
+.faq-item.is-open .faq-a {
+  max-height: 200px;
+  padding-top: 0.8rem;
+}
+
+/* ─────────────────────────────────────────
+   14. EXPLORE-TOOLS CARDS
+───────────────────────────────────────── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .tools-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.tool-card {
+  background: var(--dark-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.2s, transform 0.18s;
+}
+
+.tool-card:hover {
+  border-color: var(--gold-border);
+  transform: translateY(-3px);
+}
+
+.tool-card__emoji { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.tool-card__name  { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+.tool-card__desc  { font-size: 12px; color: var(--text-muted); line-height: 1.5; }

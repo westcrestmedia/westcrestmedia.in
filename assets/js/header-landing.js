@@ -5,39 +5,39 @@
 import { supabase, getRedirectTarget, redirectAfterLogin } from '/assets/js/auth.js'
 
 function renderNav(user) {
-  const name   = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
-  const avatar = user?.user_metadata?.avatar_url || null
+  const name    = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
+  const avatar  = user?.user_metadata?.avatar_url || null
   const initial = name ? name.charAt(0).toUpperCase() : '?'
 
   document.getElementById('navbar').innerHTML = `
     <a href="/" class="nav-logo">
-      <img src="/images/logo.png" alt="Westcrest Media" width="180" height="52" style="height:52px;width:auto;object-fit:contain;mix-blend-mode:lighten;display:block;" />
+      <img src="/images/logo.png" alt="Westcrest Media" width="180" height="52" />
     </a>
 
     <ul class="nav-links">
       <li class="nav-dropdown"><a href="#tools">Tools</a>
-        <div class="dropdown-menu" style="width:580px;padding:20px;display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0f0f0f;border:1px solid #1e1e1e;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.7);z-index:999;">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 24px;">
+        <div class="dropdown-menu">
+          <div class="dropdown-menu-grid">
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🖼️ Image Tools</div>
-              <a href="/tools/image-converter/" style="${ddItem}"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
-              <a href="/tools/image-compressor/" style="${ddItem}"><span class="drop-icon-sm">⚡</span>Image Compressor</a>
-              <a href="/tools/background-remover/" style="${ddItem}"><span class="drop-icon-sm">✂️</span>Background Remover</a>
-              <a href="/tools/image-resizer-pro/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
+              <div class="dropdown-label">🖼️ Image Tools</div>
+              <a href="/tools/image-converter/"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
+              <a href="/tools/image-compressor/"><span class="drop-icon-sm">⚡</span>Image Compressor</a>
+              <a href="/tools/background-remover/"><span class="drop-icon-sm">✂️</span>Background Remover</a>
+              <a href="/tools/image-resizer-pro/"><span class="drop-icon-sm">📐</span>Image Resizer Pro</a>
             </div>
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">🎬 Video Tools</div>
-              <a href="/tools/thumbnail-maker/" style="${ddItem}"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
-              <a href="/tools/lut-preview/" style="${ddItem}"><span class="drop-icon-sm">🎞️</span>LUT Studio</a>
-              <a href="/tools/aspect-ratio/" style="${ddItem}"><span class="drop-icon-sm">📐</span>Aspect Ratio Calc</a>
-              <a href="/tools/color-palette/" style="${ddItem}"><span class="drop-icon-sm">🎨</span>Color Palette</a>
+              <div class="dropdown-label">🎬 Video Tools</div>
+              <a href="/tools/thumbnail-maker/"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
+              <a href="/tools/lut-preview/"><span class="drop-icon-sm">🎞️</span>LUT Studio</a>
+              <a href="/tools/aspect-ratio/"><span class="drop-icon-sm">📐</span>Aspect Ratio Calc</a>
+              <a href="/tools/color-palette/"><span class="drop-icon-sm">🎨</span>Color Palette</a>
             </div>
             <div>
-              <div class="dropdown-label" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#C9A84C;padding:0 8px 8px;border-bottom:1px solid #1e1e1e;margin-bottom:6px;">✨ AI & Other</div>
-              <a href="/tools/image-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎴</span>Image Prompts</a>
-              <a href="/tools/video-prompt/" style="${ddItem}"><span class="drop-icon-sm">🎥</span>Video Prompts</a>
-              <a href="/tools/font-pairing/" style="${ddItem}"><span class="drop-icon-sm">🔤</span>Font Pairing</a>
-              <a href="/tools/pdf-studio/" style="${ddItem}"><span class="drop-icon-sm">📑</span>PDF Studio</a>
+              <div class="dropdown-label">✨ AI & Other</div>
+              <a href="/tools/image-prompt/"><span class="drop-icon-sm">🎴</span>Image Prompts</a>
+              <a href="/tools/video-prompt/"><span class="drop-icon-sm">🎥</span>Video Prompts</a>
+              <a href="/tools/font-pairing/"><span class="drop-icon-sm">🔤</span>Font Pairing</a>
+              <a href="/tools/pdf-studio/"><span class="drop-icon-sm">📑</span>PDF Studio</a>
             </div>
           </div>
         </div>
@@ -56,9 +56,8 @@ function renderNav(user) {
 
       ${user ? `
         <div id="wm-avatar-wrap" style="position:relative;">
-          <button id="wm-avatar-btn" aria-label="Account menu" aria-expanded="false"
-            style="width:36px;height:36px;border-radius:50%;border:1.5px solid #C9A84C;cursor:pointer;background:#1a1a1a;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#C9A84C;font-size:14px;font-weight:600;padding:0;transition:border-color .2s,box-shadow .2s;">
-            ${avatar ? `<img src="${avatar}" alt="${name}" width="36" height="36" style="width:100%;height:100%;object-fit:cover;" />` : initial}
+          <button id="wm-avatar-btn" aria-label="Account menu" aria-expanded="false">
+            ${avatar ? `<img src="${avatar}" alt="${name}" width="36" height="36" />` : initial}
           </button>
           ${dropdownHTML(name, user.email)}
         </div>
@@ -66,7 +65,7 @@ function renderNav(user) {
         <a href="/login/?next=/" class="nav-signin" id="wm-signin-btn">Sign In</a>
       `}
 
-      <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()" style="background:none;border:none;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;">
+      <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleMobile()">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -76,31 +75,29 @@ function renderNav(user) {
   initToolsDropdown()
 }
 
-const ddItem = `display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:5px;font-size:0.75rem;color:#888;text-decoration:none;transition:all .15s;font-family:'DM Sans',sans-serif;`
 
 function dropdownHTML(name, email) {
   return `
-    <div id="wm-dropdown"
-      style="display:none;position:absolute;right:0;top:calc(100% + 10px);width:220px;background:#131313;border:1px solid #242424;border-radius:6px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;overflow:hidden;">
-      <div style="padding:14px 16px 12px;border-bottom:1px solid #1e1e1e;">
-        <div style="color:#f0ede6;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</div>
-        <div style="color:#555;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${email}</div>
+    <div id="wm-dropdown" class="wm-user-dropdown">
+      <div class="wm-user-dropdown-header">
+        <div class="wm-user-dropdown-name">${name}</div>
+        <div class="wm-user-dropdown-email">${email}</div>
       </div>
-      <div style="padding:6px 0;">
-        <a href="/dashboard/" style="${ddLink}">
+      <div class="wm-user-dropdown-body">
+        <a href="/dashboard/" class="wm-dd-link">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
           Dashboard
         </a>
-        <a href="/dashboard/#bookmarks" style="${ddLink}">
+        <a href="/dashboard/#bookmarks" class="wm-dd-link">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h8a1 1 0 0 1 1 1v10l-5-3-5 3V2a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
           Bookmarks
         </a>
-        <a href="/dashboard/#downloads" style="${ddLink}">
+        <a href="/dashboard/#downloads" class="wm-dd-link">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Downloads
         </a>
-        <div style="height:1px;background:#1e1e1e;margin:4px 0;"></div>
-        <button id="wm-signout-btn" style="${ddLink};background:none;border:none;cursor:pointer;width:100%;text-align:left;color:#666 !important;">
+        <div class="wm-user-dropdown-divider"></div>
+        <button id="wm-signout-btn" class="wm-dd-link signout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3M9 10l3-3-3-3M13 7H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Sign Out
         </button>
@@ -109,7 +106,6 @@ function dropdownHTML(name, email) {
   `
 }
 
-const ddLink = `display:flex;align-items:center;gap:10px;padding:9px 16px;color:#999;font-size:12.5px;text-decoration:none;font-family:'Syne',sans-serif;transition:color .15s;`
 
 function initToolsDropdown() {
   const li = document.querySelector('.nav-dropdown')
@@ -126,17 +122,7 @@ function initToolsDropdown() {
   dd.addEventListener('mouseenter', openDD)
   dd.addEventListener('mouseleave', closeDD)
 
-  // Hover effect on links
-  dd.querySelectorAll('a').forEach(a => {
-    a.addEventListener('mouseenter', () => {
-      a.style.background = 'rgba(201,168,76,0.08)'
-      a.style.color = '#C9A84C'
-    })
-    a.addEventListener('mouseleave', () => {
-      a.style.background = 'transparent'
-      a.style.color = '#888'
-    })
-  })
+
 }
 
 function bindDropdown() {

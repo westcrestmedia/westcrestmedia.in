@@ -1,0 +1,76 @@
+/**
+ * global.css — Westcrest Media
+ * Design tokens + base reset used across the entire site.
+ * Load FIRST on every page, before any other stylesheet.
+ */
+
+/* ── DESIGN TOKENS ── */
+:root {
+  /* Gold palette */
+  --gold:        #c9a84c;
+  --gold-light:  #e8c98e;
+  --gold-dim:    rgba(201, 168, 76, 0.12);
+  --gold-border: rgba(201, 168, 76, 0.25);
+
+  /* Dark surface scale */
+  --dark:   #111118;
+  --dark-2: #16161e;
+  --dark-3: #1c1c26;
+  --dark-4: #222230;
+
+  /* Typography */
+  --text:       #f0ede6;
+  --text-muted: rgba(240, 237, 230, 0.48);
+
+  /* UI */
+  --border:    rgba(255, 255, 255, 0.09);
+  --radius:    12px;
+  --radius-sm: 8px;
+  --nav:       66px;
+
+  /* Extra status colours */
+  --blue:      #5b9bd5;
+  --blue-dim:  rgba(91, 155, 213, 0.12);
+
+  /* Status colours */
+  --green:     #28c864;
+  --green-dim: rgba(40, 200, 100, 0.10);
+  --red:       #ff5555;
+  --red-dim:   rgba(255, 85, 85, 0.10);
+}
+
+/* ── RESET ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+/* ── BASE BODY ── */
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SHARED KEYFRAMES ── */
+@keyframes wm-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes wm-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+@keyframes wm-dot-bounce {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.7); }
+  40%           { opacity: 1;    transform: scale(1); }
+}
