@@ -126,6 +126,13 @@ body {
   padding: 0 1.5rem 4rem;
 }
 
+/* wc-section — used by explore-tools.js for the "Explore Our Tools" block */
+.wc-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
 .section-eyebrow {
   font-size: 10px;
   font-weight: 700;
