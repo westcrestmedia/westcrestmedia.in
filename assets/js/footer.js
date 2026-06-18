@@ -1,10 +1,19 @@
 /**
- * footer.js — Auto-injects site footer
+ * footer.js — Auto-injects site footer + its CSS
  * Usage: <script src="/assets/js/footer.js"></script>
  * Place just before </body> — no manual footer HTML needed
  */
 
 (function () {
+  // CSS inject (agar already nahi hai)
+  if (!document.getElementById('wm-footer-css')) {
+    const link = document.createElement('link');
+    link.id   = 'wm-footer-css';
+    link.rel  = 'stylesheet';
+    link.href = '/assets/css/footer.css';
+    document.head.appendChild(link);
+  }
+
   const footer = document.createElement('footer');
   footer.className = 'site-footer';
   footer.innerHTML = `
@@ -15,5 +24,7 @@
       <a href="https://westcrestmedia.in/#contact">Contact</a>
     </div>
   `;
-  document.body.appendChild(footer);
+  const target = document.getElementById('site-footer');
+  if (target) target.replaceWith(footer);
+  else document.body.appendChild(footer);
 })();
