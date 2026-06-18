@@ -14,12 +14,12 @@
   --nav:66px;--sidebar:330px;--r:10px;--rs:6px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;height:100%;overflow:hidden;}
+html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;}
 
 
 
 /* APP SHELL */
-.app{display:flex;height:calc(100vh - var(--nav));margin-top:var(--nav);}
+.app{display:flex;height:calc(100vh - var(--nav));margin-top:var(--nav);overflow:hidden;}
 
 /* SIDEBAR */
 .sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--dark2);border-right:1px solid var(--gold-border);display:flex;flex-direction:column;overflow:hidden;}
