@@ -174,8 +174,8 @@ function renderBatchGrid() {
     card.addEventListener('click', () => { if (item.status==='done') openEditor(item.id, true); });
     grid.appendChild(card);
   });
-  // Add more button
-  if (items.length < MAX_BATCH) {
+  // Add more button — only show after at least 1 image has been added
+  if (items.length > 0 && items.length < MAX_BATCH) {
     const addMore = document.createElement('div');
     addMore.className = 'batch-add-more';
     addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span><span class="batch-add-more-drag-text" style="font-size:10px;opacity:0.6;">or drag &amp; drop images here</span>`;
