@@ -21,13 +21,6 @@
 /* ── TOOL WRAP ── */
 .tool-wrap{max-width:1200px;margin:0 auto;padding:0 1.25rem 5rem;}
 
-/* ── HOW IT WORKS + FAQ SECTIONS ── */
-.tool-section,
-.faq-section {
-  max-width: 1100px !important;
-  padding: 0 1.25rem 4rem !important;
-}
-
 /* ── DROP ZONE ── */
 .drop-zone{background:var(--dark-2);border:2px dashed var(--gold-border);border-radius:var(--radius);padding:3rem 2rem;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;margin-bottom:1.5rem;}
 .drop-zone.drag-over{border-color:var(--gold);background:rgba(200,169,110,.04);}
