@@ -1,0 +1,80 @@
+/**
+ * image-converter.css — Tool-specific styles
+ * Requires: global.css, tools-common2.css
+ */
+
+/* ── FORMAT BUTTONS ── */
+.format-btns {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.fmt-btn {
+  background: var(--dark-3);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+  padding: 6px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.fmt-btn:hover    { border-color: var(--gold-border); color: var(--gold-light); }
+.fmt-btn.is-active {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── QUALITY SLIDER ── */
+.quality-wrap { min-width: 160px; }
+
+.quality-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quality-row input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--dark-4);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.quality-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+}
+
+.quality-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 38px;
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── FILE ITEM PROGRESS BAR ── */
+.file-item__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--gold);
+  width: 0%;
+  transition: width 0.4s ease;
+  border-radius: 0 0 0 var(--radius-sm);
+}
