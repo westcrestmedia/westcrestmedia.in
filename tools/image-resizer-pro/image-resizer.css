@@ -340,6 +340,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px;
 /* ── TOPBAR ── */
 .ir-topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; min-height: 78px; border-bottom: 1px solid var(--ir-faint); flex-shrink: 0; gap: 1rem; flex-wrap: wrap; row-gap: 10px; }
 .ir-chips { display: flex; gap: 0; align-items: stretch; flex-wrap: wrap; }
+.ir-chips-in, .ir-chips-out { display: contents; } /* mobile-only grouping wrappers — invisible to desktop layout */
 .ir-chip { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ir-muted); padding: 0 20px; border-right: 1px solid var(--ir-faint); display: flex; flex-direction: column; justify-content: center; gap: 3px; min-height: 78px; }
 .ir-chip:first-child { padding-left: 0; }
 .ir-chip-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ir-muted); opacity: .7; }

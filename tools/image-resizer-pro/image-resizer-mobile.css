@@ -7,8 +7,20 @@
 
 @media (max-width: 768px) {
 
+  /* ── SHELL: stop forcing viewport-height boxes — this was the real
+     bug. With a fixed-height app-shell + forced min-height on main,
+     the sidebar's accordion controls (and later the resize preview)
+     overflowed the box and got visually covered by the sections that
+     come after it in the page. Letting everything size to its own
+     content fixes both. ── */
+  .ir-app-shell { height: auto; }
+  .ir-sidebar { max-height: none; height: auto; overflow: visible; }
+  .ir-sidebar-scroll { flex: none; overflow: visible; }
+  .ir-main { height: auto; min-height: 0; overflow: visible; }
+  .ir-workspace { flex: none; overflow: visible; padding: .9rem; }
+  html, body { overflow-x: hidden; overflow-y: auto; }
+
   /* ── SIDEBAR / SHELL base tweaks ── */
-  .ir-sidebar { max-height: none; height: auto; }
   .ir-sidebar-actions { display: none !important; } /* old hidden holder, stays hidden */
 
   /* ── DROP ZONE → centered "Choose Image" card ── */
@@ -93,5 +105,30 @@
   /* topbar: actions removed from here on mobile (moved to bottom bar) */
   .ir-topbar { min-height: auto; padding: 10px 1rem; }
   .ir-topbar-actions { width: 100%; justify-content: flex-start; margin-left: 0; }
-  .ir-chips { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+
+  /* ── DETAILS LINE — fixed size, no horizontal slide.
+     Splits into two stacked rows: input details on top, output
+     details below. Each row keeps its own compact height. ── */
+  .ir-chips { flex-direction: column; width: 100%; gap: 6px; }
+  .ir-chips-in,
+  .ir-chips-out {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--ir-faint);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .ir-chips-out { border-color: var(--ir-gold-border); }
+  .ir-chips .ir-chip {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: auto;
+    padding: 7px 8px;
+    border-right: 1px solid var(--ir-faint);
+    border-left: none;
+  }
+  .ir-chips .ir-chip:last-child { border-right: none; }
+  .ir-chips .ir-chip-label { font-size: 8.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ir-chips .ir-chip strong { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .ir-chips .ir-chip-sub { font-size: 9px; }
 }

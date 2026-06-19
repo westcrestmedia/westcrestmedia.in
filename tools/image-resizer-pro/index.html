@@ -392,13 +392,19 @@
     <!-- TOPBAR -->
     <div class="ir-topbar">
       <div class="ir-chips">
-        <div class="ir-chip"><span class="ir-chip-label">Original</span><strong id="iOrigDim">—</strong></div>
-        <div class="ir-chip"><span class="ir-chip-label">Format</span><strong id="iFormat">—</strong></div>
-        <div class="ir-chip"><span class="ir-chip-label">Out Format</span><strong id="iOutFmt">—</strong></div>
-        <div class="ir-chip"><span class="ir-chip-label">Input Size</span><strong id="iSize">—</strong></div>
-        <div class="ir-chip ir-chip-gold"><span class="ir-chip-label">Output Dims</span><strong id="iOutDim">—</strong></div>
-        <div class="ir-chip ir-chip-gold"><span class="ir-chip-label">Output Size</span><strong id="iOutSize">—</strong><span class="ir-chip-sub" id="iSavePct"></span></div>
-        <div class="ir-chip"><span class="ir-chip-label">DPI</span><strong id="iDpi">150</strong></div>
+        <!-- input-side details (grouped so mobile can show these as one fixed row) -->
+        <div class="ir-chips-in">
+          <div class="ir-chip"><span class="ir-chip-label">Original</span><strong id="iOrigDim">—</strong></div>
+          <div class="ir-chip"><span class="ir-chip-label">Format</span><strong id="iFormat">—</strong></div>
+          <div class="ir-chip"><span class="ir-chip-label">Input Size</span><strong id="iSize">—</strong></div>
+        </div>
+        <!-- output-side details (grouped so mobile can show these as one fixed row) -->
+        <div class="ir-chips-out">
+          <div class="ir-chip"><span class="ir-chip-label">Out Format</span><strong id="iOutFmt">—</strong></div>
+          <div class="ir-chip ir-chip-gold"><span class="ir-chip-label">Output Dims</span><strong id="iOutDim">—</strong></div>
+          <div class="ir-chip ir-chip-gold"><span class="ir-chip-label">Output Size</span><strong id="iOutSize">—</strong><span class="ir-chip-sub" id="iSavePct"></span></div>
+          <div class="ir-chip"><span class="ir-chip-label">DPI</span><strong id="iDpi">150</strong></div>
+        </div>
       </div>
       <div class="ir-topbar-actions">
         <span id="batchStatBadge" style="display:none;" class="ir-info-pill"><strong id="batchTxt">0/0</strong>&nbsp;resized</span>
