@@ -372,27 +372,14 @@
 
     </div><!-- /sidebar-scroll -->
 
-    <!-- SIDEBAR ACTIONS -->
-    <div class="ir-sidebar-actions">
+    <!-- SIDEBAR ACTIONS removed (duplicated topbar buttons) — hidden holders kept only so existing JS element-id lookups (btnResize/btnDl/btnZip/sidebarActions/sidebarBatchActions) don't break -->
+    <div class="ir-sidebar-actions" style="display:none;">
       <div id="sidebarActions">
-        <button class="ir-btn ir-btn-gold ir-btn-full" id="btnResize" onclick="doResize()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          Resize Image
-        </button>
-        <div style="display:flex;gap:6px;margin-top:6px;">
-          <button class="ir-btn ir-btn-outline ir-btn-sm" id="btnDl" onclick="dlSingle()" disabled style="flex:1;justify-content:center;">⬇ Download</button>
-          <button class="ir-btn ir-btn-danger ir-btn-sm" onclick="clearAll()">✕ Clear</button>
-        </div>
+        <button id="btnResize" onclick="doResize()">Resize Image</button>
+        <button id="btnDl" onclick="dlSingle()" disabled>⬇ Download</button>
       </div>
       <div id="sidebarBatchActions" style="display:none;">
-        <button class="ir-btn ir-btn-gold ir-btn-full" onclick="resizeAll()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          Resize All
-        </button>
-        <div style="display:flex;gap:6px;margin-top:6px;">
-          <button class="ir-btn ir-btn-outline ir-btn-sm" id="btnZip" onclick="dlZip()" style="display:none;flex:1;justify-content:center;">⬇ ZIP All</button>
-          <button class="ir-btn ir-btn-danger ir-btn-sm" onclick="clearAll()">✕ Clear All</button>
-        </div>
+        <button id="btnZip" onclick="dlZip()" style="display:none;">⬇ ZIP All</button>
       </div>
     </div>
 
