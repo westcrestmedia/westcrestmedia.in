@@ -1,0 +1,97 @@
+/**
+ * image-resizer-mobile.css — MOBILE-ONLY layout for Image Resizer Pro
+ * Loaded with media="(max-width:768px)" so it never touches desktop.
+ * Requires: image-resizer.css (loaded before this file)
+ * Pair file: image-resizer-mobile.js
+ */
+
+@media (max-width: 768px) {
+
+  /* ── SIDEBAR / SHELL base tweaks ── */
+  .ir-sidebar { max-height: none; height: auto; }
+  .ir-sidebar-actions { display: none !important; } /* old hidden holder, stays hidden */
+
+  /* ── DROP ZONE → centered "Choose Image" card ── */
+  .ir-drop {
+    max-width: 380px;
+    margin: 22px auto 8px;
+    padding: 2.4rem 1.4rem;
+    border-radius: 16px;
+    transition: all .25s ease;
+  }
+  .ir-dz-icon { width: 52px; height: 52px; }
+  .ir-dz-icon svg { width: 24px; height: 24px; }
+  .ir-dz-title { font-size: 16px; }
+  .ir-dz-sub { display: none; } /* "drag & drop" copy hidden — JS sets new wording on title/button */
+  .ir-btn-upload {
+    font-size: 13px;
+    padding: 11px 28px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 220px;
+  }
+
+  /* ── COMPACT state: once an image is chosen, shrink the box ── */
+  .ir-drop.ir-mobile-compact {
+    max-width: 100%;
+    margin: 8px 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    cursor: default;
+  }
+  .ir-drop.ir-mobile-compact .ir-dz-icon { width: 30px; height: 30px; margin: 0; flex-shrink: 0; }
+  .ir-drop.ir-mobile-compact .ir-dz-icon svg { width: 14px; height: 14px; }
+  .ir-drop.ir-mobile-compact .ir-dz-title { font-size: 12px; margin: 0; }
+  .ir-drop.ir-mobile-compact .ir-dz-sub,
+  .ir-drop.ir-mobile-compact .ir-btn-upload { display: none; }
+
+  /* ── ADD MORE bar — pinned visible right under the (compact) box ── */
+  .ir-add-more { margin: 0 12px 10px; border-top: none; }
+  .ir-add-more .ir-btn { border-radius: 10px; padding: 10px 14px; font-size: 12.5px; }
+
+  /* ── Bigger preview boxes for the uploaded image ── */
+  .ir-compare { grid-template-columns: 1fr; }
+  .ir-pcard-img { min-height: 320px; padding: 1.2rem; }
+  .ir-pcard-img img { max-height: 360px; }
+
+  /* ── reserve space so sticky action bar never covers content ── */
+  body.ir-mobile-bar-on { padding-bottom: 76px; }
+
+  /* ── STICKY MOBILE ACTION BAR (Resize / Download / Zip) ── */
+  .ir-mobile-actionbar {
+    display: none;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 800;
+    gap: 10px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: var(--ir-dark2);
+    border-top: 1.5px solid var(--ir-gold-border);
+    box-shadow: 0 -6px 18px rgba(0,0,0,.35);
+  }
+  .ir-mobile-actionbar.on { display: flex; }
+  .ir-mobile-actionbar #sidebarActionsTop,
+  .ir-mobile-actionbar #sidebarBatchActionsTop {
+    display: flex !important;
+    flex: 1;
+    gap: 10px;
+    margin: 0;
+  }
+  .ir-mobile-actionbar .ir-btn-top {
+    flex: 1;
+    justify-content: center;
+    font-size: 13.5px;
+    padding: 12px 10px;
+  }
+  .ir-mobile-actionbar .ir-btn-top-gold { flex: 1.3; }
+  .ir-mobile-actionbar #batchStatBadge { display: none !important; } /* shown in topbar already */
+
+  /* topbar: actions removed from here on mobile (moved to bottom bar) */
+  .ir-topbar { min-height: auto; padding: 10px 1rem; }
+  .ir-topbar-actions { width: 100%; justify-content: flex-start; margin-left: 0; }
+  .ir-chips { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+}
