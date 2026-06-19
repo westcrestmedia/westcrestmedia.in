@@ -18,6 +18,12 @@
     var emptyState = document.getElementById('emptyState');
     if (!dz || !emptyState) return;
 
+    /* 0. Settings now live at the bottom (see mobile CSS reorder) —
+       start every section collapsed, including Dimensions, so the
+       block looks compact and the person opens only what they need */
+    var accDims = document.getElementById('accDims');
+    if (accDims) accDims.classList.remove('open');
+
     /* 1. Copy swap */
     var title = dz.querySelector('.ir-dz-title');
     var sub = dz.querySelector('.ir-dz-sub');
