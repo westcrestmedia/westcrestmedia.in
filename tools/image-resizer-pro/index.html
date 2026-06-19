@@ -504,6 +504,31 @@
         <div class="ir-batch-topbar">
           <span class="ir-batch-stat">📦 <strong id="batchCount">0</strong> images · <strong id="batchDone">0</strong> resized</span>
         </div>
+        <!-- Selected photo's Original vs Resized — same compare layout as single mode,
+             so the resized output stays visible on screen even with multiple photos loaded -->
+        <div class="ir-batch-compare" id="batchCompare">
+          <div class="ir-compare">
+            <div class="ir-pcard">
+              <div class="ir-pcard-head">Original <span id="bcOrigBadge">—</span></div>
+              <div class="ir-pcard-img" onclick="openBatchModal(selectedBatchId)">
+                <img id="bcOrigImg" src="" alt="original">
+                <span class="ir-pcard-zoom">🔍 Click to zoom</span>
+              </div>
+              <div class="ir-pcard-foot"><span id="bcOrigDimF">—</span><span id="bcOrigSizeF">—</span></div>
+            </div>
+            <div class="ir-pcard">
+              <div class="ir-pcard-head">Resized Output <span id="bcOutBadge">—</span></div>
+              <div class="ir-pcard-img" onclick="openBatchModal(selectedBatchId)">
+                <img id="bcOutImg" src="" alt="output" style="display:none;">
+                <div id="bcOutPlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.45;">
+                  <span style="font-size:11px;letter-spacing:.05em;">Not resized yet</span>
+                </div>
+                <span class="ir-pcard-zoom">🔍 Click to zoom</span>
+              </div>
+              <div class="ir-pcard-foot"><span id="bcOutDimF">—</span><span id="bcOutSizeF">—</span></div>
+            </div>
+          </div>
+        </div>
         <div class="ir-batch-detail" id="batchDetailBar">
           <img class="ir-bdb-thumb" id="bdbThumb" src="" alt="" onclick="openLightbox()">
           <div class="ir-bdb-info">

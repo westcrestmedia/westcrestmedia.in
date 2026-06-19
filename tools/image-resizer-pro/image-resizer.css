@@ -433,6 +433,9 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px;
 /* Batch detail bar */
 .ir-batch-detail { display: none; background: var(--ir-dark2); border: 1.5px solid var(--ir-gold); border-radius: var(--ir-r); padding: 14px 18px; margin-bottom: 1rem; gap: 14px; align-items: center; flex-wrap: wrap; }
 .ir-batch-detail.on { display: flex; }
+.ir-batch-compare { display: none; margin-bottom: 1rem; }
+.ir-batch-compare.on { display: block; }
+.bcard-custom { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,.65); border: 1px solid var(--ir-gold-border); color: var(--ir-gold); font-size: 9.5px; font-weight: 700; letter-spacing: .03em; padding: 2px 7px; border-radius: 20px; }
 .ir-bdb-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; background: var(--ir-dark3); flex-shrink: 0; cursor: pointer; }
 .ir-bdb-info { flex: 1; min-width: 160px; }
 .ir-bdb-name { font-size: 14px; font-weight: 700; color: var(--ir-text); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }

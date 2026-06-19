@@ -188,7 +188,107 @@ function updateFnamePreview(){
 }
 updateFnamePreview();
 
-// ═══════════════ DROP ZONE ═══════════════
+// ═══════════════ PER-PHOTO SETTINGS (capture / apply) ═══════════════
+// Snapshot every control that affects how an image is resized, so each
+// batch item can carry its own settings independent of the others.
+function captureSettings(){
+  return {
+    mode: document.getElementById('mode').value,
+    outFmt: document.getElementById('outFmt').value,
+    w: document.getElementById('inpW').value,
+    h: document.getElementById('inpH').value,
+    pct: document.getElementById('inpPct').value,
+    quality: document.getElementById('qualRange').value,
+    dpi: dpiValue,
+    dpiCustom: document.getElementById('customDpiVal').value,
+    embedDpi: document.getElementById('embedDpi').checked,
+    rot: document.getElementById('advRot').value,
+    bg: bg,
+    upscale: document.getElementById('advUp').checked,
+    gray: document.getElementById('advGray').checked,
+    sharp: document.getElementById('advSharp').checked,
+    flipH: document.getElementById('advFlipH').checked,
+    flipV: document.getElementById('advFlipV').checked,
+    pad: document.getElementById('advPad').checked,
+    padAmt: document.getElementById('padAmt').value,
+    wmMode: wmMode,
+    wmText: document.getElementById('wmText').value,
+    wmSize: document.getElementById('wmSize').value,
+    wmColor: document.getElementById('wmColor').value,
+    wmOpacity: document.getElementById('wmOpacity').value,
+    wmPos: document.getElementById('wmPos').value,
+    wmFont: document.getElementById('wmFont').value,
+    wmImgSize: document.getElementById('wmImgSize').value,
+    wmImgOpacity: document.getElementById('wmImgOpacity').value,
+    wmImgPos: document.getElementById('wmImgPos').value,
+    wmImgEl: wmImgEl,
+    locked: locked,
+    activeCat: activeCat,
+    presetName: activePreset?activePreset.name:null,
+    presetW: activePreset?activePreset.w:null,
+    presetH: activePreset?activePreset.h:null,
+  };
+}
+
+// Restore a captured settings object into the sidebar panel + global
+// state, and refresh every bit of UI that reflects it (preset grid
+// highlight, DPI button highlight, swatch highlight, watermark tabs).
+function applySettings(s){
+  if(!s)return;
+  document.getElementById('mode').value=s.mode;
+  document.getElementById('outFmt').value=s.outFmt;
+  document.getElementById('inpW').value=s.w;
+  document.getElementById('inpH').value=s.h;
+  document.getElementById('inpPct').value=s.pct;
+  document.getElementById('qualRange').value=s.quality;
+  const qv=document.getElementById('qualVal'); if(qv)qv.innerText=s.quality+'%';
+  dpiValue=+s.dpi||150;
+  document.getElementById('iDpi').innerText=dpiValue;
+  document.getElementById('customDpiVal').value=s.dpiCustom;
+  document.getElementById('embedDpi').checked=s.embedDpi;
+  document.getElementById('advRot').value=s.rot;
+  bg=s.bg;
+  document.getElementById('advUp').checked=s.upscale;
+  document.getElementById('advGray').checked=s.gray;
+  document.getElementById('advSharp').checked=s.sharp;
+  document.getElementById('advFlipH').checked=s.flipH;
+  document.getElementById('advFlipV').checked=s.flipV;
+  document.getElementById('advPad').checked=s.pad;
+  document.getElementById('padAmt').value=s.padAmt;
+  document.getElementById('padRow').style.display=s.pad?'':'none';
+  document.getElementById('wmText').value=s.wmText;
+  document.getElementById('wmSize').value=s.wmSize;
+  document.getElementById('wmColor').value=s.wmColor;
+  document.getElementById('wmOpacity').value=s.wmOpacity;
+  document.getElementById('wmPos').value=s.wmPos;
+  document.getElementById('wmFont').value=s.wmFont;
+  document.getElementById('wmImgSize').value=s.wmImgSize;
+  document.getElementById('wmImgOpacity').value=s.wmImgOpacity;
+  document.getElementById('wmImgPos').value=s.wmImgPos;
+  if(s.wmImgEl)wmImgEl=s.wmImgEl;
+  locked=s.locked;
+  activeCat=s.activeCat||activeCat;
+  activePreset=s.presetName?{w:s.presetW,h:s.presetH,name:s.presetName}:null;
+
+  // refresh dependent UI to match the restored values
+  updateLockUI();
+  setWmTab(s.wmMode);
+  document.querySelectorAll('.ir-dpi-btn').forEach(b=>b.classList.remove('on'));
+  const dpiBtns=document.querySelectorAll('.ir-dpi-btn');
+  const presetIdx=[72,96,150,300,600].indexOf(dpiValue);
+  if(presetIdx>-1){dpiBtns[presetIdx].classList.add('on');document.getElementById('dpiCustomRow').style.display='none';}
+  else if(dpiBtns.length){dpiBtns[dpiBtns.length-1].classList.add('on');document.getElementById('dpiCustomRow').style.display='';}
+  const swatchVals=['#ffffff','#000000','transparent','#c8a96e'];
+  const sws=document.querySelectorAll('.ir-sw');
+  sws.forEach(sw=>sw.classList.remove('on'));
+  const si=swatchVals.indexOf(bg);
+  if(si>-1)sws[si].classList.add('on');
+  document.getElementById('custom-bg-inp').value=bg.startsWith('#')?bg:'#ffffff';
+  showCat(activeCat, document.querySelector('.ir-ptab.on'));
+  onModeChange(); // also refreshes field visibility + output info + filename preview
+}
+
+
 const DZ=document.getElementById('dropZone');
 DZ.addEventListener('dragenter',e=>{e.preventDefault();DZ.classList.add('drag-over');});
 DZ.addEventListener('dragover',e=>{e.preventDefault();});
@@ -246,7 +346,7 @@ async function addFiles(files){
     const url=URL.createObjectURL(f);
     const dims=await getDims(f);
     items.push({id:crypto.randomUUID(),file:f,name:f.name,origSize:f.size,
-      origW:dims.w,origH:dims.h,url,result:null,status:'pending'});
+      origW:dims.w,origH:dims.h,url,result:null,status:'pending',settings:null});
   }
   if(items.length===1) initSingle();
   else initBatch();
@@ -357,6 +457,7 @@ function clearUI(){
   document.getElementById('inpH').value='';
   document.getElementById('imgStrip').classList.remove('on');
   document.getElementById('batchDetailBar').classList.remove('on');
+  document.getElementById('batchCompare').classList.remove('on');
   selectedBatchId=null;
   editingId=null;
   document.getElementById('reeditBanner').classList.remove('on');
@@ -365,7 +466,7 @@ function clearUI(){
 // ═══════════════ OUTPUT INFO ═══════════════
 function updateOutInfo(){
   if(!items.length)return;
-  const it=items[0];
+  const it = editingId ? (items.find(i=>i.id===editingId)||items[0]) : items[0];
   const d=calcDims(it.origW,it.origH);
   document.getElementById('iOutDim').innerText=`${d.w}×${d.h}px`;
   document.getElementById('outBadge').innerText=`${d.w}×${d.h}`;
@@ -566,7 +667,7 @@ async function doResize(){
     showOverlay('Resizing…',it.name.slice(0,30));
     try{
       const r=await processFile(it.file,it.origW,it.origH);
-      it.result=r;it.status='done';
+      it.result=r;it.status='done';it.settings=captureSettings();
       const url=URL.createObjectURL(r.blob);
       const outImg=document.getElementById('outImg');
       outImg.src=url;outImg.style.display='block';
@@ -678,6 +779,7 @@ function renderBatch(){
       <div class="bcard-thumb-wrap">
         <img class="bcard-thumb" src="${it.result?URL.createObjectURL(it.result.blob):it.url}" alt="">
         <div class="bcard-remove" onclick="removeItem('${it.id}',event)" title="Remove">✕</div>
+        ${it.settings?'<div class="bcard-custom" title="This photo has its own custom settings">⚙ Custom</div>':''}
       </div>
       <div class="bcard-inner">
         <div class="bcard-name" title="${it.name}">${it.name.length>26?it.name.slice(0,23)+'…':it.name}</div>
@@ -691,7 +793,7 @@ function renderBatch(){
           it.status==='done'?'✅ Done':'❌ Error'
         }</span>
         <div style="display:flex;gap:4px;">
-          ${it.status==='done'?`<button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')">✏ Re-edit</button>`:''}
+          <button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')">${it.status==='done'?'✏ Re-edit':'⚙ Settings'}</button>
           <button class="btn-dl-sm" onclick="event.stopPropagation();dlItem('${it.id}')" ${it.status!=='done'?'disabled':''}>⬇</button>
         </div>
       </div>
@@ -740,11 +842,36 @@ function selectBatchCard(id){
   }
   document.getElementById('batchDetailBar').classList.add('on');
   document.getElementById('batchDetailBar').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Populate the big Original/Resized compare block too, so the resized
+  // output stays visible on screen for this photo, same as single mode.
+  document.getElementById('bcOrigImg').src=it.url;
+  document.getElementById('bcOrigBadge').innerText=`${it.origW}×${it.origH}`;
+  document.getElementById('bcOrigDimF').innerText=`${it.origW} × ${it.origH} px`;
+  document.getElementById('bcOrigSizeF').innerText=fmt(it.origSize);
+  const bcOutImg=document.getElementById('bcOutImg');
+  const bcOutPlaceholder=document.getElementById('bcOutPlaceholder');
+  if(it.result){
+    bcOutImg.src=src; // src already resolves to the resized blob URL when it.result exists
+    bcOutImg.style.display='block';
+    bcOutPlaceholder.style.display='none';
+    document.getElementById('bcOutBadge').innerText=`${it.result.w}×${it.result.h}`;
+    document.getElementById('bcOutDimF').innerText=`${it.result.w} × ${it.result.h} px`;
+    document.getElementById('bcOutSizeF').innerText=fmt(it.result.blob.size);
+  } else {
+    bcOutImg.style.display='none';
+    bcOutPlaceholder.style.display='flex';
+    document.getElementById('bcOutBadge').innerText='—';
+    document.getElementById('bcOutDimF').innerText='—';
+    document.getElementById('bcOutSizeF').innerText='—';
+  }
+  document.getElementById('batchCompare').classList.add('on');
 }
 
 function closeDetailBar(){
   selectedBatchId=null;
   document.getElementById('batchDetailBar').classList.remove('on');
+  document.getElementById('batchCompare').classList.remove('on');
   renderBatch();
   // Restore the generic batch summary in the top info chips
   document.getElementById('iOrigDim').innerText=`${items.length} images`;
@@ -780,16 +907,22 @@ async function resizeAll(){
     renderBatch();
     return resizeAll();
   }
+  // Snapshot the shared/default panel once — used for any photo that
+  // hasn't been individually customized. Restored at the end so the
+  // panel doesn't end up showing whichever photo processed last.
+  const sharedDefaults=captureSettings();
   for(let idx=0;idx<pending.length;idx++){
     const it=pending[idx];
     it.status='working';renderBatch();
     showOverlay(`Resizing ${idx+1}/${pending.length}`,it.name.slice(0,28));
+    applySettings(it.settings||sharedDefaults);
     try{
       const r=await processFile(it.file,it.origW,it.origH);
       it.result=r;it.status='done';
     }catch(e){it.status='error';}
     renderBatch();updateBatchHead();
   }
+  applySettings(sharedDefaults);
   hideOverlay();
   renderStrip();
 }
@@ -804,9 +937,14 @@ function editItem(id){
   editingId=id;
   it.status='editing';
   AR=it.origW/it.origH;
-  // Set sidebar inputs to match this image
-  document.getElementById('inpW').value=it.origW;
-  document.getElementById('inpH').value=it.origH;
+  // Restore this photo's own settings if it has been customized before;
+  // otherwise start from its original dimensions with current defaults.
+  if(it.settings){
+    applySettings(it.settings);
+  } else {
+    document.getElementById('inpW').value=it.origW;
+    document.getElementById('inpH').value=it.origH;
+  }
   // Topbar
   document.getElementById('iOrigDim').innerText=`${it.origW}×${it.origH}px`;
   document.getElementById('iFormat').innerText=it.name.split('.').pop().toUpperCase();
