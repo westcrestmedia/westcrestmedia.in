@@ -50,6 +50,24 @@ html {
   overflow-x: hidden;
 }
 
+/* ── FORM ELEMENT RESET ── */
+/* Browsers apply native styling (white bg, black text) to buttons,
+   inputs, and selects by default. Without this, any <button> with
+   no explicit background/color set by its own class will render
+   using OS-native white/grey styling instead of inheriting the
+   site's dark theme. */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+button {
+  cursor: pointer;
+}
+
 /* ── BASE BODY ── */
 body {
   background: var(--dark);
