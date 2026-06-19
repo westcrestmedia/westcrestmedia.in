@@ -218,18 +218,18 @@ function renderStrip(){
   if(items.length===0){strip.classList.remove('on');return;}
   strip.classList.add('on');
   // Remove old strip items (keep label header and add button)
-  Array.from(strip.querySelectorAll('.strip-item')).forEach(el=>el.remove());
-  const addBtn=strip.querySelector('.strip-add');
+  Array.from(strip.querySelectorAll('.ir-strip-item')).forEach(el=>el.remove());
+  const addBtn=strip.querySelector('.ir-strip-add');
   items.forEach(it=>{
     const isEditing=editingId===it.id;
     const div=document.createElement('div');
-    div.className='strip-item'+(it.status==='done'?' done-strip':'')+(isEditing?' editing-strip':'');
+    div.className='ir-strip-item'+(it.status==='done'?' ir-strip-done':'')+(isEditing?' ir-strip-editing':'');
     div.title=it.name;
     div.innerHTML=`
       <img src="${it.result?URL.createObjectURL(it.result.blob):it.url}" alt="">
-      <div class="strip-item-status ${it.status==='done'?'done':isEditing?'editing':'pending'}">${it.status==='done'?'✓':isEditing?'✏':'·'}</div>
-      <div class="strip-item-label">${it.name.length>12?it.name.slice(0,10)+'…':it.name}</div>
-      <button class="strip-remove" onclick="removeItem('${it.id}',event)" title="Remove">✕</button>`;
+      <div class="ir-strip-status ${it.status==='done'?'done':isEditing?'editing':'pending'}">${it.status==='done'?'✓':isEditing?'✏':'·'}</div>
+      <div class="ir-strip-item-label">${it.name.length>12?it.name.slice(0,10)+'…':it.name}</div>
+      <button class="ir-strip-remove" onclick="removeItem('${it.id}',event)" title="Remove">✕</button>`;
     div.addEventListener('click',()=>{
       if(editingId&&editingId!==it.id)return; // block switching while editing another
       if(it.status==='done'||it.status==='pending'){
