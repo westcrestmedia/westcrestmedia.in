@@ -78,14 +78,14 @@ let activeCat='social', activePreset=null;
 
 function showCat(cat, tabEl) {
   activeCat=cat;
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.ir-ptab').forEach(t=>t.classList.remove('on'));
   if(tabEl) tabEl.classList.add('on');
   const grid=document.getElementById('pgrid');
   grid.innerHTML=PRESETS[cat].map(p=>`
-    <button class="pbtn ${activePreset&&activePreset.w===p.w&&activePreset.h===p.h?'on':''}"
+    <button class="ir-pbtn ${activePreset&&activePreset.w===p.w&&activePreset.h===p.h?'on':''}"
       onclick="applyPreset(${p.w},${p.h},'${p.n}',this)">
-      <span class="pbtn-name">${p.n}</span>
-      <span class="pbtn-dim">${p.w} × ${p.h}</span>
+      <span class="ir-pbtn-name">${p.n}</span>
+      <span class="ir-pbtn-dim">${p.w} × ${p.h}</span>
     </button>`).join('');
 }
 
@@ -96,15 +96,15 @@ function applyPreset(w,h,name,el) {
   document.getElementById('mode').value='exact';
   onModeChange();
   locked=false; updateLockUI();
-  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ir-pbtn').forEach(b=>b.classList.remove('on'));
   if(el) el.classList.add('on');
   updateOutInfo();
 }
-showCat('social', document.querySelector('.ptab'));
+showCat('social', document.querySelector('.ir-ptab'));
 
 // ═══════════════ DPI ═══════════════
 function setDpi(val, el) {
-  document.querySelectorAll('.dpi-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ir-dpi-btn').forEach(b=>b.classList.remove('on'));
   if(el) el.classList.add('on');
   const customRow = document.getElementById('dpiCustomRow');
   if(val===0) {
@@ -154,7 +154,7 @@ function onH(){if(locked&&AR){const h=+document.getElementById('inpH').value;if(
 
 // ═══════════════ BG / SWATCHES ═══════════════
 function setSwatch(el,color){
-  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ir-sw').forEach(s=>s.classList.remove('on'));
   if(el)el.classList.add('on');
   bg=color;
 }
