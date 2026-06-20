@@ -231,37 +231,53 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
 .dl-btn-title{font-size:13px;font-weight:700;letter-spacing:.01em;}
 .dl-btn-sub{font-size:10.5px;font-weight:500;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-/* Primary — the main "download this image" action: solid gold, unmissable */
+/* Primary — the main "download this image" action: dark by default, golden fill on hover */
 .dl-btn-primary{
+  background:var(--dark-3);
+  border-color:var(--faint);
+}
+.dl-btn-primary .dl-btn-icon{background:var(--gold-dim);color:var(--gold);}
+.dl-btn-primary .dl-btn-title{color:var(--text);}
+.dl-btn-primary .dl-btn-sub{color:var(--text-muted);}
+.dl-btn-primary:hover{
   background:linear-gradient(135deg,var(--gold),#dcb87e);
   border-color:var(--gold);
-  box-shadow:0 2px 14px rgba(200,169,110,.25);
+  box-shadow:0 4px 20px rgba(200,169,110,.4);
+  transform:translateY(-1px);
 }
-.dl-btn-primary .dl-btn-icon{background:rgba(0,0,0,.15);color:#000;}
-.dl-btn-primary .dl-btn-title{color:#000;}
-.dl-btn-primary .dl-btn-sub{color:rgba(0,0,0,.65);}
-.dl-btn-primary:hover{box-shadow:0 4px 20px rgba(200,169,110,.4);transform:translateY(-1px);}
+.dl-btn-primary:hover .dl-btn-icon{background:rgba(0,0,0,.15);color:#000;}
+.dl-btn-primary:hover .dl-btn-title{color:#000;}
+.dl-btn-primary:hover .dl-btn-sub{color:rgba(0,0,0,.65);}
 
-/* Secondary — batch ZIP download: outlined gold, clearly a download action but one step down */
+/* Secondary — batch ZIP download: same dark→golden treatment, one visual notch below primary */
 .dl-btn-secondary{
-  background:var(--gold-dim);
-  border-color:var(--gold-border);
+  background:var(--dark-3);
+  border-color:var(--faint);
 }
-.dl-btn-secondary .dl-btn-icon{background:rgba(200,169,110,.18);color:var(--gold);}
+.dl-btn-secondary .dl-btn-icon{background:var(--gold-dim);color:var(--gold);}
 .dl-btn-secondary .dl-btn-title{color:var(--text);}
 .dl-btn-secondary .dl-btn-sub{color:var(--text-muted);}
-.dl-btn-secondary:hover{border-color:var(--gold);background:rgba(200,169,110,.12);}
+.dl-btn-secondary:hover{
+  background:linear-gradient(135deg,var(--gold),#dcb87e);
+  border-color:var(--gold);
+  box-shadow:0 4px 20px rgba(200,169,110,.4);
+  transform:translateY(-1px);
+}
+.dl-btn-secondary:hover .dl-btn-icon{background:rgba(0,0,0,.15);color:#000;}
+.dl-btn-secondary:hover .dl-btn-title{color:#000;}
+.dl-btn-secondary:hover .dl-btn-sub{color:rgba(0,0,0,.65);}
 
-/* Danger — clear all: visually separated, muted until hovered so it doesn't compete with downloads */
+/* Danger — clear all: dark by default, border turns golden on hover (no fill change) */
 .dl-btn-danger{
-  background:transparent;
+  background:var(--dark-3);
   border-color:var(--faint);
   margin-top:4px;
 }
 .dl-btn-danger .dl-btn-icon{background:rgba(220,50,50,.1);color:#e55;}
 .dl-btn-danger .dl-btn-title{color:var(--text-muted);}
 .dl-btn-danger .dl-btn-sub{color:var(--text-muted);}
-.dl-btn-danger:hover{border-color:rgba(220,50,50,.4);background:rgba(220,50,50,.06);}
+.dl-btn-danger:hover{border-color:var(--gold);}
+.dl-btn-danger:hover .dl-btn-title{color:var(--gold);}
 .dl-btn-danger:hover .dl-btn-title{color:#e55;}
 
 .faq-item{border-bottom:1px solid var(--faint);}
