@@ -10,25 +10,32 @@
  * segmentation — it produces noticeably better alpha mattes around hair, fur, and
  * other fine/soft edges than isnet. Loaded via transformers.js, same "free, runs
  * fully in the browser" model as before — just a better underlying network. */
-const TRANSFORMERS_VERSION = '3.2.4';
+const TRANSFORMERS_VERSION = '4.0.0'; // v3.2.4's pipeline() doesn't recognize BiRefNet's Swin-based config ("Unsupported model type: swin")
 const BIREFNET_MODEL_ID = 'onnx-community/BiRefNet_lite-ONNX'; // lighter variant, browser-friendly
-let segmentPipeline = null;
+// BiRefNet is NOT supported by the high-level pipeline('image-segmentation', ...) wrapper —
+// that wrapper only knows how to post-process a fixed set of architectures, and BiRefNet's
+// Swin-based backbone isn't one of them (hence "Unsupported model type: swin"). The model's
+// own documented usage instead loads AutoModel + AutoProcessor directly and runs/post-
+// processes the alpha matte by hand, so we mirror that pattern here.
+let segmentModel = null;
+let segmentProcessor = null;
 let transformersRawImage = null; // RawImage class, needed to build inputs from File/Blob
-let _segmentPipelinePromise = null;
+let _segmentLoadPromise = null;
 async function loadLib() {
-  if (segmentPipeline) return segmentPipeline;
-  if (_segmentPipelinePromise) return _segmentPipelinePromise;
-  _segmentPipelinePromise = (async () => {
+  if (segmentModel && segmentProcessor) return { model: segmentModel, processor: segmentProcessor };
+  if (_segmentLoadPromise) return _segmentLoadPromise;
+  _segmentLoadPromise = (async () => {
     const mod = await import(`https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/+esm`);
-    const { pipeline, RawImage } = mod;
+    const { AutoModel, AutoProcessor, RawImage } = mod;
     transformersRawImage = RawImage;
     // q8 = quantized 8-bit weights: smallest download, fastest CPU(WASM) inference,
     // the right default for a browser-based free tool. Falls back gracefully if the
     // model ever changes its supported dtypes.
-    segmentPipeline = await pipeline('image-segmentation', BIREFNET_MODEL_ID, { dtype: 'q8' });
-    return segmentPipeline;
+    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'q8' });
+    segmentProcessor = await AutoProcessor.from_pretrained(BIREFNET_MODEL_ID);
+    return { model: segmentModel, processor: segmentProcessor };
   })();
-  return _segmentPipelinePromise;
+  return _segmentLoadPromise;
 }
 
 /* ── EDGE REFINEMENT (off-thread alpha matting for better hair/fine-edge quality) ──
@@ -400,58 +407,45 @@ async function processItem(item) {
   }
 
   try {
-    // Stage 1: Load the model/pipeline
-    const pipe = await loadLib();
+    // Stage 1: Load the model + processor
+    const progBar = document.getElementById(`prog-${item.id}`);
+    if (progBar) progBar.style.width = '10%';
+    const { model, processor } = await loadLib();
+    if (progBar) progBar.style.width = '50%';
 
     if (showOnCanvas) {
+      // No native per-chunk download progress callback in the AutoModel/AutoProcessor
+      // path (unlike the old pipeline() API), so just reflect that loading is underway.
       setStage(modelCached ? 3 : 2);
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
-        ? 'Preparing image for background removal'
-        : `Downloading ~150 MB model (once only — cached forever after)`;
+        ? 'Loading model from browser cache…'
+        : `⏳ First-time download (~150 MB). Next time it's instant!`;
       procPct.textContent   = '0%';
     }
 
-    let lastStage = '';
-    let result;
     // Pass a RawImage (transformers.js's own image type) rather than a bare URL —
-    // this is the documented/tested pattern and avoids relying on the pipeline's
-    // internal URL-fetching path, which adds an extra unnecessary network round trip
-    // for a File we already have in memory.
+    // this is the documented/tested pattern and avoids relying on any internal
+    // URL-fetching path, which adds an extra unnecessary network round trip for a
+    // File we already have in memory.
     const rawImage = await transformersRawImage.fromBlob(item.file);
-    result = await pipe(rawImage, {
-      progress_callback: (p) => {
-        if (!p) return;
-        const bar = document.getElementById(`prog-${item.id}`);
 
-        // Per official transformers.js types: status is one of
-        // 'initiate' | 'download' | 'progress' | 'progress_total' | 'done' | 'ready'.
-        // 'progress'/'progress_total' carry a 0-100 percentage directly in p.progress.
-        if (p.status === 'progress' || p.status === 'progress_total') {
-          const pct = (typeof p.progress === 'number') ? Math.round(p.progress) : 0;
-          if (bar) bar.style.width = pct + '%';
-          if (!showOnCanvas) return;
-          if (lastStage !== 'fetch') {
-            lastStage = 'fetch';
-            setStage(2);
-            procTitle.textContent = 'Downloading AI Model…';
-            procSub.textContent   = modelCached
-              ? 'Loading model from browser cache…'
-              : `⏳ First-time download (~150 MB). Next time it's instant!`;
-          }
-          procPct.textContent = pct + '%';
-        } else if (p.status === 'ready' || p.status === 'done') {
-          if (!showOnCanvas) return;
-          if (lastStage !== 'execute') {
-            lastStage = 'execute';
-            setStage(3);
-            procTitle.textContent = 'Optimising Image…';
-            procSub.textContent   = 'Analysing image with neural network';
-            localStorage.setItem('wc_model_cached', '1');
-          }
-        }
-      },
-    });
+    if (showOnCanvas) {
+      setStage(3);
+      procTitle.textContent = 'Optimising Image…';
+      procSub.textContent   = 'Analysing image with neural network';
+      localStorage.setItem('wc_model_cached', '1');
+    }
+
+    // BiRefNet's documented usage: preprocess via the model's own processor, run the
+    // model, then sigmoid + scale the output logits into a 0-255 mask ourselves —
+    // there's no pipeline() wrapper doing this post-processing for us anymore.
+    const { pixel_values } = await processor(rawImage);
+    const { output_image } = await model({ input_image: pixel_values });
+    let maskRaw = await transformersRawImage.fromTensor(
+      output_image[0].sigmoid().mul(255).to('uint8')
+    );
+    if (progBar) progBar.style.width = '90%';
 
     if (showOnCanvas) {
       setStage(4);
@@ -460,13 +454,6 @@ async function processItem(item) {
       procPct.textContent   = '…';
       localStorage.setItem('wc_model_cached', '1');
     }
-
-    // The image-segmentation pipeline returns an array of { label, score, mask } —
-    // for a single-class matting model like BiRefNet there's one entry whose mask is
-    // a RawImage (grayscale: white = foreground, black = background).
-    const seg = Array.isArray(result) ? result[0] : result;
-    if (!seg || !seg.mask) throw new Error('BiRefNet did not return a mask');
-    let maskRaw = seg.mask;
 
     // Load the original image at full resolution so the final cutout isn't limited
     // to whatever internal size the model used for inference.
@@ -488,9 +475,9 @@ async function processItem(item) {
     }
     const maskPixels = maskRaw.data; // single-channel grayscale Uint8(Clamped)Array, length ow*oh
     const maskChannels = maskRaw.channels || 1;
-    // Defensive: the high-level image-segmentation pipeline is documented to return an
-    // already-scaled 0-255 mask, but guard against a 0-1 float mask slipping through
-    // (would otherwise make the whole image nearly transparent).
+    // Defensive: we already scale by 255 above via .mul(255), but guard against a
+    // 0-1 float mask slipping through in case of a future API change (would otherwise
+    // make the whole image nearly transparent).
     let maxSeen = 0;
     for (let i = 0; i < Math.min(maskPixels.length, 10000); i++) {
       if (maskPixels[i] > maxSeen) maxSeen = maskPixels[i];
