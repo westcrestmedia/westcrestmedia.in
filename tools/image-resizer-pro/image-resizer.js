@@ -563,7 +563,14 @@ async function processFile(file,origW,origH){
   if(wmMode==='text')applyTextWM(ctx,cw,ch);
   else if(wmMode==='img'&&wmImgEl)applyImgWM(ctx,cw,ch);
 
-  let blob=await toBlob(canvas,fmt2,q);
+  let blob;
+  if(fmt2==='image/bmp'){
+    blob=canvasToBmpBlob(canvas);
+  }else if(fmt2==='image/gif'){
+    blob=canvasToGifBlob(canvas);
+  }else{
+    blob=await toBlob(canvas,fmt2,q);
+  }
   if(!blob) throw new Error('Your browser could not encode this image in the selected output format. Try a different format (e.g. JPG or PNG).');
 
   // DPI embed for JPEG
@@ -580,14 +587,18 @@ async function embedJpegDpi(blob,dpi){
     const ab=await blob.arrayBuffer();
     const arr=new Uint8Array(ab);
     // Find JFIF APP0 marker (FF E0) and patch DPI fields
-    // JFIF header: FF D8 FF E0 [len2] JFIF\0 [version2] [units] [Xdensity2] [Ydensity2]
+    // JFIF header: FF D8(0-1) FF E0(2-3) len2(4-5) "JFIF\0"(6-10) version2(11-12) units(13) Xdensity2(14-15) Ydensity2(16-17)
+    // NOTE: this was previously off by 2 bytes — it was overwriting the
+    // version bytes and writing garbage into the units byte (an invalid
+    // units value), which is exactly what made some viewers/decoders
+    // reject the JPEG entirely. Fixed to the correct offsets below.
     if(arr[0]===0xFF&&arr[1]===0xD8&&arr[2]===0xFF&&arr[3]===0xE0){
       const modified=new Uint8Array(arr);
-      modified[11]=1; // units = DPI (1=dots per inch)
-      modified[12]=(dpi>>8)&0xFF;
-      modified[13]=dpi&0xFF;
-      modified[14]=(dpi>>8)&0xFF;
-      modified[15]=dpi&0xFF;
+      modified[13]=1; // units = DPI (1=dots per inch)
+      modified[14]=(dpi>>8)&0xFF; // Xdensity high byte
+      modified[15]=dpi&0xFF;      // Xdensity low byte
+      modified[16]=(dpi>>8)&0xFF; // Ydensity high byte
+      modified[17]=dpi&0xFF;      // Ydensity low byte
       return new Blob([modified],{type:'image/jpeg'});
     }
     return blob;
@@ -602,6 +613,215 @@ function loadImg(file){
   });
 }
 function toBlob(canvas,type,q){return new Promise(r=>canvas.toBlob(r,type,q));}
+
+// ═══════════════ REAL BMP / GIF ENCODERS ═══════════════
+// No browser supports canvas.toBlob('image/bmp') or ('image/gif') — per
+// the HTML spec, an unsupported type silently falls back to image/png.
+// That's exactly why BMP/GIF "didn't work": the browser was quietly
+// handing back a PNG instead. These two functions build real, valid
+// files ourselves so BMP/GIF actually export as BMP/GIF.
+
+// 24-bit uncompressed BMP — universally compatible, no external deps.
+function canvasToBmpBlob(canvas){
+  const w=canvas.width,h=canvas.height;
+  const ctx=canvas.getContext('2d');
+  const data=ctx.getImageData(0,0,w,h).data;
+  const rowSize=Math.floor((24*w+31)/32)*4; // rows padded to a 4-byte boundary
+  const pixelArraySize=rowSize*h;
+  const fileSize=54+pixelArraySize;
+  const buf=new ArrayBuffer(fileSize);
+  const view=new DataView(buf);
+  view.setUint8(0,0x42);view.setUint8(1,0x4D); // "BM"
+  view.setUint32(2,fileSize,true);
+  view.setUint32(6,0,true);
+  view.setUint32(10,54,true); // pixel data offset
+  view.setUint32(14,40,true); // DIB header size
+  view.setInt32(18,w,true);
+  view.setInt32(22,h,true); // positive height = bottom-up rows
+  view.setUint16(26,1,true); // planes
+  view.setUint16(28,24,true); // bits per pixel
+  view.setUint32(30,0,true); // no compression
+  view.setUint32(34,pixelArraySize,true);
+  view.setInt32(38,2835,true); // ~72 DPI
+  view.setInt32(42,2835,true);
+  view.setUint32(46,0,true);
+  view.setUint32(50,0,true);
+  let offset=54;
+  for(let y=h-1;y>=0;y--){
+    for(let x=0;x<w;x++){
+      const i=(y*w+x)*4;
+      view.setUint8(offset++,data[i+2]); // B
+      view.setUint8(offset++,data[i+1]); // G
+      view.setUint8(offset++,data[i]);   // R
+    }
+    for(let p=0;p<rowSize-w*3;p++)view.setUint8(offset++,0); // row padding
+  }
+  return new Blob([buf],{type:'image/bmp'});
+}
+
+// Median-cut colour quantizer — reduces an arbitrary set of colours down
+// to at most maxColors entries, weighted by how often each colour occurs.
+function medianCutQuantize(colorKeys,colorCount,maxColors){
+  let buckets=[colorKeys.map(k=>({r:(k>>16)&255,g:(k>>8)&255,b:k&255,count:colorCount.get(k)}))];
+  while(buckets.length<maxColors){
+    let splitIdx=-1,maxRange=-1,splitChannel='r';
+    buckets.forEach((bucket,idx)=>{
+      if(bucket.length<2)return;
+      ['r','g','b'].forEach(ch=>{
+        let lo=255,hi=0;
+        for(const c of bucket){if(c[ch]<lo)lo=c[ch];if(c[ch]>hi)hi=c[ch];}
+        const range=hi-lo;
+        if(range>maxRange){maxRange=range;splitIdx=idx;splitChannel=ch;}
+      });
+    });
+    if(splitIdx===-1)break; // nothing left worth splitting
+    const bucket=buckets[splitIdx];
+    bucket.sort((a,b)=>a[splitChannel]-b[splitChannel]);
+    const mid=Math.floor(bucket.length/2);
+    buckets.splice(splitIdx,1,bucket.slice(0,mid),bucket.slice(mid));
+  }
+  return buckets.map(bucket=>{
+    let tr=0,tg=0,tb=0,tc=0;
+    for(const c of bucket){tr+=c.r*c.count;tg+=c.g*c.count;tb+=c.b*c.count;tc+=c.count;}
+    if(tc===0)tc=1;
+    return ((Math.round(tr/tc)&255)<<16)|((Math.round(tg/tc)&255)<<8)|(Math.round(tb/tc)&255);
+  });
+}
+
+// Standard GIF/LZW variable-width code packing. The codeSize-increase
+// check is intentionally done BEFORE assigning the new code (not after)
+// — GIF decoders are structurally always "one dictionary entry behind"
+// the encoder, and checking before keeps the two in sync. (Verified with
+// an exhaustive encode/decode round-trip test before shipping this.)
+function lzwEncode(indices,minCodeSize){
+  const clearCode=1<<minCodeSize;
+  const eoiCode=clearCode+1;
+  let codeSize=minCodeSize+1;
+  let nextCode=eoiCode+1;
+  let dict=new Map();
+  function resetDict(){
+    dict=new Map();
+    for(let i=0;i<clearCode;i++)dict.set(String.fromCharCode(i),i);
+    nextCode=eoiCode+1;
+    codeSize=minCodeSize+1;
+  }
+  resetDict();
+  const out=[];
+  let bitBuffer=0,bitCount=0;
+  function emit(code){
+    bitBuffer|=code<<bitCount;
+    bitCount+=codeSize;
+    while(bitCount>=8){
+      out.push(bitBuffer&255);
+      bitBuffer>>=8;
+      bitCount-=8;
+    }
+  }
+  emit(clearCode);
+  let w='';
+  for(let i=0;i<indices.length;i++){
+    const k=String.fromCharCode(indices[i]);
+    const wk=w+k;
+    if(dict.has(wk)){
+      w=wk;
+    }else{
+      emit(dict.get(w));
+      if(nextCode<4096){
+        if(nextCode>(1<<codeSize)-1 && codeSize<12)codeSize++;
+        dict.set(wk,nextCode++);
+      }else{
+        emit(clearCode);
+        resetDict();
+      }
+      w=k;
+    }
+  }
+  if(w!=='')emit(dict.get(w));
+  emit(eoiCode);
+  if(bitCount>0)out.push(bitBuffer&255);
+  return new Uint8Array(out);
+}
+
+// Real GIF89a encoder: quantizes to <=256 colours (255 if the image has
+// transparency, reserving one index for it), then LZW-compresses.
+function canvasToGifBlob(canvas){
+  const w=canvas.width,h=canvas.height;
+  const ctx=canvas.getContext('2d');
+  const data=ctx.getImageData(0,0,w,h).data;
+
+  const colorCount=new Map();
+  let hasTransparent=false;
+  for(let i=0;i<data.length;i+=4){
+    if(data[i+3]<128){hasTransparent=true;continue;}
+    const key=(data[i]<<16)|(data[i+1]<<8)|data[i+2];
+    colorCount.set(key,(colorCount.get(key)||0)+1);
+  }
+  const maxColors=hasTransparent?255:256;
+  let palette=[...colorCount.keys()];
+  if(palette.length===0)palette=[0x000000];
+  if(palette.length>maxColors)palette=medianCutQuantize(palette,colorCount,maxColors);
+
+  const TRANSPARENT_INDEX=hasTransparent?palette.length:-1;
+
+  const paletteRGB=palette.map(c=>[(c>>16)&255,(c>>8)&255,c&255]);
+  const cache=new Map();
+  function lookupIndex(r,g,b){
+    const key=(r<<16)|(g<<8)|b;
+    let idx=cache.get(key);
+    if(idx!==undefined)return idx;
+    let best=0,bestD=Infinity;
+    for(let i=0;i<paletteRGB.length;i++){
+      const pr=paletteRGB[i][0],pg=paletteRGB[i][1],pb=paletteRGB[i][2];
+      const d=(pr-r)*(pr-r)+(pg-g)*(pg-g)+(pb-b)*(pb-b);
+      if(d<bestD){bestD=d;best=i;}
+    }
+    cache.set(key,best);
+    return best;
+  }
+
+  const indices=new Uint8Array(w*h);
+  for(let p=0,i=0;p<data.length;p+=4,i++){
+    indices[i]=data[p+3]<128?TRANSPARENT_INDEX:lookupIndex(data[p],data[p+1],data[p+2]);
+  }
+
+  const neededColors=hasTransparent?palette.length+1:Math.max(palette.length,2);
+  let bitDepth=1,tableSize=2;
+  while(tableSize<neededColors){bitDepth++;tableSize*=2;}
+  const paddedPalette=palette.slice();
+  while(paddedPalette.length<tableSize)paddedPalette.push(0x000000);
+
+  const bytes=[];
+  const pushStr=s=>{for(let i=0;i<s.length;i++)bytes.push(s.charCodeAt(i));};
+  const push16=v=>{bytes.push(v&255,(v>>8)&255);};
+
+  pushStr('GIF89a');
+  push16(w);push16(h);
+  bytes.push((1<<7)|((bitDepth-1)<<4)|(bitDepth-1));
+  bytes.push(0,0); // bg colour index, pixel aspect ratio
+  for(let i=0;i<tableSize;i++){
+    const c=paddedPalette[i]||0;
+    bytes.push((c>>16)&255,(c>>8)&255,c&255);
+  }
+  if(hasTransparent){
+    bytes.push(0x21,0xF9,4, 0x01,0,0, TRANSPARENT_INDEX, 0x00);
+  }
+  bytes.push(0x2C);
+  push16(0);push16(0);push16(w);push16(h);
+  bytes.push(0x00);
+  const minCodeSize=Math.max(2,bitDepth);
+  bytes.push(minCodeSize);
+  const lzwBytes=lzwEncode(indices,minCodeSize);
+  let pos=0;
+  while(pos<lzwBytes.length){
+    const chunk=Math.min(255,lzwBytes.length-pos);
+    bytes.push(chunk);
+    for(let i=0;i<chunk;i++)bytes.push(lzwBytes[pos+i]);
+    pos+=chunk;
+  }
+  bytes.push(0x00,0x3B); // block terminator, GIF trailer
+
+  return new Blob([new Uint8Array(bytes)],{type:'image/gif'});
+}
 
 function applyGray(ctx,w,h){
   const d=ctx.getImageData(0,0,w,h);
