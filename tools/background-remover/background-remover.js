@@ -26,12 +26,21 @@ async function loadLib() {
   if (_segmentLoadPromise) return _segmentLoadPromise;
   _segmentLoadPromise = (async () => {
     const mod = await import(`https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/+esm`);
-    const { AutoModel, AutoProcessor, RawImage } = mod;
+    const { AutoModel, AutoProcessor, RawImage, env } = mod;
     transformersRawImage = RawImage;
-    // NOTE: this repo only ships model.onnx (fp32, 224MB) and model_fp16.onnx (115MB) —
-    // there is NO quantized/q8 file here, so dtype:'q8' 404s. Use 'fp16' for the smaller,
-    // faster browser download; fall back to 'fp32' if fp16 ever causes accuracy issues.
-    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'fp16' });
+    // This site is not cross-origin-isolated (no COOP/COEP headers), so SharedArrayBuffer
+    // is unavailable (see the console warning) and the multi-threaded WASM backend falls
+    // back unreliably — that fallback path is what was producing "failed to call OrtRun()
+    // ... std::bad_alloc" even on a tiny image. Force single-threaded WASM explicitly so
+    // we always get the stable code path instead of silently hitting the broken one.
+    if (env && env.backends && env.backends.onnx && env.backends.onnx.wasm) {
+      env.backends.onnx.wasm.numThreads = 1;
+    }
+    // NOTE: this repo only ships model.onnx (fp32, 224MB) and model_fp16.onnx (115MB).
+    // fp16 isn't natively supported by the WASM/CPU execution provider — onnxruntime
+    // upcasts it to fp32 internally, which adds conversion overhead and was implicated
+    // in the bad_alloc crash above. Using fp32 directly avoids that extra path.
+    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'fp32' });
     segmentProcessor = await AutoProcessor.from_pretrained(BIREFNET_MODEL_ID);
     return { model: segmentModel, processor: segmentProcessor };
   })();
@@ -420,7 +429,7 @@ async function processItem(item) {
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
         ? 'Loading model from browser cache…'
-        : `⏳ First-time download (~115 MB). Next time it's instant!`;
+        : `⏳ First-time download (~224 MB). Next time it's instant!`;
       procPct.textContent   = '0%';
     }
 
