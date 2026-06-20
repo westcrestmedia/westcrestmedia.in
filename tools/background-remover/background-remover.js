@@ -53,9 +53,11 @@ function refineEdges(srcCanvas) {
     }
     // For big-but-supported images, widen the band/radius proportionally less (in px terms
     // a fixed band already covers more relative edge at high res) but raise the timeout
-    // since there's simply more pixel work to do.
+    // since there's simply more pixel work to do. The new separable algorithm + adaptive
+    // radius safety valve keeps even worst-case noisy masks around ~8s at 13.5MP, so this
+    // gives a comfortable margin up to 24MP.
     const bandPx = megapixels > 10 ? 26 : 22;
-    const dynamicTimeout = Math.min(20000, Math.max(8000, Math.round(megapixels * 700)));
+    const dynamicTimeout = Math.min(30000, Math.max(12000, Math.round(megapixels * 1400)));
 
     let settled = false;
     const reqId = ++_refineReqId;
