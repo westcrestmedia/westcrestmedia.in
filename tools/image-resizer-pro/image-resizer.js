@@ -523,6 +523,10 @@ async function processFile(file,origW,origH){
   else{cw=rw;ch=rh;}
   if(pad){cw+=padAmt*2;ch+=padAmt*2;}
   if(rot===90||rot===270){[cw,ch]=[ch,cw];}
+  // Guard against NaN/0 — a bad canvas size here is what was crashing the
+  // whole batch loop instead of failing just this one image.
+  cw=Math.max(1,Math.round(cw)||1);
+  ch=Math.max(1,Math.round(ch)||1);
   canvas.width=cw;canvas.height=ch;
 
   if(bg==='transparent'){ctx.clearRect(0,0,cw,ch);}
@@ -551,6 +555,7 @@ async function processFile(file,origW,origH){
   else if(wmMode==='img'&&wmImgEl)applyImgWM(ctx,cw,ch);
 
   let blob=await toBlob(canvas,fmt2,q);
+  if(!blob) throw new Error('Your browser could not encode this image in the selected output format. Try a different format (e.g. JPG or PNG).');
 
   // DPI embed for JPEG
   if(fmt2==='image/jpeg'&&document.getElementById('embedDpi').checked){
@@ -787,17 +792,27 @@ function renderBatch(){
         <div class="bcard-size">${fmt(it.origSize)}${it.result?` → ${fmt(it.result.blob.size)}`:''}</div>
       </div>
       <div class="bcard-foot">
-        <span class="status ${it.status}">${
+        <span class="status ${it.status}"${it.status==='error'&&it.errorMsg?` title="${String(it.errorMsg).replace(/"/g,'&quot;')}"`:''}>${
           it.status==='pending'?'⏳ Pending':
           it.status==='working'?'🔄 Resizing…':
           it.status==='done'?'✅ Done':'❌ Error'
         }</span>
         <div style="display:flex;gap:4px;">
-          <button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')">${it.status==='done'?'✏ Re-edit':'⚙ Settings'}</button>
+          ${it.status==='error'?`<button class="btn-edit-sm" onclick="event.stopPropagation();retryItem('${it.id}')" title="Try resizing this photo again">↻ Retry</button>`:''}
+          <button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')" title="${it.status==='done'?'Re-edit just this photo — change its size, format or other settings without touching the rest of the batch.':'Give just this one photo its own size, format or settings. Click Resize All afterwards and only this photo will use these custom settings — every other photo keeps using whatever is shown in the panel on the left.'}">${it.status==='done'?'✏ Re-edit':'⚙ Custom Settings'}</button>
           <button class="btn-dl-sm" onclick="event.stopPropagation();dlItem('${it.id}')" ${it.status!=='done'?'disabled':''}>⬇</button>
         </div>
       </div>
     </div>`).join('');
+}
+
+// Retry just one failed photo without touching the rest of the batch
+function retryItem(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  it.status='pending';it.errorMsg=null;
+  renderBatch();
+  resizeAll();
 }
 
 function selectBatchCard(id){
@@ -913,16 +928,25 @@ async function resizeAll(){
   const sharedDefaults=captureSettings();
   for(let idx=0;idx<pending.length;idx++){
     const it=pending[idx];
-    it.status='working';renderBatch();
+    it.status='working';
+    try{renderBatch();}catch(e){console.error('renderBatch failed',e);}
     showOverlay(`Resizing ${idx+1}/${pending.length}`,it.name.slice(0,28));
-    applySettings(it.settings||sharedDefaults);
+    // Everything for this one photo — including applying its settings —
+    // is inside this try/catch now. One bad photo can no longer kill the
+    // loop and strand the rest on "Pending" forever.
     try{
+      applySettings(it.settings||sharedDefaults);
       const r=await processFile(it.file,it.origW,it.origH);
-      it.result=r;it.status='done';
-    }catch(e){it.status='error';}
-    renderBatch();updateBatchHead();
+      if(!r||!r.blob) throw new Error('No output was produced for this image.');
+      it.result=r;it.status='done';it.errorMsg=null;
+    }catch(e){
+      console.error('Resize failed for',it.name,e);
+      it.status='error';
+      it.errorMsg=(e&&e.message)?e.message:'Could not process this image.';
+    }
+    try{renderBatch();updateBatchHead();}catch(e){console.error('renderBatch/updateBatchHead failed',e);}
   }
-  applySettings(sharedDefaults);
+  try{applySettings(sharedDefaults);}catch(e){console.error('restoring shared defaults failed',e);}
   hideOverlay();
   renderStrip();
 }
@@ -940,7 +964,7 @@ function editItem(id){
   // Restore this photo's own settings if it has been customized before;
   // otherwise start from its original dimensions with current defaults.
   if(it.settings){
-    applySettings(it.settings);
+    try{applySettings(it.settings);}catch(e){console.error('applySettings failed in editItem',e);}
   } else {
     document.getElementById('inpW').value=it.origW;
     document.getElementById('inpH').value=it.origH;
