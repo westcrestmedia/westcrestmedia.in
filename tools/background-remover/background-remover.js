@@ -868,7 +868,12 @@ function attachEvents() {
     e.preventDefault();
     if (e.touches.length===2){lastTouches=e.touches;isPainting=false;return;}
     if (!brushMode){isPanning=true;panStart={x:e.touches[0].clientX-panX,y:e.touches[0].clientY-panY};return;}
-    isPainting=true; saveSnapshot(); const pos=touchPos(e.touches[0]); if(pos)applyBrush(pos.x,pos.y);
+    const t = e.touches[0];
+    const rawPos = touchPos(t);
+    if (!rawPos) return;
+    const brushPos = mobOffsetBrushPos(rawPos, t);
+    _brushScreenX = t.clientX; _brushScreenY = t.clientY;
+    isPainting=true; saveSnapshot(); applyBrush(brushPos.x, brushPos.y, rawPos, t);
   },{passive:false});
   viewport.addEventListener('touchmove', e => {
     e.preventDefault();
@@ -880,23 +885,179 @@ function attachEvents() {
       const nz=Math.min(8,Math.max(0.25,zoom*r)); panX-=(cx-panX)*(nz/zoom-1); panY-=(cy-panY)*(nz/zoom-1); zoom=nz; lastTouches=e.touches; renderAll(); return;
     }
     if (isPanning){panX=e.touches[0].clientX-panStart.x;panY=e.touches[0].clientY-panStart.y;renderAll();return;}
-    if (!brushMode||!isPainting) return;
-    const pos=touchPos(e.touches[0]); if(pos)applyBrush(pos.x,pos.y);
+    if (!brushMode) { clearCursor(); return; }
+    const t = e.touches[0];
+    const rawPos = touchPos(t);
+    if (!rawPos) { clearCursor(); return; }
+    const brushPos = mobOffsetBrushPos(rawPos, t);
+    drawCursorRing(brushPos.x, brushPos.y, t.clientX, t.clientY);
+    if (isPainting) { _brushScreenX = t.clientX; _brushScreenY = t.clientY; applyBrush(brushPos.x, brushPos.y, rawPos, t); }
   },{passive:false});
-  viewport.addEventListener('touchend', e=>{lastTouches=null;isPanning=false;if(isPainting){isPainting=false;bakeToItem();}});
+  viewport.addEventListener('touchend', e=>{lastTouches=null;isPanning=false;if(isPainting){isPainting=false;bakeToItem();}clearCursor();});
 }
 
 function updateViewportCursor(){viewport.style.cursor=brushMode?'none':'move';}
-function canvasPos(e){const dr=dc.getBoundingClientRect();const cx=e.clientX-dr.left,cy=e.clientY-dr.top;if(cx<0||cy<0||cx>dr.width||cy>dr.height)return null;return{x:cx,y:cy};}
-function touchPos(t){const dr=dc.getBoundingClientRect();const cx=t.clientX-dr.left,cy=t.clientY-dr.top;if(cx<0||cy<0||cx>dr.width||cy>dr.height)return null;return{x:cx,y:cy};}
+function canvasPos(e){
+  const dr=dc.getBoundingClientRect();
+  const scaleX=dc.width/dr.width,scaleY=dc.height/dr.height;
+  const cx=(e.clientX-dr.left)*scaleX,cy=(e.clientY-dr.top)*scaleY;
+  if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;
+  return{x:cx,y:cy};
+}
+function touchPos(t){
+  const dr=dc.getBoundingClientRect();
+  const scaleX=dc.width/dr.width,scaleY=dc.height/dr.height;
+  const cx=(t.clientX-dr.left)*scaleX,cy=(t.clientY-dr.top)*scaleY;
+  if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;
+  return{x:cx,y:cy};
+}
+// Returns brush position offset upward from finger (mobile only)
+function mobOffsetBrushPos(rawPos) {
+  if (!isMobile()) return rawPos;
+  const dr = dc.getBoundingClientRect();
+  const scaleX = dc.width / dr.width;
+  const offsetDc = MOB_CURSOR_OFFSET_PX * scaleX;
+  return { x: rawPos.x, y: rawPos.y - offsetDc };
+}
 
 /* ── CURSOR ── */
-function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);}
-function drawCursorRing(x,y){
-  cctx.clearRect(0,0,cc.width,cc.height); if(!brushMode)return;
-  cctx.save(); cctx.beginPath(); cctx.arc(x,y,window.brushSize/2,0,Math.PI*2);
-  cctx.strokeStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.lineWidth=1.5; cctx.stroke();
-  cctx.beginPath(); cctx.arc(x,y,1.5,0,Math.PI*2); cctx.fillStyle=brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)'; cctx.fill(); cctx.restore();
+function clearCursor(){
+  cctx.clearRect(0,0,cc.width,cc.height);
+  hideMobileLupe();
+}
+
+// Mobile finger-offset: how many screen-px above finger the brush ring appears
+const MOB_CURSOR_OFFSET_PX = 80;
+
+function drawCursorRing(x, y, touchScreenX, touchScreenY) {
+  cctx.clearRect(0, 0, cc.width, cc.height);
+  if (!brushMode) return;
+
+  const isMob = isMobile();
+  const dr = dc.getBoundingClientRect();
+  const scaleX = dc.width / dr.width;
+
+  // On mobile: offset the ring upward in dc-pixel space
+  let rx = x, ry = y;
+  if (isMob) {
+    const offsetInDc = MOB_CURSOR_OFFSET_PX * scaleX;
+    ry = y - offsetInDc;
+  }
+
+  const ringR = (window.brushSize / 2) * scaleX;
+  const col = brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
+
+  cctx.save();
+  // Outer ring
+  cctx.beginPath(); cctx.arc(rx, ry, ringR, 0, Math.PI * 2);
+  cctx.strokeStyle = col; cctx.lineWidth = 1.5 * scaleX; cctx.stroke();
+  // Centre dot
+  cctx.beginPath(); cctx.arc(rx, ry, 1.5 * scaleX, 0, Math.PI * 2);
+  cctx.fillStyle = col; cctx.fill();
+  // On mobile: draw a thin line from ring down to finger tip
+  if (isMob && touchScreenX !== undefined) {
+    cctx.beginPath();
+    cctx.moveTo(rx, ry + ringR);
+    cctx.lineTo(x, y);
+    cctx.strokeStyle = col;
+    cctx.lineWidth = 1 * scaleX;
+    cctx.setLineDash([3 * scaleX, 3 * scaleX]);
+    cctx.stroke();
+    cctx.setLineDash([]);
+  }
+  cctx.restore();
+
+  // Show loupe on mobile
+  if (isMob && touchScreenX !== undefined) {
+    showMobileLupe(x, y, touchScreenX, touchScreenY);
+  }
+}
+
+/* ── MOBILE MAGNIFIER LOUPE ── */
+let _lupeEl = null;
+let _lupeCtx = null;
+const LUPE_SIZE = 120;    // px, CSS size of the loupe square
+const LUPE_ZOOM = 3;      // magnification inside loupe
+const LUPE_CANVAS_PX = LUPE_SIZE * (window.devicePixelRatio || 1);
+
+function getLupe() {
+  if (_lupeEl) return _lupeEl;
+  const wrap = document.createElement('div');
+  wrap.id = 'mob-lupe';
+  wrap.className = 'mob-lupe';
+  const cvs = document.createElement('canvas');
+  cvs.width = LUPE_CANVAS_PX; cvs.height = LUPE_CANVAS_PX;
+  cvs.style.width = LUPE_SIZE + 'px'; cvs.style.height = LUPE_SIZE + 'px';
+  wrap.appendChild(cvs);
+  document.body.appendChild(wrap);
+  _lupeEl = wrap;
+  _lupeCtx = cvs.getContext('2d');
+  return wrap;
+}
+
+function showMobileLupe(dcX, dcY, screenX, screenY) {
+  if (!wCanvas || !dc) return;
+  const lupe = getLupe();
+
+  // Position loupe: top-right corner, but flip left if finger is on right side
+  const vpRect = viewport.getBoundingClientRect();
+  const fingerRight = screenX > vpRect.left + vpRect.width / 2;
+  lupe.style.left  = fingerRight ? (vpRect.left + 8) + 'px' : 'auto';
+  lupe.style.right = fingerRight ? 'auto' : (window.innerWidth - vpRect.right + 8) + 'px';
+  lupe.style.top   = (vpRect.top + 8) + 'px';
+  lupe.style.display = 'block';
+
+  const ctx = _lupeCtx;
+  const sz = LUPE_CANVAS_PX;
+  ctx.clearRect(0, 0, sz, sz);
+
+  // Draw checker background (shows transparency)
+  const tile = 10 * (window.devicePixelRatio || 1);
+  for (let ty = 0; ty < sz; ty += tile) {
+    for (let tx = 0; tx < sz; tx += tile) {
+      ctx.fillStyle = ((Math.floor(tx/tile) + Math.floor(ty/tile)) % 2 === 0) ? '#2a2a2a' : '#3a3a3a';
+      ctx.fillRect(tx, ty, tile, tile);
+    }
+  }
+
+  // Sample from dc (display canvas) centred on brush position
+  // dcX/dcY are in dc-pixel space
+  const sampleW = LUPE_SIZE / LUPE_ZOOM;  // how many dc-css-px to sample
+  const dr = dc.getBoundingClientRect();
+  const dcCssPxPerDcPx = dr.width / dc.width;
+  const sampleDcPx = sampleW / dcCssPxPerDcPx;   // in actual dc pixels
+
+  const srcX = dcX - sampleDcPx / 2;
+  const srcY = dcY - sampleDcPx / 2;
+
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(dc, srcX, srcY, sampleDcPx, sampleDcPx, 0, 0, sz, sz);
+  ctx.restore();
+
+  // Crosshair in centre
+  const col = brushMode === 'erase' ? 'rgba(255,80,80,.85)' : 'rgba(80,220,80,.85)';
+  const mid = sz / 2;
+  const brushScreenR = (window.brushSize / 2);
+  const brushLupeR = brushScreenR * (LUPE_ZOOM) * (window.devicePixelRatio || 1);
+  ctx.save();
+  ctx.strokeStyle = col; ctx.lineWidth = 1.5 * (window.devicePixelRatio || 1);
+  ctx.beginPath(); ctx.arc(mid, mid, brushLupeR, 0, Math.PI * 2); ctx.stroke();
+  // crosshair lines
+  ctx.beginPath(); ctx.moveTo(mid - brushLupeR - 6, mid); ctx.lineTo(mid + brushLupeR + 6, mid); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mid, mid - brushLupeR - 6); ctx.lineTo(mid, mid + brushLupeR + 6); ctx.stroke();
+  ctx.restore();
+
+  // Border
+  ctx.save();
+  ctx.strokeStyle = brushMode === 'erase' ? 'rgba(255,80,80,.5)' : 'rgba(80,220,80,.5)';
+  ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+  ctx.strokeRect(0, 0, sz, sz);
+  ctx.restore();
+}
+
+function hideMobileLupe() {
+  if (_lupeEl) _lupeEl.style.display = 'none';
 }
 
 /* ── BRUSH ── */
@@ -929,8 +1090,9 @@ function applyBrush(dispX,dispY){
     }}
     wCtx.putImageData(patch,x0,y0);
   }
-  drawComposite(); drawCursorRing(dispX,dispY);
+  drawComposite(); drawCursorRing(dispX, dispY, _brushScreenX, _brushScreenY);
 }
+let _brushScreenX, _brushScreenY;
 
 function bakeToItem(){
   // Save wCanvas back to item

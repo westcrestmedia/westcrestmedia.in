@@ -351,3 +351,20 @@
 .card-proc-overlay.active{display:flex;}
 .card-spinner{width:28px;height:28px;border:2.5px solid var(--dark-5);border-top-color:var(--gold);border-radius:50%;animation:spin .75s linear infinite;}
 .card-proc-label{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;}
+
+/* ── MOBILE LOUPE (magnifier) ── */
+.mob-lupe {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px var(--gold-border), 0 4px 20px rgba(0,0,0,.7);
+  pointer-events: none;
+}
+.mob-lupe canvas {
+  display: block;
+  border-radius: 12px;
+}
