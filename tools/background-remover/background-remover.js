@@ -14,108 +14,12 @@ async function loadLib() {
   return removeBackground;
 }
 
-/* ── EDGE REFINEMENT (off-thread alpha matting for better hair/fine-edge quality) ──
- * Runs in a Web Worker so it never blocks/hangs the UI. Only touches the alpha channel
- * near the foreground/background boundary — RGB pixels are never modified, so this can
- * never result in a solid-color background. If the worker errors or times out, the
- * caller keeps the original (unrefined) canvas — always a safe, visible fallback. */
-let _refineWorker = null;
-let _refineReqId = 0;
-function getRefineWorker() {
-  if (_refineWorker) return _refineWorker;
-  try {
-    _refineWorker = new Worker('./edge-refine-worker.js');
-  } catch (err) {
-    console.warn('Edge refine worker unavailable:', err);
-    _refineWorker = null;
-  }
-  return _refineWorker;
-}
-
-/**
- * Refines the alpha edge of a canvas in place (returns a NEW canvas; original is untouched).
- * Resolves with the refined canvas, or the original canvas if refinement fails/times out.
- */
-function refineEdges(srcCanvas) {
-  return new Promise((resolve) => {
-    const worker = getRefineWorker();
-    if (!worker) { console.warn('[edge-refine] worker unavailable — skipping, using original mask'); resolve(srcCanvas); return; }
-
-    const w = srcCanvas.width, h = srcCanvas.height;
-    const megapixels = (w * h) / 1e6;
-    // Raised from 6MP -> 24MP: real camera photos (4500x3000 = 13.5MP, even 6000x4000 = 24MP)
-    // need to actually go through refinement, not get silently skipped. Only truly huge
-    // images get skipped now — everything realistic gets processed.
-    const PIXEL_BUDGET = 24_000_000;
-    if (w * h > PIXEL_BUDGET) {
-      console.warn(`[edge-refine] image too large (${w}x${h} = ${megapixels.toFixed(1)}MP) — skipping, using original mask`);
-      resolve(srcCanvas); return;
-    }
-    // For big-but-supported images, widen the band/radius proportionally less (in px terms
-    // a fixed band already covers more relative edge at high res) but raise the timeout
-    // since there's simply more pixel work to do. The new separable algorithm + adaptive
-    // radius safety valve keeps even worst-case noisy masks around ~8s at 13.5MP, so this
-    // gives a comfortable margin up to 24MP.
-    const bandPx = megapixels > 10 ? 26 : 22;
-    const dynamicTimeout = Math.min(30000, Math.max(12000, Math.round(megapixels * 1400)));
-
-    let settled = false;
-    const reqId = ++_refineReqId;
-    const t0 = performance.now();
-
-    const timer = setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      worker.removeEventListener('message', onMsg);
-      console.warn(`[edge-refine] timed out after ${dynamicTimeout}ms — using original mask`);
-      resolve(srcCanvas); // safe fallback: original mask, never a hang
-    }, dynamicTimeout);
-
-    function onMsg(e) {
-      if (e.data.id !== reqId) return;
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      worker.removeEventListener('message', onMsg);
-
-      if (!e.data.ok) {
-        console.warn('[edge-refine] worker reported error — using original mask:', e.data.error);
-        resolve(srcCanvas); return;
-      }
-      try {
-        const refinedImgData = new ImageData(new Uint8ClampedArray(e.data.rgba), w, h);
-        const outCanvas = document.createElement('canvas');
-        outCanvas.width = w; outCanvas.height = h;
-        outCanvas.getContext('2d').putImageData(refinedImgData, 0, 0);
-        console.log(`[edge-refine] done in ${(performance.now()-t0).toFixed(0)}ms, ${e.data.edgePixelCount ?? '?'} edge px refined out of ${w*h}`);
-        resolve(outCanvas);
-      } catch (err) {
-        console.warn('Edge refine apply failed, using original:', err);
-        resolve(srcCanvas);
-      }
-    }
-
-    try {
-      const ctx = srcCanvas.getContext('2d', { willReadFrequently: true });
-      const imgData = ctx.getImageData(0, 0, w, h);
-      worker.addEventListener('message', onMsg);
-      worker.postMessage(
-        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx, strength: 0.85 },
-        [imgData.data.buffer]
-      );
-    } catch (err) {
-      clearTimeout(timer);
-      console.warn('Edge refine dispatch failed, using original:', err);
-      resolve(srcCanvas);
-    }
-  });
-}
-
 /* ── BATCH STATE ── */
 const MAX_BATCH = 20;
 let items = []; // { id, file, origBlob, resultCanvas, status, name, bgSnapshot }
 let activeId = null;
 let editorOpened = false; // once editor opens, never auto-open again
+let batchLoopRunning = false; // hard lock — prevents two addFiles() calls from both starting a processing loop
 
 /* ── EDITOR STATE ── */
 let wCanvas = null, wCtx = null, origData = null;
@@ -207,36 +111,46 @@ async function addFiles(files) {
   hideUploadOverlay();
 
   // Auto-process: single → direct, multi → sequential
-  // But if processing is already running, just queue — the running loop will pick them up
-  const alreadyProcessing = items.some(i => i.status === 'processing');
-  if (alreadyProcessing) {
+  // Hard lock: if another addFiles() call is already running the processing loop,
+  // just leave these items queued — that running loop will pick them up itself.
+  if (batchLoopRunning) {
     renderBatchGrid();
     updateBatchHeader();
     return;
   }
+  batchLoopRunning = true;
 
-  if (isSingle) {
-    // Single photo: go straight to processing
-    const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
-    const item = items[items.length - 1];
-    await processItem(item);
-    const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
-    updateBatchHeader();
-    if (item.status === 'done' && !editorOpened && !activeId) { editorOpened = true; openEditor(item.id); }
-  } else {
-    // Multiple photos: process sequentially, pick queued items dynamically so add-more items are included
-    const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
-    let firstOpened = false;
-    let next;
-    while ((next = items.find(i => i.status === 'queued'))) {
-      await processItem(next);
-      if (next.status === 'done' && !editorOpened) {
-        editorOpened = true;
-        openEditor(next.id);
+  try {
+    if (isSingle) {
+      // Single photo: go straight to processing
+      const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
+      const item = items[items.length - 1];
+      await processItem(item);
+      const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
+      updateBatchHeader();
+      if (item.status === 'done' && !editorOpened && !activeId) { editorOpened = true; await openEditor(item.id); }
+      // Pick up any items that were queued by an overlapping addFiles() call while we were busy
+      let extra;
+      while ((extra = items.find(i => i.status === 'queued'))) {
+        await processItem(extra);
+        if (extra.status === 'done' && !editorOpened) { editorOpened = true; await openEditor(extra.id); }
       }
+    } else {
+      // Multiple photos: process sequentially, pick queued items dynamically so add-more items are included
+      const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
+      let next;
+      while ((next = items.find(i => i.status === 'queued'))) {
+        await processItem(next);
+        if (next.status === 'done' && !editorOpened) {
+          editorOpened = true;
+          await openEditor(next.id);
+        }
+      }
+      const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
+      updateBatchHeader();
     }
-    const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
-    updateBatchHeader();
+  } finally {
+    batchLoopRunning = false;
   }
 }
 
@@ -329,17 +243,22 @@ window.removeItem = function(id) {
 window.processAll = async function() {
   const toProcess = items.filter(i=>i.status==='queued'||i.status==='error');
   if (!toProcess.length) return;
-  const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
-  let firstOpened = false;
-  for (const item of toProcess) {
-    await processItem(item);
-    if (item.status === 'done' && !editorOpened) {
-      editorOpened = true;
-      openEditor(item.id);
+  if (batchLoopRunning) return; // another loop (addFiles) is already draining the queue
+  batchLoopRunning = true;
+  try {
+    const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
+    for (const item of toProcess) {
+      await processItem(item);
+      if (item.status === 'done' && !editorOpened) {
+        editorOpened = true;
+        await openEditor(item.id);
+      }
     }
+    const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
+    updateBatchHeader();
+  } finally {
+    batchLoopRunning = false;
   }
-  const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
-  updateBatchHeader();
 };
 
 async function processItem(item) {
@@ -448,11 +367,7 @@ async function processItem(item) {
           procPct.textContent = p + '%';
         }
       },
-      // NOTE: the library's valid model names are 'isnet' (full precision, best quality,
-      // heaviest), 'isnet_fp16' (default, balanced) and 'isnet_quint8' (quantized, fastest,
-      // most artifacts). 'small'/'large' are NOT real options — passing them silently fell
-      // back to the library default, so "large" was never actually being used on desktop.
-      model: isMobile() ? 'isnet_fp16' : 'isnet',
+      model: isMobile() ? 'small' : 'large',
       output: { format: 'image/png', quality: 1 },
     });
 
@@ -461,20 +376,7 @@ async function processItem(item) {
     const cvs = document.createElement('canvas');
     cvs.width = img.naturalWidth; cvs.height = img.naturalHeight;
     cvs.getContext('2d').drawImage(img, 0, 0);
-
-    // Edge refinement pass — softens/sharpens the alpha right at the hair & fabric
-    // boundary using the original pixel colors as a guide. Off-thread, time-boxed,
-    // and guaranteed to fall back to this same `cvs` (never a solid background) if
-    // anything goes wrong.
-    if (showOnCanvas) {
-      setStage(4);
-      procTitle.textContent = 'Refining Edges…';
-      procSub.textContent   = 'Polishing hair & fine detail';
-      procPct.textContent   = '…';
-    }
-    const refinedCvs = await refineEdges(cvs);
-
-    item.resultCanvas = refinedCvs;
+    item.resultCanvas = cvs;
     item.status = 'done';
 
     if (showOnCanvas) {
