@@ -30,11 +30,18 @@ async function loadLib() {
     transformersRawImage = RawImage;
     // This site is not cross-origin-isolated (no COOP/COEP headers), so SharedArrayBuffer
     // is unavailable (see the console warning) and the multi-threaded WASM backend falls
-    // back unreliably — that fallback path is what was producing "failed to call OrtRun()
-    // ... std::bad_alloc" even on a tiny image. Force single-threaded WASM explicitly so
-    // we always get the stable code path instead of silently hitting the broken one.
+    // back unreliably. Force single-threaded WASM explicitly so we always get the stable
+    // code path instead of silently hitting the broken one.
     if (env && env.backends && env.backends.onnx && env.backends.onnx.wasm) {
       env.backends.onnx.wasm.numThreads = 1;
+      // By default transformers.js runs the ONNX session inside a separate Worker (the
+      // "proxy" backend) and copies tensors across the main-thread/worker boundary via
+      // postMessage. Without SharedArrayBuffer, that copy can't be zero-copy, so large
+      // model buffers end up allocated TWICE (once per side) — which lines up exactly
+      // with "failed to call OrtRun() ... std::bad_alloc" happening even on a tiny image
+      // (the model's own weights, not the image, are what's blowing the budget). Forcing
+      // proxy:false keeps everything on the main thread with a single allocation.
+      env.backends.onnx.wasm.proxy = false;
     }
     // NOTE: this repo only ships model.onnx (fp32, 224MB) and model_fp16.onnx (115MB).
     // fp16 isn't natively supported by the WASM/CPU execution provider — onnxruntime
