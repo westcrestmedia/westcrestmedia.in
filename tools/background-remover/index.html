@@ -125,12 +125,6 @@
   <!-- BATCH HEADER -->
   <div class="batch-header" id="batch-header">
     <span class="batch-title" id="batch-title-text">0 images</span>
-    <div class="batch-actions">
-      <button class="btn-sm outline" onclick="document.getElementById('file-in').click()">+ Add More</button>
-      <button class="btn-sm gold" id="btn-process-all" onclick="processAll()">▶ Process All</button>
-      <button class="btn-sm gold" id="btn-dl-all" onclick="downloadAll()" style="display:none">⬇ Download All ZIP</button>
-      <button class="btn-sm danger" onclick="clearAll()">✕ Clear All</button>
-    </div>
   </div>
 
   <!-- BATCH GRID -->
@@ -468,9 +462,29 @@
         </div>
         <div class="panel-body">
           <p style="font-size:10px;color:var(--text-muted);line-height:1.5;padding:6px 8px;background:var(--dark-4);border-radius:6px;margin:0;">💡 Canvas zoom/pan is for preview only. Reset to 100% before downloading, or use <b style="color:var(--text);">Transform</b> to resize & reposition.</p>
-          <button class="btn-primary" style="width:100%;" onclick="downloadCurrent()">Download PNG</button>
-          <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll()" id="sidebar-dl-all">Download All ZIP</button>
-          <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll()">← Back / New Images</button>
+          <div class="dl-action-group">
+            <button class="dl-btn dl-btn-primary" onclick="downloadCurrent()">
+              <span class="dl-btn-icon">⬇</span>
+              <span class="dl-btn-text">
+                <span class="dl-btn-title">Download PNG</span>
+                <span class="dl-btn-sub">Current image, transparent</span>
+              </span>
+            </button>
+            <button class="dl-btn dl-btn-secondary" onclick="downloadAll()" id="sidebar-dl-all">
+              <span class="dl-btn-icon">📦</span>
+              <span class="dl-btn-text">
+                <span class="dl-btn-title">Download All (ZIP)</span>
+                <span class="dl-btn-sub">Every processed image</span>
+              </span>
+            </button>
+            <button class="dl-btn dl-btn-danger" onclick="clearAll()">
+              <span class="dl-btn-icon">✕</span>
+              <span class="dl-btn-text">
+                <span class="dl-btn-title">Clear All</span>
+                <span class="dl-btn-sub">Start over with new images</span>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -796,9 +810,29 @@
   <div class="mob-sheet-title">⬇ Download</div>
   <div class="mob-sheet-body" style="display:flex;flex-direction:column;gap:8px;">
     <p style="font-size:10px;color:var(--text-muted);line-height:1.5;padding:6px 8px;background:var(--dark-4);border-radius:6px;margin:0;">💡 Download saves full resolution. Use <b style="color:var(--text);">Transform</b> to resize or reposition before downloading.</p>
-    <button class="btn-primary" style="width:100%;" onclick="downloadCurrent();closeMobSheet();">Download PNG</button>
-    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="downloadAll();closeMobSheet();">Download All ZIP</button>
-    <button class="btn-secondary" style="width:100%;font-size:12px;" onclick="clearAll();closeMobSheet();">← Back / New Images</button>
+    <div class="dl-action-group">
+      <button class="dl-btn dl-btn-primary" onclick="downloadCurrent();closeMobSheet();">
+        <span class="dl-btn-icon">⬇</span>
+        <span class="dl-btn-text">
+          <span class="dl-btn-title">Download PNG</span>
+          <span class="dl-btn-sub">Current image, transparent</span>
+        </span>
+      </button>
+      <button class="dl-btn dl-btn-secondary" onclick="downloadAll();closeMobSheet();">
+        <span class="dl-btn-icon">📦</span>
+        <span class="dl-btn-text">
+          <span class="dl-btn-title">Download All (ZIP)</span>
+          <span class="dl-btn-sub">Every processed image</span>
+        </span>
+      </button>
+      <button class="dl-btn dl-btn-danger" onclick="clearAll();closeMobSheet();">
+        <span class="dl-btn-icon">✕</span>
+        <span class="dl-btn-text">
+          <span class="dl-btn-title">Clear All</span>
+          <span class="dl-btn-sub">Start over with new images</span>
+        </span>
+      </button>
+    </div>
   </div>
 </div>
 

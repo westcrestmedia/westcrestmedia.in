@@ -120,15 +120,15 @@ async function addFiles(files) {
 
   if (isSingle) {
     // Single photo: go straight to processing
-    document.getElementById('btn-process-all').disabled = true;
+    const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
     const item = items[items.length - 1];
     await processItem(item);
-    document.getElementById('btn-process-all').disabled = false;
+    const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
     updateBatchHeader();
     if (item.status === 'done' && !editorOpened && !activeId) { editorOpened = true; openEditor(item.id); }
   } else {
     // Multiple photos: process sequentially, pick queued items dynamically so add-more items are included
-    document.getElementById('btn-process-all').disabled = true;
+    const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
     let firstOpened = false;
     let next;
     while ((next = items.find(i => i.status === 'queued'))) {
@@ -138,7 +138,7 @@ async function addFiles(files) {
         openEditor(next.id);
       }
     }
-    document.getElementById('btn-process-all').disabled = false;
+    const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
     updateBatchHeader();
   }
 }
@@ -197,8 +197,12 @@ function updateBatchHeader() {
   const hdr = document.getElementById('batch-header');
   hdr.classList.toggle('active', items.length > 0);
   document.getElementById('batch-title-text').textContent = `${items.length} image${items.length!==1?'s':''}`;
-  const allDone = items.length > 0 && items.every(i=>i.status==='done');
-  document.getElementById('btn-dl-all').style.display = allDone ? '' : 'none';
+  // btn-dl-all was part of the top toolbar that's no longer in the DOM; guard in case it's reintroduced
+  const dlAllBtn = document.getElementById('btn-dl-all');
+  if (dlAllBtn) {
+    const allDone = items.length > 0 && items.every(i=>i.status==='done');
+    dlAllBtn.style.display = allDone ? '' : 'none';
+  }
 }
 
 /* ── REMOVE SINGLE ITEM ── */
@@ -228,7 +232,7 @@ window.removeItem = function(id) {
 window.processAll = async function() {
   const toProcess = items.filter(i=>i.status==='queued'||i.status==='error');
   if (!toProcess.length) return;
-  document.getElementById('btn-process-all').disabled = true;
+  const _bpa1 = document.getElementById('btn-process-all'); if (_bpa1) _bpa1.disabled = true;
   let firstOpened = false;
   for (const item of toProcess) {
     await processItem(item);
@@ -237,7 +241,7 @@ window.processAll = async function() {
       openEditor(item.id);
     }
   }
-  document.getElementById('btn-process-all').disabled = false;
+  const _bpa2 = document.getElementById('btn-process-all'); if (_bpa2) _bpa2.disabled = false;
   updateBatchHeader();
 };
 
