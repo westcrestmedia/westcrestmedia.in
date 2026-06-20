@@ -23,10 +23,19 @@ function setBtnDlDisabled(disabled){
   document.getElementById('btnDl').disabled=disabled;
   document.getElementById('btnDlTop').disabled=disabled;
 }
-function setBtnZipVisible(visible){
-  const v=visible?'':'none';
-  document.getElementById('btnZip').style.display=v;
-  document.getElementById('btnZipTop').style.display=v;
+// Download/ZIP button in both action bars (sidebar + sticky top duplicate).
+// Shows as soon as ANY photo is done — label switches between a plain
+// "Download" (one photo, no need to zip) and "Download All (N)" (zips
+// everything finished so far) so it's always obvious what it'll do.
+const DL_ICON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>';
+function updateZipButton(doneCount){
+  const show=doneCount>=1;
+  const label=doneCount<=1?`${DL_ICON} Download`:`${DL_ICON} Download All (${doneCount})`;
+  [document.getElementById('btnZip'),document.getElementById('btnZipTop')].forEach(b=>{
+    if(!b)return;
+    b.style.display=show?'':'none';
+    b.innerHTML=label;
+  });
 }
 
 // ═══════════════ PRESETS ═══════════════
@@ -721,7 +730,7 @@ async function doResize(){
 
 function dlSingle(){
   if(!singleResult)return;
-  const ext=getExt();
+  const ext=extForBlob(singleResult.blob);
   dl(singleResult.blob,buildFname(singleResult.name,singleResult.w,singleResult.h,1)+ext);
 }
 
@@ -945,7 +954,7 @@ function updateBatchHead(){
   document.getElementById('batchDone').innerText=done;
   document.getElementById('batchTxt').innerText=`${done}/${items.length}`;
   document.getElementById('batchStatBadge').style.display='';
-  setBtnZipVisible(done>1);
+  updateZipButton(done);
 }
 
 async function resizeAll(){
@@ -1038,16 +1047,23 @@ function editItem(id){
 window.dlItem=(id)=>{
   const it=items.find(i=>i.id===id);
   if(!it||!it.result)return;
-  const ext=getExt();
+  const ext=extForBlob(it.result.blob);
   dl(it.result.blob,buildFname(it.name,it.result.w,it.result.h,items.indexOf(it)+1)+ext);
 };
 
 async function dlZip(){
   const done=items.filter(i=>i.status==='done');
   if(!done.length)return;
+  if(done.length===1){
+    // Only one photo finished — no point zipping a single file, just
+    // download it directly (matches what the button now says: "Download").
+    return dlItem(done[0].id);
+  }
   const zip=new JSZip();
-  const ext=getExt();
-  done.forEach((it,idx)=>zip.file(buildFname(it.name,it.result.w,it.result.h,idx+1)+ext,it.result.blob));
+  // Extension is computed PER PHOTO — different photos can be different
+  // formats now (per-card custom settings), so one shared extension for
+  // the whole zip would mislabel some files.
+  done.forEach((it,idx)=>zip.file(buildFname(it.name,it.result.w,it.result.h,idx+1)+extForBlob(it.result.blob),it.result.blob));
   const b=await zip.generateAsync({type:'blob'});
   dl(b,'westcrest_resized.zip');
 }
@@ -1118,6 +1134,13 @@ function hideOverlay(){clearInterval(_ovInterval);document.getElementById('overl
 // ═══════════════ UTILS ═══════════════
 function fmt(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(2)+'MB';}
 function getExt(){return{'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/gif':'.gif','image/bmp':'.bmp'}[document.getElementById('outFmt').value]||'.webp';}
+// Extension based on what a blob ACTUALLY is, not whatever format happens
+// to be selected in the panel right now. Each photo can be a different
+// format (per-card custom settings), so downloads must look at the real
+// blob, never the live global panel — that was the bug.
+function extForBlob(blob){
+  return {'image/jpeg':'.jpg','image/png':'.png','image/webp':'.webp','image/gif':'.gif','image/bmp':'.bmp'}[blob&&blob.type] || getExt();
+}
 function buildFname(origName,w,h,idx){
   const prefix=document.getElementById('fnPrefix').value||'resized';
   const pattern=document.getElementById('fnPattern').value;
