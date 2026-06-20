@@ -294,7 +294,7 @@ async function processItem(item) {
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
         ? 'Preparing image for background removal'
-        : 'Downloading ~80 MB model (once only — cached forever after)';
+        : `Downloading ${isMobile() ? '~40 MB' : '~170 MB'} model (once only — cached forever after)`;
       procPct.textContent   = '0%';
     }
 
@@ -316,7 +316,7 @@ async function processItem(item) {
             procTitle.textContent = 'Downloading AI Model…';
             procSub.textContent   = modelCached
               ? 'Loading model from browser cache…'
-              : '⏳ First-time download (~80 MB). Next time it\'s instant!';
+              : `⏳ First-time download (${isMobile() ? '~40 MB' : '~170 MB'}). Next time it's instant!`;
           }
           if (p > 0) procPct.textContent = p + '%';
         } else if (key && key.includes('execute')) {
@@ -351,7 +351,7 @@ async function processItem(item) {
           procPct.textContent = p + '%';
         }
       },
-      model: isMobile() ? 'small' : 'medium',
+      model: isMobile() ? 'small' : 'large',
       output: { format: 'image/png', quality: 1 },
     });
 
