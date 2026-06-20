@@ -36,19 +36,26 @@ function getRefineWorker() {
  * Refines the alpha edge of a canvas in place (returns a NEW canvas; original is untouched).
  * Resolves with the refined canvas, or the original canvas if refinement fails/times out.
  */
-function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
+function refineEdges(srcCanvas) {
   return new Promise((resolve) => {
     const worker = getRefineWorker();
     if (!worker) { console.warn('[edge-refine] worker unavailable — skipping, using original mask'); resolve(srcCanvas); return; }
 
     const w = srcCanvas.width, h = srcCanvas.height;
-    // Cap the pixel budget so even very large images stay snappy; above this we just
-    // skip refinement rather than risk a slow pass (graceful, not a hang).
-    const PIXEL_BUDGET = 6_000_000; // ~6MP
+    const megapixels = (w * h) / 1e6;
+    // Raised from 6MP -> 24MP: real camera photos (4500x3000 = 13.5MP, even 6000x4000 = 24MP)
+    // need to actually go through refinement, not get silently skipped. Only truly huge
+    // images get skipped now — everything realistic gets processed.
+    const PIXEL_BUDGET = 24_000_000;
     if (w * h > PIXEL_BUDGET) {
-      console.warn(`[edge-refine] image too large (${w}x${h} = ${(w*h/1e6).toFixed(1)}MP) — skipping, using original mask`);
+      console.warn(`[edge-refine] image too large (${w}x${h} = ${megapixels.toFixed(1)}MP) — skipping, using original mask`);
       resolve(srcCanvas); return;
     }
+    // For big-but-supported images, widen the band/radius proportionally less (in px terms
+    // a fixed band already covers more relative edge at high res) but raise the timeout
+    // since there's simply more pixel work to do.
+    const bandPx = megapixels > 10 ? 26 : 22;
+    const dynamicTimeout = Math.min(20000, Math.max(8000, Math.round(megapixels * 700)));
 
     let settled = false;
     const reqId = ++_refineReqId;
@@ -58,9 +65,9 @@ function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
       if (settled) return;
       settled = true;
       worker.removeEventListener('message', onMsg);
-      console.warn(`[edge-refine] timed out after ${timeoutMs}ms — using original mask`);
+      console.warn(`[edge-refine] timed out after ${dynamicTimeout}ms — using original mask`);
       resolve(srcCanvas); // safe fallback: original mask, never a hang
-    }, timeoutMs);
+    }, dynamicTimeout);
 
     function onMsg(e) {
       if (e.data.id !== reqId) return;
@@ -91,7 +98,7 @@ function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
       const imgData = ctx.getImageData(0, 0, w, h);
       worker.addEventListener('message', onMsg);
       worker.postMessage(
-        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx: 22, strength: 0.85 },
+        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx, strength: 0.85 },
         [imgData.data.buffer]
       );
     } catch (err) {
