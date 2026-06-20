@@ -797,13 +797,41 @@ function renderBatch(){
           it.status==='working'?'🔄 Resizing…':
           it.status==='done'?'✅ Done':'❌ Error'
         }</span>
-        <div style="display:flex;gap:4px;">
-          ${it.status==='error'?`<button class="btn-edit-sm" onclick="event.stopPropagation();retryItem('${it.id}')" title="Try resizing this photo again">↻ Retry</button>`:''}
-          <button class="btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')" title="${it.status==='done'?'Re-edit just this photo — change its size, format or other settings without touching the rest of the batch.':'Give just this one photo its own size, format or settings. Click Resize All afterwards and only this photo will use these custom settings — every other photo keeps using whatever is shown in the panel on the left.'}">${it.status==='done'?'✏ Re-edit':'⚙ Custom Settings'}</button>
-          <button class="btn-dl-sm" onclick="event.stopPropagation();dlItem('${it.id}')" ${it.status!=='done'?'disabled':''}>⬇</button>
+        <div class="bcard-foot-actions">
+          ${it.status==='error'?`<button class="ir-btn-retry-sm" onclick="event.stopPropagation();retryItem('${it.id}')" title="Try resizing this photo again with the same settings">↻ Retry</button>`:''}
+          <button class="ir-btn-resize-sm" onclick="event.stopPropagation();resizeCard('${it.id}')" title="Resize THIS photo right now, using whatever size/format/preset is currently set in the panel on the left. These settings get locked to this photo only — they will not change again later, even if you edit the panel or click Resize All for other photos.">▶ Resize</button>
+          <button class="ir-btn-edit-sm" onclick="event.stopPropagation();editItem('${it.id}')" title="${it.status==='done'?'Open a full editing view for just this photo — change its size, format or other settings without touching the rest of the batch.':'Open a full editing view to give just this one photo its own size, format or settings.'}">${it.status==='done'?'✏ Re-edit':'⚙ Settings'}</button>
+          <button class="ir-btn-dl-sm" onclick="event.stopPropagation();dlItem('${it.id}')" ${it.status!=='done'?'disabled':''} title="Download this photo">⬇</button>
         </div>
       </div>
     </div>`).join('');
+}
+
+// Resize just ONE card using the panel's current settings — the simple,
+// no-mode-switching way to give a single photo its own look. The settings
+// used are locked to this item (it.settings) so neither a future "Resize
+// All" nor further panel changes for other photos will touch it again.
+async function resizeCard(id){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  it.status='working';
+  try{renderBatch();}catch(e){console.error('renderBatch failed',e);}
+  showOverlay('Resizing…',it.name.slice(0,30));
+  const settingsToUse=captureSettings(); // exactly what's shown in the panel right now
+  try{
+    const r=await processFile(it.file,it.origW,it.origH);
+    if(!r||!r.blob) throw new Error('No output was produced for this image.');
+    it.result=r;it.status='done';it.errorMsg=null;
+    it.settings=settingsToUse; // lock it in
+  }catch(e){
+    console.error('Resize failed for',it.name,e);
+    it.status='error';
+    it.errorMsg=(e&&e.message)?e.message:'Could not process this image.';
+  }
+  try{renderBatch();updateBatchHead();}catch(e){console.error('renderBatch/updateBatchHead failed',e);}
+  hideOverlay();
+  renderStrip();
+  if(selectedBatchId===id) selectBatchCard(id); // refresh the compare panel if this card is open
 }
 
 // Retry just one failed photo without touching the rest of the batch
@@ -819,6 +847,12 @@ function selectBatchCard(id){
   const it=items.find(i=>i.id===id);
   if(!it)return;
   selectedBatchId=id;
+  // If this photo already has its own locked settings, load them into the
+  // panel so the person sees (and can further tweak) exactly what this
+  // photo will use the next time they hit the card's ▶ Resize button.
+  if(it.settings){
+    try{applySettings(it.settings);}catch(e){console.error('applySettings failed in selectBatchCard',e);}
+  }
   renderBatch();
   // populate detail bar
   const outFmt=getOutFmtLabel();
