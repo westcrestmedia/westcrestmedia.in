@@ -1,0 +1,160 @@
+/**
+ * landing-footer.css — Landing Page Footer
+ * Include only on: index.html (landing page)
+ * Pair with: landing-footer.js (handles dynamic year, etc.)
+ * Note: relies on global :root CSS variables already defined in index.html
+ *       (--bg2, --border, --gold, --white, --white-dim, --font-display)
+ */
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 60px 0 40px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 60px;
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.2em;
+  font-weight: 300;
+}
+
+.footer-logo span {
+  color: var(--gold);
+}
+
+.footer-tagline {
+  font-size: 0.72rem;
+  color: var(--white-dim);
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+}
+
+.footer-links-group {
+  display: flex;
+  gap: 80px;
+}
+
+.footer-col h3.footer-col-heading,
+.footer-col h4 {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-col a {
+  font-size: 0.78rem;
+  color: var(--white-dim);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover {
+  color: var(--white);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-copy {
+  font-size: 0.65rem;
+  color: var(--white-dim);
+  letter-spacing: 0.08em;
+}
+
+.footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-legal a {
+  font-size: 0.62rem;
+  color: var(--white-dim);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.3s;
+}
+
+.footer-legal a:hover {
+  color: var(--gold);
+}
+
+.footer-legal-sep {
+  font-size: 0.55rem;
+  color: rgba(245, 240, 232, 0.25);
+}
+
+.social-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white-dim);
+  text-decoration: none;
+  font-size: 0.75rem;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.social-link:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .footer-top {
+    flex-direction: column;
+    gap: 40px;
+  }
+  .footer-links-group {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 18px;
+    text-align: center;
+  }
+  .footer-legal {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .social-links {
+    justify-content: center;
+  }
+}
