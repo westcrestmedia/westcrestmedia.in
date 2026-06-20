@@ -1938,3 +1938,124 @@ function loadImg(src){
   });
 }
 
+/* ══════════════════════════════════════════════════════════
+   SLIDER ENHANCER
+   Converts every <input type=range> + adjacent .slider-val span
+   into: [range slider] [editable number box] [↺ mini reset]
+   - Number box lets the user type an exact value; typing updates
+     the slider live and fires the slider's original handler.
+   - Mini reset restores that ONE control to its defaultValue
+     (the value/min baked into the HTML), without touching siblings.
+   - Skips any slider whose value box has already been converted,
+     so this is safe to call more than once and never double-boxes.
+   ══════════════════════════════════════════════════════════ */
+function enhanceSliders(root) {
+  root = root || document;
+  const ranges = root.querySelectorAll('input[type="range"]');
+
+  ranges.forEach(range => {
+    if (range.dataset.enhanced === '1') return; // already processed
+
+    const valId = range.id + '-val';
+    const valSpan = document.getElementById(valId);
+    if (!valSpan) return; // no companion display — leave slider alone (e.g. unlabeled sliders)
+    if (valSpan.dataset.enhanced === '1') return;
+
+    // Parse current text to detect a unit suffix (px, %, °) or none
+    const rawText = valSpan.textContent.trim();
+    const numMatch = rawText.match(/-?\d+(\.\d+)?/);
+    const unit = numMatch ? rawText.slice(numMatch.index + numMatch[0].length) : '';
+
+    // Build number input (replaces the span's job, keeps the same id so
+    // existing JS that does document.getElementById(id+'-val').textContent=
+    // still works — we intercept via a setter shim below)
+    const numInput = document.createElement('input');
+    numInput.type = 'number';
+    numInput.className = 'slider-val-input';
+    numInput.id = valId;
+    numInput.min = range.min;
+    numInput.max = range.max;
+    numInput.step = range.step || '1';
+    numInput.value = range.value;
+    numInput.dataset.enhanced = '1';
+    numInput.dataset.unit = unit;
+
+    // Unit label shown after the box (px / % / °), purely cosmetic
+    let unitSpan = null;
+    if (unit) {
+      unitSpan = document.createElement('span');
+      unitSpan.className = 'slider-val-unit';
+      unitSpan.textContent = unit;
+    }
+
+    // Mini reset button — restores ONLY this slider to its HTML default
+    const defaultVal = range.getAttribute('value') || range.defaultValue || range.min;
+    const miniReset = document.createElement('button');
+    miniReset.type = 'button';
+    miniReset.className = 'slider-mini-reset';
+    miniReset.title = 'Reset this value';
+    miniReset.innerHTML = '↺';
+    miniReset.addEventListener('click', () => {
+      range.value = defaultVal;
+      numInput.value = defaultVal;
+      range.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    // Swap span -> number input in the DOM, then append unit + reset after it
+    valSpan.replaceWith(numInput);
+    if (unitSpan) numInput.insertAdjacentElement('afterend', unitSpan);
+    (unitSpan || numInput).insertAdjacentElement('afterend', miniReset);
+
+    // ── Back-compat shim ──────────────────────────────────────────
+    // Lots of existing code does: document.getElementById(id+'-val').textContent = '123%'
+    // That used to set a <span>'s text. Now the element is an <input>, where
+    // .textContent is invisible (the box shows .value instead). Rather than
+    // rewriting ~90 call sites, we override .textContent on THIS element so
+    // old assignments transparently extract the number and unit and route
+    // them to .value + the unit span, keeping every existing call working.
+    Object.defineProperty(numInput, 'textContent', {
+      configurable: true,
+      get() { return numInput.value + (numInput.dataset.unit || ''); },
+      set(text) {
+        const m = String(text).match(/-?\d+(\.\d+)?/);
+        if (m) numInput.value = m[0];
+        const u = m ? String(text).slice(m.index + m[0].length) : '';
+        if (u && unitSpan) unitSpan.textContent = u;
+      }
+    });
+    // ─────────────────────────────────────────────────────────────
+
+    // Number box -> range slider (typing sets the slider + fires its handler)
+    const pushToRange = () => {
+      let v = parseFloat(numInput.value);
+      if (isNaN(v)) return;
+      const min = parseFloat(range.min), max = parseFloat(range.max);
+      if (min !== undefined && !isNaN(min)) v = Math.max(min, v);
+      if (max !== undefined && !isNaN(max)) v = Math.min(max, v);
+      numInput.value = v;
+      range.value = v;
+      range.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    numInput.addEventListener('change', pushToRange);
+    numInput.addEventListener('keydown', e => { if (e.key === 'Enter') { pushToRange(); numInput.blur(); } });
+
+    // Range slider -> number box (dragging keeps the box live in sync)
+    range.addEventListener('input', () => {
+      numInput.value = range.value;
+    });
+
+    range.dataset.enhanced = '1';
+  });
+}
+
+// Run once DOM is ready (safe even if this script runs after DOMContentLoaded already fired)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => enhanceSliders());
+} else {
+  enhanceSliders();
+}
+
+// Re-scan whenever mobile sheets / panels open, in case new sliders were
+// lazily inserted — cheap no-op for already-enhanced sliders.
+window.enhanceSliders = enhanceSliders;
+
