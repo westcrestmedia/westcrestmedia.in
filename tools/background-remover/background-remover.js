@@ -1,57 +1,17 @@
 /**
  * background-remover.js — Tool logic for AI Background Remover Pro
- * External deps: @huggingface/transformers (dynamic CDN import, BiRefNet model for
- * high-quality matting — hair/fur/fine-edge aware), JSZip (loaded via CDN <script> in HTML)
+ * External deps: @imgly/background-removal (dynamic CDN import), JSZip (loaded via CDN <script> in HTML)
  */
 
-/* ── AI MODEL LOADER ──
- * Switched from @imgly/background-removal (isnet) to BiRefNet, an open-source
- * (MIT licensed) model specifically trained for high-resolution dichotomous image
- * segmentation — it produces noticeably better alpha mattes around hair, fur, and
- * other fine/soft edges than isnet. Loaded via transformers.js, same "free, runs
- * fully in the browser" model as before — just a better underlying network. */
-const TRANSFORMERS_VERSION = '4.0.0'; // v3.2.4's pipeline() doesn't recognize BiRefNet's Swin-based config ("Unsupported model type: swin")
-const BIREFNET_MODEL_ID = 'onnx-community/BiRefNet_lite-ONNX'; // lighter variant, browser-friendly
-// BiRefNet is NOT supported by the high-level pipeline('image-segmentation', ...) wrapper —
-// that wrapper only knows how to post-process a fixed set of architectures, and BiRefNet's
-// Swin-based backbone isn't one of them (hence "Unsupported model type: swin"). The model's
-// own documented usage instead loads AutoModel + AutoProcessor directly and runs/post-
-// processes the alpha matte by hand, so we mirror that pattern here.
-let segmentModel = null;
-let segmentProcessor = null;
-let transformersRawImage = null; // RawImage class, needed to build inputs from File/Blob
-let _segmentLoadPromise = null;
+/* ── AI MODEL LOADER ── */
+const LIB_VERSION = '1.5.5';
+let removeBackground = null;
 async function loadLib() {
-  if (segmentModel && segmentProcessor) return { model: segmentModel, processor: segmentProcessor };
-  if (_segmentLoadPromise) return _segmentLoadPromise;
-  _segmentLoadPromise = (async () => {
-    const mod = await import(`https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/+esm`);
-    const { AutoModel, AutoProcessor, RawImage, env } = mod;
-    transformersRawImage = RawImage;
-    // This site is not cross-origin-isolated (no COOP/COEP headers), so SharedArrayBuffer
-    // is unavailable (see the console warning) and the multi-threaded WASM backend falls
-    // back unreliably. Force single-threaded WASM explicitly so we always get the stable
-    // code path instead of silently hitting the broken one.
-    if (env && env.backends && env.backends.onnx && env.backends.onnx.wasm) {
-      env.backends.onnx.wasm.numThreads = 1;
-      // By default transformers.js runs the ONNX session inside a separate Worker (the
-      // "proxy" backend) and copies tensors across the main-thread/worker boundary via
-      // postMessage. Without SharedArrayBuffer, that copy can't be zero-copy, so large
-      // model buffers end up allocated TWICE (once per side) — which lines up exactly
-      // with "failed to call OrtRun() ... std::bad_alloc" happening even on a tiny image
-      // (the model's own weights, not the image, are what's blowing the budget). Forcing
-      // proxy:false keeps everything on the main thread with a single allocation.
-      env.backends.onnx.wasm.proxy = false;
-    }
-    // NOTE: this repo only ships model.onnx (fp32, 224MB) and model_fp16.onnx (115MB).
-    // fp16 isn't natively supported by the WASM/CPU execution provider — onnxruntime
-    // upcasts it to fp32 internally, which adds conversion overhead and was implicated
-    // in the bad_alloc crash above. Using fp32 directly avoids that extra path.
-    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'fp32' });
-    segmentProcessor = await AutoProcessor.from_pretrained(BIREFNET_MODEL_ID);
-    return { model: segmentModel, processor: segmentProcessor };
-  })();
-  return _segmentLoadPromise;
+  if (removeBackground) return removeBackground;
+  const mod = await import(`https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/+esm`);
+  removeBackground = mod.removeBackground || mod.default || Object.values(mod).find(v=>typeof v==='function');
+  if (!removeBackground) throw new Error('removeBackground not found');
+  return removeBackground;
 }
 
 /* ── EDGE REFINEMENT (off-thread alpha matting for better hair/fine-edge quality) ──
@@ -423,89 +383,84 @@ async function processItem(item) {
   }
 
   try {
-    // Stage 1: Load the model + processor
-    const progBar = document.getElementById(`prog-${item.id}`);
-    if (progBar) progBar.style.width = '10%';
-    const { model, processor } = await loadLib();
-    if (progBar) progBar.style.width = '50%';
+    // Stage 1: Load the library
+    const rbFn = await loadLib();
 
     if (showOnCanvas) {
-      // No native per-chunk download progress callback in the AutoModel/AutoProcessor
-      // path (unlike the old pipeline() API), so just reflect that loading is underway.
       setStage(modelCached ? 3 : 2);
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
-        ? 'Loading model from browser cache…'
-        : `⏳ First-time download (~224 MB). Next time it's instant!`;
+        ? 'Preparing image for background removal'
+        : `Downloading ${isMobile() ? '~40 MB' : '~170 MB'} model (once only — cached forever after)`;
       procPct.textContent   = '0%';
     }
 
-    // Pass a RawImage (transformers.js's own image type) rather than a bare URL —
-    // this is the documented/tested pattern and avoids relying on any internal
-    // URL-fetching path, which adds an extra unnecessary network round trip for a
-    // File we already have in memory.
-    const rawImage = await transformersRawImage.fromBlob(item.file);
+    let lastStage = '';
+    const blob = await rbFn(item.file, {
+      publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
+      progress: (key, cur, tot) => {
+        const p   = tot > 0 ? Math.round(cur / tot * 100) : 0;
+        const bar = document.getElementById(`prog-${item.id}`);
+        if (bar) bar.style.width = p + '%';
 
-    if (showOnCanvas) {
-      setStage(3);
-      procTitle.textContent = 'Optimising Image…';
-      procSub.textContent   = 'Analysing image with neural network';
-      localStorage.setItem('wc_model_cached', '1');
-    }
+        if (!showOnCanvas) return;
 
-    // BiRefNet's documented usage: preprocess via the model's own processor, run the
-    // model, then sigmoid + scale the output logits into a 0-255 mask ourselves —
-    // there's no pipeline() wrapper doing this post-processing for us anymore.
-    const { pixel_values } = await processor(rawImage);
-    const { output_image } = await model({ input_image: pixel_values });
-    let maskRaw = await transformersRawImage.fromTensor(
-      output_image[0].sigmoid().mul(255).to('uint8')
-    );
-    if (progBar) progBar.style.width = '90%';
+        if (key && key.includes('fetch')) {
+          // Model download stage
+          if (lastStage !== 'fetch') {
+            lastStage = 'fetch';
+            setStage(2);
+            procTitle.textContent = 'Downloading AI Model…';
+            procSub.textContent   = modelCached
+              ? 'Loading model from browser cache…'
+              : `⏳ First-time download (${isMobile() ? '~40 MB' : '~170 MB'}). Next time it's instant!`;
+          }
+          if (p > 0) procPct.textContent = p + '%';
+        } else if (key && key.includes('execute')) {
+          // Model execution stage
+          if (lastStage !== 'execute') {
+            lastStage = 'execute';
+            setStage(3);
+            procTitle.textContent = 'Optimising Image…';
+            procSub.textContent   = 'Analysing image with neural network';
+            localStorage.setItem('wc_model_cached', '1'); // mark model as cached
+          }
+          if (p > 0) procPct.textContent = p + '%';
+        } else if (key && (key.includes('inference') || key.includes('segment') || key.includes('process') || key.includes('output'))) {
+          // Inference / removing background stage
+          if (lastStage !== 'remove') {
+            lastStage = 'remove';
+            setStage(4);
+            procTitle.textContent = 'Removing Background…';
+            procSub.textContent   = 'AI is precisely cutting out your subject';
+            localStorage.setItem('wc_model_cached', '1');
+          }
+          if (p > 0) procPct.textContent = p + '%';
+        } else if (p > 0) {
+          // Fallback: if we haven't advanced to stage 4 yet, do it now
+          if (lastStage !== 'remove') {
+            lastStage = 'remove';
+            setStage(4);
+            procTitle.textContent = 'Removing Background…';
+            procSub.textContent   = 'AI is precisely cutting out your subject';
+            localStorage.setItem('wc_model_cached', '1');
+          }
+          procPct.textContent = p + '%';
+        }
+      },
+      // NOTE: the library's valid model names are 'isnet' (full precision, best quality,
+      // heaviest), 'isnet_fp16' (default, balanced) and 'isnet_quint8' (quantized, fastest,
+      // most artifacts). 'small'/'large' are NOT real options — passing them silently fell
+      // back to the library default, so "large" was never actually being used on desktop.
+      model: isMobile() ? 'isnet_fp16' : 'isnet',
+      output: { format: 'image/png', quality: 1 },
+    });
 
-    if (showOnCanvas) {
-      setStage(4);
-      procTitle.textContent = 'Removing Background…';
-      procSub.textContent   = 'AI is precisely cutting out your subject';
-      procPct.textContent   = '…';
-      localStorage.setItem('wc_model_cached', '1');
-    }
-
-    // Load the original image at full resolution so the final cutout isn't limited
-    // to whatever internal size the model used for inference.
-    const origImg = await loadImg(URL.createObjectURL(item.file));
-    const ow = origImg.naturalWidth, oh = origImg.naturalHeight;
-
+    // Done — store result
+    const img = await loadImg(URL.createObjectURL(blob));
     const cvs = document.createElement('canvas');
-    cvs.width = ow; cvs.height = oh;
-    const cctx2 = cvs.getContext('2d', { willReadFrequently: true });
-    cctx2.drawImage(origImg, 0, 0, ow, oh);
-    const imgData = cctx2.getImageData(0, 0, ow, oh);
-
-    // Resize the mask to the original image's resolution using RawImage's own resize
-    // (documented API: RawImage#resize(width, height) -> Promise<RawImage>), then read
-    // its pixel data directly. This avoids relying on any canvas-conversion helper that
-    // may not exist across transformers.js versions.
-    if (maskRaw.width !== ow || maskRaw.height !== oh) {
-      maskRaw = await maskRaw.resize(ow, oh);
-    }
-    const maskPixels = maskRaw.data; // single-channel grayscale Uint8(Clamped)Array, length ow*oh
-    const maskChannels = maskRaw.channels || 1;
-    // Defensive: we already scale by 255 above via .mul(255), but guard against a
-    // 0-1 float mask slipping through in case of a future API change (would otherwise
-    // make the whole image nearly transparent).
-    let maxSeen = 0;
-    for (let i = 0; i < Math.min(maskPixels.length, 10000); i++) {
-      if (maskPixels[i] > maxSeen) maxSeen = maskPixels[i];
-    }
-    const maskScale = maxSeen <= 1.0001 ? 255 : 1;
-
-    // Apply mask value as alpha onto the original RGB — RGB pixels are untouched,
-    // only transparency is set, matching how the old pipeline's output worked.
-    for (let i = 0; i < ow * oh; i++) {
-      imgData.data[i*4 + 3] = Math.min(255, Math.round(maskPixels[i * maskChannels] * maskScale));
-    }
-    cctx2.putImageData(imgData, 0, 0);
+    cvs.width = img.naturalWidth; cvs.height = img.naturalHeight;
+    cvs.getContext('2d').drawImage(img, 0, 0);
 
     // Edge refinement pass — softens/sharpens the alpha right at the hair & fabric
     // boundary using the original pixel colors as a guide. Off-thread, time-boxed,
