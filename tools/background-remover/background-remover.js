@@ -1588,12 +1588,20 @@ function buildExportCanvasForItem(item) {
   const eSH = drawnH_dc  * ratio;
   const eSX = originX_dc * ratio;
   const eSY = originY_dc * ratio;
+  const eCX = eSX + eSW / 2;
+  const eCY = eSY + eSH / 2;
+  const eRad = (bg.subjectRotation || 0) * Math.PI / 180;
+  const eFlipX = !!bg.flipX, eFlipY = !!bg.flipY;
 
   // Glow export
   if (bg.glowEnabled && bg.glowBlur > 0) {
     const hex = bg.glowColor, a = (bg.glowStrength || 60) / 100;
     const r = parseInt(hex.slice(1,3),16), gv = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
     ectx.save();
+    ectx.translate(eCX, eCY); ectx.rotate(eRad);
+    if (eFlipX) ectx.scale(-1, 1);
+    if (eFlipY) ectx.scale(1, -1);
+    ectx.translate(-eCX, -eCY);
     ectx.shadowColor = "rgba(" + r + "," + gv + "," + b + "," + a + ")";
     ectx.shadowBlur = bg.glowBlur * 2 * ratio;
     ectx.shadowOffsetX = 0;
@@ -1610,6 +1618,10 @@ function buildExportCanvasForItem(item) {
     const hex = bg.shadowColor, a = bg.shadowOpacity / 100;
     const r = parseInt(hex.slice(1,3),16), gv = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
     ectx.save();
+    ectx.translate(eCX, eCY); ectx.rotate(eRad);
+    if (eFlipX) ectx.scale(-1, 1);
+    if (eFlipY) ectx.scale(1, -1);
+    ectx.translate(-eCX, -eCY);
     ectx.shadowColor   = "rgba(" + r + "," + gv + "," + b + "," + a + ")";
     ectx.shadowBlur    = bg.shadowBlur * ratio;
     ectx.shadowOffsetX = dx;
@@ -1620,10 +1632,22 @@ function buildExportCanvasForItem(item) {
 
   // Outline export
   if (bg.outlineEnabled && bg.outlineWidth > 0) {
+    ectx.save();
+    ectx.translate(eCX, eCY); ectx.rotate(eRad);
+    if (eFlipX) ectx.scale(-1, 1);
+    if (eFlipY) ectx.scale(1, -1);
+    ectx.translate(-eCX, -eCY);
     drawOutline(ectx, subject, eSX, eSY, eSW, eSH, bg.outlineColor, bg.outlineWidth * ratio);
+    ectx.restore();
   }
 
+  ectx.save();
+  ectx.translate(eCX, eCY); ectx.rotate(eRad);
+  if (eFlipX) ectx.scale(-1, 1);
+  if (eFlipY) ectx.scale(1, -1);
+  ectx.translate(-eCX, -eCY);
   ectx.drawImage(subject, eSX, eSY, eSW, eSH);
+  ectx.restore();
   return exp;
 }
 
