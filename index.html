@@ -88,6 +88,18 @@
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* Without this, <button class="hamburger"> (and any other plain <button>)
+       falls back to the browser's native white/grey button chrome instead of
+       picking up the dark theme — this is what was showing as a solid white
+       box where the 3-line hamburger icon should be. */
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
     :root {
       --bg: #111118;
       --bg2: #16161e;
