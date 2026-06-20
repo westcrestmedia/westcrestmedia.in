@@ -14,6 +14,85 @@ async function loadLib() {
   return removeBackground;
 }
 
+/* ── EDGE REFINEMENT (off-thread alpha matting for better hair/fine-edge quality) ──
+ * Runs in a Web Worker so it never blocks/hangs the UI. Only touches the alpha channel
+ * near the foreground/background boundary — RGB pixels are never modified, so this can
+ * never result in a solid-color background. If the worker errors or times out, the
+ * caller keeps the original (unrefined) canvas — always a safe, visible fallback. */
+let _refineWorker = null;
+let _refineReqId = 0;
+function getRefineWorker() {
+  if (_refineWorker) return _refineWorker;
+  try {
+    _refineWorker = new Worker('./edge-refine-worker.js');
+  } catch (err) {
+    console.warn('Edge refine worker unavailable:', err);
+    _refineWorker = null;
+  }
+  return _refineWorker;
+}
+
+/**
+ * Refines the alpha edge of a canvas in place (returns a NEW canvas; original is untouched).
+ * Resolves with the refined canvas, or the original canvas if refinement fails/times out.
+ */
+function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
+  return new Promise((resolve) => {
+    const worker = getRefineWorker();
+    if (!worker) { resolve(srcCanvas); return; }
+
+    const w = srcCanvas.width, h = srcCanvas.height;
+    // Cap the pixel budget so even very large images stay snappy; above this we just
+    // skip refinement rather than risk a slow pass (graceful, not a hang).
+    const PIXEL_BUDGET = 6_000_000; // ~6MP
+    if (w * h > PIXEL_BUDGET) { resolve(srcCanvas); return; }
+
+    let settled = false;
+    const reqId = ++_refineReqId;
+
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      worker.removeEventListener('message', onMsg);
+      resolve(srcCanvas); // safe fallback: original mask, never a hang
+    }, timeoutMs);
+
+    function onMsg(e) {
+      if (e.data.id !== reqId) return;
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      worker.removeEventListener('message', onMsg);
+
+      if (!e.data.ok) { resolve(srcCanvas); return; }
+      try {
+        const refinedImgData = new ImageData(new Uint8ClampedArray(e.data.rgba), w, h);
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = w; outCanvas.height = h;
+        outCanvas.getContext('2d').putImageData(refinedImgData, 0, 0);
+        resolve(outCanvas);
+      } catch (err) {
+        console.warn('Edge refine apply failed, using original:', err);
+        resolve(srcCanvas);
+      }
+    }
+
+    try {
+      const ctx = srcCanvas.getContext('2d', { willReadFrequently: true });
+      const imgData = ctx.getImageData(0, 0, w, h);
+      worker.addEventListener('message', onMsg);
+      worker.postMessage(
+        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx: 14, strength: 0.6 },
+        [imgData.data.buffer]
+      );
+    } catch (err) {
+      clearTimeout(timer);
+      console.warn('Edge refine dispatch failed, using original:', err);
+      resolve(srcCanvas);
+    }
+  });
+}
+
 /* ── BATCH STATE ── */
 const MAX_BATCH = 20;
 let items = []; // { id, file, origBlob, resultCanvas, status, name, bgSnapshot }
@@ -351,7 +430,11 @@ async function processItem(item) {
           procPct.textContent = p + '%';
         }
       },
-      model: isMobile() ? 'small' : 'large',
+      // NOTE: the library's valid model names are 'isnet' (full precision, best quality,
+      // heaviest), 'isnet_fp16' (default, balanced) and 'isnet_quint8' (quantized, fastest,
+      // most artifacts). 'small'/'large' are NOT real options — passing them silently fell
+      // back to the library default, so "large" was never actually being used on desktop.
+      model: isMobile() ? 'isnet_fp16' : 'isnet',
       output: { format: 'image/png', quality: 1 },
     });
 
@@ -360,7 +443,20 @@ async function processItem(item) {
     const cvs = document.createElement('canvas');
     cvs.width = img.naturalWidth; cvs.height = img.naturalHeight;
     cvs.getContext('2d').drawImage(img, 0, 0);
-    item.resultCanvas = cvs;
+
+    // Edge refinement pass — softens/sharpens the alpha right at the hair & fabric
+    // boundary using the original pixel colors as a guide. Off-thread, time-boxed,
+    // and guaranteed to fall back to this same `cvs` (never a solid background) if
+    // anything goes wrong.
+    if (showOnCanvas) {
+      setStage(4);
+      procTitle.textContent = 'Refining Edges…';
+      procSub.textContent   = 'Polishing hair & fine detail';
+      procPct.textContent   = '…';
+    }
+    const refinedCvs = await refineEdges(cvs);
+
+    item.resultCanvas = refinedCvs;
     item.status = 'done';
 
     if (showOnCanvas) {
