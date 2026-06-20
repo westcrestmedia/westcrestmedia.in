@@ -1,17 +1,34 @@
 /**
  * background-remover.js — Tool logic for AI Background Remover Pro
- * External deps: @imgly/background-removal (dynamic CDN import), JSZip (loaded via CDN <script> in HTML)
+ * External deps: @huggingface/transformers (dynamic CDN import, BiRefNet model for
+ * high-quality matting — hair/fur/fine-edge aware), JSZip (loaded via CDN <script> in HTML)
  */
 
-/* ── AI MODEL LOADER ── */
-const LIB_VERSION = '1.5.5';
-let removeBackground = null;
+/* ── AI MODEL LOADER ──
+ * Switched from @imgly/background-removal (isnet) to BiRefNet, an open-source
+ * (MIT licensed) model specifically trained for high-resolution dichotomous image
+ * segmentation — it produces noticeably better alpha mattes around hair, fur, and
+ * other fine/soft edges than isnet. Loaded via transformers.js, same "free, runs
+ * fully in the browser" model as before — just a better underlying network. */
+const TRANSFORMERS_VERSION = '3.2.4';
+const BIREFNET_MODEL_ID = 'onnx-community/BiRefNet_lite-ONNX'; // lighter variant, browser-friendly
+let segmentPipeline = null;
+let transformersRawImage = null; // RawImage class, needed to build inputs from File/Blob
+let _segmentPipelinePromise = null;
 async function loadLib() {
-  if (removeBackground) return removeBackground;
-  const mod = await import(`https://cdn.jsdelivr.net/npm/@imgly/background-removal@${LIB_VERSION}/+esm`);
-  removeBackground = mod.removeBackground || mod.default || Object.values(mod).find(v=>typeof v==='function');
-  if (!removeBackground) throw new Error('removeBackground not found');
-  return removeBackground;
+  if (segmentPipeline) return segmentPipeline;
+  if (_segmentPipelinePromise) return _segmentPipelinePromise;
+  _segmentPipelinePromise = (async () => {
+    const mod = await import(`https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/+esm`);
+    const { pipeline, RawImage } = mod;
+    transformersRawImage = RawImage;
+    // q8 = quantized 8-bit weights: smallest download, fastest CPU(WASM) inference,
+    // the right default for a browser-based free tool. Falls back gracefully if the
+    // model ever changes its supported dtypes.
+    segmentPipeline = await pipeline('image-segmentation', BIREFNET_MODEL_ID, { dtype: 'q8' });
+    return segmentPipeline;
+  })();
+  return _segmentPipelinePromise;
 }
 
 /* ── EDGE REFINEMENT (off-thread alpha matting for better hair/fine-edge quality) ──
@@ -383,84 +400,109 @@ async function processItem(item) {
   }
 
   try {
-    // Stage 1: Load the library
-    const rbFn = await loadLib();
+    // Stage 1: Load the model/pipeline
+    const pipe = await loadLib();
 
     if (showOnCanvas) {
       setStage(modelCached ? 3 : 2);
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
         ? 'Preparing image for background removal'
-        : `Downloading ${isMobile() ? '~40 MB' : '~170 MB'} model (once only — cached forever after)`;
+        : `Downloading ~150 MB model (once only — cached forever after)`;
       procPct.textContent   = '0%';
     }
 
     let lastStage = '';
-    const blob = await rbFn(item.file, {
-      publicPath: `https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
-      progress: (key, cur, tot) => {
-        const p   = tot > 0 ? Math.round(cur / tot * 100) : 0;
+    let result;
+    // Pass a RawImage (transformers.js's own image type) rather than a bare URL —
+    // this is the documented/tested pattern and avoids relying on the pipeline's
+    // internal URL-fetching path, which adds an extra unnecessary network round trip
+    // for a File we already have in memory.
+    const rawImage = await transformersRawImage.fromBlob(item.file);
+    result = await pipe(rawImage, {
+      progress_callback: (p) => {
+        if (!p) return;
         const bar = document.getElementById(`prog-${item.id}`);
-        if (bar) bar.style.width = p + '%';
 
-        if (!showOnCanvas) return;
-
-        if (key && key.includes('fetch')) {
-          // Model download stage
+        // Per official transformers.js types: status is one of
+        // 'initiate' | 'download' | 'progress' | 'progress_total' | 'done' | 'ready'.
+        // 'progress'/'progress_total' carry a 0-100 percentage directly in p.progress.
+        if (p.status === 'progress' || p.status === 'progress_total') {
+          const pct = (typeof p.progress === 'number') ? Math.round(p.progress) : 0;
+          if (bar) bar.style.width = pct + '%';
+          if (!showOnCanvas) return;
           if (lastStage !== 'fetch') {
             lastStage = 'fetch';
             setStage(2);
             procTitle.textContent = 'Downloading AI Model…';
             procSub.textContent   = modelCached
               ? 'Loading model from browser cache…'
-              : `⏳ First-time download (${isMobile() ? '~40 MB' : '~170 MB'}). Next time it's instant!`;
+              : `⏳ First-time download (~150 MB). Next time it's instant!`;
           }
-          if (p > 0) procPct.textContent = p + '%';
-        } else if (key && key.includes('execute')) {
-          // Model execution stage
+          procPct.textContent = pct + '%';
+        } else if (p.status === 'ready' || p.status === 'done') {
+          if (!showOnCanvas) return;
           if (lastStage !== 'execute') {
             lastStage = 'execute';
             setStage(3);
             procTitle.textContent = 'Optimising Image…';
             procSub.textContent   = 'Analysing image with neural network';
-            localStorage.setItem('wc_model_cached', '1'); // mark model as cached
-          }
-          if (p > 0) procPct.textContent = p + '%';
-        } else if (key && (key.includes('inference') || key.includes('segment') || key.includes('process') || key.includes('output'))) {
-          // Inference / removing background stage
-          if (lastStage !== 'remove') {
-            lastStage = 'remove';
-            setStage(4);
-            procTitle.textContent = 'Removing Background…';
-            procSub.textContent   = 'AI is precisely cutting out your subject';
             localStorage.setItem('wc_model_cached', '1');
           }
-          if (p > 0) procPct.textContent = p + '%';
-        } else if (p > 0) {
-          // Fallback: if we haven't advanced to stage 4 yet, do it now
-          if (lastStage !== 'remove') {
-            lastStage = 'remove';
-            setStage(4);
-            procTitle.textContent = 'Removing Background…';
-            procSub.textContent   = 'AI is precisely cutting out your subject';
-            localStorage.setItem('wc_model_cached', '1');
-          }
-          procPct.textContent = p + '%';
         }
       },
-      // NOTE: the library's valid model names are 'isnet' (full precision, best quality,
-      // heaviest), 'isnet_fp16' (default, balanced) and 'isnet_quint8' (quantized, fastest,
-      // most artifacts). 'small'/'large' are NOT real options — passing them silently fell
-      // back to the library default, so "large" was never actually being used on desktop.
-      model: isMobile() ? 'isnet_fp16' : 'isnet',
-      output: { format: 'image/png', quality: 1 },
     });
 
-    // Done — store result
-    const img = await loadImg(URL.createObjectURL(blob));
+    if (showOnCanvas) {
+      setStage(4);
+      procTitle.textContent = 'Removing Background…';
+      procSub.textContent   = 'AI is precisely cutting out your subject';
+      procPct.textContent   = '…';
+      localStorage.setItem('wc_model_cached', '1');
+    }
+
+    // The image-segmentation pipeline returns an array of { label, score, mask } —
+    // for a single-class matting model like BiRefNet there's one entry whose mask is
+    // a RawImage (grayscale: white = foreground, black = background).
+    const seg = Array.isArray(result) ? result[0] : result;
+    if (!seg || !seg.mask) throw new Error('BiRefNet did not return a mask');
+    let maskRaw = seg.mask;
+
+    // Load the original image at full resolution so the final cutout isn't limited
+    // to whatever internal size the model used for inference.
+    const origImg = await loadImg(URL.createObjectURL(item.file));
+    const ow = origImg.naturalWidth, oh = origImg.naturalHeight;
+
     const cvs = document.createElement('canvas');
-    cvs.width = img.naturalWidth; cvs.height = img.naturalHeight;
-    cvs.getContext('2d').drawImage(img, 0, 0);
+    cvs.width = ow; cvs.height = oh;
+    const cctx2 = cvs.getContext('2d', { willReadFrequently: true });
+    cctx2.drawImage(origImg, 0, 0, ow, oh);
+    const imgData = cctx2.getImageData(0, 0, ow, oh);
+
+    // Resize the mask to the original image's resolution using RawImage's own resize
+    // (documented API: RawImage#resize(width, height) -> Promise<RawImage>), then read
+    // its pixel data directly. This avoids relying on any canvas-conversion helper that
+    // may not exist across transformers.js versions.
+    if (maskRaw.width !== ow || maskRaw.height !== oh) {
+      maskRaw = await maskRaw.resize(ow, oh);
+    }
+    const maskPixels = maskRaw.data; // single-channel grayscale Uint8(Clamped)Array, length ow*oh
+    const maskChannels = maskRaw.channels || 1;
+    // Defensive: the high-level image-segmentation pipeline is documented to return an
+    // already-scaled 0-255 mask, but guard against a 0-1 float mask slipping through
+    // (would otherwise make the whole image nearly transparent).
+    let maxSeen = 0;
+    for (let i = 0; i < Math.min(maskPixels.length, 10000); i++) {
+      if (maskPixels[i] > maxSeen) maxSeen = maskPixels[i];
+    }
+    const maskScale = maxSeen <= 1.0001 ? 255 : 1;
+
+    // Apply mask value as alpha onto the original RGB — RGB pixels are untouched,
+    // only transparency is set, matching how the old pipeline's output worked.
+    for (let i = 0; i < ow * oh; i++) {
+      imgData.data[i*4 + 3] = Math.min(255, Math.round(maskPixels[i * maskChannels] * maskScale));
+    }
+    cctx2.putImageData(imgData, 0, 0);
 
     // Edge refinement pass — softens/sharpens the alpha right at the hair & fabric
     // boundary using the original pixel colors as a guide. Off-thread, time-boxed,
