@@ -28,10 +28,10 @@ async function loadLib() {
     const mod = await import(`https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TRANSFORMERS_VERSION}/+esm`);
     const { AutoModel, AutoProcessor, RawImage } = mod;
     transformersRawImage = RawImage;
-    // q8 = quantized 8-bit weights: smallest download, fastest CPU(WASM) inference,
-    // the right default for a browser-based free tool. Falls back gracefully if the
-    // model ever changes its supported dtypes.
-    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'q8' });
+    // NOTE: this repo only ships model.onnx (fp32, 224MB) and model_fp16.onnx (115MB) —
+    // there is NO quantized/q8 file here, so dtype:'q8' 404s. Use 'fp16' for the smaller,
+    // faster browser download; fall back to 'fp32' if fp16 ever causes accuracy issues.
+    segmentModel = await AutoModel.from_pretrained(BIREFNET_MODEL_ID, { dtype: 'fp16' });
     segmentProcessor = await AutoProcessor.from_pretrained(BIREFNET_MODEL_ID);
     return { model: segmentModel, processor: segmentProcessor };
   })();
@@ -420,7 +420,7 @@ async function processItem(item) {
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
         ? 'Loading model from browser cache…'
-        : `⏳ First-time download (~150 MB). Next time it's instant!`;
+        : `⏳ First-time download (~115 MB). Next time it's instant!`;
       procPct.textContent   = '0%';
     }
 
