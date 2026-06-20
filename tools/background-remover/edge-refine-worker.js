@@ -23,19 +23,20 @@ self.onmessage = function (e) {
     const alphaIn = new Uint8Array(n);
     for (let i = 0; i < n; i++) alphaIn[i] = src[i * 4 + 3];
 
-    const band = bandPx || 14; // how many px around the edge to refine
+    const band = bandPx || 22; // how many px around the edge to refine
     const isEdge = new Uint8Array(n); // 1 = needs refinement
 
-    // Quick edge detection: a pixel is "near edge" if a neighbor at radius `band/3` (cheap pass)
-    // has a substantially different alpha. We do this with a small number of directional
-    // samples instead of a full dilation to keep it O(n).
+    // Quick edge detection: a pixel is "near edge" if a neighbor at radius `band/4` (cheap pass)
+    // has a different alpha. Threshold lowered from 40 -> 15 so partial/soft alpha values
+    // (very common in hair/fuzzy regions, where the AI is unsure and gives 30-200 instead of
+    // a hard 0/255) are still picked up as edge pixels and get refined, not skipped.
     const step = Math.max(2, Math.round(band / 4));
+    let edgeFlagCount = 0;
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
         const idx = y * w + x;
         const a = alphaIn[idx];
         let edge = false;
-        // check 4 directions at `step` distance
         const checks = [
           [x - step, y], [x + step, y], [x, y - step], [x, y + step]
         ];
@@ -43,9 +44,13 @@ self.onmessage = function (e) {
           const cx = checks[c][0], cy = checks[c][1];
           if (cx < 0 || cy < 0 || cx >= w || cy >= h) continue;
           const na = alphaIn[cy * w + cx];
-          if (Math.abs(na - a) > 40) { edge = true; break; }
+          if (Math.abs(na - a) > 15) { edge = true; break; }
         }
-        if (edge) isEdge[idx] = 1;
+        // Also flag any pixel that already has partial alpha (1-254) — these are exactly
+        // the soft/uncertain hair-edge pixels we most want to refine, even if their
+        // immediate neighbors happen to look similar.
+        if (!edge && a > 0 && a < 255) edge = true;
+        if (edge) { isEdge[idx] = 1; edgeFlagCount++; }
       }
     }
 
@@ -73,8 +78,9 @@ self.onmessage = function (e) {
     //    to the center pixel (so it follows hair strands / texture edges instead of
     //    blindly blurring across them).
     const alphaOut = new Uint8Array(alphaIn); // start as a copy — safe fallback baseline
-    const rad = Math.max(2, Math.round(band / 3));
-    const sFactor = (typeof strength === 'number' ? strength : 0.6);
+    const rad = Math.max(3, Math.round(band / 2.5));
+    const sFactor = (typeof strength === 'number' ? strength : 0.85);
+    let refinedCount = 0;
 
     for (let y = 0; y < h; y++) {
       for (let x = 0; x < w; x++) {
@@ -95,11 +101,15 @@ self.onmessage = function (e) {
             const nPix = nIdx * 4;
             const nr = src[nPix], ng = src[nPix + 1], nb = src[nPix + 2];
             // color-similarity weight (closer color => more influence) — this is what
-            // makes the filter "edge-aware" so it doesn't smear across hair strands
+            // makes the filter "edge-aware" so it doesn't smear across hair strands.
+            // Widened color tolerance (4000 -> 9000) so faint, low-alpha hair-strand
+            // pixels (which tend to be partially blended with the background color
+            // already) still get meaningful weight instead of being treated as
+            // "too different" and ignored.
             const dr = cr - nr, dg = cg - ng, db = cb - nb;
             const colorDist = dr * dr + dg * dg + db * db;
             const spatialDist = (nx - x) * (nx - x) + (ny - y) * (ny - y);
-            const weight = Math.exp(-colorDist / 4000) * Math.exp(-spatialDist / (2 * rad * rad));
+            const weight = Math.exp(-colorDist / 9000) * Math.exp(-spatialDist / (2 * rad * rad));
             wsum += weight;
             asum += weight * alphaIn[nIdx];
           }
@@ -107,9 +117,8 @@ self.onmessage = function (e) {
 
         if (wsum > 0) {
           const refined = asum / wsum;
-          // Blend refined value with original by `sFactor` so we never go fully soft
-          // (keeps strong, confident alpha areas intact, only softens true edges)
           alphaOut[idx] = Math.round(alphaIn[idx] * (1 - sFactor) + refined * sFactor);
+          refinedCount++;
         }
       }
     }
@@ -119,7 +128,7 @@ self.onmessage = function (e) {
     const out = new Uint8ClampedArray(src); // copy original RGB+old alpha
     for (let i = 0; i < n; i++) out[i * 4 + 3] = alphaOut[i];
 
-    self.postMessage({ id, ok: true, rgba: out.buffer }, [out.buffer]);
+    self.postMessage({ id, ok: true, rgba: out.buffer, edgePixelCount: refinedCount }, [out.buffer]);
   } catch (err) {
     // Never let a worker error corrupt the image — caller will fall back to the
     // original unrefined mask it already has.

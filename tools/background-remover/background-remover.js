@@ -39,21 +39,26 @@ function getRefineWorker() {
 function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
   return new Promise((resolve) => {
     const worker = getRefineWorker();
-    if (!worker) { resolve(srcCanvas); return; }
+    if (!worker) { console.warn('[edge-refine] worker unavailable — skipping, using original mask'); resolve(srcCanvas); return; }
 
     const w = srcCanvas.width, h = srcCanvas.height;
     // Cap the pixel budget so even very large images stay snappy; above this we just
     // skip refinement rather than risk a slow pass (graceful, not a hang).
     const PIXEL_BUDGET = 6_000_000; // ~6MP
-    if (w * h > PIXEL_BUDGET) { resolve(srcCanvas); return; }
+    if (w * h > PIXEL_BUDGET) {
+      console.warn(`[edge-refine] image too large (${w}x${h} = ${(w*h/1e6).toFixed(1)}MP) — skipping, using original mask`);
+      resolve(srcCanvas); return;
+    }
 
     let settled = false;
     const reqId = ++_refineReqId;
+    const t0 = performance.now();
 
     const timer = setTimeout(() => {
       if (settled) return;
       settled = true;
       worker.removeEventListener('message', onMsg);
+      console.warn(`[edge-refine] timed out after ${timeoutMs}ms — using original mask`);
       resolve(srcCanvas); // safe fallback: original mask, never a hang
     }, timeoutMs);
 
@@ -64,12 +69,16 @@ function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
       clearTimeout(timer);
       worker.removeEventListener('message', onMsg);
 
-      if (!e.data.ok) { resolve(srcCanvas); return; }
+      if (!e.data.ok) {
+        console.warn('[edge-refine] worker reported error — using original mask:', e.data.error);
+        resolve(srcCanvas); return;
+      }
       try {
         const refinedImgData = new ImageData(new Uint8ClampedArray(e.data.rgba), w, h);
         const outCanvas = document.createElement('canvas');
         outCanvas.width = w; outCanvas.height = h;
         outCanvas.getContext('2d').putImageData(refinedImgData, 0, 0);
+        console.log(`[edge-refine] done in ${(performance.now()-t0).toFixed(0)}ms, ${e.data.edgePixelCount ?? '?'} edge px refined out of ${w*h}`);
         resolve(outCanvas);
       } catch (err) {
         console.warn('Edge refine apply failed, using original:', err);
@@ -82,7 +91,7 @@ function refineEdges(srcCanvas, { timeoutMs = 8000 } = {}) {
       const imgData = ctx.getImageData(0, 0, w, h);
       worker.addEventListener('message', onMsg);
       worker.postMessage(
-        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx: 14, strength: 0.6 },
+        { id: reqId, width: w, height: h, rgba: imgData.data.buffer, bandPx: 22, strength: 0.85 },
         [imgData.data.buffer]
       );
     } catch (err) {
