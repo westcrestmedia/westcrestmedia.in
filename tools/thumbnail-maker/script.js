@@ -806,47 +806,6 @@ function drawSticker(layer){
 }
 
 // ===================== SELECTION HANDLES =====================
-let hoverCornerZone = null; // track which corner is hovered for drawing rotate icon
-
-function drawRotateIcon(cx, cy, angleDeg) {
-  // Draw a small thin curved double-arrow rotate icon at cx,cy rotated by angleDeg
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(angleDeg * Math.PI / 180);
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 1.2;
-  ctx.lineCap = 'round';
-  ctx.shadowColor = 'rgba(0,0,0,0.7)';
-  ctx.shadowBlur = 3;
-  const r = 7; // arc radius
-  // Arc: from ~40deg to ~320deg (leaving gaps for arrowheads)
-  ctx.beginPath();
-  ctx.arc(0, 0, r, 0.7, 2.4); // top-right arc
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(0, 0, r, 3.9, 5.6); // bottom-left arc
-  ctx.stroke();
-  // Arrowhead top-right end
-  const a1 = 2.4;
-  const ax1 = Math.cos(a1)*r, ay1 = Math.sin(a1)*r;
-  const tx1 = -Math.sin(a1), ty1 = Math.cos(a1); // tangent
-  ctx.beginPath();
-  ctx.moveTo(ax1 + tx1*3.5 - ty1*2, ay1 + ty1*3.5 + tx1*2);
-  ctx.lineTo(ax1, ay1);
-  ctx.lineTo(ax1 + tx1*3.5 + ty1*2, ay1 + ty1*3.5 - tx1*2);
-  ctx.stroke();
-  // Arrowhead bottom-left end
-  const a2 = 5.6;
-  const ax2 = Math.cos(a2)*r, ay2 = Math.sin(a2)*r;
-  const tx2 = Math.sin(a2), ty2 = -Math.cos(a2); // tangent reversed
-  ctx.beginPath();
-  ctx.moveTo(ax2 + tx2*3.5 - ty2*2, ay2 + ty2*3.5 + tx2*2);
-  ctx.lineTo(ax2, ay2);
-  ctx.lineTo(ax2 + tx2*3.5 + ty2*2, ay2 + ty2*3.5 - tx2*2);
-  ctx.stroke();
-  ctx.restore();
-}
-
 function drawSelection(layer) {
   ctx.save();
   // Apply rotation transform so dashed rect rotates WITH the shape
@@ -863,24 +822,6 @@ function drawSelection(layer) {
   ];
   rawHandles.forEach(h=>{ctx.fillStyle='#fff';ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(h.x,h.y,5,0,Math.PI*2);ctx.fill();ctx.stroke();});
   ctx.restore();
-
-  // Draw rotate icon on hovered corner (in world space, outside the handle dot)
-  if(hoverCornerZone && hoverCornerZone.zone==='rotate'){
-    // Find the rotated world position of the hovered corner handle
-    const worldHandles = getHandles(layer);
-    const wh = worldHandles.find(h=>h.id===hoverCornerZone.id);
-    if(wh){
-      // Place icon slightly outside the corner
-      const cx2=layer.x+layer.w/2, cy2=layer.y+layer.h/2;
-      const dx=wh.x-cx2, dy=wh.y-cy2;
-      const len=Math.hypot(dx,dy)||1;
-      // Offset 14px outside corner dot
-      const ix=wh.x + dx/len*14, iy=wh.y + dy/len*14;
-      // Rotation angle: align icon tangentially to corner
-      const iconAngle = Math.atan2(dy,dx)*180/Math.PI + 45;
-      drawRotateIcon(ix, iy, iconAngle);
-    }
-  }
 }
 
 function rotatePoint(px,py,cx,cy,angleDeg){
@@ -986,10 +927,17 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    // Store offset from mouse to layer center (rotation-independent)
+    // Unrotate mouse to get correct local offset for dragging rotated layers
     const fl=layers[found];
-    const fcx=fl.x+fl.w/2, fcy=fl.y+fl.h/2;
-    dragOffX=x-fcx; dragOffY=y-fcy;
+    let ox=x, oy=y;
+    if(fl.rotation){
+      const cx=fl.x+fl.w/2, cy=fl.y+fl.h/2;
+      const rad=-fl.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      ox=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      oy=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    dragOffX=ox-fl.x;dragOffY=oy-fl.y;
     updateRightPanel();updateFxPanel();
   }
   else updateRightPanel();
@@ -1005,11 +953,17 @@ function onMouseMove(e){
   }
   if(isDragging&&selectedIndex>=0){
     let layer = layers[selectedIndex];
-    // Move by tracking center: offset is from mouse to layer center, no unrotation needed
-    const newCx = x - dragOffX;
-    const newCy = y - dragOffY;
-    let targetX = newCx - layer.w/2;
-    let targetY = newCy - layer.h/2;
+    // Unrotate mouse to get consistent local coordinates during drag
+    let mx=x, my=y;
+    if(layer.rotation){
+      const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+      const rad=-layer.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      mx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      my=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    let targetX = mx - dragOffX;
+    let targetY = my - dragOffY;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -1083,32 +1037,54 @@ function onMouseMove(e){
   if(drawingMode){canvas.style.cursor='crosshair';return;}
   if(selectedIndex>=0 && !isDragging && !isResizing && !isRotating){
     const l=layers[selectedIndex];
+    const rot=l.rotation||0;
     const corner=getCornerZone(l,x,y);
     if(corner){
       if(corner.zone==='rotate'){
-        if(!hoverCornerZone || hoverCornerZone.id!==corner.id){ hoverCornerZone=corner; redraw(); }
-        canvas.style.cursor='none'; // hide system cursor; our canvas icon shows instead
+        canvas.style.cursor='none';
+        _hoverRotateCorner=corner.id; _hoverRotateX=x; _hoverRotateY=y; redraw();
       } else {
-        if(hoverCornerZone){ hoverCornerZone=null; redraw(); }
-        canvas.style.cursor='nwse-resize';
+        if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
+        const baseAngles={tl:135,tr:45,bl:225,br:315};
+        const angle=(baseAngles[corner.id]+rot)%360;
+        canvas.style.cursor=_diagCursorForAngle(angle);
       }
     } else {
-      if(hoverCornerZone){ hoverCornerZone=null; redraw(); }
-      const onMidH=getHandles(l).some(h=>['tm','bm','ml','mr'].includes(h.id)&&Math.hypot(x-h.x,y-h.y)<10/scale);
-      canvas.style.cursor=onMidH?'nwse-resize':'default';
+      if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
+      const handles=getHandles(l);
+      let cur='default';
+      for(const h of handles){
+        if(!['tm','bm','ml','mr'].includes(h.id)) continue;
+        if(Math.hypot(x-h.x,y-h.y)<10/scale){
+          const baseAngles={tm:0,bm:0,ml:90,mr:90};
+          const angle=((baseAngles[h.id]+rot)%180+180)%180;
+          cur=angle<45||angle>=135?'ns-resize':'ew-resize';
+          break;
+        }
+      }
+      canvas.style.cursor=cur;
     }
   } else if(isRotating){
+    if(_hoverRotateCorner){_hoverRotateCorner=null;}
     canvas.style.cursor='grabbing';
-  } else if(!selectedIndex>=0){
-    canvas.style.cursor='crosshair';
+  } else {
+    if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
+    canvas.style.cursor='default';
   }
 }
+function _diagCursorForAngle(angle){
+  const a=((angle%360)+360)%360;
+  if((a>=337.5||a<22.5)||(a>=157.5&&a<202.5)) return 'ns-resize';
+  if((a>=67.5&&a<112.5)||(a>=247.5&&a<292.5)) return 'ew-resize';
+  if((a>=22.5&&a<67.5)||(a>=202.5&&a<247.5)) return 'nesw-resize';
+  return 'nwse-resize';
+}
+let _hoverRotateCorner=null, _hoverRotateX=0, _hoverRotateY=0;
 function onMouseUp(){
   if(selectedIndex>=0){
     layers[selectedIndex].snappedX = false;
     layers[selectedIndex].snappedY = false;
   }
-  hoverCornerZone=null;
   isDragging=false;isResizing=false;isRotating=false;aspectLock={};isPainting=false;lastPaintPos=null;
   canvas.style.cursor = drawingMode ? 'crosshair' : 'default';
   redraw();
