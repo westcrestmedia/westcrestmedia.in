@@ -902,9 +902,36 @@ function onMouseDown(e){
     }
   }
   let found=-1;
-  for(let i=layers.length-1;i>=0;i--){const l=layers[i];if(!l.visible||l.locked)continue;if(x>=l.x&&x<=l.x+l.w&&y>=l.y&&y<=l.y+l.h){found=i;break;}}
+  for(let i=layers.length-1;i>=0;i--){
+    const l=layers[i];
+    if(!l.visible||l.locked)continue;
+    // Unrotate mouse point into layer's local space before hit test
+    let lx=x, ly=y;
+    if(l.rotation){
+      const cx=l.x+l.w/2, cy=l.y+l.h/2;
+      const rad=-l.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
+  }
   selectedIndex=found;
-  if(found>=0){isDragging=true;dragOffX=x-layers[found].x;dragOffY=y-layers[found].y;updateRightPanel();updateFxPanel();}
+  if(found>=0){
+    isDragging=true;
+    // Unrotate mouse to get correct local offset for dragging rotated layers
+    const fl=layers[found];
+    let ox=x, oy=y;
+    if(fl.rotation){
+      const cx=fl.x+fl.w/2, cy=fl.y+fl.h/2;
+      const rad=-fl.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      ox=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      oy=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    dragOffX=ox-fl.x;dragOffY=oy-fl.y;
+    updateRightPanel();updateFxPanel();
+  }
   else updateRightPanel();
   updateLayerList();redraw();
 }
@@ -917,9 +944,18 @@ function onMouseMove(e){
     return;
   }
   if(isDragging&&selectedIndex>=0){
-    let targetX = x - dragOffX;
-    let targetY = y - dragOffY;
     let layer = layers[selectedIndex];
+    // Unrotate mouse to get consistent local coordinates during drag
+    let mx=x, my=y;
+    if(layer.rotation){
+      const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+      const rad=-layer.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      mx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      my=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    let targetX = mx - dragOffX;
+    let targetY = my - dragOffY;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -949,11 +985,30 @@ function onMouseMove(e){
   } else if(isResizing&&selectedIndex>=0){
     saveHistory();
     const l=layers[selectedIndex],h=resizeHandle;
-    if(h.includes('r')) l.w=Math.max(10,x-l.x);
-    if(h.includes('l')){l.w=Math.max(10,l.x+l.w-x);l.x=x;}
-    if(h.includes('b')) l.h=Math.max(10,y-l.y);
-    if(h.includes('t')){l.h=Math.max(10,l.y+l.h-y);l.y=y;}
+    // Unrotate mouse into layer local space so resize works correctly after rotation
+    let lx=x, ly=y;
+    if(l.rotation){
+      const cx=l.x+l.w/2, cy=l.y+l.h/2;
+      const rad=-l.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
+    if(h.includes('r')) l.w=Math.max(10,lx-l.x);
+    if(h.includes('l')){const newW=Math.max(10,l.x+l.w-lx);l.x=l.x+l.w-newW;l.w=newW;}
+    if(h.includes('b')) l.h=Math.max(10,ly-l.y);
+    if(h.includes('t')){const newH=Math.max(10,l.y+l.h-ly);l.y=l.y+l.h-newH;l.h=newH;}
     if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
+    // Re-anchor: compensate for center shift caused by local-space resize
+    if(l.rotation){
+      const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
+      const dcx=newCx-oldCx, dcy=newCy-oldCy;
+      const rad=l.rotation*Math.PI/180;
+      const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
+      const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
+      l.x += (dcx-rotDx); l.y += (dcy-rotDy);
+    }
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
     const l=layers[selectedIndex];
