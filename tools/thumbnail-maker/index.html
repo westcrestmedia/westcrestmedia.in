@@ -1101,7 +1101,7 @@
       <div class="acc-body" id="acc-fx-blur">
       <div class="blur-controls">
         <div class="form-row">
-          <label class="form-label">Layer Blur</label>
+          <div class="inline-lv"><label class="form-label">Layer Blur</label><span class="inline-val" id="fxBlurVal">0</span></div>
           <input type="range" id="fxBlur" min="0" max="40" value="0" oninput="updateFx();document.getElementById('fxBlurVal').textContent=this.value">
         </div>
         <div class="form-row">
@@ -1112,7 +1112,7 @@
           </select>
         </div>
         <div id="motionBlurAngle" style="display:none;">
-          <label class="form-label">Motion Angle</label>
+          <div class="inline-lv"><label class="form-label">Motion Angle</label><span class="inline-val" id="fxMotionVal">0°</span></div>
           <input type="range" id="fxMotionAngle" min="0" max="360" value="0" oninput="updateFx();document.getElementById('fxMotionVal').textContent=this.value+'°'">
         </div>
       </div>
@@ -1125,27 +1125,27 @@
       <div class="acc-body" id="acc-fx-shadow">
       <div class="blur-controls">
         <div class="form-row">
-          <label class="form-label">Blur (Softness)</label>
+          <div class="inline-lv"><label class="form-label">Blur (Softness)</label><span class="inline-val" id="fxShadowBlurVal">0</span></div>
           <input type="range" id="fxShadowBlur" min="0" max="80" value="0" oninput="updateFx();document.getElementById('fxShadowBlurVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <label class="form-label">Spread (Distance)</label>
+          <div class="inline-lv"><label class="form-label">Spread (Distance)</label><span class="inline-val" id="fxShadowSpreadVal">0</span></div>
           <input type="range" id="fxShadowSpread" min="0" max="60" value="0" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowSpreadVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <label class="form-label">Angle (Direction)</label>
+          <div class="inline-lv"><label class="form-label">Angle (Direction)</label><span class="inline-val" id="fxShadowAngleVal">135°</span></div>
           <input type="range" id="fxShadowAngle" min="0" max="360" value="135" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowAngleVal').textContent=this.value+'°'">
         </div>
         <div class="form-row">
-          <label class="form-label">Opacity</label>
+          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="fxShadowOpVal">80%</span></div>
           <input type="range" id="fxShadowOpacity" min="0" max="100" value="80" oninput="updateFx();document.getElementById('fxShadowOpVal').textContent=this.value+'%'">
         </div>
         <div class="form-row">
-          <label class="form-label">Offset X</label>
+          <div class="inline-lv"><label class="form-label">Offset X</label><span class="inline-val" id="fxShadowXVal">4</span></div>
           <input type="range" id="fxShadowX" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowXVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <label class="form-label">Offset Y</label>
+          <div class="inline-lv"><label class="form-label">Offset Y</label><span class="inline-val" id="fxShadowYVal">4</span></div>
           <input type="range" id="fxShadowY" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowYVal').textContent=this.value">
         </div>
         <div class="form-row">
@@ -1172,11 +1172,11 @@
           </div>
         </div>
         <div class="form-row">
-          <label class="form-label">Glow Size</label>
+          <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="fxGlowVal">0</span></div>
           <input type="range" id="fxGlowSize" min="0" max="100" value="0" oninput="updateFx();document.getElementById('fxGlowVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <label class="form-label">Glow Intensity</label>
+          <div class="inline-lv"><label class="form-label">Glow Intensity</label><span class="inline-val" id="fxGlowIntVal">50%</span></div>
           <input type="range" id="fxGlowIntensity" min="0" max="100" value="50" oninput="updateFx();document.getElementById('fxGlowIntVal').textContent=this.value+'%'">
         </div>
       </div>
@@ -1189,7 +1189,7 @@
       <div class="acc-body" id="acc-fx-opacity">
       <div class="blur-controls">
         <div class="form-row">
-          <label class="form-label">Opacity</label>
+          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="fxOpVal">100%</span></div>
           <input type="range" id="fxOpacity" min="0" max="100" value="100" oninput="updateFx();document.getElementById('fxOpVal').textContent=this.value+'%'">
         </div>
         <div class="form-row" style="margin-bottom:0;">
@@ -1217,15 +1217,15 @@
       <div class="acc-body" id="acc-fx-transform">
       <div class="blur-controls">
         <div class="form-row">
-          <label class="form-label">Rotation</label>
+          <div class="inline-lv"><label class="form-label">Rotation</label><span class="inline-val" id="rotVal">0°</span></div>
           <input type="range" id="fxRotation" min="-180" max="180" value="0" oninput="updateFx();document.getElementById('rotVal').textContent=this.value+'°'">
         </div>
         <div class="form-row">
-          <label class="form-label">Skew X</label>
+          <div class="inline-lv"><label class="form-label">Skew X</label><span class="inline-val" id="skewXVal">0°</span></div>
           <input type="range" id="fxSkewX" min="-45" max="45" value="0" oninput="updateFx();document.getElementById('skewXVal').textContent=this.value+'°'">
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <label class="form-label">Skew Y</label>
+          <div class="inline-lv"><label class="form-label">Skew Y</label><span class="inline-val" id="skewYVal">0°</span></div>
           <input type="range" id="fxSkewY" min="-45" max="45" value="0" oninput="updateFx();document.getElementById('skewYVal').textContent=this.value+'°'">
         </div>
       </div>
@@ -1249,7 +1249,7 @@
           <button class="mask-btn" data-mask="fade-all" onclick="setMask('fade-all')">◈ Vignette</button>
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <label class="form-label">Mask Fade Size</label>
+          <div class="inline-lv"><label class="form-label">Mask Fade Size</label><span class="inline-val" id="maskFadeVal">30%</span></div>
           <input type="range" id="maskFadeSize" min="5" max="80" value="30" oninput="updateFx();document.getElementById('maskFadeVal').textContent=this.value+'%'">
         </div>
       </div>

@@ -8,6 +8,7 @@ let bgGradient = { c1:'#0d0d0d', c2:'#1a0533', c3:null, dir:'to bottom right', a
 let bgImage = null;
 let isDragging = false, dragOffX = 0, dragOffY = 0;
 let isResizing = false, resizeHandle = '';
+let isRotating = false, rotateStartAngle = 0, rotateStartRotation = 0;
 let canvasW = 1280, canvasH = 720;
 let aspectLock = {};
 
@@ -815,13 +816,36 @@ function drawSelection(layer) {
   ctx.restore();
 }
 
+function rotatePoint(px,py,cx,cy,angleDeg){
+  if(!angleDeg) return {x:px,y:py};
+  const rad=angleDeg*Math.PI/180;
+  const cos=Math.cos(rad), sin=Math.sin(rad);
+  const dx=px-cx, dy=py-cy;
+  return { x: cx + dx*cos - dy*sin, y: cy + dx*sin + dy*cos };
+}
+
 function getHandles(layer){
-  return[
+  const raw=[
     {x:layer.x,y:layer.y,id:'tl'},{x:layer.x+layer.w,y:layer.y,id:'tr'},
     {x:layer.x,y:layer.y+layer.h,id:'bl'},{x:layer.x+layer.w,y:layer.y+layer.h,id:'br'},
     {x:layer.x+layer.w/2,y:layer.y,id:'tm'},{x:layer.x+layer.w/2,y:layer.y+layer.h,id:'bm'},
     {x:layer.x,y:layer.y+layer.h/2,id:'ml'},{x:layer.x+layer.w,y:layer.y+layer.h/2,id:'mr'},
   ];
+  if(!layer.rotation) return raw;
+  const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+  return raw.map(h=>({...rotatePoint(h.x,h.y,cx,cy,layer.rotation),id:h.id}));
+}
+
+// Returns 'resize' or 'rotate' if mouse is near a corner handle, plus the handle id.
+// Inner ring (close to the dot) = resize. Outer ring (just outside the dot) = rotate.
+function getCornerZone(layer,x,y){
+  const corners=getHandles(layer).filter(h=>['tl','tr','bl','br'].includes(h.id));
+  for(const h of corners){
+    const dist=Math.hypot(x-h.x,y-h.y);
+    if(dist<10/scale) return {zone:'resize',id:h.id};
+    if(dist<22/scale) return {zone:'rotate',id:h.id};
+  }
+  return null;
 }
 
 // ===================== MOUSE / TOUCH =====================
@@ -852,8 +876,29 @@ function onMouseDown(e){
     return;
   }
   if(selectedIndex>=0){
-    for(const h of getHandles(layers[selectedIndex])){
-      if(Math.hypot(x-h.x,y-h.y)<10/scale){isResizing=true;resizeHandle=h.id;if(document.getElementById('lockAspect').checked)aspectLock.ratio=layers[selectedIndex].w/layers[selectedIndex].h;return;}
+    const layer=layers[selectedIndex];
+    const corner=getCornerZone(layer,x,y);
+    if(corner){
+      if(corner.zone==='resize'){
+        isResizing=true;resizeHandle=corner.id;
+        if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
+        return;
+      } else {
+        isRotating=true;
+        const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+        rotateStartAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
+        rotateStartRotation=layer.rotation||0;
+        saveHistory();
+        return;
+      }
+    }
+    // mid-edge handles (tm/bm/ml/mr) still resize as before
+    for(const h of getHandles(layer)){
+      if(['tm','bm','ml','mr'].includes(h.id) && Math.hypot(x-h.x,y-h.y)<10/scale){
+        isResizing=true;resizeHandle=h.id;
+        if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
+        return;
+      }
     }
   }
   let found=-1;
@@ -910,17 +955,49 @@ function onMouseMove(e){
     if(h.includes('t')){l.h=Math.max(10,l.y+l.h-y);l.y=y;}
     if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
     updateRightPanel();redraw();
+  } else if(isRotating&&selectedIndex>=0){
+    const l=layers[selectedIndex];
+    const cx=l.x+l.w/2, cy=l.y+l.h/2;
+    const currentAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
+    let newRotation=Math.round(rotateStartRotation+(currentAngle-rotateStartAngle));
+    if(e.shiftKey){newRotation=Math.round(newRotation/15)*15;} // snap to 15° with Shift
+    newRotation=((newRotation%360)+360)%360;
+    if(newRotation>180)newRotation-=360;
+    l.rotation=newRotation;
+    document.getElementById('propRot')&&(document.getElementById('propRot').value=l.rotation);
+    const pRV=document.getElementById('propRotVal');if(pRV)pRV.textContent=l.rotation+'°';
+    const pRV2=document.getElementById('propRotVal2');if(pRV2)pRV2.textContent=l.rotation+'°';
+    document.getElementById('fxRotation')&&(document.getElementById('fxRotation').value=l.rotation);
+    const rv=document.getElementById('rotVal');if(rv)rv.textContent=l.rotation+'°';
+    redraw();
   }
   if(drawingMode){canvas.style.cursor='crosshair';return;}
-  if(selectedIndex>=0){const l=layers[selectedIndex];const onH=getHandles(l).some(h=>Math.hypot(x-h.x,y-h.y)<10/scale);canvas.style.cursor=onH?'nwse-resize':(isDragging?'grabbing':'grab');}
-  else canvas.style.cursor='crosshair';
+  if(selectedIndex>=0 && !isDragging && !isResizing && !isRotating){
+    const l=layers[selectedIndex];
+    const corner=getCornerZone(l,x,y);
+    if(corner){
+      if(corner.zone==='rotate'){
+        canvas.style.cursor='grab'; // rotate cursor (browsers lack a native rotate cursor; grab reads closest)
+      } else {
+        canvas.style.cursor='nwse-resize';
+      }
+    } else {
+      const onMidH=getHandles(l).some(h=>['tm','bm','ml','mr'].includes(h.id)&&Math.hypot(x-h.x,y-h.y)<10/scale);
+      canvas.style.cursor=onMidH?'nwse-resize':'grab';
+    }
+  } else if(isRotating){
+    canvas.style.cursor='grabbing';
+  } else if(!selectedIndex>=0){
+    canvas.style.cursor='crosshair';
+  }
 }
 function onMouseUp(){
   if(selectedIndex>=0){
     layers[selectedIndex].snappedX = false;
     layers[selectedIndex].snappedY = false;
   }
-  isDragging=false;isResizing=false;aspectLock={};isPainting=false;lastPaintPos=null;
+  isDragging=false;isResizing=false;isRotating=false;aspectLock={};isPainting=false;lastPaintPos=null;
+  canvas.style.cursor = drawingMode ? 'crosshair' : 'default';
   redraw();
 }
 function onDblClick(e){if(selectedIndex>=0&&layers[selectedIndex].type==='text'){switchTabByName('text');document.getElementById('txtContent').value=layers[selectedIndex].text;document.getElementById('txtContent').focus();}}
