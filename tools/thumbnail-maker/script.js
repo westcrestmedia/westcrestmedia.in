@@ -909,47 +909,24 @@ function onMouseDown(e){
       }
     }
   }
-  // If a layer is already selected, check if click is inside it (in its LOCAL rotated space).
-  // If yes, start drag immediately WITHOUT re-running the full hit-test loop, so clicking
-  // on the visually-rotated area (outside the unrotated bbox) doesn't accidentally deselect.
-  if(selectedIndex>=0){
-    const sl=layers[selectedIndex];
-    if(!sl.locked&&sl.visible){
-      const scx=sl.x+sl.w/2, scy=sl.y+sl.h/2;
-      const rad=-(sl.rotation||0)*Math.PI/180;
-      const ddx=x-scx, ddy=y-scy;
-      const lx=scx+ddx*Math.cos(rad)-ddy*Math.sin(rad);
-      const ly=scy+ddx*Math.sin(rad)+ddy*Math.cos(rad);
-      if(lx>=sl.x&&lx<=sl.x+sl.w&&ly>=sl.y&&ly<=sl.y+sl.h){
-        isDragging=true;
-        dragOffX=x-scx;
-        dragOffY=y-scy;
-        updateRightPanel();updateFxPanel();
-        updateLayerList();redraw();
-        return;
-      }
-    }
-  }
-
+  // Hit test: unrotate mouse into each layer's local space for correct rotated picking
   let found=-1;
   for(let i=layers.length-1;i>=0;i--){
     const l=layers[i];
     if(!l.visible||l.locked)continue;
-    // Unrotate mouse point into layer's local space before hit test
-    let lx=x, ly=y;
-    if(l.rotation){
-      const cx=l.x+l.w/2, cy=l.y+l.h/2;
-      const rad=-l.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
-    }
+    const cx=l.x+l.w/2, cy=l.y+l.h/2;
+    const rad=-(l.rotation||0)*Math.PI/180;
+    const dx=x-cx, dy=y-cy;
+    const lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+    const ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
     if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
   }
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
+    saveHistory();
     const fl=layers[found];
+    // Offset = mouse minus layer CENTER (works for any rotation angle)
     dragOffX=x-(fl.x+fl.w/2);
     dragOffY=y-(fl.y+fl.h/2);
     updateRightPanel();updateFxPanel();
@@ -999,11 +976,9 @@ function onMouseMove(e){
 
     updateRightPanel();redraw();
   } else if(isResizing&&selectedIndex>=0){
-    saveHistory();
     const l=layers[selectedIndex],h=resizeHandle;
-    // Unrotate mouse into layer local space so resize works correctly after rotation.
-    // Rotation anchor is always the center of the object.
     const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
+    // Unrotate mouse into layer's local (unrotated) space
     let lx=x, ly=y;
     if(l.rotation){
       const rad=-l.rotation*Math.PI/180;
@@ -1011,20 +986,25 @@ function onMouseMove(e){
       lx=oldCx+dx*Math.cos(rad)-dy*Math.sin(rad);
       ly=oldCy+dx*Math.sin(rad)+dy*Math.cos(rad);
     }
+    // Save opposite corner in local space before resize
+    const ox = h.includes('l') ? l.x+l.w : l.x;
+    const oy = h.includes('t') ? l.y+l.h : l.y;
+    // Apply resize in local space
     if(h.includes('r')) l.w=Math.max(10,lx-l.x);
     if(h.includes('l')){const newW=Math.max(10,l.x+l.w-lx);l.x=l.x+l.w-newW;l.w=newW;}
     if(h.includes('b')) l.h=Math.max(10,ly-l.y);
     if(h.includes('t')){const newH=Math.max(10,l.y+l.h-ly);l.y=l.y+l.h-newH;l.h=newH;}
     if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
-    // Re-anchor: after resize in local space, the world-space center may have shifted.
-    // Compensate so the rotation pivot stays at the original center.
+    // New opposite corner in local space after resize
+    const nx = h.includes('l') ? l.x+l.w : l.x;
+    const ny = h.includes('t') ? l.y+l.h : l.y;
+    // Rotate the drift back to world space and correct l.x/l.y so opposite corner stays fixed
     if(l.rotation){
-      const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
-      const dcx=newCx-oldCx, dcy=newCy-oldCy;
       const rad=l.rotation*Math.PI/180;
-      const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
-      const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
-      l.x+=(dcx-rotDx); l.y+=(dcy-rotDy);
+      const dLx=nx-ox, dLy=ny-oy;
+      const dWx=dLx*Math.cos(rad)-dLy*Math.sin(rad);
+      const dWy=dLx*Math.sin(rad)+dLy*Math.cos(rad);
+      l.x-=dWx; l.y-=dWy;
     }
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
