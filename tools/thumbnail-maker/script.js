@@ -927,17 +927,8 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    // Unrotate mouse to get correct local offset for dragging rotated layers
     const fl=layers[found];
-    let ox=x, oy=y;
-    if(fl.rotation){
-      const cx=fl.x+fl.w/2, cy=fl.y+fl.h/2;
-      const rad=-fl.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      ox=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      oy=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
-    }
-    dragOffX=ox-fl.x;dragOffY=oy-fl.y;
+    dragOffX=x-fl.x;dragOffY=y-fl.y;
     updateRightPanel();updateFxPanel();
   }
   else updateRightPanel();
@@ -953,17 +944,8 @@ function onMouseMove(e){
   }
   if(isDragging&&selectedIndex>=0){
     let layer = layers[selectedIndex];
-    // Unrotate mouse to get consistent local coordinates during drag
-    let mx=x, my=y;
-    if(layer.rotation){
-      const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
-      const rad=-layer.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      mx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      my=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
-    }
-    let targetX = mx - dragOffX;
-    let targetY = my - dragOffY;
+    let targetX = x - dragOffX;
+    let targetY = y - dragOffY;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -1046,7 +1028,7 @@ function onMouseMove(e){
       }
     } else {
       const onMidH=getHandles(l).some(h=>['tm','bm','ml','mr'].includes(h.id)&&Math.hypot(x-h.x,y-h.y)<10/scale);
-      canvas.style.cursor=onMidH?'nwse-resize':'grab';
+      canvas.style.cursor=onMidH?'nwse-resize':'default';
     }
   } else if(isRotating){
     canvas.style.cursor='grabbing';
