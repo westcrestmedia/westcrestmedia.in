@@ -808,11 +808,19 @@ function drawSticker(layer){
 // ===================== SELECTION HANDLES =====================
 function drawSelection(layer) {
   ctx.save();
+  // Apply rotation transform so dashed rect rotates WITH the shape
   applyLayerTransform(layer);
   ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
   ctx.strokeRect(layer.x-1.5,layer.y-1.5,layer.w+3,layer.h+3);
   ctx.setLineDash([]);
-  getHandles(layer).forEach(h=>{ctx.fillStyle='#fff';ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(h.x,h.y,5,0,Math.PI*2);ctx.fill();ctx.stroke();});
+  // Use RAW (unrotated) handle positions because canvas is already rotated via applyLayerTransform
+  const rawHandles=[
+    {x:layer.x,y:layer.y,id:'tl'},{x:layer.x+layer.w,y:layer.y,id:'tr'},
+    {x:layer.x,y:layer.y+layer.h,id:'bl'},{x:layer.x+layer.w,y:layer.y+layer.h,id:'br'},
+    {x:layer.x+layer.w/2,y:layer.y,id:'tm'},{x:layer.x+layer.w/2,y:layer.y+layer.h,id:'bm'},
+    {x:layer.x,y:layer.y+layer.h/2,id:'ml'},{x:layer.x+layer.w,y:layer.y+layer.h/2,id:'mr'},
+  ];
+  rawHandles.forEach(h=>{ctx.fillStyle='#fff';ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(h.x,h.y,5,0,Math.PI*2);ctx.fill();ctx.stroke();});
   ctx.restore();
 }
 
