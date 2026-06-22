@@ -927,17 +927,9 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    // Unrotate mouse to get correct local offset for dragging rotated layers
+    // Capture offset in world-space (no unrotation) so drag is stable for rotated layers
     const fl=layers[found];
-    let ox=x, oy=y;
-    if(fl.rotation){
-      const cx=fl.x+fl.w/2, cy=fl.y+fl.h/2;
-      const rad=-fl.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      ox=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      oy=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
-    }
-    dragOffX=ox-fl.x;dragOffY=oy-fl.y;
+    dragOffX=x-fl.x;dragOffY=y-fl.y;
     updateRightPanel();updateFxPanel();
   }
   else updateRightPanel();
@@ -953,17 +945,9 @@ function onMouseMove(e){
   }
   if(isDragging&&selectedIndex>=0){
     let layer = layers[selectedIndex];
-    // Unrotate mouse to get consistent local coordinates during drag
-    let mx=x, my=y;
-    if(layer.rotation){
-      const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
-      const rad=-layer.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      mx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      my=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
-    }
-    let targetX = mx - dragOffX;
-    let targetY = my - dragOffY;
+    // Use raw world-space coordinates for dragging (no unrotation needed - offset was captured in world-space)
+    let targetX = x - dragOffX;
+    let targetY = y - dragOffY;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -993,29 +977,30 @@ function onMouseMove(e){
   } else if(isResizing&&selectedIndex>=0){
     saveHistory();
     const l=layers[selectedIndex],h=resizeHandle;
-    // Unrotate mouse into layer local space so resize works correctly after rotation
+    // Unrotate mouse into layer local space so resize works correctly after rotation.
+    // Rotation anchor is always the center of the object.
+    const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
     let lx=x, ly=y;
     if(l.rotation){
-      const cx=l.x+l.w/2, cy=l.y+l.h/2;
       const rad=-l.rotation*Math.PI/180;
-      const dx=x-cx, dy=y-cy;
-      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+      const dx=x-oldCx, dy=y-oldCy;
+      lx=oldCx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=oldCy+dx*Math.sin(rad)+dy*Math.cos(rad);
     }
-    const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
     if(h.includes('r')) l.w=Math.max(10,lx-l.x);
     if(h.includes('l')){const newW=Math.max(10,l.x+l.w-lx);l.x=l.x+l.w-newW;l.w=newW;}
     if(h.includes('b')) l.h=Math.max(10,ly-l.y);
     if(h.includes('t')){const newH=Math.max(10,l.y+l.h-ly);l.y=l.y+l.h-newH;l.h=newH;}
     if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
-    // Re-anchor: compensate for center shift caused by local-space resize
+    // Re-anchor: after resize in local space, the world-space center may have shifted.
+    // Compensate so the rotation pivot stays at the original center.
     if(l.rotation){
       const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
       const dcx=newCx-oldCx, dcy=newCy-oldCy;
       const rad=l.rotation*Math.PI/180;
       const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
       const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
-      l.x += (dcx-rotDx); l.y += (dcy-rotDy);
+      l.x+=(dcx-rotDx); l.y+=(dcy-rotDy);
     }
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
@@ -1041,7 +1026,10 @@ function onMouseMove(e){
     const corner=getCornerZone(l,x,y);
     if(corner){
       if(corner.zone==='rotate'){
-        canvas.style.cursor='none';
+        // Custom rotate cursor - bidirectional curved arrow matching the rotate icon
+        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M20 4.5C17.5 2.5 14.5 1.5 11 2c-5 .8-9 5-9.5 10' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'/><polygon points='6,7 13,7 9.5,13' fill='black'/><path d='M8 23.5C10.5 25.5 13.5 26.5 17 26c5-.8 9-5 9.5-10' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'/><polygon points='22,21 15,21 18.5,15' fill='black'/></svg>`;
+        const encoded = 'data:image/svg+xml;base64,' + btoa(rotateCursorSVG);
+        canvas.style.cursor = `url('${encoded}') 14 14, grab`;
         _hoverRotateCorner=corner.id; _hoverRotateX=x; _hoverRotateY=y; redraw();
       } else {
         if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
