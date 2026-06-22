@@ -909,6 +909,28 @@ function onMouseDown(e){
       }
     }
   }
+  // If a layer is already selected, check if click is inside it (in its LOCAL rotated space).
+  // If yes, start drag immediately WITHOUT re-running the full hit-test loop, so clicking
+  // on the visually-rotated area (outside the unrotated bbox) doesn't accidentally deselect.
+  if(selectedIndex>=0){
+    const sl=layers[selectedIndex];
+    if(!sl.locked&&sl.visible){
+      const scx=sl.x+sl.w/2, scy=sl.y+sl.h/2;
+      const rad=-(sl.rotation||0)*Math.PI/180;
+      const ddx=x-scx, ddy=y-scy;
+      const lx=scx+ddx*Math.cos(rad)-ddy*Math.sin(rad);
+      const ly=scy+ddx*Math.sin(rad)+ddy*Math.cos(rad);
+      if(lx>=sl.x&&lx<=sl.x+sl.w&&ly>=sl.y&&ly<=sl.y+sl.h){
+        isDragging=true;
+        dragOffX=x-scx;
+        dragOffY=y-scy;
+        updateRightPanel();updateFxPanel();
+        updateLayerList();redraw();
+        return;
+      }
+    }
+  }
+
   let found=-1;
   for(let i=layers.length-1;i>=0;i--){
     const l=layers[i];
@@ -927,8 +949,6 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    // Capture offset relative to layer CENTER so rotated layers drag correctly.
-    // During move we do: layer.center = mouse - dragOff, then recompute x/y from center.
     const fl=layers[found];
     dragOffX=x-(fl.x+fl.w/2);
     dragOffY=y-(fl.y+fl.h/2);
@@ -972,8 +992,8 @@ function onMouseMove(e){
       snappedY = true;
     }
 
-    layer.x = Math.round(targetX);
-    layer.y = Math.round(targetY);
+    layer.x = targetX;
+    layer.y = targetY;
     layer.snappedX = snappedX;
     layer.snappedY = snappedY;
 
