@@ -3,19 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Thumbnail Maker Pro</title>
+<title>Thumbnail Maker Pro — Free YouTube Tool | Westcrest Media</title>
 <meta name="description" content="Create professional YouTube and social media thumbnails in your browser. No upload needed. Free tool by Westcrest Media.">
 <meta name="robots" content="index, follow">
-<meta name="keywords" content="thumbnail maker, youtube thumbnail, social media thumbnail, free thumbnail creator, online thumbnail tool">
+
 <meta name="theme-color" content="#C9A84C">
 <link rel="icon" type="image/svg+xml" href="../../images/w_logo.svg">
 <link rel="shortcut icon" href="../../images/w_logo.svg">
 <link rel="canonical" href="https://westcrestmedia.in/tools/thumbnail-maker/">
 <!-- Hreflang -->
-<link rel="alternate" hreflang="en-gb" href="https://westcrestmedia.in/tools/thumbnail-maker/">
-<link rel="alternate" hreflang="en-us" href="https://westcrestmedia.in/tools/thumbnail-maker/">
-<link rel="alternate" hreflang="en-ca" href="https://westcrestmedia.in/tools/thumbnail-maker/">
-<link rel="alternate" hreflang="en"    href="https://westcrestmedia.in/tools/thumbnail-maker/">
+<link rel="alternate" hreflang="en" href="https://westcrestmedia.in/tools/thumbnail-maker/">
 <link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/tools/thumbnail-maker/">
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
@@ -570,6 +567,9 @@ input[type="range"]{width:100%;accent-color:var(--accent);height:5px;cursor:poin
   transition:var(--transition);
 }
 .range-num-input:focus{outline:none;border-color:var(--accent);}
+.range-num-input::-webkit-outer-spin-button,
+.range-num-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.range-num-input{-moz-appearance:textfield;}
 input[type="color"]{
   width:38px;
   height:28px;
@@ -616,6 +616,10 @@ input[type="color"]:hover{
   margin-bottom:4px;
   line-height:1;
 }
+
+/* RIGHT PANEL — HIDDEN ON DESKTOP */
+.right-panel { display: none !important; }
+.right-panel-toggle { display: none !important; }
 
 /* CANVAS AREA */
 .canvas-area{
@@ -881,26 +885,23 @@ input[type="color"]:hover{
 }
 
 /* ADJ ROW */
-.adj-row{display:table;width:100%;border-collapse:separate;border-spacing:0;margin-bottom:8px;}
+.adj-row{display:flex;align-items:center;gap:6px;width:100%;margin-bottom:8px;}
 .adj-label{
-  display:table-cell;
   font-size:10px;
   font-weight:700;
   color:var(--text2);
   letter-spacing:.3px;
   text-transform:uppercase;
   white-space:nowrap;
-  padding-right:8px;
-  vertical-align:middle;
-  width:80px;
+  width:72px;
+  flex-shrink:0;
 }
 .adj-slider{
-  display:table-cell;
-  width:auto;
+  flex:1;
+  min-width:0;
   accent-color:var(--accent);
   cursor:pointer;
   height:5px;
-  vertical-align:middle;
   padding:0;
   border:none;
   outline:none;
@@ -910,22 +911,23 @@ input[type="color"]:hover{
   appearance:auto;
 }
 .adj-num{
-  display:table-cell;
-  width:42px;
+  width:38px;
+  flex-shrink:0;
   padding:4px 3px;
-  margin-left:6px;
   border-radius:6px;
   border:1px solid var(--border);
   background:var(--bg3);
   color:var(--text);
-  font-size:11px;
+  font-size:10px;
   text-align:center;
   font-family:'Syne',sans-serif;
-  vertical-align:middle;
   outline:none;
   box-shadow:none;
+  -moz-appearance:textfield;
 }
 .adj-num:focus{border-color:var(--accent);}
+.adj-num::-webkit-outer-spin-button,
+.adj-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 
 .filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
 .filter-btn{
@@ -1165,9 +1167,17 @@ input[type="color"]:hover{
     width:100% !important;
     height:100% !important;
     min-height:unset !important;
-    padding:16px !important;
+    padding:8px !important;
     border-bottom:none !important;
     background:#040407 !important;
+    overflow:hidden !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  body.app-mode .canvas-wrapper{
+    max-width:100% !important;
+    max-height:100% !important;
   }
   body.app-mode .zoom-bar{display:none !important;}
   body.app-mode .canvas-wrapper{transform-origin:center center !important;}
@@ -1306,9 +1316,52 @@ input[type="color"]:hover{
     display: flex;
     align-items: center;
     gap: 4px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(212,175,55,0.2);
+    touch-action: manipulation;
+    user-select: none;
   }
-  .mob-quick-btn svg { width: 12px; height: 12px; stroke-width: 2.2; }
+  .mob-quick-btn:active { background: var(--bg4); border-color: var(--gold); }
+  .mob-quick-btn svg { width: 12px; height: 12px; stroke-width: 2.2; pointer-events: none; }
+  .app-nav-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(212,175,55,0.2);
+    user-select: none;
+    cursor: pointer;
+  }
+  .app-top-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(212,175,55,0.2);
+    cursor: pointer;
+  }
 }
+
+/* ACCORDION SECTIONS */
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  margin: 4px 0 0;
+  border-radius: var(--radius);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: var(--transition);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.acc-header:hover { border-color: var(--gold); color: var(--gold); background: var(--bg4); }
+.acc-header.open { border-color: var(--border2); color: var(--gold); background: var(--bg4); }
+.acc-header .acc-arrow { font-size: 10px; transition: transform .2s; }
+.acc-header.open .acc-arrow { transform: rotate(180deg); }
+.acc-body { display: none; padding: 8px 2px 4px; }
+.acc-body.open { display: block; }
+
 </style>
 </head>
 <body>
@@ -1621,313 +1674,415 @@ input[type="color"]:hover{
 
     <!-- ADD -->
     <div class="tab-pane" id="pane-add">
-      <div class="section-title">Upload Image</div>
-      <div class="upload-zone" onclick="triggerUpload()">
-        <div class="u-icon">📁</div>
-        <p>Click or drag image<br><span style="font-size:10px;opacity:.6">PNG, JPG, WEBP, SVG</span></p>
-      </div>
-      <input type="file" id="fileInput" accept="image/*" multiple onchange="handleImageUpload(event)">
 
-      <div class="section-title">Shapes</div>
-      <div class="shape-btns">
-        <button class="shape-btn" onclick="addRect()">▬ Rect</button>
-        <button class="shape-btn" onclick="addRoundRect()">▢ Rounded</button>
-        <button class="shape-btn" onclick="addCircle()">● Circle</button>
-        <button class="shape-btn" onclick="addEllipse()">⬭ Ellipse</button>
-        <button class="shape-btn" onclick="addTriangle()">▲ Triangle</button>
-        <button class="shape-btn" onclick="addLine()">— Line</button>
-        <button class="shape-btn" onclick="addStar()">★ Star</button>
-        <button class="shape-btn" onclick="addArrow()">➤ Arrow</button>
-        <button class="shape-btn" onclick="addHexagon()">⬡ Hexagon</button>
-        <button class="shape-btn" onclick="addPentagon()">⬠ Pentagon</button>
-        <button class="shape-btn" onclick="addDiamond()">◆ Diamond</button>
-        <button class="shape-btn" onclick="addBurst()">✳ Burst</button>
-        <button class="shape-btn" onclick="addSpeechBubble()">💬 Bubble</button>
-        <button class="shape-btn" onclick="addHeart()">♥ Heart</button>
-        <button class="shape-btn" onclick="addCross()">✚ Cross</button>
-        <button class="shape-btn" onclick="addParallelogram()">▱ Parallelo</button>
-        <button class="shape-btn" onclick="addRibbon()">🎗 Ribbon</button>
-        <button class="shape-btn" onclick="addCloud()">☁ Cloud</button>
-        <button class="shape-btn" onclick="addArrowDouble()">⬌ 2-Arrow</button>
-        <button class="shape-btn" onclick="addChevron()">» Chevron</button>
+      <!-- Upload Image -->
+      <div class="acc-header open" onclick="toggleAcc('acc-add-upload')">
+        <span>📁 Upload Image</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body open" id="acc-add-upload">
+        <div class="upload-zone" onclick="triggerUpload()">
+          <div class="u-icon">📁</div>
+          <p>Click or drag image<br><span style="font-size:10px;opacity:.6">PNG, JPG, WEBP, SVG</span></p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleImageUpload(event)">
       </div>
 
-      <div class="section-title">Text Presets</div>
-      <div class="add-btns">
-        <button class="add-btn" onclick="addText('title')"><span class="icon" style="font-family:'Bebas Neue'">Aa</span>BIG TITLE</button>
-        <button class="add-btn" onclick="addText('sub')"><span class="icon" style="font-family:'Montserrat'">Aa</span>SUBTITLE</button>
-        <button class="add-btn" onclick="addText('label')"><span class="icon" style="font-size:13px">Aa</span>LABEL</button>
-        <button class="add-btn" onclick="addText('number')"><span class="icon">99</span>NUMBER</button>
-        <button class="add-btn" onclick="addText('viral')"><span class="icon" style="color:#ff6b6b">!!</span>VIRAL</button>
-        <button class="add-btn" onclick="addText('outline')"><span class="icon" style="-webkit-text-stroke:1px #c8a96e;color:transparent">Aa</span>OUTLINE</button>
-        <button class="add-btn" onclick="addText('neon')"><span class="icon" style="color:#0ff;text-shadow:0 0 4px #0ff">Aa</span>NEON</button>
-        <button class="add-btn" onclick="addText('comic')"><span class="icon" style="font-family:'Bangers'">Aa</span>COMIC</button>
-        <button class="add-btn" onclick="addText('handwritten')"><span class="icon" style="font-family:'Caveat'">Aa</span>HANDWRITTEN</button>
-        <button class="add-btn" onclick="addText('boxed')"><span class="icon" style="background:#fff;color:#000;padding:0 3px">Aa</span>HIGHLIGHT</button>
+      <!-- Shapes -->
+      <div class="acc-header open" onclick="toggleAcc('acc-add-shapes')">
+        <span>⬡ Shapes</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body open" id="acc-add-shapes">
+        <div class="shape-btns">
+          <button class="shape-btn" onclick="addRect()">▬ Rect</button>
+          <button class="shape-btn" onclick="addRoundRect()">▢ Rounded</button>
+          <button class="shape-btn" onclick="addCircle()">● Circle</button>
+          <button class="shape-btn" onclick="addEllipse()">⬭ Ellipse</button>
+          <button class="shape-btn" onclick="addTriangle()">▲ Triangle</button>
+          <button class="shape-btn" onclick="addLine()">— Line</button>
+          <button class="shape-btn" onclick="addStar()">★ Star</button>
+          <button class="shape-btn" onclick="addArrow()">➤ Arrow</button>
+          <button class="shape-btn" onclick="addHexagon()">⬡ Hexagon</button>
+          <button class="shape-btn" onclick="addPentagon()">⬠ Pentagon</button>
+          <button class="shape-btn" onclick="addDiamond()">◆ Diamond</button>
+          <button class="shape-btn" onclick="addBurst()">✳ Burst</button>
+          <button class="shape-btn" onclick="addSpeechBubble()">💬 Bubble</button>
+          <button class="shape-btn" onclick="addHeart()">♥ Heart</button>
+          <button class="shape-btn" onclick="addCross()">✚ Cross</button>
+          <button class="shape-btn" onclick="addParallelogram()">▱ Parallelo</button>
+          <button class="shape-btn" onclick="addRibbon()">🎗 Ribbon</button>
+          <button class="shape-btn" onclick="addCloud()">☁ Cloud</button>
+          <button class="shape-btn" onclick="addArrowDouble()">⬌ 2-Arrow</button>
+          <button class="shape-btn" onclick="addChevron()">» Chevron</button>
+        </div>
       </div>
 
-      <div class="section-title">Stickers & Emojis</div>
-      <div class="sticker-grid" id="stickerGrid"></div>
-
-      <div class="section-title">Quick Badges</div>
-      <div class="shape-btns">
-        <button class="shape-btn" onclick="addBadge('new')">🆕 NEW</button>
-        <button class="shape-btn" onclick="addBadge('hot')">🔥 HOT</button>
-        <button class="shape-btn" onclick="addBadge('free')">💚 FREE</button>
-        <button class="shape-btn" onclick="addBadge('pro')">👑 PRO</button>
-        <button class="shape-btn" onclick="addBadge('sale')">💥 SALE</button>
-        <button class="shape-btn" onclick="addBadge('viral')">⚡ VIRAL</button>
-        <button class="shape-btn" onclick="addBadge('subscribe')">🔔 SUBSCRIBE</button>
-        <button class="shape-btn" onclick="addBadge('live')">🔴 LIVE</button>
-        <button class="shape-btn" onclick="addBadge('breaking')">📰 BREAKING</button>
-        <button class="shape-btn" onclick="addBadge('exclusive')">⭐ EXCLUSIVE</button>
-        <button class="shape-btn" onclick="addBadge('part1')">▶ PART 1</button>
-        <button class="shape-btn" onclick="addBadge('limited')">⏳ LIMITED</button>
+      <!-- Text Presets -->
+      <div class="acc-header open" onclick="toggleAcc('acc-add-text')">
+        <span>Aa Text Presets</span>
+        <span class="acc-arrow">▼</span>
       </div>
+      <div class="acc-body open" id="acc-add-text">
+        <div class="add-btns">
+          <button class="add-btn" onclick="addText('title')"><span class="icon" style="font-family:'Bebas Neue'">Aa</span>BIG TITLE</button>
+          <button class="add-btn" onclick="addText('sub')"><span class="icon" style="font-family:'Montserrat'">Aa</span>SUBTITLE</button>
+          <button class="add-btn" onclick="addText('label')"><span class="icon" style="font-size:13px">Aa</span>LABEL</button>
+          <button class="add-btn" onclick="addText('number')"><span class="icon">99</span>NUMBER</button>
+          <button class="add-btn" onclick="addText('viral')"><span class="icon" style="color:#ff6b6b">!!</span>VIRAL</button>
+          <button class="add-btn" onclick="addText('outline')"><span class="icon" style="-webkit-text-stroke:1px #c8a96e;color:transparent">Aa</span>OUTLINE</button>
+          <button class="add-btn" onclick="addText('neon')"><span class="icon" style="color:#0ff;text-shadow:0 0 4px #0ff">Aa</span>NEON</button>
+          <button class="add-btn" onclick="addText('comic')"><span class="icon" style="font-family:'Bangers'">Aa</span>COMIC</button>
+          <button class="add-btn" onclick="addText('handwritten')"><span class="icon" style="font-family:'Caveat'">Aa</span>HANDWRITTEN</button>
+          <button class="add-btn" onclick="addText('boxed')"><span class="icon" style="background:#fff;color:#000;padding:0 3px">Aa</span>HIGHLIGHT</button>
+        </div>
+      </div>
+
+      <!-- Stickers & Emojis -->
+      <div class="acc-header open" onclick="toggleAcc('acc-add-stickers')">
+        <span>😀 Stickers & Emojis</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body open" id="acc-add-stickers">
+        <div class="sticker-grid" id="stickerGrid"></div>
+      </div>
+
+      <!-- Quick Badges -->
+      <div class="acc-header open" onclick="toggleAcc('acc-add-badges')">
+        <span>🏷 Quick Badges</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body open" id="acc-add-badges">
+        <div class="shape-btns">
+          <button class="shape-btn" onclick="addBadge('new')">🆕 NEW</button>
+          <button class="shape-btn" onclick="addBadge('hot')">🔥 HOT</button>
+          <button class="shape-btn" onclick="addBadge('free')">💚 FREE</button>
+          <button class="shape-btn" onclick="addBadge('pro')">👑 PRO</button>
+          <button class="shape-btn" onclick="addBadge('sale')">💥 SALE</button>
+          <button class="shape-btn" onclick="addBadge('viral')">⚡ VIRAL</button>
+          <button class="shape-btn" onclick="addBadge('subscribe')">🔔 SUBSCRIBE</button>
+          <button class="shape-btn" onclick="addBadge('live')">🔴 LIVE</button>
+          <button class="shape-btn" onclick="addBadge('breaking')">📰 BREAKING</button>
+          <button class="shape-btn" onclick="addBadge('exclusive')">⭐ EXCLUSIVE</button>
+          <button class="shape-btn" onclick="addBadge('part1')">▶ PART 1</button>
+          <button class="shape-btn" onclick="addBadge('limited')">⏳ LIMITED</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- TEXT PROPS -->
     <div class="tab-pane" id="pane-text">
-      <div class="section-title">Text Content</div>
-      <div class="form-row">
-        <textarea class="form-input" id="txtContent" rows="2" placeholder="Your text here..." oninput="updateSelectedText()" style="resize:vertical;line-height:1.4;"></textarea>
-      </div>
 
-      <div class="section-title">Font Family (40+)</div>
-      <input class="form-input font-search" type="text" id="fontSearch" placeholder="🔍 Search fonts..." oninput="filterFonts()">
-      <div class="font-preview-grid" id="fontGrid"></div>
-      <div class="form-row">
-        <select class="form-input" id="txtFont" onchange="updateSelectedText();highlightFont();"></select>
+      <!-- Text Content -->
+      <div class="acc-header open" onclick="toggleAcc('acc-txt-content')">
+        <span>📝 Text Content</span>
+        <span class="acc-arrow">▼</span>
       </div>
-
-      <div class="form-row-2">
-        <div>
-          <label class="form-label">Size (px)</label>
-          <input class="form-input" type="number" id="txtSize" value="72" min="4" max="600" oninput="updateSelectedText()">
+      <div class="acc-body open" id="acc-txt-content">
+        <div class="form-row">
+          <textarea class="form-input" id="txtContent" rows="2" placeholder="Your text here..." oninput="updateSelectedText()" style="resize:vertical;line-height:1.4;"></textarea>
         </div>
-        <div>
-          <label class="form-label">Weight</label>
-          <select class="form-input" id="txtWeight" onchange="updateSelectedText()">
-            <option value="300">Light</option>
-            <option value="400">Regular</option>
-            <option value="700" selected>Bold</option>
-            <option value="900">Black</option>
+      </div>
+
+      <!-- Font -->
+      <div class="acc-header open" onclick="toggleAcc('acc-txt-font')">
+        <span>🔤 Font Family (40+)</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body open" id="acc-txt-font">
+        <input class="form-input font-search" type="text" id="fontSearch" placeholder="🔍 Search fonts..." oninput="filterFonts()">
+        <div class="font-preview-grid" id="fontGrid"></div>
+        <div class="form-row">
+          <select class="form-input" id="txtFont" onchange="updateSelectedText();highlightFont();"></select>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">Size (px)</label>
+            <input class="form-input" type="number" id="txtSize" value="72" min="4" max="600" oninput="updateSelectedText()">
+          </div>
+          <div>
+            <label class="form-label">Weight</label>
+            <select class="form-input" id="txtWeight" onchange="updateSelectedText()">
+              <option value="300">Light</option>
+              <option value="400">Regular</option>
+              <option value="700" selected>Bold</option>
+              <option value="900">Black</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Style</label>
+          <div class="style-row">
+            <button class="style-btn" id="txtBold" onclick="toggleTextStyle('bold')"><b>B</b></button>
+            <button class="style-btn" id="txtItalic" onclick="toggleTextStyle('italic')"><i>I</i></button>
+            <button class="style-btn" id="txtUnder" onclick="toggleTextStyle('underline')"><u>U</u></button>
+            <button class="style-btn" id="txtStrike" onclick="toggleTextStyle('strike')"><s>S</s></button>
+            <button class="style-btn" id="txtAllCaps" onclick="toggleTextStyle('allcaps')">AA</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Align</label>
+          <div class="style-row">
+            <button class="style-btn" onclick="setTextAlign('left',this)">← L</button>
+            <button class="style-btn active" onclick="setTextAlign('center',this)">C</button>
+            <button class="style-btn" onclick="setTextAlign('right',this)">R →</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Letter Spacing</label><span class="inline-val" id="lsVal">0</span></div>
+          <input type="range" id="txtSpacing" min="-5" max="40" value="0" oninput="updateSelectedText();document.getElementById('lsVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Line Height</label><span class="inline-val" id="lhVal">1.2</span></div>
+          <input type="range" id="txtLineH" min="0.5" max="3" step="0.05" value="1.2" oninput="updateSelectedText();document.getElementById('lhVal').textContent=parseFloat(this.value).toFixed(2)">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="txtOpVal">100%</span></div>
+          <input type="range" id="txtOpacity" min="0" max="100" value="100" oninput="updateSelectedText();document.getElementById('txtOpVal').textContent=this.value+'%'">
+        </div>
+      </div>
+
+      <!-- Fill (Text Color) -->
+      <div class="acc-header" onclick="toggleAcc('acc-txt-fill')">
+        <span>🎨 Fill (Text Color)</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-txt-fill">
+        <div class="form-row">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <input type="checkbox" id="txtFillEnabled" checked onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
+            <label for="txtFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
+          </div>
+          <label class="form-label">Fill Type</label>
+          <select class="form-input" id="txtFillType" onchange="updateSelectedText();toggleTxtFillUI()">
+            <option value="solid">Solid Color</option>
+            <option value="gradient">Gradient</option>
+            <option value="transparent">Transparent (Outline Only)</option>
+          </select>
+        </div>
+        <div id="txtSolidFill" class="form-row">
+          <div class="color-row">
+            <input type="color" id="txtColor" value="#ffffff" oninput="updateSelectedText()">
+            <input class="form-input" type="text" id="txtColorHex" value="#ffffff" oninput="syncColor('txt')">
+          </div>
+        </div>
+        <div id="txtGradFill" style="display:none;">
+          <div class="color-row" style="margin-bottom:5px;">
+            <input type="color" id="txtGrad1" value="#ff6b6b" oninput="updateSelectedText()">
+            <span style="font-size:10px;color:var(--text3);">→</span>
+            <input type="color" id="txtGrad2" value="#c8a96e" oninput="updateSelectedText()">
+          </div>
+          <select class="form-input" id="txtGradDir" onchange="updateSelectedText()">
+            <option value="to right">→ Horizontal</option>
+            <option value="to bottom">↓ Vertical</option>
+            <option value="to bottom right">↘ Diagonal</option>
           </select>
         </div>
       </div>
 
-      <div class="section-title">Fill (Text Color)</div>
-      <div class="form-row">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-          <input type="checkbox" id="txtFillEnabled" checked onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
-          <label for="txtFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
-        </div>
-        <label class="form-label">Fill Type</label>
-        <select class="form-input" id="txtFillType" onchange="updateSelectedText();toggleTxtFillUI()">
-          <option value="solid">Solid Color</option>
-          <option value="gradient">Gradient</option>
-          <option value="transparent">Transparent (Outline Only)</option>
-        </select>
+      <!-- Stroke (Outline) -->
+      <div class="acc-header" onclick="toggleAcc('acc-txt-stroke')">
+        <span>✏️ Stroke (Outline)</span>
+        <span class="acc-arrow">▼</span>
       </div>
-      <div id="txtSolidFill" class="form-row">
-        <div class="color-row">
-          <input type="color" id="txtColor" value="#ffffff" oninput="updateSelectedText()">
-          <input class="form-input" type="text" id="txtColorHex" value="#ffffff" oninput="syncColor('txt')">
-        </div>
-      </div>
-      <div id="txtGradFill" style="display:none;">
-        <div class="color-row" style="margin-bottom:5px;">
-          <input type="color" id="txtGrad1" value="#ff6b6b" oninput="updateSelectedText()">
-          <span style="font-size:10px;color:var(--text3);">→</span>
-          <input type="color" id="txtGrad2" value="#c8a96e" oninput="updateSelectedText()">
-        </div>
-        <select class="form-input" id="txtGradDir" onchange="updateSelectedText()">
-          <option value="to right">→ Horizontal</option>
-          <option value="to bottom">↓ Vertical</option>
-          <option value="to bottom right">↘ Diagonal</option>
-        </select>
-      </div>
-
-      <div class="section-title">Stroke (Outline)</div>
-      <div class="form-row">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-          <input type="checkbox" id="txtStrokeEnabled" onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
-          <label for="txtStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
-        </div>
-        <div class="color-row">
-          <input type="color" id="txtOutlineColor" value="#000000" oninput="updateSelectedText()">
-          <input class="form-input" type="number" id="txtOutlineWidth" value="0" min="0" max="40" placeholder="Width px" oninput="updateSelectedText()">
+      <div class="acc-body" id="acc-txt-stroke">
+        <div class="form-row">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <input type="checkbox" id="txtStrokeEnabled" onchange="updateSelectedText()" style="accent-color:var(--accent);width:14px;height:14px;">
+            <label for="txtStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
+          </div>
+          <div class="color-row">
+            <input type="color" id="txtOutlineColor" value="#000000" oninput="updateSelectedText()">
+            <input class="form-input" type="number" id="txtOutlineWidth" value="0" min="0" max="40" placeholder="Width px" oninput="updateSelectedText()">
+          </div>
         </div>
       </div>
 
-      <div class="section-title">Background Box</div>
-      <div class="form-row">
-        <div style="display:flex;gap:5px;align-items:center;margin-bottom:5px;">
-          <input type="checkbox" id="txtBgBox" onchange="updateSelectedText()" style="accent-color:var(--accent);">
-          <label for="txtBgBox" style="font-size:10px;color:var(--text2);cursor:pointer;">Enable highlight box behind text</label>
-        </div>
-        <div class="color-row" style="margin-bottom:5px;">
-          <input type="color" id="txtBgBoxColor" value="#ffff00" oninput="updateSelectedText()">
-          <input class="form-input" type="number" id="txtBgBoxPad" value="10" min="0" max="80" placeholder="Padding px" oninput="updateSelectedText()">
-        </div>
-        <div class="inline-lv"><label class="form-label">Box Radius</label><span class="inline-val" id="bgBoxRadVal">0</span></div>
-        <input type="range" id="txtBgBoxRadius" min="0" max="60" value="0" oninput="updateSelectedText();document.getElementById('bgBoxRadVal').textContent=this.value">
+      <!-- Background Box -->
+      <div class="acc-header" onclick="toggleAcc('acc-txt-bgbox')">
+        <span>⬜ Background Box</span>
+        <span class="acc-arrow">▼</span>
       </div>
-
-      <div class="form-row">
-        <label class="form-label">Align</label>
-        <div class="style-row">
-          <button class="style-btn" onclick="setTextAlign('left',this)">← L</button>
-          <button class="style-btn active" onclick="setTextAlign('center',this)">C</button>
-          <button class="style-btn" onclick="setTextAlign('right',this)">R →</button>
+      <div class="acc-body" id="acc-txt-bgbox">
+        <div class="form-row">
+          <div style="display:flex;gap:5px;align-items:center;margin-bottom:5px;">
+            <input type="checkbox" id="txtBgBox" onchange="updateSelectedText()" style="accent-color:var(--accent);">
+            <label for="txtBgBox" style="font-size:10px;color:var(--text2);cursor:pointer;">Enable highlight box behind text</label>
+          </div>
+          <div class="color-row" style="margin-bottom:5px;">
+            <input type="color" id="txtBgBoxColor" value="#ffff00" oninput="updateSelectedText()">
+            <input class="form-input" type="number" id="txtBgBoxPad" value="10" min="0" max="80" placeholder="Padding px" oninput="updateSelectedText()">
+          </div>
+          <div class="inline-lv"><label class="form-label">Box Radius</label><span class="inline-val" id="bgBoxRadVal">0</span></div>
+          <input type="range" id="txtBgBoxRadius" min="0" max="60" value="0" oninput="updateSelectedText();document.getElementById('bgBoxRadVal').textContent=this.value">
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Letter Spacing</label><span class="inline-val" id="lsVal">0</span></div>
-        <input type="range" id="txtSpacing" min="-5" max="40" value="0" oninput="updateSelectedText();document.getElementById('lsVal').textContent=this.value">
+      <!-- Glow -->
+      <div class="acc-header" onclick="toggleAcc('acc-txt-glow')">
+        <span>💡 Glow</span>
+        <span class="acc-arrow">▼</span>
       </div>
-
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Line Height</label><span class="inline-val" id="lhVal">1.2</span></div>
-        <input type="range" id="txtLineH" min="0.5" max="3" step="0.05" value="1.2" oninput="updateSelectedText();document.getElementById('lhVal').textContent=parseFloat(this.value).toFixed(2)">
-      </div>
-
-      <div class="section-title">Glow</div>
-      <div class="form-row">
-        <div class="color-row">
-          <input type="color" id="txtGlowColor" value="#ff6b6b" oninput="updateSelectedText()">
-          <input class="form-input" type="number" id="txtGlowSize" value="0" min="0" max="80" placeholder="Size" oninput="updateSelectedText()">
+      <div class="acc-body" id="acc-txt-glow">
+        <div class="form-row">
+          <div class="color-row">
+            <input type="color" id="txtGlowColor" value="#ff6b6b" oninput="updateSelectedText()">
+            <input class="form-input" type="number" id="txtGlowSize" value="0" min="0" max="80" placeholder="Size" oninput="updateSelectedText()">
+          </div>
         </div>
       </div>
 
-      <div class="section-title">Shadow</div>
-      <div class="form-row">
-        <div class="form-row-3" style="margin-bottom:5px;">
-          <div><label class="form-label">Blur</label><input class="form-input" type="number" id="txtShadow" value="0" min="0" max="60" oninput="updateSelectedText()"></div>
-          <div><label class="form-label">Off X</label><input class="form-input" type="number" id="txtShadowX" value="2" min="-40" max="40" oninput="updateSelectedText()"></div>
-          <div><label class="form-label">Off Y</label><input class="form-input" type="number" id="txtShadowY" value="2" min="-40" max="40" oninput="updateSelectedText()"></div>
-        </div>
-        <div class="color-row">
-          <input type="color" id="txtShadowColor" value="#000000" oninput="updateSelectedText()">
-          <input class="form-input" type="text" id="txtShadowColorHex" value="#000000" oninput="syncColor('txtShadow')">
-        </div>
+      <!-- Shadow -->
+      <div class="acc-header" onclick="toggleAcc('acc-txt-shadow')">
+        <span>🌑 Shadow</span>
+        <span class="acc-arrow">▼</span>
       </div>
-
-      <div class="form-row">
-        <label class="form-label">Style</label>
-        <div class="style-row">
-          <button class="style-btn" id="txtBold" onclick="toggleTextStyle('bold')"><b>B</b></button>
-          <button class="style-btn" id="txtItalic" onclick="toggleTextStyle('italic')"><i>I</i></button>
-          <button class="style-btn" id="txtUnder" onclick="toggleTextStyle('underline')"><u>U</u></button>
-          <button class="style-btn" id="txtStrike" onclick="toggleTextStyle('strike')"><s>S</s></button>
-          <button class="style-btn" id="txtAllCaps" onclick="toggleTextStyle('allcaps')">AA</button>
+      <div class="acc-body" id="acc-txt-shadow">
+        <div class="form-row">
+          <div class="form-row-3" style="margin-bottom:5px;">
+            <div><label class="form-label">Blur</label><input class="form-input" type="number" id="txtShadow" value="0" min="0" max="60" oninput="updateSelectedText()"></div>
+            <div><label class="form-label">Off X</label><input class="form-input" type="number" id="txtShadowX" value="2" min="-40" max="40" oninput="updateSelectedText()"></div>
+            <div><label class="form-label">Off Y</label><input class="form-input" type="number" id="txtShadowY" value="2" min="-40" max="40" oninput="updateSelectedText()"></div>
+          </div>
+          <div class="color-row">
+            <input type="color" id="txtShadowColor" value="#000000" oninput="updateSelectedText()">
+            <input class="form-input" type="text" id="txtShadowColorHex" value="#000000" oninput="syncColor('txtShadow')">
+          </div>
         </div>
       </div>
 
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="txtOpVal">100%</span></div>
-        <input type="range" id="txtOpacity" min="0" max="100" value="100" oninput="updateSelectedText();document.getElementById('txtOpVal').textContent=this.value+'%'">
-      </div>
     </div>
 
     <!-- SHAPE PROPS -->
     <div class="tab-pane" id="pane-shape">
-      <div class="section-title">Fill</div>
-      <div class="form-row">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-          <input type="checkbox" id="shapeFillEnabled" checked onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
-          <label for="shapeFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
-        </div>
-        <label class="form-label">Fill Type</label>
-        <select class="form-input" id="shapeFillType" onchange="updateShapeProps();toggleShapeFillUI()">
-          <option value="solid">Solid Color</option>
-          <option value="gradient">Gradient</option>
-          <option value="none">None (Transparent)</option>
-        </select>
+
+      <!-- Fill -->
+      <div class="acc-header open" onclick="toggleAcc('acc-shape-fill')">
+        <span>🎨 Fill</span>
+        <span class="acc-arrow">▼</span>
       </div>
-      <div id="shapeSolidFill">
+      <div class="acc-body open" id="acc-shape-fill">
         <div class="form-row">
-          <div class="color-row">
-            <input type="color" id="shapeFill" value="#c8a96e" oninput="updateShapeProps()">
-            <input class="form-input" type="text" id="shapeFillHex" value="#c8a96e" oninput="syncShapeFill()">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <input type="checkbox" id="shapeFillEnabled" checked onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
+            <label for="shapeFillEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Fill</label>
+          </div>
+          <label class="form-label">Fill Type</label>
+          <select class="form-input" id="shapeFillType" onchange="updateShapeProps();toggleShapeFillUI()">
+            <option value="solid">Solid Color</option>
+            <option value="gradient">Gradient</option>
+            <option value="none">None (Transparent)</option>
+          </select>
+        </div>
+        <div id="shapeSolidFill">
+          <div class="form-row">
+            <div class="color-row">
+              <input type="color" id="shapeFill" value="#c8a96e" oninput="updateShapeProps()">
+              <input class="form-input" type="text" id="shapeFillHex" value="#c8a96e" oninput="syncShapeFill()">
+            </div>
           </div>
         </div>
-      </div>
-      <div id="shapeGradFill" style="display:none;">
-        <div class="color-row" style="margin-bottom:6px;">
-          <input type="color" id="shapeGrad1" value="#c8a96e" oninput="updateShapeProps()">
-          <span style="font-size:10px;color:var(--text3);">→</span>
-          <input type="color" id="shapeGrad2" value="#ff6b6b" oninput="updateShapeProps()">
+        <div id="shapeGradFill" style="display:none;">
+          <div class="color-row" style="margin-bottom:6px;">
+            <input type="color" id="shapeGrad1" value="#c8a96e" oninput="updateShapeProps()">
+            <span style="font-size:10px;color:var(--text3);">→</span>
+            <input type="color" id="shapeGrad2" value="#ff6b6b" oninput="updateShapeProps()">
+          </div>
+          <select class="form-input" id="shapeGradDir" onchange="updateShapeProps()" style="margin-bottom:6px;">
+            <option value="to right">→ Horizontal</option>
+            <option value="to bottom">↓ Vertical</option>
+            <option value="to bottom right">↘ Diagonal</option>
+            <option value="radial">◉ Radial</option>
+          </select>
         </div>
-        <select class="form-input" id="shapeGradDir" onchange="updateShapeProps()" style="margin-bottom:6px;">
-          <option value="to right">→ Horizontal</option>
-          <option value="to bottom">↓ Vertical</option>
-          <option value="to bottom right">↘ Diagonal</option>
-          <option value="radial">◉ Radial</option>
-        </select>
       </div>
 
-      <div class="section-title">Stroke (Border)</div>
-      <div class="form-row">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-          <input type="checkbox" id="shapeStrokeEnabled" onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
-          <label for="shapeStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
-        </div>
-        <div class="color-row">
-          <input type="color" id="shapeBorder" value="#ffffff" oninput="updateShapeProps()">
-          <input class="form-input" type="number" id="shapeBorderW" value="0" min="0" max="50" placeholder="Width px" oninput="updateShapeProps()">
-        </div>
+      <!-- Stroke (Border) -->
+      <div class="acc-header" onclick="toggleAcc('acc-shape-stroke')">
+        <span>✏️ Stroke (Border)</span>
+        <span class="acc-arrow">▼</span>
       </div>
-      <div class="form-row">
-        <label class="form-label">Stroke Style</label>
-        <select class="form-input" id="shapeDash" onchange="updateShapeProps()">
-          <option value="solid">Solid</option>
-          <option value="dashed">Dashed</option>
-          <option value="dotted">Dotted</option>
-        </select>
+      <div class="acc-body" id="acc-shape-stroke">
+        <div class="form-row">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
+            <input type="checkbox" id="shapeStrokeEnabled" onchange="updateShapeProps()" style="accent-color:var(--accent);width:14px;height:14px;">
+            <label for="shapeStrokeEnabled" style="font-size:10px;color:var(--text2);cursor:pointer;font-weight:600;text-transform:uppercase;letter-spacing:.3px;">Enable Stroke</label>
+          </div>
+          <div class="color-row">
+            <input type="color" id="shapeBorder" value="#ffffff" oninput="updateShapeProps()">
+            <input class="form-input" type="number" id="shapeBorderW" value="0" min="0" max="50" placeholder="Width px" oninput="updateShapeProps()">
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Stroke Style</label>
+          <select class="form-input" id="shapeDash" onchange="updateShapeProps()">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+          </select>
+        </div>
       </div>
 
-      <div class="section-title">Corner Radius</div>
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Radius</label><span class="inline-val" id="cornerVal">0</span></div>
-        <input type="range" id="shapeCorner" min="0" max="200" value="0" oninput="updateShapeProps();document.getElementById('cornerVal').textContent=this.value">
+      <!-- Corner Radius -->
+      <div class="acc-header" onclick="toggleAcc('acc-shape-corner')">
+        <span>⬛ Corner Radius</span>
+        <span class="acc-arrow">▼</span>
       </div>
-
-      <div class="section-title">Glow / Shadow</div>
-      <div class="form-row">
-        <label class="form-label">Glow Color</label>
-        <div class="color-row">
-          <input type="color" id="shapeGlowColor" value="#c8a96e" oninput="updateShapeProps()">
-          <input class="form-input" type="text" id="shapeGlowColorHex" value="#c8a96e" oninput="syncShapeGlowColor()">
+      <div class="acc-body" id="acc-shape-corner">
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Radius</label><span class="inline-val" id="cornerVal">0</span></div>
+          <input type="range" id="shapeCorner" min="0" max="200" value="0" oninput="updateShapeProps();document.getElementById('cornerVal').textContent=this.value">
         </div>
       </div>
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="shapeGlowVal">0</span></div>
-        <input type="range" id="shapeGlowSize" min="0" max="100" value="0" oninput="updateShapeProps();document.getElementById('shapeGlowVal').textContent=this.value">
+
+      <!-- Glow / Shadow -->
+      <div class="acc-header" onclick="toggleAcc('acc-shape-glow')">
+        <span>✨ Glow / Shadow</span>
+        <span class="acc-arrow">▼</span>
       </div>
-      <div class="form-row">
-        <label class="form-label">Shadow Color</label>
-        <div class="color-row">
-          <input type="color" id="shapeShadowColor" value="#000000" oninput="updateShapeProps()">
-          <input class="form-input" type="text" id="shapeShadowColorHex" value="#000000" oninput="syncShapeShadowColor()">
+      <div class="acc-body" id="acc-shape-glow">
+        <div class="form-row">
+          <label class="form-label">Glow Color</label>
+          <div class="color-row">
+            <input type="color" id="shapeGlowColor" value="#c8a96e" oninput="updateShapeProps()">
+            <input class="form-input" type="text" id="shapeGlowColorHex" value="#c8a96e" oninput="syncShapeGlowColor()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="shapeGlowVal">0</span></div>
+          <input type="range" id="shapeGlowSize" min="0" max="100" value="0" oninput="updateShapeProps();document.getElementById('shapeGlowVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Shadow Color</label>
+          <div class="color-row">
+            <input type="color" id="shapeShadowColor" value="#000000" oninput="updateShapeProps()">
+            <input class="form-input" type="text" id="shapeShadowColorHex" value="#000000" oninput="syncShapeShadowColor()">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Shadow Blur</label><span class="inline-val" id="shapeShadowBlurVal">0</span></div>
+          <input type="range" id="shapeShadowBlur" min="0" max="80" value="0" oninput="updateShapeProps();document.getElementById('shapeShadowBlurVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Shadow X</label><span class="inline-val" id="shapeShadowXVal">4</span></div>
+          <input type="range" id="shapeShadowX" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowXVal').textContent=this.value">
+        </div>
+        <div class="form-row">
+          <div class="inline-lv"><label class="form-label">Shadow Y</label><span class="inline-val" id="shapeShadowYVal">4</span></div>
+          <input type="range" id="shapeShadowY" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowYVal').textContent=this.value">
         </div>
       </div>
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Shadow Blur</label><span class="inline-val" id="shapeShadowBlurVal">0</span></div>
-        <input type="range" id="shapeShadowBlur" min="0" max="80" value="0" oninput="updateShapeProps();document.getElementById('shapeShadowBlurVal').textContent=this.value">
+
+      <!-- Quick Color Palette -->
+      <div class="acc-header" onclick="toggleAcc('acc-shape-palette')">
+        <span>🖌 Quick Color Palette</span>
+        <span class="acc-arrow">▼</span>
       </div>
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Shadow X</label><span class="inline-val" id="shapeShadowXVal">4</span></div>
-        <input type="range" id="shapeShadowX" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowXVal').textContent=this.value">
-      </div>
-      <div class="form-row">
-        <div class="inline-lv"><label class="form-label">Shadow Y</label><span class="inline-val" id="shapeShadowYVal">4</span></div>
-        <input type="range" id="shapeShadowY" min="-40" max="40" value="4" oninput="updateShapeProps();document.getElementById('shapeShadowYVal').textContent=this.value">
+      <div class="acc-body" id="acc-shape-palette">
+        <div class="color-palette" id="quickPalette"></div>
       </div>
 
-      <div class="section-title">Quick Color Palette</div>
-      <div class="color-palette" id="quickPalette"></div>
     </div>
 
     <!-- IMAGE PROPS -->
@@ -1944,7 +2099,11 @@ input[type="color"]:hover{
       </div>
 
       <!-- FILTER PRESETS -->
-      <div class="section-title">Filter Presets</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-filter')">
+        <span>Filter Presets</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-filter">
       <div class="filter-grid">
         <button class="filter-btn" onclick="applyImgFilter('none')">None</button>
         <button class="filter-btn" onclick="applyImgFilter('bw')">B & W</button>
@@ -1960,139 +2119,169 @@ input[type="color"]:hover{
         <button class="filter-btn" onclick="applyImgFilter('soft')">Soft</button>
       </div>
 
+      </div>
+
       <!-- LIGHT -->
-      <div class="section-title">💡 Light</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-light')">
+        <span>💡 Light</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-light">
       <div class="adj-row">
         <label class="adj-label">Brightness</label>
         <input type="range" class="adj-slider" id="imgBright" min="0" max="300" value="100" oninput="syncAdj('imgBright','imgBrightN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgBrightN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgBright','imgBrightN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgBrightN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgBright','imgBrightN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Contrast</label>
         <input type="range" class="adj-slider" id="imgContrast" min="0" max="300" value="100" oninput="syncAdj('imgContrast','imgContrastN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgContrastN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgContrast','imgContrastN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgContrastN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgContrast','imgContrastN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Exposure</label>
         <input type="range" class="adj-slider" id="imgExposure" min="-100" max="100" value="0" oninput="syncAdj('imgExposure','imgExposureN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgExposureN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgExposure','imgExposureN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgExposureN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgExposure','imgExposureN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Highlights</label>
         <input type="range" class="adj-slider" id="imgHighlights" min="-100" max="100" value="0" oninput="syncAdj('imgHighlights','imgHighlightsN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgHighlightsN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgHighlights','imgHighlightsN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgHighlightsN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgHighlights','imgHighlightsN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Shadows</label>
         <input type="range" class="adj-slider" id="imgShadows" min="-100" max="100" value="0" oninput="syncAdj('imgShadows','imgShadowsN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgShadowsN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgShadows','imgShadowsN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgShadowsN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgShadows','imgShadowsN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Whites</label>
         <input type="range" class="adj-slider" id="imgWhites" min="-100" max="100" value="0" oninput="syncAdj('imgWhites','imgWhitesN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgWhitesN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgWhites','imgWhitesN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgWhitesN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgWhites','imgWhitesN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Blacks</label>
         <input type="range" class="adj-slider" id="imgBlacks" min="-100" max="100" value="0" oninput="syncAdj('imgBlacks','imgBlacksN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgBlacksN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgBlacks','imgBlacksN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgBlacksN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgBlacks','imgBlacksN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Gamma</label>
         <input type="range" class="adj-slider" id="imgGamma" min="10" max="300" value="100" oninput="syncAdj('imgGamma','imgGammaN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgGammaN" value="100" min="10" max="300" oninput="syncAdjFromNum('imgGamma','imgGammaN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgGammaN" value="100" min="10" max="300" oninput="syncAdjFromNum('imgGamma','imgGammaN');updateImageProps()">
+      </div>
+
       </div>
 
       <!-- COLOR -->
-      <div class="section-title">🎨 Color</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-color')">
+        <span>🎨 Color</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-color">
       <div class="adj-row">
         <label class="adj-label">Saturation</label>
         <input type="range" class="adj-slider" id="imgSat" min="0" max="300" value="100" oninput="syncAdj('imgSat','imgSatN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgSatN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgSat','imgSatN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgSatN" value="100" min="0" max="300" oninput="syncAdjFromNum('imgSat','imgSatN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Vibrance</label>
         <input type="range" class="adj-slider" id="imgVibrance" min="-100" max="100" value="0" oninput="syncAdj('imgVibrance','imgVibranceN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgVibranceN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgVibrance','imgVibranceN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgVibranceN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgVibrance','imgVibranceN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Hue</label>
         <input type="range" class="adj-slider" id="imgHue" min="0" max="360" value="0" oninput="syncAdj('imgHue','imgHueN','°');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgHueN" value="0" min="0" max="360" oninput="syncAdjFromNum('imgHue','imgHueN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgHueN" value="0" min="0" max="360" oninput="syncAdjFromNum('imgHue','imgHueN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Temperature</label>
         <input type="range" class="adj-slider" id="imgTemp" min="-100" max="100" value="0" oninput="syncAdj('imgTemp','imgTempN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgTempN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTemp','imgTempN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgTempN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTemp','imgTempN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Tint</label>
         <input type="range" class="adj-slider" id="imgTint" min="-100" max="100" value="0" oninput="syncAdj('imgTint','imgTintN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgTintN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTint','imgTintN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgTintN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTint','imgTintN');updateImageProps()">
+      </div>
+
       </div>
 
       <!-- DETAIL -->
-      <div class="section-title">🔍 Detail</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-detail')">
+        <span>🔍 Detail</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-detail">
       <div class="adj-row">
         <label class="adj-label">Sharpness</label>
         <input type="range" class="adj-slider" id="imgSharpness" min="0" max="100" value="0" oninput="syncAdj('imgSharpness','imgSharpnessN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgSharpnessN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgSharpness','imgSharpnessN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgSharpnessN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgSharpness','imgSharpnessN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Texture</label>
         <input type="range" class="adj-slider" id="imgTexture" min="-100" max="100" value="0" oninput="syncAdj('imgTexture','imgTextureN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgTextureN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTexture','imgTextureN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgTextureN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgTexture','imgTextureN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Clarity</label>
         <input type="range" class="adj-slider" id="imgClarity" min="-100" max="100" value="0" oninput="syncAdj('imgClarity','imgClarityN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgClarityN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgClarity','imgClarityN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgClarityN" value="0" min="-100" max="100" oninput="syncAdjFromNum('imgClarity','imgClarityN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Blur</label>
         <input type="range" class="adj-slider" id="imgBlurFilter" min="0" max="50" value="0" oninput="syncAdj('imgBlurFilter','imgBlurN','px');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgBlurN" value="0" min="0" max="50" oninput="syncAdjFromNum('imgBlurFilter','imgBlurN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgBlurN" value="0" min="0" max="50" oninput="syncAdjFromNum('imgBlurFilter','imgBlurN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Noise</label>
         <input type="range" class="adj-slider" id="imgNoise" min="0" max="100" value="0" oninput="syncAdj('imgNoise','imgNoiseN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgNoiseN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgNoise','imgNoiseN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgNoiseN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgNoise','imgNoiseN');updateImageProps()">
+      </div>
+
       </div>
 
       <!-- EFFECTS -->
-      <div class="section-title">✨ Effects</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-effects')">
+        <span>✨ Effects</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-effects">
       <div class="adj-row">
         <label class="adj-label">Vignette</label>
         <input type="range" class="adj-slider" id="imgVignette" min="0" max="100" value="0" oninput="syncAdj('imgVignette','imgVignetteN','');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgVignetteN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgVignette','imgVignetteN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgVignetteN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgVignette','imgVignetteN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Sepia</label>
         <input type="range" class="adj-slider" id="imgSepia" min="0" max="100" value="0" oninput="syncAdj('imgSepia','imgSepiaNumN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgSepiaNumN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgSepia','imgSepiaNumN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgSepiaNumN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgSepia','imgSepiaNumN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Grayscale</label>
         <input type="range" class="adj-slider" id="imgGray" min="0" max="100" value="0" oninput="syncAdj('imgGray','imgGrayN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgGrayN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgGray','imgGrayN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgGrayN" value="0" min="0" max="100" oninput="syncAdjFromNum('imgGray','imgGrayN');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Opacity</label>
         <input type="range" class="adj-slider" id="imgOpacity" min="0" max="100" value="100" oninput="syncAdj('imgOpacity','imgOpacityN','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgOpacityN" value="100" min="0" max="100" oninput="syncAdjFromNum('imgOpacity','imgOpacityN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgOpacityN" value="100" min="0" max="100" oninput="syncAdjFromNum('imgOpacity','imgOpacityN');updateImageProps()">
+      </div>
+
       </div>
 
       <!-- BORDER -->
-      <div class="section-title">🖼 Border / Stroke</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-border')">
+        <span>🖼 Border / Stroke</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-border">
       <div class="adj-row">
         <label class="adj-label">Width</label>
         <input type="range" class="adj-slider" id="imgBorderWidthR" min="0" max="80" value="0" oninput="syncAdj('imgBorderWidthR','imgBorderWidth','px');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgBorderWidth" value="0" min="0" max="80" oninput="syncAdjFromNum('imgBorderWidthR','imgBorderWidth');updateImageProps()">
+        <input type="number" class="adj-num" id="imgBorderWidth" value="0" min="0" max="80" oninput="syncAdjFromNum('imgBorderWidthR','imgBorderWidth');updateImageProps()">
       </div>
       <div class="adj-row">
         <label class="adj-label">Radius</label>
         <input type="range" class="adj-slider" id="imgBorderRadiusR" min="0" max="200" value="0" oninput="syncAdj('imgBorderRadiusR','imgBorderRadiusN','px');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgBorderRadiusN" value="0" min="0" max="200" oninput="syncAdjFromNum('imgBorderRadiusR','imgBorderRadiusN');updateImageProps()">
+        <input type="number" class="adj-num" id="imgBorderRadiusN" value="0" min="0" max="200" oninput="syncAdjFromNum('imgBorderRadiusR','imgBorderRadiusN');updateImageProps()">
       </div>
       <div class="form-row" style="margin-top:4px;">
         <label class="form-label">Border Color</label>
@@ -2102,8 +2291,14 @@ input[type="color"]:hover{
         </div>
       </div>
 
+      </div>
+
       <!-- BLEND -->
-      <div class="section-title">⚗️ Blend Mode</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-blend')">
+        <span>⚗️ Blend Mode</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-blend">
       <select class="form-input" id="imgBlend" onchange="updateImageProps()" style="margin-bottom:9px;">
         <option value="source-over">Normal</option>
         <option value="multiply">Multiply</option>
@@ -2121,8 +2316,14 @@ input[type="color"]:hover{
         <option value="saturation">Saturation</option>
       </select>
 
+      </div>
+
       <!-- CLIP SHAPE -->
-      <div class="section-title">✂️ Clipping Mask</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-clip')">
+        <span>✂️ Clipping Mask</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-clip">
       <div class="shape-btns">
         <button class="shape-btn" onclick="setImgClip('none')">None</button>
         <button class="shape-btn" onclick="setImgClip('circle')">Circle</button>
@@ -2133,8 +2334,14 @@ input[type="color"]:hover{
         <button class="shape-btn" onclick="setImgClip('star')">Star</button>
       </div>
 
+      </div>
+
       <!-- COLOR OVERLAY -->
-      <div class="section-title">🎭 Color Overlay</div>
+      <div class="acc-header" onclick="toggleAcc('acc-img-overlay')">
+        <span>🎭 Color Overlay</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-img-overlay">
       <div class="form-row">
         <div class="color-row" style="margin-bottom:5px;">
           <input type="color" id="imgOverlayColor" value="#ff0000" oninput="updateImageProps()">
@@ -2144,7 +2351,9 @@ input[type="color"]:hover{
       <div class="adj-row">
         <label class="adj-label">Opacity</label>
         <input type="range" class="adj-slider" id="imgOverlayOpacityR" min="0" max="100" value="0" oninput="syncAdj('imgOverlayOpacityR','imgOverlayOpacity','%');updateImageProps()">
-        <input type="number" style="margin-left:5px" class="adj-num" id="imgOverlayOpacity" value="0" min="0" max="100" oninput="syncAdjFromNum('imgOverlayOpacityR','imgOverlayOpacity');updateImageProps()">
+        <input type="number" class="adj-num" id="imgOverlayOpacity" value="0" min="0" max="100" oninput="syncAdjFromNum('imgOverlayOpacityR','imgOverlayOpacity');updateImageProps()">
+      </div>
+
       </div>
 
       <!-- RESET -->
@@ -2192,10 +2401,14 @@ input[type="color"]:hover{
     <div class="tab-pane" id="pane-fx">
       <div class="blur-badge">UNIVERSAL EFFECTS — applies to any selected layer</div>
 
-      <div class="section-title">Blur</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-blur')">
+        <span>Blur</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-blur">
       <div class="blur-controls">
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Layer Blur</label><span class="inline-val" id="fxBlurVal">0</span></div>
+          <label class="form-label">Layer Blur</label>
           <input type="range" id="fxBlur" min="0" max="40" value="0" oninput="updateFx();document.getElementById('fxBlurVal').textContent=this.value">
         </div>
         <div class="form-row">
@@ -2206,35 +2419,40 @@ input[type="color"]:hover{
           </select>
         </div>
         <div id="motionBlurAngle" style="display:none;">
-          <div class="inline-lv"><label class="form-label">Motion Angle</label><span class="inline-val" id="fxMotionVal">0°</span></div>
+          <label class="form-label">Motion Angle</label>
           <input type="range" id="fxMotionAngle" min="0" max="360" value="0" oninput="updateFx();document.getElementById('fxMotionVal').textContent=this.value+'°'">
         </div>
       </div>
+      </div>
 
-      <div class="section-title">Drop Shadow</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-shadow')">
+        <span>Drop Shadow</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-shadow">
       <div class="blur-controls">
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Blur (Softness)</label><span class="inline-val" id="fxShadowBlurVal">0</span></div>
+          <label class="form-label">Blur (Softness)</label>
           <input type="range" id="fxShadowBlur" min="0" max="80" value="0" oninput="updateFx();document.getElementById('fxShadowBlurVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Spread (Distance)</label><span class="inline-val" id="fxShadowSpreadVal">0</span></div>
+          <label class="form-label">Spread (Distance)</label>
           <input type="range" id="fxShadowSpread" min="0" max="60" value="0" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowSpreadVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Angle (Direction)</label><span class="inline-val" id="fxShadowAngleVal">135°</span></div>
+          <label class="form-label">Angle (Direction)</label>
           <input type="range" id="fxShadowAngle" min="0" max="360" value="135" oninput="syncShadowAngleXY();updateFx();document.getElementById('fxShadowAngleVal').textContent=this.value+'°'">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="fxShadowOpVal">80%</span></div>
+          <label class="form-label">Opacity</label>
           <input type="range" id="fxShadowOpacity" min="0" max="100" value="80" oninput="updateFx();document.getElementById('fxShadowOpVal').textContent=this.value+'%'">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Offset X</label><span class="inline-val" id="fxShadowXVal">4</span></div>
+          <label class="form-label">Offset X</label>
           <input type="range" id="fxShadowX" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowXVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Offset Y</label><span class="inline-val" id="fxShadowYVal">4</span></div>
+          <label class="form-label">Offset Y</label>
           <input type="range" id="fxShadowY" min="-60" max="60" value="4" oninput="updateFx();document.getElementById('fxShadowYVal').textContent=this.value">
         </div>
         <div class="form-row">
@@ -2245,8 +2463,13 @@ input[type="color"]:hover{
           </div>
         </div>
       </div>
+      </div>
 
-      <div class="section-title">Glow Effect</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-glow')">
+        <span>Glow Effect</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-glow">
       <div class="blur-controls">
         <div class="form-row">
           <label class="form-label">Glow Color</label>
@@ -2256,19 +2479,24 @@ input[type="color"]:hover{
           </div>
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Glow Size</label><span class="inline-val" id="fxGlowVal">0</span></div>
+          <label class="form-label">Glow Size</label>
           <input type="range" id="fxGlowSize" min="0" max="100" value="0" oninput="updateFx();document.getElementById('fxGlowVal').textContent=this.value">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Glow Intensity</label><span class="inline-val" id="fxGlowIntVal">50%</span></div>
+          <label class="form-label">Glow Intensity</label>
           <input type="range" id="fxGlowIntensity" min="0" max="100" value="50" oninput="updateFx();document.getElementById('fxGlowIntVal').textContent=this.value+'%'">
         </div>
       </div>
+      </div>
 
-      <div class="section-title">Opacity & Blend</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-opacity')">
+        <span>Opacity & Blend</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-opacity">
       <div class="blur-controls">
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Opacity</label><span class="inline-val" id="fxOpVal">100%</span></div>
+          <label class="form-label">Opacity</label>
           <input type="range" id="fxOpacity" min="0" max="100" value="100" oninput="updateFx();document.getElementById('fxOpVal').textContent=this.value+'%'">
         </div>
         <div class="form-row" style="margin-bottom:0;">
@@ -2287,24 +2515,34 @@ input[type="color"]:hover{
           </select>
         </div>
       </div>
+      </div>
 
-      <div class="section-title">Transform</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-transform')">
+        <span>Transform</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-transform">
       <div class="blur-controls">
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Rotation</label><span class="inline-val" id="rotVal">0°</span></div>
+          <label class="form-label">Rotation</label>
           <input type="range" id="fxRotation" min="-180" max="180" value="0" oninput="updateFx();document.getElementById('rotVal').textContent=this.value+'°'">
         </div>
         <div class="form-row">
-          <div class="inline-lv"><label class="form-label">Skew X</label><span class="inline-val" id="skewXVal">0°</span></div>
+          <label class="form-label">Skew X</label>
           <input type="range" id="fxSkewX" min="-45" max="45" value="0" oninput="updateFx();document.getElementById('skewXVal').textContent=this.value+'°'">
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <div class="inline-lv"><label class="form-label">Skew Y</label><span class="inline-val" id="skewYVal">0°</span></div>
+          <label class="form-label">Skew Y</label>
           <input type="range" id="fxSkewY" min="-45" max="45" value="0" oninput="updateFx();document.getElementById('skewYVal').textContent=this.value+'°'">
         </div>
       </div>
+      </div>
 
-      <div class="section-title">Masking (Fade / Crop Shapes)</div>
+      <div class="acc-header" onclick="toggleAcc('acc-fx-mask')">
+        <span>Masking (Fade / Crop Shapes)</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body" id="acc-fx-mask">
       <div class="blur-controls">
         <div class="mask-btns" style="margin-bottom:9px;" id="fxMaskBtns">
           <button class="mask-btn" data-mask="none" onclick="setMask('none')">None</button>
@@ -2318,9 +2556,10 @@ input[type="color"]:hover{
           <button class="mask-btn" data-mask="fade-all" onclick="setMask('fade-all')">◈ Vignette</button>
         </div>
         <div class="form-row" style="margin-bottom:0;">
-          <div class="inline-lv"><label class="form-label">Mask Fade Size</label><span class="inline-val" id="maskFadeVal">30%</span></div>
+          <label class="form-label">Mask Fade Size</label>
           <input type="range" id="maskFadeSize" min="5" max="80" value="30" oninput="updateFx();document.getElementById('maskFadeVal').textContent=this.value+'%'">
         </div>
+      </div>
       </div>
     </div>
 
@@ -2530,7 +2769,7 @@ input[type="color"]:hover{
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </span>Edit
   </button>
-  <button class="app-nav-btn" onclick="exportPNG()">
+  <button class="app-nav-btn" onclick="openMobileExportSheet()">
     <span class="anicon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     </span>Export
@@ -2564,6 +2803,39 @@ input[type="color"]:hover{
       <button class="mask-btn" data-mask="fade-all" onclick="setMask('fade-all')">Vignette</button>
     </div>
     <button class="btn" style="width:100%;margin-top:10px;" onclick="document.getElementById('mobileFxModal').classList.remove('show')">Close</button>
+  </div>
+</div>
+
+
+<!-- MOBILE EXPORT SHEET -->
+<div class="modal-overlay" id="mobileExportModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box">
+    <h3>Export Thumbnail</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      <button class="btn btn-success" style="justify-content:center;padding:14px 4px;font-size:13px;font-weight:800;" onclick="exportPNG();document.getElementById('mobileExportModal').classList.remove('show')">PNG</button>
+      <button class="btn btn-primary" style="justify-content:center;padding:14px 4px;font-size:13px;font-weight:800;" onclick="exportJPG();document.getElementById('mobileExportModal').classList.remove('show')">JPG</button>
+      <button class="btn" style="justify-content:center;padding:14px 4px;font-size:13px;font-weight:800;" onclick="exportWebP();document.getElementById('mobileExportModal').classList.remove('show')">WebP</button>
+    </div>
+    <div class="form-row">
+      <label class="form-label">JPG Quality</label>
+      <input type="range" id="jpgQuality2" min="10" max="100" value="95" style="width:100%">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Export Scale</label>
+      <select class="form-input" id="exportScale2">
+        <option value="1">1x (Canvas Size)</option>
+        <option value="2">2x (Retina)</option>
+        <option value="0.5">0.5x (Smaller)</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:8px;">
+      <label class="form-label">Save / Load Project</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn" style="justify-content:center;font-size:11px;" onclick="saveProject()">💾 Save</button>
+        <button class="btn" style="justify-content:center;font-size:11px;" onclick="document.getElementById('loadProjectInput').click()">📂 Load</button>
+      </div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:12px;" onclick="document.getElementById('mobileExportModal').classList.remove('show')">Close</button>
   </div>
 </div>
 
@@ -2812,6 +3084,14 @@ function enhanceSliders() {
   document.querySelectorAll('input[type="range"]').forEach(range => {
     if(range.dataset.enhanced) return;
     range.dataset.enhanced='1';
+    // Skip image section — already has adj-num box in HTML
+    if(range.classList.contains('adj-slider')) return;
+    // Hide inline-val span to avoid duplicate value display
+    const prev = range.previousElementSibling;
+    if(prev && prev.classList.contains('inline-lv')) {
+      const span = prev.querySelector('.inline-val');
+      if(span) span.style.display='none';
+    }
     const num=document.createElement('input');
     num.type='number';
     num.className='range-num-input';
@@ -4373,6 +4653,20 @@ function closeAppSheets(){
   document.getElementById('appNavTools').classList.remove('active');
   document.getElementById('appNavProps').classList.remove('active');
 }
+
+// ===================== ACCORDION =====================
+function toggleAcc(id) {
+  const body = document.getElementById(id);
+  const header = body.previousElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+function openMobileExportSheet(){
+  document.getElementById('mobileExportModal').classList.add('show');
+}
+
 function initAppMode(){
   if(window.matchMedia('(max-width:768px)').matches){
     document.body.classList.add('app-mode');
@@ -4671,11 +4965,23 @@ document.addEventListener('keydown',e=>{
 });
 
 // ===================== MOBILE CANVAS FIT =====================
-function fitCanvasToMobile(){
-  const wrapper=document.getElementById('canvasWrapper');
-  if(window.innerWidth>768){wrapper.style.transform='';return;}
-  wrapper.style.transform='';
-  fitCanvas();
+function fitCanvasToMobile(force){
+  if(window.innerWidth>768){
+    document.getElementById('canvasWrapper').style.transform='';
+    return;
+  }
+  const area = document.getElementById('canvasArea');
+  const wrapper = document.getElementById('canvasWrapper');
+  const areaW = area.clientWidth - 16;
+  const areaH = area.clientHeight - 16;
+  const scaleX = areaW / canvasW;
+  const scaleY = areaH / canvasH;
+  scale = Math.min(scaleX, scaleY, 1);
+  wrapper.style.width = (canvasW * scale) + 'px';
+  wrapper.style.height = (canvasH * scale) + 'px';
+  const canvas = document.getElementById('mainCanvas');
+  canvas.style.width = (canvasW * scale) + 'px';
+  canvas.style.height = (canvasH * scale) + 'px';
   updateAppZoomLabel();
 }
 function zoomMobile(delta){
