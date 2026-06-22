@@ -927,9 +927,11 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    // Capture offset in world-space (no unrotation) so drag is stable for rotated layers
+    // Capture offset relative to layer CENTER so rotated layers drag correctly.
+    // During move we do: layer.center = mouse - dragOff, then recompute x/y from center.
     const fl=layers[found];
-    dragOffX=x-fl.x;dragOffY=y-fl.y;
+    dragOffX=x-(fl.x+fl.w/2);
+    dragOffY=y-(fl.y+fl.h/2);
     updateRightPanel();updateFxPanel();
   }
   else updateRightPanel();
@@ -945,9 +947,11 @@ function onMouseMove(e){
   }
   if(isDragging&&selectedIndex>=0){
     let layer = layers[selectedIndex];
-    // Use raw world-space coordinates for dragging (no unrotation needed - offset was captured in world-space)
-    let targetX = x - dragOffX;
-    let targetY = y - dragOffY;
+    // Compute new TOP-LEFT from center offset (works correctly for any rotation)
+    let newCx = x - dragOffX;
+    let newCy = y - dragOffY;
+    let targetX = newCx - layer.w / 2;
+    let targetY = newCy - layer.h / 2;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -1027,7 +1031,7 @@ function onMouseMove(e){
     if(corner){
       if(corner.zone==='rotate'){
         // Custom rotate cursor - bidirectional curved arrow matching the rotate icon
-        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M20 4.5C17.5 2.5 14.5 1.5 11 2c-5 .8-9 5-9.5 10' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'/><polygon points='6,7 13,7 9.5,13' fill='black'/><path d='M8 23.5C10.5 25.5 13.5 26.5 17 26c5-.8 9-5 9.5-10' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round'/><polygon points='22,21 15,21 18.5,15' fill='black'/></svg>`;
+        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M7 5 C7 5, 14 1, 22 6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><polygon points='22,2 26,9 19,8' fill='black'/><path d='M25 27 C25 27, 18 31, 10 26' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><polygon points='10,30 6,23 13,24' fill='black'/><path d='M7 5 C1 10, 1 22, 7 27' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><path d='M25 27 C31 22, 31 10, 25 5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/></svg>`;
         const encoded = 'data:image/svg+xml;base64,' + btoa(rotateCursorSVG);
         canvas.style.cursor = `url('${encoded}') 14 14, grab`;
         _hoverRotateCorner=corner.id; _hoverRotateX=x; _hoverRotateY=y; redraw();
