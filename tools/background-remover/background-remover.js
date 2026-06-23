@@ -48,42 +48,40 @@ let glowColor = '#c8a96e', glowStrength = 60, glowBlur = 20;
 
 // Feather state
 let featherRadius = 0;
- 
+
 /* ── FEATHER: soften edges of alpha mask ── */
 function applyFeatherToCanvas(srcCanvas, radius) {
   if (!radius || radius <= 0) return srcCanvas;
   const w = srcCanvas.width, h = srcCanvas.height;
- 
-  // Step 1: get original pixel data
+
+  // Step 1: extract alpha channel
   const tmp = document.createElement('canvas'); tmp.width=w; tmp.height=h;
   const tCtx = tmp.getContext('2d');
   tCtx.drawImage(srcCanvas, 0, 0);
-  const srcData = tCtx.getImageData(0, 0, w, h);
-  const sd = srcData.data;
- 
-  // Step 2: extract original alpha
-  const origAlpha = new Float32Array(w * h);
-  for (let i = 0; i < w * h; i++) origAlpha[i] = sd[i*4+3] / 255;
- 
-  // Step 3: blur the alpha
+  const imgData = tCtx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+
+  // Step 2: build alpha-only array, then gaussian blur it
+  const alpha = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) alpha[i] = d[i*4+3] / 255;
+
+  // Simple box blur approximation (3 passes ≈ gaussian)
   const r = Math.round(radius);
-  const blurred = boxBlurAlpha(origAlpha, w, h, r);
- 
-  // Step 4: MULTIPLY blurred alpha by original alpha
-  // This ensures feather only goes INWARD — pixels outside the original mask stay 0
+  const blurred = boxBlurAlpha(alpha, w, h, r);
+
+  // Step 3: write blurred alpha back into the canvas pixels
   const out = document.createElement('canvas'); out.width=w; out.height=h;
   const oCtx = out.getContext('2d');
   oCtx.drawImage(srcCanvas, 0, 0);
   const outData = oCtx.getImageData(0, 0, w, h);
   const od = outData.data;
   for (let i = 0; i < w * h; i++) {
-    // min() clamps to original shape — blurred can never exceed original boundary
-    od[i*4+3] = Math.round(Math.min(origAlpha[i], blurred[i]) * 255);
+    od[i*4+3] = Math.round(blurred[i] * 255);
   }
   oCtx.putImageData(outData, 0, 0);
   return out;
 }
- 
+
 function boxBlurAlpha(alpha, w, h, r) {
   let src = new Float32Array(alpha);
   let dst = new Float32Array(w * h);
