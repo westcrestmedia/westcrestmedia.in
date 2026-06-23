@@ -1758,22 +1758,48 @@ function buildExportCanvasForItem(item) {
   return exp;
 }
 
+// ── Format selector ──────────────────────────────────────────
+let _dlFormat = 'png';
+
+window.setFormat = function(fmt, btn) {
+  _dlFormat = fmt;
+  document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('fmt-btn-active'));
+  document.querySelectorAll(`.fmt-btn[data-fmt="${fmt}"]`).forEach(b => b.classList.add('fmt-btn-active'));
+  const showQ = fmt === 'jpeg' || fmt === 'webp';
+  [document.getElementById('fmt-quality-row'), document.getElementById('mob-fmt-quality-row')].forEach(el => { if(el) el.style.display = showQ ? 'flex' : 'none'; });
+  const label = fmt.toUpperCase();
+  [document.getElementById('dl-btn-label'), document.getElementById('mob-dl-btn-label')].forEach(el => { if(el) el.textContent = 'Download ' + label; });
+};
+
+function _getMimeAndExt() {
+  if (_dlFormat === 'jpeg') return { mime: 'image/jpeg', ext: 'jpg' };
+  if (_dlFormat === 'webp') return { mime: 'image/webp', ext: 'webp' };
+  return { mime: 'image/png', ext: 'png' };
+}
+
+function _getQuality() {
+  const q = document.getElementById('fmt-quality');
+  return q ? (+q.value / 100) : 0.92;
+}
+// ─────────────────────────────────────────────────────────────
+
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
-  // Sync wCanvas back to item before export
   if(wCanvas){
     const cvs=document.createElement('canvas');cvs.width=wCanvas.width;cvs.height=wCanvas.height;
     cvs.getContext('2d').drawImage(wCanvas,0,0);
     item.resultCanvas=cvs;
   }
   const exp=buildExportCanvasForItem(item);
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-bg-removed.png';a.click();},'image/png');
+  const {mime,ext}=_getMimeAndExt();
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-bg-removed.${ext}`;a.click();},mime,_getQuality());
 };
 
 window.downloadItem=async function(id){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
   const exp=buildExportCanvasForItem(item);
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png';a.click();},'image/png');
+  const {mime,ext}=_getMimeAndExt();
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;a.click();},mime,_getQuality());
 };
 
 window.downloadAll=async function(){
@@ -1781,10 +1807,11 @@ window.downloadAll=async function(){
   const JSZip=window.JSZip;
   if(!JSZip){alert('JSZip not loaded. Please try again.');return;}
   const zip=new JSZip();
+  const {mime,ext}=_getMimeAndExt();
   for(const item of done){
     const exp=buildExportCanvasForItem(item);
-    const blob=await new Promise(res=>exp.toBlob(res,'image/png'));
-    zip.file('wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png',blob);
+    const blob=await new Promise(res=>exp.toBlob(res,mime,_getQuality()));
+    zip.file(`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`,blob);
   }
   const zipBlob=await zip.generateAsync({type:'blob'});
   const a=document.createElement('a');a.href=URL.createObjectURL(zipBlob);a.download='westcrest-bg-removed.zip';a.click();

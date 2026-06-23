@@ -473,11 +473,29 @@
         </div>
         <div class="panel-body">
           <p style="font-size:10px;color:var(--text-muted);line-height:1.5;padding:6px 8px;background:var(--dark-4);border-radius:6px;margin:0;">💡 Canvas zoom/pan is for preview only. Reset to 100% before downloading, or use <b style="color:var(--text);">Transform</b> to resize & reposition.</p>
+
+          <!-- Format Selector -->
+          <div style="margin-top:10px;">
+            <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Output Format</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;" id="format-selector">
+              <button class="fmt-btn fmt-btn-active" data-fmt="png" onclick="setFormat('png',this)">PNG</button>
+              <button class="fmt-btn" data-fmt="jpeg" onclick="setFormat('jpeg',this)">JPEG</button>
+              <button class="fmt-btn" data-fmt="webp" onclick="setFormat('webp',this)">WEBP</button>
+            </div>
+            <div id="fmt-quality-row" style="display:none;margin-top:8px;" class="form-row">
+              <span class="form-label">Quality</span>
+              <div class="slider-wrap">
+                <input type="range" id="fmt-quality" min="10" max="100" value="92" oninput="document.getElementById('fmt-quality-val').textContent=this.value+'%'">
+                <span class="slider-val" id="fmt-quality-val">92%</span>
+              </div>
+            </div>
+          </div>
+
           <div class="dl-action-group">
             <button class="dl-btn dl-btn-primary" onclick="downloadCurrent()">
               <span class="dl-btn-icon">⬇</span>
               <span class="dl-btn-text">
-                <span class="dl-btn-title">Download PNG</span>
+                <span class="dl-btn-title" id="dl-btn-label">Download PNG</span>
                 <span class="dl-btn-sub">Current image</span>
               </span>
             </button>
@@ -836,11 +854,29 @@
   <div class="mob-sheet-title">⬇ Download</div>
   <div class="mob-sheet-body" style="display:flex;flex-direction:column;gap:8px;">
     <p style="font-size:10px;color:var(--text-muted);line-height:1.5;padding:6px 8px;background:var(--dark-4);border-radius:6px;margin:0;">💡 Download saves full resolution. Use <b style="color:var(--text);">Transform</b> to resize or reposition before downloading.</p>
+
+    <!-- Mobile Format Selector -->
+    <div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Output Format</div>
+      <div style="display:flex;gap:6px;" id="mob-format-selector">
+        <button class="fmt-btn fmt-btn-active" data-fmt="png" onclick="setFormat('png',this)">PNG</button>
+        <button class="fmt-btn" data-fmt="jpeg" onclick="setFormat('jpeg',this)">JPEG</button>
+        <button class="fmt-btn" data-fmt="webp" onclick="setFormat('webp',this)">WEBP</button>
+      </div>
+      <div id="mob-fmt-quality-row" style="display:none;margin-top:8px;" class="form-row">
+        <span class="form-label">Quality</span>
+        <div class="slider-wrap">
+          <input type="range" id="mob-fmt-quality" min="10" max="100" value="92" oninput="document.getElementById('fmt-quality').value=this.value;document.getElementById('fmt-quality-val').textContent=this.value+'%';document.getElementById('mob-fmt-quality-val').textContent=this.value+'%'">
+          <span class="slider-val" id="mob-fmt-quality-val">92%</span>
+        </div>
+      </div>
+    </div>
+
     <div class="dl-action-group">
       <button class="dl-btn dl-btn-primary" onclick="downloadCurrent();closeMobSheet();">
         <span class="dl-btn-icon">⬇</span>
         <span class="dl-btn-text">
-          <span class="dl-btn-title">Download PNG</span>
+          <span class="dl-btn-title" id="mob-dl-btn-label">Download PNG</span>
           <span class="dl-btn-sub">Current image</span>
         </span>
       </button>
