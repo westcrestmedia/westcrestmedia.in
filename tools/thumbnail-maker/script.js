@@ -909,26 +909,27 @@ function onMouseDown(e){
       }
     }
   }
-  // Hit test: unrotate mouse into each layer's local space for correct rotated picking
   let found=-1;
   for(let i=layers.length-1;i>=0;i--){
     const l=layers[i];
     if(!l.visible||l.locked)continue;
-    const cx=l.x+l.w/2, cy=l.y+l.h/2;
-    const rad=-(l.rotation||0)*Math.PI/180;
-    const dx=x-cx, dy=y-cy;
-    const lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-    const ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    // Unrotate mouse point into layer's local space before hit test
+    let lx=x, ly=y;
+    if(l.rotation){
+      const cx=l.x+l.w/2, cy=l.y+l.h/2;
+      const rad=-l.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
     if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
   }
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    saveHistory();
+    // Capture offset between mouse and layer CENTER (rotation pivot), so rotated layers drag correctly
     const fl=layers[found];
-    // Offset = mouse minus layer CENTER (works for any rotation angle)
-    dragOffX=x-(fl.x+fl.w/2);
-    dragOffY=y-(fl.y+fl.h/2);
+    dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
     updateRightPanel();updateFxPanel();
   }
   else updateRightPanel();
@@ -944,11 +945,9 @@ function onMouseMove(e){
   }
   if(isDragging&&selectedIndex>=0){
     let layer = layers[selectedIndex];
-    // Compute new TOP-LEFT from center offset (works correctly for any rotation)
-    let newCx = x - dragOffX;
-    let newCy = y - dragOffY;
-    let targetX = newCx - layer.w / 2;
-    let targetY = newCy - layer.h / 2;
+    // mouse - center_offset = new center; subtract half-size to get top-left (layer.x/y)
+    let targetX = x - dragOffX - layer.w/2;
+    let targetY = y - dragOffY - layer.h/2;
     let snapThreshold = 10;
     let snappedX = false;
     let snappedY = false;
@@ -969,16 +968,18 @@ function onMouseMove(e){
       snappedY = true;
     }
 
-    layer.x = targetX;
-    layer.y = targetY;
+    layer.x = Math.round(targetX);
+    layer.y = Math.round(targetY);
     layer.snappedX = snappedX;
     layer.snappedY = snappedY;
 
     updateRightPanel();redraw();
   } else if(isResizing&&selectedIndex>=0){
+    saveHistory();
     const l=layers[selectedIndex],h=resizeHandle;
+    // Unrotate mouse into layer local space so resize works correctly after rotation.
+    // Rotation anchor is always the center of the object.
     const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
-    // Unrotate mouse into layer's local (unrotated) space
     let lx=x, ly=y;
     if(l.rotation){
       const rad=-l.rotation*Math.PI/180;
@@ -986,25 +987,20 @@ function onMouseMove(e){
       lx=oldCx+dx*Math.cos(rad)-dy*Math.sin(rad);
       ly=oldCy+dx*Math.sin(rad)+dy*Math.cos(rad);
     }
-    // Save opposite corner in local space before resize
-    const ox = h.includes('l') ? l.x+l.w : l.x;
-    const oy = h.includes('t') ? l.y+l.h : l.y;
-    // Apply resize in local space
     if(h.includes('r')) l.w=Math.max(10,lx-l.x);
     if(h.includes('l')){const newW=Math.max(10,l.x+l.w-lx);l.x=l.x+l.w-newW;l.w=newW;}
     if(h.includes('b')) l.h=Math.max(10,ly-l.y);
     if(h.includes('t')){const newH=Math.max(10,l.y+l.h-ly);l.y=l.y+l.h-newH;l.h=newH;}
     if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
-    // New opposite corner in local space after resize
-    const nx = h.includes('l') ? l.x+l.w : l.x;
-    const ny = h.includes('t') ? l.y+l.h : l.y;
-    // Rotate the drift back to world space and correct l.x/l.y so opposite corner stays fixed
+    // Re-anchor: after resize in local space, the world-space center may have shifted.
+    // Compensate so the rotation pivot stays at the original center.
     if(l.rotation){
+      const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
+      const dcx=newCx-oldCx, dcy=newCy-oldCy;
       const rad=l.rotation*Math.PI/180;
-      const dLx=nx-ox, dLy=ny-oy;
-      const dWx=dLx*Math.cos(rad)-dLy*Math.sin(rad);
-      const dWy=dLx*Math.sin(rad)+dLy*Math.cos(rad);
-      l.x-=dWx; l.y-=dWy;
+      const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
+      const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
+      l.x+=(dcx-rotDx); l.y+=(dcy-rotDy);
     }
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
@@ -1031,7 +1027,8 @@ function onMouseMove(e){
     if(corner){
       if(corner.zone==='rotate'){
         // Custom rotate cursor - bidirectional curved arrow matching the rotate icon
-        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M7 5 C7 5, 14 1, 22 6' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><polygon points='22,2 26,9 19,8' fill='black'/><path d='M25 27 C25 27, 18 31, 10 26' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><polygon points='10,30 6,23 13,24' fill='black'/><path d='M7 5 C1 10, 1 22, 7 27' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/><path d='M25 27 C31 22, 31 10, 25 5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/></svg>`;
+        // Arrow shape: bottom-left tip points LEFT (←), top-right tip points UP (↑), arc connects them
+        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M6 22 C3 14 8 5 20 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/><polygon points='1,22 7,18 7,26' fill='black'/><polygon points='20,0 16,6 24,6' fill='black'/></svg>`;
         const encoded = 'data:image/svg+xml;base64,' + btoa(rotateCursorSVG);
         canvas.style.cursor = `url('${encoded}') 14 14, grab`;
         _hoverRotateCorner=corner.id; _hoverRotateX=x; _hoverRotateY=y; redraw();

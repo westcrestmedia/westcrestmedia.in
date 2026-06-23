@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog — Westcrest Media | Tips, Tools & Tutorials for Creators</title>
   <meta name="description" content="Tips, tutorials and insights on video editing, motion graphics, AI tools and the creator economy — from the team at Westcrest Media." />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://westcrestmedia.in/blog/" />
 
   <!-- Hreflang -->
   <link rel="alternate" hreflang="en" href="https://westcrestmedia.in/blog/" />
   <link rel="alternate" hreflang="x-default" href="https://westcrestmedia.in/blog/" />
 
-  <!-- Open Graph — full set -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Westcrest Media" />
   <meta property="og:url" content="https://westcrestmedia.in/blog/" />
@@ -31,7 +31,7 @@
   <meta name="twitter:description" content="Tips, tutorials and insights on video editing, motion graphics, AI tools and the creator economy — from the team at Westcrest Media." />
   <meta name="twitter:image" content="https://westcrestmedia.in/images/og-image.jpg" />
 
-  <!-- Favicon set -->
+  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/images/w_logo.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
@@ -74,86 +74,54 @@
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://westcrestmedia.in/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Blog",
-            "item": "https://westcrestmedia.in/blog/"
-          }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://westcrestmedia.in/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://westcrestmedia.in/blog/" }
         ]
       }
     ]
   }
   </script>
+
+  <!-- ═══ Global CSS — sabse pehle ═══ -->
+  <link rel="stylesheet" href="/assets/css/global.css" />
+  <link rel="stylesheet" href="/assets/css/nav-landing.css" />
+  <link rel="stylesheet" href="/assets/css/landing-footer.css" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ── Blog-page local tokens — global.css extend karte hain ── */
     :root {
-      --bg: #111118; --bg2: #16161e; --bg3: #1c1c26;
-      --surface: #1e1e28; --border: rgba(255,255,255,0.10);
-      --gold: #c8a96e; --gold2: #e8c98e; --gold-dim: rgba(200,169,110,0.15);
-      --white: #f5f0e8; --white-dim: rgba(245,240,232,0.55);
+      --bg:        #111118;
+      --bg2:       #16161e;
+      --bg3:       #1c1c26;
+      --surface:   #1e1e28;
+      --white:     #f5f0e8;
+      --white-dim: rgba(245,240,232,0.55);
+      --gold2:     #e8c98e;
       --font-display: 'Cormorant Garamond', serif;
-      --font-sans: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
+      --font-mono: 'DM Mono', monospace;
     }
     html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--white); font-family: var(--font-sans); overflow-x: hidden; cursor: none; }
+    body { cursor: none; }
     body::before { content:''; position:fixed; inset:0; z-index:1; pointer-events:none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
       opacity: 0.025; }
 
+    /* Custom cursor */
     #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; mix-blend-mode:difference; }
     #cursor-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); position:absolute; transform:translate(-50%,-50%); transition:transform 0.1s,width 0.2s,height 0.2s; }
     #cursor-ring { width:36px; height:36px; border-radius:50%; border:1px solid rgba(200,169,110,0.5); position:absolute; transform:translate(-50%,-50%); transition:transform 0.18s cubic-bezier(.25,.46,.45,.94),width 0.3s,height 0.3s; }
     ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:2px; }
 
+    /* Loader */
     #loader { position:fixed; inset:0; z-index:8000; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; transition:opacity 0.8s ease,visibility 0.8s ease; }
     #loader.hidden { opacity:0; visibility:hidden; }
     .loader-bar { width:200px; height:1px; background:var(--border); position:relative; overflow:hidden; }
     .loader-bar::after { content:''; position:absolute; left:-100%; top:0; width:100%; height:100%; background:var(--gold); animation:loadBar 1.8s cubic-bezier(.4,0,.2,1) forwards; }
     @keyframes loadBar { to { left:0; } }
-
-    nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 60px; display:flex; align-items:center; justify-content:space-between; background:linear-gradient(to bottom,rgba(8,8,8,0.95) 0%,transparent 100%); transition:padding 0.4s; }
-    nav.scrolled { padding:10px 60px; background:rgba(8,8,8,0.97); border-bottom:1px solid var(--border); }
-    .nav-logo img { height:52px; width:auto; object-fit:contain; mix-blend-mode:lighten; display:block; }
-    .nav-links { display:flex; gap:40px; list-style:none; align-items:center; }
-    .nav-links a { font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--white-dim); text-decoration:none; transition:color 0.3s; position:relative; }
-    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1px; background:var(--gold); transition:width 0.3s; }
-    .nav-links a:hover, .nav-links a.active { color:var(--white); }
-    .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
-    .nav-cta { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--bg); background:var(--gold); padding:10px 24px; text-decoration:none; transition:background 0.3s,transform 0.2s; }
-    .nav-cta:hover { background:var(--gold2); transform:translateY(-1px); }
-    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
-    .hamburger span { width:28px; height:1px; background:var(--white); transition:0.3s; display:block; }
-    .nav-dropdown { position:relative; }
-    .nav-dropdown > a { display:flex; align-items:center; gap:5px; }
-    .nav-dropdown > a::before { content:'▾'; font-size:0.6rem; color:var(--gold); order:2; transition:transform 0.3s; }
-    .nav-dropdown:hover > a::before { transform:rotate(180deg); }
-    .dropdown-menu { position:absolute; top:calc(100% + 16px); left:50%; background:rgba(17,17,24,0.98); backdrop-filter:blur(20px); border:1px solid rgba(200,169,110,0.15); border-radius:10px; padding:10px; min-width:240px; opacity:0; visibility:hidden; transform:translateX(-50%) translateY(-8px); transition:all 0.25s ease; z-index:200; }
-    .nav-dropdown:hover .dropdown-menu { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
-    .dropdown-menu a { display:flex !important; align-items:center; gap:10px; padding:10px 14px !important; border-radius:6px; font-size:0.72rem !important; letter-spacing:0.08em; color:var(--white-dim) !important; text-decoration:none; transition:all 0.2s; white-space:nowrap; }
-    .dropdown-menu a:hover { background:var(--gold-dim); color:var(--gold) !important; }
-    .dropdown-menu a::after { display:none !important; }
-    .drop-icon-sm { font-size:0.85rem; width:22px; text-align:center; }
-    .dropdown-label { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); padding:6px 14px 2px; font-family:'DM Mono',monospace; }
-    .dropdown-divider { height:1px; background:rgba(200,169,110,0.15); margin:6px 10px; }
-    .mobile-menu { display:none; position:fixed; inset:0; z-index:500; background:rgba(17,17,24,0.98); flex-direction:column; align-items:center; justify-content:center; gap:36px; }
-    .mobile-menu.open { display:flex; }
-    .mobile-menu a { font-family:var(--font-display); font-size:2.4rem; font-weight:300; color:var(--white); text-decoration:none; transition:color 0.3s; }
-    .mobile-menu a:hover { color:var(--gold); }
-    .mobile-close-btn { position:absolute; top:24px; right:24px; width:44px; height:44px; border:1px solid var(--border); background:transparent; color:var(--white); font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-    @media(max-width:900px) { nav { padding:10px 20px; } nav.scrolled { padding:8px 20px; } .nav-links,.nav-cta { display:none; } .hamburger { display:flex; } .nav-logo img { height:48px !important; } }
-    .hamburger.open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity:0; }
-    .hamburger.open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
 
     .container { max-width:1200px; margin:0 auto; padding:0 60px; }
     .padded { padding:120px 0; }
@@ -171,20 +139,14 @@
     .page-hero h1 em { font-style:italic; color:var(--gold); }
     .page-hero p { font-size:0.85rem; letter-spacing:0.1em; color:var(--white-dim); max-width:520px; margin:0 auto; line-height:1.85; }
 
-    /* COMING SOON STATE */
-    .blog-coming-soon { text-align:center; padding:80px 0; }
-    .blog-coming-soon .cs-icon { font-size:3rem; margin-bottom:24px; opacity:0.4; }
-    .blog-coming-soon h2 { font-family:var(--font-display); font-size:2.8rem; font-weight:300; margin-bottom:20px; }
-    .blog-coming-soon h2 em { font-style:italic; color:var(--gold); }
-    .blog-coming-soon p { font-size:0.82rem; color:var(--white-dim); line-height:1.85; max-width:480px; margin:0 auto 40px; }
-
-    /* PLACEHOLDER BLOG CARDS */
+    /* BLOG CARDS */
     .blog-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:60px; }
     @media(max-width:1000px) { .blog-grid { grid-template-columns:repeat(2,1fr); } }
     @media(max-width:600px) { .blog-grid { grid-template-columns:1fr; } }
     .blog-card { background:var(--surface); border:1px solid var(--border); display:flex; flex-direction:column; text-decoration:none; color:var(--white); position:relative; overflow:hidden; transition:border-color 0.3s,transform 0.4s cubic-bezier(0.22,1,0.36,1); }
     .blog-card:hover { border-color:rgba(200,169,110,0.4); transform:translateY(-4px); }
     .blog-card-thumb { aspect-ratio:16/9; background:var(--bg3); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .blog-card-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
     .blog-card-thumb-icon { font-size:2rem; opacity:0.2; }
     .blog-card-thumb-tag { position:absolute; top:14px; left:14px; font-family:var(--font-mono); font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(200,169,110,0.3); padding:4px 10px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); }
     .blog-card-body { padding:28px 24px; flex:1; display:flex; flex-direction:column; gap:12px; }
@@ -196,109 +158,40 @@
     .blog-card-desc { font-size:0.75rem; line-height:1.75; color:var(--white-dim); flex:1; }
     .blog-card-link { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-top:auto; display:flex; align-items:center; gap:6px; }
     .blog-card-link::after { content:'→'; }
-    .blog-card-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-    .coming-badge { font-family:var(--font-mono); font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--white-dim); opacity:0.3; border:1px solid rgba(255,255,255,0.08); padding:6px 14px; }
+
+    /* AD UNIT */
+    .ad-unit { margin:48px 0; text-align:center; min-height:90px; overflow:hidden; }
 
     /* REVEAL */
     .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.8s ease,transform 0.8s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
     .reveal-delay-1 { transition-delay:0.1s; } .reveal-delay-2 { transition-delay:0.2s; } .reveal-delay-3 { transition-delay:0.3s; }
 
-    /* CATEGORIES */
+    /* CATEGORY FILTERS */
     .blog-filters { display:flex; gap:10px; flex-wrap:wrap; margin-top:48px; }
-    .blog-filter-btn { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--white-dim); border:1px solid var(--border); background:transparent; padding:8px 18px; cursor:pointer; transition:all 0.3s; font-family:var(--font-sans); }
+    .blog-filter-btn { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--white-dim); border:1px solid var(--border); background:transparent; padding:8px 18px; cursor:pointer; transition:all 0.3s; }
     .blog-filter-btn.active, .blog-filter-btn:hover { border-color:var(--gold); color:var(--gold); }
 
-    /* NEWSLETTER */
-    .newsletter-band { background:var(--bg3); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:80px 0; text-align:center; }
-    .newsletter-band h3 { font-family:var(--font-display); font-size:2.4rem; font-weight:300; margin-bottom:16px; }
-    .newsletter-band h3 em { font-style:italic; color:var(--gold); }
-    .newsletter-band p { font-size:0.82rem; color:var(--white-dim); margin-bottom:36px; letter-spacing:0.06em; }
-    .newsletter-form { display:flex; gap:0; max-width:440px; margin:0 auto; }
-    .newsletter-input { flex:1; background:var(--surface); border:1px solid var(--border); border-right:none; color:var(--white); font-family:var(--font-sans); font-size:0.82rem; padding:14px 18px; outline:none; transition:border-color 0.3s; }
-    .newsletter-input:focus { border-color:var(--gold); }
-    .newsletter-input::placeholder { color:var(--white-dim); opacity:0.5; }
-    .newsletter-btn { background:var(--gold); color:var(--bg); font-family:var(--font-sans); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; border:none; padding:14px 24px; cursor:pointer; font-weight:600; transition:background 0.3s; white-space:nowrap; }
-    .newsletter-btn:hover { background:var(--gold2); }
-    .newsletter-note { font-size:0.62rem; color:var(--white-dim); opacity:0.4; margin-top:14px; font-family:var(--font-mono); letter-spacing:0.08em; }
-    @media(max-width:500px) { .newsletter-form { flex-direction:column; } .newsletter-input { border-right:1px solid var(--border); border-bottom:none; } }
 
-    /* SECTION */
-    .section-title { font-family:var(--font-display); font-size:clamp(2.4rem,5vw,4rem); font-weight:300; line-height:1.1; }
-    .section-title em { font-style:italic; color:var(--gold); }
-
-    /* FOOTER */
-    footer { background:var(--bg2); border-top:1px solid var(--border); padding:60px 0 40px; }
-    .footer-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:60px; }
-    .footer-tagline { font-size:0.72rem; color:var(--white-dim); letter-spacing:0.08em; margin-top:6px; }
-    .footer-links-group { display:flex; gap:80px; }
-    .footer-col h4 { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
-    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:12px; }
-    .footer-col a { font-size:0.78rem; color:var(--white-dim); text-decoration:none; transition:color 0.3s; }
-    .footer-col a:hover { color:var(--white); }
-    .footer-bottom { display:flex; justify-content:space-between; align-items:center; padding-top:32px; border-top:1px solid var(--border); }
-    .footer-copy { font-size:0.65rem; color:var(--white-dim); letter-spacing:0.08em; }
-    .social-links { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    .social-link { width:36px; height:36px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--white-dim); text-decoration:none; font-size:0.75rem; transition:border-color 0.3s,color 0.3s; }
-    .social-link:hover { border-color:var(--gold); color:var(--gold); }
-    @media(max-width:900px) { .footer-top { flex-direction:column; gap:40px; } .footer-links-group { gap:40px; } }
   </style>
+
+  <!-- ═══ Head Inject — AdSense + page-specific scripts ═══ -->
+  <script src="/assets/js/head-inject.js"></script>
 </head>
 <body>
 
+  <!-- Custom Cursor -->
   <div id="cursor"><div id="cursor-dot"></div><div id="cursor-ring"></div></div>
 
+  <!-- Loader -->
   <div id="loader">
     <img src="/images/logo.gif" alt="Westcrest Media" style="height:180px;width:auto;object-fit:contain;" />
     <div class="loader-bar"></div>
   </div>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-close-btn" onclick="closeMobile()">✕</button>
-    <a href="/#tools" onclick="closeMobile()">Tools</a>
-    <a href="/#services" onclick="closeMobile()">Services</a>
-    <a href="/#portfolio" onclick="closeMobile()">Portfolio</a>
-    <a href="/#shop" onclick="closeMobile()">Shop</a>
-    <a href="/#process" onclick="closeMobile()">Process</a>
-    <a href="/about/" onclick="closeMobile()">About</a>
-    <a href="/blog/" onclick="closeMobile()">Blog</a>
-    <a href="/#contact" onclick="closeMobile()">Contact</a>
-  </div>
-
-  <nav id="navbar">
-    <a href="/" class="nav-logo"><img src="/images/logo.png" alt="Westcrest Media" /></a>
-    <ul class="nav-links">
-      <li class="nav-dropdown"><a href="/#tools">Tools</a>
-        <div class="dropdown-menu">
-          <div class="dropdown-label">Image Tools</div>
-          <a href="/tools/image-converter/"><span class="drop-icon-sm">🖼️</span>Image Converter</a>
-          <a href="/tools/background-remover/"><span class="drop-icon-sm">✂️</span>Background Remover</a>
-          <a href="/tools/color-palette/"><span class="drop-icon-sm">🎨</span>Color Palette Generator</a>
-          <a href="/tools/image-compressor/"><span class="drop-icon-sm">🗜️</span>Image Compressor</a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-label">Video Tools</div>
-          <a href="/tools/thumbnail-maker/"><span class="drop-icon-sm">🎬</span>Thumbnail Maker</a>
-          <a href="/tools/lut-preview/"><span class="drop-icon-sm">🎞️</span>LUT Preview Tool</a>
-          <a href="/tools/aspect-ratio/"><span class="drop-icon-sm">📐</span>Aspect Ratio Calculator</a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-label">AI Prompt Tools</div>
-          <a href="/tools/image-prompt/"><span class="drop-icon-sm">&#127924;</span>Image Prompt Generator</a>
-          <a href="/tools/video-prompt/"><span class="drop-icon-sm">🎥</span>Video Prompt Generator</a>
-          <div class="dropdown-divider"></div>
-          <a href="/tools/font-pairing/"><span class="drop-icon-sm">🔤</span>Font Pairing Tool</a>
-          <a href="/tools/png-to-pdf.html"><span class="drop-icon-sm">📄</span>PNG to PDF</a>
-        </div>
-      </li>
-      <li><a href="/#services">Services</a></li>
-      <li><a href="/#portfolio">Portfolio</a></li>
-      <li><a href="/#shop">Shop</a></li>
-      <li><a href="/about/">About</a></li>
-      <li><a href="/blog/" class="active">Blog</a></li>
-      <li><a href="/#contact">Contact</a></li>
-    </ul>
-    <a href="/#contact" class="nav-cta">Start a Project</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
-  </nav>
+  <!-- ═══ Header ═══ -->
+  <nav id="navbar"></nav>
+  <script type="module" src="/assets/js/header-landing.js"></script>
 
   <!-- PAGE HERO -->
   <section class="page-hero">
@@ -319,7 +212,7 @@
   <section class="padded">
     <div class="container">
 
-      <!-- Category filters -->
+      <!-- Category Filters -->
       <div class="blog-filters reveal">
         <button class="blog-filter-btn active">All</button>
         <button class="blog-filter-btn">Video Editing</button>
@@ -329,167 +222,98 @@
         <button class="blog-filter-btn">Creator Tips</button>
       </div>
 
-      <!-- Placeholder Cards — replace with real posts when ready -->
+      <!-- Blog Cards Grid -->
       <div class="blog-grid">
 
-        <div class="blog-card reveal reveal-delay-1" style="pointer-events:none;">
-          <div class="blog-card-thumb" style="background:linear-gradient(135deg,#1a1a24,#12121a);">
-            <span class="blog-card-thumb-icon">🎬</span>
-            <span class="blog-card-thumb-tag">Video Editing</span>
-            <div class="blog-card-placeholder"><span class="coming-badge">Coming Soon</span></div>
+        <!-- ★ REAL POST — yahan se shuru karo ★ -->
+        <a href="/blog/best-free-background-remover-2026/" class="blog-card reveal reveal-delay-1">
+          <div class="blog-card-thumb">
+            <img src="/blog/best-free-background-remover-2026/thumb.jpg" alt="Best Free Background Remover Tools 2026" loading="lazy" />
+            <span class="blog-card-thumb-tag">Comparison</span>
           </div>
           <div class="blog-card-body">
             <div class="blog-card-meta">
-              <span class="blog-card-date">— 2025</span>
+              <span class="blog-card-date">June 2026</span>
+              <span class="blog-card-dot"></span>
+              <span class="blog-card-readtime">8 min read</span>
+            </div>
+            <div class="blog-card-title">Best Free Background Remover Tools in 2026</div>
+            <div class="blog-card-desc">We compared Remove.bg, Canva, Adobe Express, and Photoroom against Westcrest Media's free tool. Here is what actually delivers full resolution output at no cost.</div>
+            <span class="blog-card-link">Read Article</span>
+          </div>
+        </a>
+
+        <!-- ★ NAYI POST — copy karo aur fill karo ★ -->
+        <!--
+        <a href="/blog/your-article-slug/" class="blog-card reveal reveal-delay-2">
+          <div class="blog-card-thumb">
+            <img src="/blog/your-article-slug/thumb.jpg" alt="Article Title" loading="lazy" />
+            <span class="blog-card-thumb-tag">Category</span>
+          </div>
+          <div class="blog-card-body">
+            <div class="blog-card-meta">
+              <span class="blog-card-date">June 2026</span>
               <span class="blog-card-dot"></span>
               <span class="blog-card-readtime">5 min read</span>
             </div>
-            <div class="blog-card-title">Post title goes here</div>
-            <div class="blog-card-desc">Your first blog post description will appear here. Write about your editing process, tools you use, or tips for creators.</div>
+            <div class="blog-card-title">Article Title Here</div>
+            <div class="blog-card-desc">Short 2 line description of the article goes here.</div>
             <span class="blog-card-link">Read Article</span>
           </div>
-        </div>
-
-        <div class="blog-card reveal reveal-delay-2" style="pointer-events:none;">
-          <div class="blog-card-thumb" style="background:linear-gradient(135deg,#1c1218,#111118);">
-            <span class="blog-card-thumb-icon">🎨</span>
-            <span class="blog-card-thumb-tag">Color Grading</span>
-            <div class="blog-card-placeholder"><span class="coming-badge">Coming Soon</span></div>
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-meta">
-              <span class="blog-card-date">— 2025</span>
-              <span class="blog-card-dot"></span>
-              <span class="blog-card-readtime">7 min read</span>
-            </div>
-            <div class="blog-card-title">Post title goes here</div>
-            <div class="blog-card-desc">Share your knowledge on color grading, LUT creation or cinematic looks. Your expertise is valuable to creators worldwide.</div>
-            <span class="blog-card-link">Read Article</span>
-          </div>
-        </div>
-
-        <div class="blog-card reveal reveal-delay-3" style="pointer-events:none;">
-          <div class="blog-card-thumb" style="background:linear-gradient(135deg,#141820,#111118);">
-            <span class="blog-card-thumb-icon">&#127924;</span>
-            <span class="blog-card-thumb-tag">AI Tools</span>
-            <div class="blog-card-placeholder"><span class="coming-badge">Coming Soon</span></div>
-          </div>
-          <div class="blog-card-body">
-            <div class="blog-card-meta">
-              <span class="blog-card-date">— 2025</span>
-              <span class="blog-card-dot"></span>
-              <span class="blog-card-readtime">4 min read</span>
-            </div>
-            <div class="blog-card-title">Post title goes here</div>
-            <div class="blog-card-desc">Cover AI tools for creators — prompting, workflow automation, Midjourney tips. This space is growing fast and your audience wants guides.</div>
-            <span class="blog-card-link">Read Article</span>
-          </div>
-        </div>
+        </a>
+        -->
 
       </div>
+
+      <!-- AD UNIT — cards ke beech mein (6+ posts hone ke baad yahaan ad lagao) -->
+      <!--
+      <div class="ad-unit">
+        <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-3571045080403257"
+          data-ad-slot="REPLACE_WITH_AD_SLOT_ID"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+      -->
+
     </div>
   </section>
 
-  <!-- NEWSLETTER -->
-  <section class="newsletter-band">
-    <div class="container">
-      <div class="reveal">
-        <h3>Stay in the <em>Loop</em></h3>
-        <p>New tools, tutorials and creator resources — straight to your inbox. No spam, ever.</p>
-        <div class="newsletter-form">
-          <input class="newsletter-input" type="email" placeholder="your@email.com" />
-          <button class="newsletter-btn">Subscribe</button>
-        </div>
-        <div class="newsletter-note">Unsubscribe anytime · No spam · Creator content only</div>
-      </div>
-    </div>
-  </section>
+  <!-- ═══ Explore Tools ═══ -->
+  <div id="explore-tools"></div>
+  <script src="/assets/js/explore-tools.js"></script>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-top">
-        <div>
-          <img src="/images/logo.png" alt="Westcrest Media" style="height:110px;width:auto;object-fit:contain;mix-blend-mode:lighten;" />
-          <div class="footer-tagline">Built by a Creator, for Creators</div>
-        </div>
-        <div class="footer-links-group">
-          <div class="footer-col">
-            <h4>Tools</h4>
-            <ul>
-              <li><a href="/tools/image-converter/">Image Converter</a></li>
-              <li><a href="/tools/background-remover/">Background Remover</a></li>
-              <li><a href="/tools/thumbnail-maker/">Thumbnail Maker</a></li>
-              <li><a href="/tools/lut-preview/">LUT Preview</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Shop</h4>
-            <ul>
-              <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">AE Plugins</a></li>
-              <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">LUT Packs</a></li>
-              <li><a href="https://westcrestmedia.gumroad.com/" target="_blank">Project Files</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Company</h4>
-            <ul>
-              <li><a href="/about/">About Us</a></li>
-              <li><a href="/blog/">Blog</a></li>
-              <li><a href="/#portfolio">Portfolio</a></li>
-              <li><a href="/#contact">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <div class="footer-copy">© 2025 Westcrest Media. All rights reserved.</div>
-        <div class="social-links">
-          <a class="social-link" href="https://www.instagram.com/westcrestmedia/" target="_blank" title="Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-          <a class="social-link" href="https://www.youtube.com/@westcrestmedia" target="_blank" title="YouTube">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-          <a class="social-link" href="https://www.facebook.com/westcrestmedia" target="_blank" title="Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          </a>
-          <a class="social-link" href="https://www.behance.net/westcrestmedia" target="_blank" title="Behance">
-            <svg width="18" height="18" viewBox="0 0 640 640" fill="currentColor"><path d="M185.577 119.517c18.862 0 35.847 1.642 51.331 5.008 15.52 3.236 28.63 8.752 39.757 16.24 10.996 7.512 19.476 17.516 25.748 29.989 6 12.354 9 27.862 9 46.229 0 19.878-4.476 36.355-13.512 49.63-9.118 13.24-22.358 24-40.122 32.516 24.236 6.993 42.118 19.24 54.118 36.627 11.989 17.516 17.753 38.504 17.753 63.225 0 19.996-3.886 37.11-11.469 51.615-7.748 14.634-18.248 26.492-31.11 35.634-12.993 9.236-27.993 15.992-44.753 20.363-16.642 4.346-33.756 6.626-51.45 6.626H0V119.553l185.601.012-.023-.048zm232.042 31.76h159.616v38.883l-159.616-.012v-38.883.012zm35.469 293.448c11.764 11.469 28.63 17.233 50.646 17.233 15.745 0 29.516-4.016 40.867-12.012 11.35-7.996 18.248-16.465 20.882-25.229l68.965.012c-11.126 34.347-27.874 58.749-50.859 73.5-22.642 14.753-50.35 22.241-82.5 22.241-22.524 0-42.627-3.65-60.757-10.772-18.119-7.24-33.237-17.35-45.993-30.638-12.366-13.24-22.11-28.984-28.996-47.493-6.756-18.354-10.229-38.752-10.229-60.744 0-21.367 3.52-41.245 10.477-59.623 7.122-18.52 16.878-34.359 29.87-47.753 12.98-13.382 28.229-24 46.24-31.748 17.883-7.76 37.631-11.646 59.505-11.646 24.107 0 45.225 4.642 63.356 14.126 18 9.355 32.87 21.993 44.492 37.749 11.646 15.768 19.878 33.874 25.004 54.107 5.126 20.232 6.875 41.35 5.469 63.508H433.706c0 22.359 7.512 43.76 19.358 55.1l.024.082zm89.871-149.707c-9.236-10.24-25.122-15.874-44.233-15.874-12.52 0-22.866 2.114-31.11 6.366-8.115 4.229-14.752 9.473-19.878 15.745-4.997 6.248-8.516 13.004-10.465 20.102-1.996 6.874-3.236 13.24-3.65 18.756l127.502-.012c-1.878-19.984-8.752-34.736-18.118-45.106l-.047.023zm-368.662-16.524c15.355 0 28.099-3.65 38.091-11.008 9.992-7.24 14.752-19.24 14.752-35.752 0-9.106-1.63-16.76-4.878-22.642-3.354-5.87-7.76-10.512-13.37-13.748-5.516-3.355-11.74-5.646-19.099-6.886-7.122-1.358-14.634-1.984-22.24-1.984H86.576v91.973h87.745l-.024.047zm4.748 167.59c8.528 0 16.642-.757 24.213-2.528 7.748-1.748 14.634-4.359 20.363-8.35 5.752-3.887 10.641-8.989 14.114-15.745 3.52-6.638 5.126-15.118 5.126-25.477 0-20.232-5.764-34.748-17.114-43.512-11.351-8.646-26.47-12.874-45.214-12.874H86.552V445.93l92.493-.012v.165z"/></svg>
-          </a>
-          <a class="social-link" href="https://www.linkedin.com/in/westcrestmedia/" target="_blank" title="LinkedIn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-          <a class="social-link" href="https://vimeo.com/westcrestmedia" target="_blank" title="Vimeo">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609-3.268 4.247-6.026 6.37-8.29 6.37-1.409 0-2.578-1.294-3.553-3.881L5.322 11.4C4.603 8.816 3.834 7.522 3.01 7.522c-.17 0-.763.356-1.78 1.075L0 7.522c1.114-.98 2.214-1.96 3.298-2.94C4.769 3.204 5.883 2.48 6.64 2.393c1.834-.17 2.96 1.078 3.408 3.758.487 2.84.823 4.605.993 5.30.549 2.48 1.15 3.717 1.813 3.717.512 0 1.284-.81 2.325-2.43 1.038-1.621 1.592-2.85 1.659-3.699.148-1.4-.401-2.106-1.66-2.106-.591 0-1.197.135-1.816.404 1.207-3.955 3.514-5.882 6.928-5.793 2.529.06 3.72 1.713 3.587 4.862z"/></svg>
-          </a>
-          <a class="social-link" href="https://in.pinterest.com/westcrestmedia/" target="_blank" title="Pinterest">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
-          </a>
-          <a class="social-link" href="https://westcrestmedia.gumroad.com/" target="_blank" title="Gumroad">
-            <svg width="20" height="20" viewBox="0 0 77 77" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="38.5" cy="38.5" r="38.5" fill="currentColor" opacity="0.15"/><path fill="currentColor" d="M35.392 57.272c-10.849 0-17.23-8.701-17.23-19.526 0-11.249 7.02-20.375 20.421-20.375 13.828 0 18.508 9.339 18.72 14.645h-9.998c-.213-2.972-2.765-7.429-8.935-7.429-6.594 0-10.849 5.73-10.849 12.735s4.255 12.734 10.85 12.734c5.956 0 8.509-4.67 9.572-9.338H38.37v-3.82h20.087v19.525h-8.812v-12.31c-.638 4.458-3.404 13.16-14.253 13.16Z"/></svg>
-          </a>
-        </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- ═══ Footer ═══ -->
+  <div id="landing-footer"></div>
+  <script src="/assets/js/landing-footer.js"></script>
 
   <script>
-    const cursor = document.getElementById('cursor');
+    // Custom cursor
     const dot = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
     let mx=0,my=0,rx=0,ry=0;
     document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
     (function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
+
+    // Loader
     window.addEventListener('load', () => { setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800); });
-    window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40); });
-    function toggleMobile() { document.getElementById('mobileMenu').classList.toggle('open'); document.getElementById('hamburger').classList.toggle('open'); }
-    function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('hamburger').classList.remove('open'); }
-    document.querySelectorAll('.blog-filter-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.blog-filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }); });
-    const revealEls = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
+
+    // Category filter buttons
+    document.querySelectorAll('.blog-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
+
 </body>
 </html>

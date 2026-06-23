@@ -51,6 +51,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my image uploaded to any server?","acceptedAnswer":{"@type":"Answer","text":"No. The AI model runs entirely inside your browser using WebAssembly. Your image never leaves your device and is never sent to any server."}},{"@type":"Question","name":"How many images can I process at once?","acceptedAnswer":{"@type":"Answer","text":"Up to 20 images in a single batch. Images are processed one by one in sequence. After the first image loads the AI model, subsequent ones are much faster."}},{"@type":"Question","name":"Why does the first use take longer?","acceptedAnswer":{"@type":"Answer","text":"The AI model (~40MB on mobile, ~170MB on desktop for higher edge-quality results) is downloaded once and cached in your browser. All subsequent uses are instant with no re-download needed."}},{"@type":"Question","name":"Can I add a real photo as background?","acceptedAnswer":{"@type":"Answer","text":"Yes, use the Photo Background panel to search and apply any photo as a background. You can also blur it for a professional depth-of-field effect."}}]}
 </script>
+
+  <!-- ═══ Head Inject — AdSense + page-specific scripts ═══ -->
+  <script src="/assets/js/head-inject.js"></script>
 </head>
 <body>
 
