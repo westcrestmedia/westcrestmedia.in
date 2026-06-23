@@ -457,3 +457,29 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
   display: block;
   border-radius: 12px;
 }
+
+/* ── FORMAT SELECTOR BUTTONS ── */
+.fmt-btn {
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--faint);
+  border-radius: var(--radius-sm);
+  background: var(--dark-4);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .2s;
+  flex: 1;
+  text-align: center;
+}
+.fmt-btn:hover {
+  border-color: var(--gold-border);
+  color: var(--gold);
+}
+.fmt-btn-active {
+  background: rgba(201,168,76,.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
