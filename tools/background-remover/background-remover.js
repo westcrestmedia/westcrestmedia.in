@@ -46,6 +46,81 @@ let outlineColor = '#ffffff', outlineWidth = 4;
 let glowEnabled = false;
 let glowColor = '#c8a96e', glowStrength = 60, glowBlur = 20;
 
+// Feather state
+let featherRadius = 0;
+
+/* ── FEATHER: soften edges of alpha mask ── */
+function applyFeatherToCanvas(srcCanvas, radius) {
+  if (!radius || radius <= 0) return srcCanvas;
+  const w = srcCanvas.width, h = srcCanvas.height;
+
+  // Step 1: extract alpha channel
+  const tmp = document.createElement('canvas'); tmp.width=w; tmp.height=h;
+  const tCtx = tmp.getContext('2d');
+  tCtx.drawImage(srcCanvas, 0, 0);
+  const imgData = tCtx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+
+  // Step 2: build alpha-only array, then gaussian blur it
+  const alpha = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) alpha[i] = d[i*4+3] / 255;
+
+  // Simple box blur approximation (3 passes ≈ gaussian)
+  const r = Math.round(radius);
+  const blurred = boxBlurAlpha(alpha, w, h, r);
+
+  // Step 3: write blurred alpha back into the canvas pixels
+  const out = document.createElement('canvas'); out.width=w; out.height=h;
+  const oCtx = out.getContext('2d');
+  oCtx.drawImage(srcCanvas, 0, 0);
+  const outData = oCtx.getImageData(0, 0, w, h);
+  const od = outData.data;
+  for (let i = 0; i < w * h; i++) {
+    od[i*4+3] = Math.round(blurred[i] * 255);
+  }
+  oCtx.putImageData(outData, 0, 0);
+  return out;
+}
+
+function boxBlurAlpha(alpha, w, h, r) {
+  let src = new Float32Array(alpha);
+  let dst = new Float32Array(w * h);
+  const passes = 3;
+  for (let p = 0; p < passes; p++) {
+    // Horizontal pass
+    for (let y = 0; y < h; y++) {
+      let sum = 0, count = 0;
+      for (let x = -r; x <= r; x++) {
+        const xi = Math.max(0, Math.min(w-1, x));
+        sum += src[y*w + xi]; count++;
+      }
+      for (let x = 0; x < w; x++) {
+        dst[y*w + x] = sum / count;
+        const addX = Math.min(w-1, x+r+1);
+        const remX = Math.max(0, x-r);
+        sum += src[y*w + addX] - src[y*w + remX];
+      }
+    }
+    // Vertical pass
+    const tmp2 = new Float32Array(w * h);
+    for (let x = 0; x < w; x++) {
+      let sum = 0, count = 0;
+      for (let y = -r; y <= r; y++) {
+        const yi = Math.max(0, Math.min(h-1, y));
+        sum += dst[yi*w + x]; count++;
+      }
+      for (let y = 0; y < h; y++) {
+        tmp2[y*w + x] = sum / count;
+        const addY = Math.min(h-1, y+r+1);
+        const remY = Math.max(0, y-r);
+        sum += dst[addY*w + x] - dst[remY*w + x];
+      }
+    }
+    src = tmp2;
+  }
+  return src;
+}
+
 // Subject transform (independent of canvas zoom/pan)
 let subjectScale = 1, subjectX = 0, subjectY = 0, subjectRotation = 0;
 let flipX = false, flipY = false;
@@ -449,6 +524,7 @@ async function openEditor(id, noScroll) {
   glowColor       = snap.glowColor      || '#c8a96e';
   glowStrength    = snap.glowStrength   != null ? snap.glowStrength  : 60;
   glowBlur        = snap.glowBlur       != null ? snap.glowBlur      : 20;
+  featherRadius   = snap.featherRadius  != null ? snap.featherRadius : 0;
 
   // Sync all UI controls to restored state
   // Subject sliders
@@ -500,6 +576,9 @@ async function openEditor(id, noScroll) {
   document.getElementById('glow-strength').value = glowStrength; document.getElementById('glow-strength-val').textContent = glowStrength+'%';
   document.getElementById('glow-blur').value = glowBlur; document.getElementById('glow-blur-val').textContent = glowBlur+'px';
   const mge=document.getElementById('mob-glow-enable'); if(mge){mge.checked=glowEnabled; document.getElementById('mob-glow-controls').style.display=glowEnabled?'flex':'none'; document.getElementById('mob-glow-color').value=glowColor; document.getElementById('mob-glow-strength').value=glowStrength; document.getElementById('mob-glow-strength-val').textContent=glowStrength+'%'; document.getElementById('mob-glow-blur').value=glowBlur; document.getElementById('mob-glow-blur-val').textContent=glowBlur+'px';}
+  // Feather UI sync
+  const featherEl = document.getElementById('feather-radius'); if(featherEl){ featherEl.value=featherRadius; document.getElementById('feather-radius-val').textContent=featherRadius+'px'; }
+  const mFeatherEl = document.getElementById('mob-feather-radius'); if(mFeatherEl){ mFeatherEl.value=featherRadius; document.getElementById('mob-feather-radius-val').textContent=featherRadius+'px'; }
   // BG color swatches
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
@@ -669,7 +748,8 @@ function drawComposite() {
   if (flipX) dctx.scale(-1, 1);
   if (flipY) dctx.scale(1, -1);
   dctx.translate(-cx, -cy);
-  dctx.drawImage(wCanvas, sx, sy, sw, sh);
+  const featheredSrc = featherRadius > 0 ? applyFeatherToCanvas(wCanvas, featherRadius * 0.3) : wCanvas;
+  dctx.drawImage(featheredSrc, sx, sy, sw, sh);
   dctx.restore();
 
   // Save bg+subject state into active item for export
@@ -695,6 +775,7 @@ function drawComposite() {
       glowColor,
       glowStrength,
       glowBlur,
+      featherRadius,
       subjectScale,
       subjectX,
       subjectY,
@@ -1214,6 +1295,10 @@ window.updateEffects=function(){
   // Sync to mobile controls
   const moe=document.getElementById('mob-outline-enable'); if(moe){moe.checked=outlineEnabled; document.getElementById('mob-outline-controls').style.display=outlineEnabled?'flex':'none'; document.getElementById('mob-outline-color').value=outlineColor; document.getElementById('mob-outline-width').value=outlineWidth; document.getElementById('mob-outline-width-val').textContent=outlineWidth+'px';}
   const mge=document.getElementById('mob-glow-enable'); if(mge){mge.checked=glowEnabled; document.getElementById('mob-glow-controls').style.display=glowEnabled?'flex':'none'; document.getElementById('mob-glow-color').value=glowColor; document.getElementById('mob-glow-strength').value=glowStrength; document.getElementById('mob-glow-strength-val').textContent=glowStrength+'%'; document.getElementById('mob-glow-blur').value=glowBlur; document.getElementById('mob-glow-blur-val').textContent=glowBlur+'px';}
+  // Feather
+  featherRadius = +document.getElementById('feather-radius').value;
+  document.getElementById('feather-radius-val').textContent = featherRadius+'px';
+  const mfr = document.getElementById('mob-feather-radius'); if(mfr){ mfr.value=featherRadius; document.getElementById('mob-feather-radius-val').textContent=featherRadius+'px'; }
   drawComposite();
 };
 
@@ -1666,40 +1751,12 @@ function buildExportCanvasForItem(item) {
   if (eFlipX) ectx.scale(-1, 1);
   if (eFlipY) ectx.scale(1, -1);
   ectx.translate(-eCX, -eCY);
-  ectx.drawImage(subject, eSX, eSY, eSW, eSH);
+  const exportFeather = bg.featherRadius || 0;
+  const featheredExport = exportFeather > 0 ? applyFeatherToCanvas(subject, exportFeather) : subject;
+  ectx.drawImage(featheredExport, eSX, eSY, eSW, eSH);
   ectx.restore();
   return exp;
 }
-
-// ── Format selector ──────────────────────────────────────────
-let _dlFormat = 'png'; // current selected format
-
-window.setFormat = function(fmt, btn) {
-  _dlFormat = fmt;
-  // Update active state on both desktop + mobile selectors
-  document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('fmt-btn-active'));
-  document.querySelectorAll(`.fmt-btn[data-fmt="${fmt}"]`).forEach(b => b.classList.add('fmt-btn-active'));
-  // Show quality slider only for jpeg/webp
-  const showQ = fmt === 'jpeg' || fmt === 'webp';
-  const qRows = [document.getElementById('fmt-quality-row'), document.getElementById('mob-fmt-quality-row')];
-  qRows.forEach(el => { if(el) el.style.display = showQ ? 'flex' : 'none'; });
-  // Update download button label
-  const label = fmt.toUpperCase();
-  [document.getElementById('dl-btn-label'), document.getElementById('mob-dl-btn-label')].forEach(el => { if(el) el.textContent = 'Download ' + label; });
-};
-
-function _getMimeAndExt() {
-  const fmt = _dlFormat;
-  if (fmt === 'jpeg') return { mime: 'image/jpeg', ext: 'jpg' };
-  if (fmt === 'webp') return { mime: 'image/webp', ext: 'webp' };
-  return { mime: 'image/png', ext: 'png' };
-}
-
-function _getQuality() {
-  const q = document.getElementById('fmt-quality');
-  return q ? (+q.value / 100) : 0.92;
-}
-// ─────────────────────────────────────────────────────────────
 
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
@@ -1710,17 +1767,13 @@ window.downloadCurrent=function(){
     item.resultCanvas=cvs;
   }
   const exp=buildExportCanvasForItem(item);
-  const {mime,ext}=_getMimeAndExt();
-  const quality=_getQuality();
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-bg-removed.${ext}`;a.click();},mime,quality);
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-bg-removed.png';a.click();},'image/png');
 };
 
 window.downloadItem=async function(id){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
   const exp=buildExportCanvasForItem(item);
-  const {mime,ext}=_getMimeAndExt();
-  const quality=_getQuality();
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;a.click();},mime,quality);
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png';a.click();},'image/png');
 };
 
 window.downloadAll=async function(){
@@ -1728,12 +1781,10 @@ window.downloadAll=async function(){
   const JSZip=window.JSZip;
   if(!JSZip){alert('JSZip not loaded. Please try again.');return;}
   const zip=new JSZip();
-  const {mime,ext}=_getMimeAndExt();
-  const quality=_getQuality();
   for(const item of done){
     const exp=buildExportCanvasForItem(item);
-    const blob=await new Promise(res=>exp.toBlob(res,mime,quality));
-    zip.file(`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`,blob);
+    const blob=await new Promise(res=>exp.toBlob(res,'image/png'));
+    zip.file('wc-'+item.name.replace(/\.[^.]+$/,'')+'-nobg.png',blob);
   }
   const zipBlob=await zip.generateAsync({type:'blob'});
   const a=document.createElement('a');a.href=URL.createObjectURL(zipBlob);a.download='westcrest-bg-removed.zip';a.click();
