@@ -883,7 +883,32 @@ function onMouseDown(e){
     paintAt(x,y,true);
     return;
   }
-  // Select layer on click (for switching selection), but operations are hover-driven
+  if(selectedIndex>=0){
+    const layer=layers[selectedIndex];
+    const corner=getCornerZone(layer,x,y);
+    if(corner){
+      if(corner.zone==='resize'){
+        isResizing=true;resizeHandle=corner.id;
+        if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
+        return;
+      } else {
+        isRotating=true;
+        const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+        rotateStartAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
+        rotateStartRotation=layer.rotation||0;
+        saveHistory();
+        return;
+      }
+    }
+    // mid-edge handles (tm/bm/ml/mr)
+    for(const h of getHandles(layer)){
+      if(['tm','bm','ml','mr'].includes(h.id) && Math.hypot(x-h.x,y-h.y)<10/scale){
+        isResizing=true;resizeHandle=h.id;
+        if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
+        return;
+      }
+    }
+  }
   let found=-1;
   for(let i=layers.length-1;i>=0;i--){
     const l=layers[i];
@@ -898,130 +923,94 @@ function onMouseDown(e){
     }
     if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
   }
-  if(found>=0 && found!==selectedIndex){
-    selectedIndex=found;
-    updateRightPanel();updateFxPanel();updateLayerList();redraw();
-  } else if(found<0){
-    selectedIndex=-1;
-    updateRightPanel();updateLayerList();redraw();
+  selectedIndex=found;
+  if(found>=0){
+    isDragging=true;
+    const fl=layers[found];
+    dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
+    saveHistory();
+    updateRightPanel();updateFxPanel();
   }
+  else updateRightPanel();
+  updateLayerList();redraw();
 }
 
 function onMouseMove(e){
   const {x,y}=canvasCoords(e);
-  const r=canvas.getBoundingClientRect();
-  const outsideCanvas = e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom;
 
-  // ── BRUSH / PAINTING ──────────────────────────────────────────────
+  // ── BRUSH ─────────────────────────────────────────────────────────
   if(isPainting){
-    if(outsideCanvas){ isPainting=false; lastPaintPos=null; return; }
     paintAt(x,y,false);
     lastPaintPos={x,y};
     return;
   }
   if(drawingMode){canvas.style.cursor='crosshair';return;}
 
-  if(selectedIndex<0) return;
-  const layer=layers[selectedIndex];
+  // ── STOP OPERATION IF CURSOR LEFT THE RELEVANT ZONE ───────────────
+  if(selectedIndex>=0){
+    const layer=layers[selectedIndex];
 
-  // ── HOVER HIT TEST: is cursor inside / on handles of this layer? ──
-  function isOnLayer(layer, px, py){
-    let lx=px, ly=py;
-    if(layer.rotation){
-      const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
-      const rad=-layer.rotation*Math.PI/180;
-      const dx=px-cx, dy=py-cy;
-      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
-      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    // Helper: is cursor inside this layer's bounding box (rotation-aware)?
+    function isOnLayer(px,py){
+      let lx=px,ly=py;
+      if(layer.rotation){
+        const cx=layer.x+layer.w/2,cy=layer.y+layer.h/2;
+        const rad=-layer.rotation*Math.PI/180;
+        const dx=px-cx,dy=py-cy;
+        lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+        ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+      }
+      return lx>=layer.x&&lx<=layer.x+layer.w&&ly>=layer.y&&ly<=layer.y+layer.h;
     }
-    return lx>=layer.x && lx<=layer.x+layer.w && ly>=layer.y && ly<=layer.y+layer.h;
-  }
 
-  const corner=getCornerZone(layer,x,y);
-  const onMidHandle = getHandles(layer).some(h=>['tm','bm','ml','mr'].includes(h.id) && Math.hypot(x-h.x,y-h.y)<10/scale);
-  const onAnyHandle = corner || onMidHandle;
-  const insideLayer = isOnLayer(layer, x, y);
-
-  // ── STOP OPERATIONS WHEN CURSOR LEAVES RELEVANT ZONE ─────────────
-  if(isDragging){
-    if(!insideLayer || outsideCanvas){
-      // cursor left the object — stop drag
+    if(isDragging && !isOnLayer(x,y)){
       isDragging=false;
-      layer.snappedX=false; layer.snappedY=false;
+      layer.snappedX=false;layer.snappedY=false;
       aspectLock={};
       canvas.style.cursor='default';
-      redraw(); return;
+      redraw();return;
     }
-  }
-  if(isResizing){
-    if(!onAnyHandle || outsideCanvas){
-      // cursor left the handle — stop resize
-      isResizing=false; resizeHandle=''; aspectLock={};
-      canvas.style.cursor='default';
-      redraw(); return;
-    }
-  }
-  if(isRotating){
-    if(!corner || corner.zone!=='rotate' || outsideCanvas){
-      // cursor left rotate zone — stop rotate
-      isRotating=false;
-      canvas.style.cursor='default';
-      redraw(); return;
-    }
-  }
 
-  // ── START OPERATIONS ON HOVER ─────────────────────────────────────
-  if(!isDragging && !isResizing && !isRotating){
-    if(corner){
-      if(corner.zone==='rotate'){
-        if(!isRotating){
-          isRotating=true;
-          const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
-          rotateStartAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
-          rotateStartRotation=layer.rotation||0;
-          saveHistory();
-        }
-      } else {
-        // resize corner
-        if(!isResizing){
-          isResizing=true; resizeHandle=corner.id;
-          if(document.getElementById('lockAspect').checked) aspectLock.ratio=layer.w/layer.h;
-        }
+    if(isResizing){
+      const onHandle =
+        getHandles(layer).some(h=>Math.hypot(x-h.x,y-h.y)<10/scale) ||
+        (getCornerZone(layer,x,y)&&getCornerZone(layer,x,y).zone==='resize');
+      if(!onHandle){
+        isResizing=false;resizeHandle='';aspectLock={};
+        canvas.style.cursor='default';
+        redraw();return;
       }
-    } else if(onMidHandle){
-      const midH = getHandles(layer).find(h=>['tm','bm','ml','mr'].includes(h.id) && Math.hypot(x-h.x,y-h.y)<10/scale);
-      if(midH && !isResizing){
-        isResizing=true; resizeHandle=midH.id;
-        if(document.getElementById('lockAspect').checked) aspectLock.ratio=layer.w/layer.h;
-      }
-    } else if(insideLayer){
-      if(!isDragging){
-        isDragging=true;
-        dragOffX=x-(layer.x+layer.w/2);
-        dragOffY=y-(layer.y+layer.h/2);
-        saveHistory();
+    }
+
+    if(isRotating){
+      const c=getCornerZone(layer,x,y);
+      if(!c||c.zone!=='rotate'){
+        isRotating=false;
+        canvas.style.cursor='default';
+        redraw();return;
       }
     }
   }
 
   // ── PERFORM ACTIVE OPERATION ──────────────────────────────────────
-  if(isDragging && selectedIndex>=0){
-    let targetX = x - dragOffX - layer.w/2;
-    let targetY = y - dragOffY - layer.h/2;
-    let snappedX=false, snappedY=false;
+  if(isDragging&&selectedIndex>=0){
+    const layer=layers[selectedIndex];
+    let targetX=x-dragOffX-layer.w/2;
+    let targetY=y-dragOffY-layer.h/2;
+    let snappedX=false,snappedY=false;
     if(Math.abs((targetX+layer.w/2)-canvasW/2)<10){targetX=canvasW/2-layer.w/2;snappedX=true;}
     if(Math.abs((targetY+layer.h/2)-canvasH/2)<10){targetY=canvasH/2-layer.h/2;snappedY=true;}
-    layer.x=Math.round(targetX); layer.y=Math.round(targetY);
-    layer.snappedX=snappedX; layer.snappedY=snappedY;
-    updateRightPanel(); redraw();
-  } else if(isResizing && selectedIndex>=0){
+    layer.x=Math.round(targetX);layer.y=Math.round(targetY);
+    layer.snappedX=snappedX;layer.snappedY=snappedY;
+    updateRightPanel();redraw();
+  } else if(isResizing&&selectedIndex>=0){
     saveHistory();
-    const l=layer, h=resizeHandle;
-    const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
-    let lx=x, ly=y;
+    const l=layers[selectedIndex],h=resizeHandle;
+    const oldCx=l.x+l.w/2,oldCy=l.y+l.h/2;
+    let lx=x,ly=y;
     if(l.rotation){
       const rad=-l.rotation*Math.PI/180;
-      const dx=x-oldCx, dy=y-oldCy;
+      const dx=x-oldCx,dy=y-oldCy;
       lx=oldCx+dx*Math.cos(rad)-dy*Math.sin(rad);
       ly=oldCy+dx*Math.sin(rad)+dy*Math.cos(rad);
     }
@@ -1033,17 +1022,17 @@ function onMouseMove(e){
       if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;
     }
     if(l.rotation){
-      const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
-      const dcx=newCx-oldCx, dcy=newCy-oldCy;
+      const newCx=l.x+l.w/2,newCy=l.y+l.h/2;
+      const dcx=newCx-oldCx,dcy=newCy-oldCy;
       const rad=l.rotation*Math.PI/180;
       const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
       const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
-      l.x+=(dcx-rotDx); l.y+=(dcy-rotDy);
+      l.x+=(dcx-rotDx);l.y+=(dcy-rotDy);
     }
-    updateRightPanel(); redraw();
-  } else if(isRotating && selectedIndex>=0){
-    const l=layer;
-    const cx=l.x+l.w/2, cy=l.y+l.h/2;
+    updateRightPanel();redraw();
+  } else if(isRotating&&selectedIndex>=0){
+    const l=layers[selectedIndex];
+    const cx=l.x+l.w/2,cy=l.y+l.h/2;
     const currentAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
     let newRotation=Math.round(rotateStartRotation+(currentAngle-rotateStartAngle));
     if(e.shiftKey){newRotation=Math.round(newRotation/15)*15;}
@@ -1059,22 +1048,58 @@ function onMouseMove(e){
   }
 
   // ── CURSOR STYLE ──────────────────────────────────────────────────
-  if(isDragging){
-    canvas.style.cursor='grabbing';
-  } else if(isResizing){
-    const rot=layer.rotation||0;
-    if(corner){
-      const baseAngles={tl:135,tr:45,bl:225,br:315};
-      canvas.style.cursor=_diagCursorForAngle((baseAngles[resizeHandle]+rot)%360);
-    } else {
-      const baseAngles={tm:0,bm:0,ml:90,mr:90};
-      const angle=((baseAngles[resizeHandle]+rot)%180+180)%180;
-      canvas.style.cursor=angle<45||angle>=135?'ns-resize':'ew-resize';
+  if(isDragging){canvas.style.cursor='grabbing';return;}
+  if(isResizing){
+    if(selectedIndex>=0){
+      const l=layers[selectedIndex],rot=l.rotation||0;
+      const corner=getCornerZone(l,x,y);
+      if(corner){
+        const baseAngles={tl:135,tr:45,bl:225,br:315};
+        canvas.style.cursor=_diagCursorForAngle((baseAngles[resizeHandle]||0+rot)%360);
+      } else {
+        const baseAngles={tm:0,bm:0,ml:90,mr:90};
+        const angle=((baseAngles[resizeHandle]+rot)%180+180)%180;
+        canvas.style.cursor=angle<45||angle>=135?'ns-resize':'ew-resize';
+      }
     }
-  } else if(isRotating){
+    return;
+  }
+  if(isRotating){
     const rotateCursorSVG=`<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M6 22 C3 14 8 5 20 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/><polygon points='1,22 7,18 7,26' fill='black'/><polygon points='20,0 16,6 24,6' fill='black'/></svg>`;
     canvas.style.cursor=`url('data:image/svg+xml;base64,${btoa(rotateCursorSVG)}') 14 14, grab`;
+    return;
+  }
+  if(selectedIndex>=0){
+    const l=layers[selectedIndex],rot=l.rotation||0;
+    const corner=getCornerZone(l,x,y);
+    if(corner){
+      if(corner.zone==='rotate'){
+        const rotateCursorSVG=`<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M6 22 C3 14 8 5 20 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/><polygon points='1,22 7,18 7,26' fill='black'/><polygon points='20,0 16,6 24,6' fill='black'/></svg>`;
+        const encoded='data:image/svg+xml;base64,'+btoa(rotateCursorSVG);
+        canvas.style.cursor=`url('${encoded}') 14 14, grab`;
+        if(_hoverRotateCorner!==corner.id){_hoverRotateCorner=corner.id;redraw();}
+      } else {
+        if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
+        const baseAngles={tl:135,tr:45,bl:225,br:315};
+        canvas.style.cursor=_diagCursorForAngle((baseAngles[corner.id]+rot)%360);
+      }
+    } else {
+      if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
+      const handles=getHandles(l);
+      let cur='default';
+      for(const h of handles){
+        if(!['tm','bm','ml','mr'].includes(h.id))continue;
+        if(Math.hypot(x-h.x,y-h.y)<10/scale){
+          const baseAngles={tm:0,bm:0,ml:90,mr:90};
+          const angle=((baseAngles[h.id]+rot)%180+180)%180;
+          cur=angle<45||angle>=135?'ns-resize':'ew-resize';
+          break;
+        }
+      }
+      canvas.style.cursor=cur;
+    }
   } else {
+    if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
     canvas.style.cursor='default';
   }
 }
@@ -1087,11 +1112,13 @@ function _diagCursorForAngle(angle){
 }
 let _hoverRotateCorner=null, _hoverRotateX=0, _hoverRotateY=0;
 function onMouseUp(){
-  // Only painting still needs click-release to stop (brush strokes)
-  if(isPainting){
-    isPainting=false; lastPaintPos=null;
+  if(selectedIndex>=0){
+    layers[selectedIndex].snappedX=false;
+    layers[selectedIndex].snappedY=false;
   }
-  // drag/resize/rotate are hover-driven — they stop when cursor leaves zone
+  isDragging=false;isResizing=false;isRotating=false;aspectLock={};isPainting=false;lastPaintPos=null;
+  canvas.style.cursor=drawingMode?'crosshair':'default';
+  redraw();
 }
 function onDblClick(e){if(selectedIndex>=0&&layers[selectedIndex].type==='text'){switchTabByName('text');document.getElementById('txtContent').value=layers[selectedIndex].text;document.getElementById('txtContent').focus();}}
 function onRightClick(e){e.preventDefault();if(selectedIndex<0)return;const m=document.getElementById('ctxMenu');m.style.display='block';m.style.left=Math.min(e.clientX,window.innerWidth-170)+'px';m.style.top=Math.min(e.clientY,window.innerHeight-200)+'px';}
