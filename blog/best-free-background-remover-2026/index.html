@@ -253,12 +253,14 @@
     /* ── Hero Image ── */
     .hero-image {
       max-width: var(--content-width);
-      margin: 0 auto 48px;
+      margin: 0 auto 24px;
       padding: 0 24px;
     }
 
     .hero-image img {
       width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
       border-radius: var(--radius);
       display: block;
     }
