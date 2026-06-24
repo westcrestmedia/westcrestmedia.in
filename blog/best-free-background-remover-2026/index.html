@@ -100,13 +100,24 @@
     :root {
       --gold: #C9A84C;
       --gold-light: #e2c97e;
+      --gold2: #e2c97e;
+      --gold-border: rgba(201, 168, 76, 0.25);
+      --gold-dim: rgba(201, 168, 76, 0.12);
       --dark: #0d0d0d;
       --dark-2: #161616;
       --dark-3: #1e1e1e;
+      --bg: #0d0d0d;
+      --bg2: #111116;
       --text: #d8d8d8;
       --text-muted: #888;
+      --white: #f5f0e8;
+      --white-dim: rgba(245, 240, 232, 0.55);
+      --border: rgba(255, 255, 255, 0.09);
       --radius: 10px;
       --font-main: 'Inter', sans-serif;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-sans: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
       --content-width: 760px;
     }
 
@@ -116,6 +127,7 @@
       font-family: var(--font-main);
       line-height: 1.8;
       font-size: 1rem;
+      padding-top: 80px;
     }
 
     /* ── Breadcrumb ── */
@@ -423,7 +435,7 @@
 </head>
 <body>
 
-  <div id="site-header"></div>
+  <nav id="navbar"></nav>
   <script src="/assets/js/header-landing.js" type="module"></script>
 
   <!-- Your header loads here via JS -->
