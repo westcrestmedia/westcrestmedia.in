@@ -252,13 +252,26 @@
 
     /* ── Hero Image ── */
     .hero-image {
-      margin-bottom: 24px;
+      max-width: var(--content-width);
+      margin: 0 auto 40px;
+      padding: 0 24px;
     }
 
     .hero-image img {
       width: 100%;
+      height: auto;
       display: block;
-      border-radius: var(--radius);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .hero-image {
+        padding: 0;
+        margin-bottom: 28px;
+      }
+      .hero-image img {
+        border-radius: 0;
+      }
     }
 
     /* ── Article Body ── */
@@ -478,12 +491,12 @@
 
   <!-- ═══ Hero Image ═══ -->
   <div class="hero-image">
-    <!-- Replace with your actual 1200x630 thumbnail -->
     <img
-      src="thumb.jpg"
+      src="/blog/best-free-background-remover-2026/thumb.jpg"
       alt="Best Free Background Remover Tools Comparison 2026"
-      width="1200"
-      height="630"
+      width="960"
+      height="504"
+      loading="eager"
     />
   </div>
 
