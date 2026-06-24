@@ -21,7 +21,7 @@
     <div class="container">
       <div class="footer-top">
         <div>
-          <img src="images/logo.png" alt="Westcrest Media" width="110" height="110" style="height:110px; width:auto; object-fit:contain; mix-blend-mode:lighten;" />
+          <img src="/images/logo.png" alt="Westcrest Media" width="110" height="110" style="height:110px; width:auto; object-fit:contain; mix-blend-mode:lighten;" />
           <div class="footer-tagline">Premium Video & Motion Studio</div>
         </div>
         <div class="footer-links-group">
