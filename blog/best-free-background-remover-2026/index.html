@@ -89,7 +89,10 @@
   </script>
 
   <!-- ═══ Your existing header/footer CSS ═══ -->
-  <!-- <link rel="stylesheet" href="/css/main.css" /> -->
+  <link rel="stylesheet" href="/assets/css/global.css" />
+  <link rel="stylesheet" href="/assets/css/nav-landing.css" />
+  <link rel="stylesheet" href="/assets/css/landing-footer.css" />
+  <link rel="stylesheet" href="/assets/css/tools-common.css" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -419,6 +422,9 @@
   </style>
 </head>
 <body>
+
+  <div id="site-header"></div>
+  <script src="/assets/js/header-landing.js" type="module"></script>
 
   <!-- Your header loads here via JS -->
 
@@ -799,6 +805,13 @@
     </div>
 
   </article>
+
+  <div id="explore-tools"></div>
+  <script src="/assets/js/tools-data.js"></script>
+  <script src="/assets/js/explore-tools.js"></script>
+
+  <div id="landing-footer"></div>
+  <script src="/assets/js/landing-footer.js"></script>
 
   <!-- Your footer loads here via JS -->
 
