@@ -806,51 +806,21 @@ function drawSticker(layer){
 }
 
 // ===================== SELECTION HANDLES =====================
-// Rotate icon cache — keyed by angle, loaded once
-const _rotateIconCache = {};
-function _getRotateIconImg(angleDeg) {
-  const key = Math.round(((angleDeg % 360) + 360) % 360);
-  if (_rotateIconCache[key]) return _rotateIconCache[key];
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><g transform='rotate(${key},7,7)'><path d='M7 2 A5 5 0 0 1 12 7' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/><polygon points='12,4 12,8 8,6' fill='white'/></g></svg>`;
-  const img = new Image();
-  img.src = 'data:image/svg+xml;base64,' + btoa(svg);
-  _rotateIconCache[key] = img;
-  return img;
-}
-
 function drawSelection(layer) {
   ctx.save();
+  // Apply rotation transform so dashed rect rotates WITH the shape
   applyLayerTransform(layer);
   ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
   ctx.strokeRect(layer.x-1.5,layer.y-1.5,layer.w+3,layer.h+3);
   ctx.setLineDash([]);
+  // Use RAW (unrotated) handle positions because canvas is already rotated via applyLayerTransform
   const rawHandles=[
     {x:layer.x,y:layer.y,id:'tl'},{x:layer.x+layer.w,y:layer.y,id:'tr'},
     {x:layer.x,y:layer.y+layer.h,id:'bl'},{x:layer.x+layer.w,y:layer.y+layer.h,id:'br'},
     {x:layer.x+layer.w/2,y:layer.y,id:'tm'},{x:layer.x+layer.w/2,y:layer.y+layer.h,id:'bm'},
     {x:layer.x,y:layer.y+layer.h/2,id:'ml'},{x:layer.x+layer.w,y:layer.y+layer.h/2,id:'mr'},
   ];
-  // Draw plain white dots on ALL handles
-  rawHandles.forEach(h=>{
-    ctx.fillStyle='#fff';ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.arc(h.x,h.y,5,0,Math.PI*2);ctx.fill();ctx.stroke();
-  });
-  // Draw rotate icon ONLY on the corner the mouse is currently hovering (rotate zone)
-  if(_hoverRotateCorner) {
-    const hoverH = rawHandles.find(h=>h.id===_hoverRotateCorner);
-    if(hoverH) {
-      // In LOCAL space (canvas already rotated by applyLayerTransform),
-      // base angle per corner — no extra rotation needed
-      const cornerBaseAngle = {tl:225, tr:315, bl:135, br:45};
-      const angle = cornerBaseAngle[_hoverRotateCorner] || 0;
-      const off = {tl:{ox:-14,oy:-14}, tr:{ox:14,oy:-14}, bl:{ox:-14,oy:14}, br:{ox:14,oy:14}};
-      const o = off[_hoverRotateCorner];
-      const img = _getRotateIconImg(angle);
-      if(img.complete && img.naturalWidth) {
-        ctx.drawImage(img, hoverH.x + o.ox - 7, hoverH.y + o.oy - 7, 14, 14);
-      }
-    }
-  }
+  rawHandles.forEach(h=>{ctx.fillStyle='#fff';ctx.strokeStyle='#c8a96e';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(h.x,h.y,5,0,Math.PI*2);ctx.fill();ctx.stroke();});
   ctx.restore();
 }
 
@@ -918,7 +888,6 @@ function onMouseDown(e){
     const corner=getCornerZone(layer,x,y);
     if(corner){
       if(corner.zone==='resize'){
-        saveHistory();
         isResizing=true;resizeHandle=corner.id;
         if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
         return;
@@ -934,7 +903,6 @@ function onMouseDown(e){
     // mid-edge handles (tm/bm/ml/mr) still resize as before
     for(const h of getHandles(layer)){
       if(['tm','bm','ml','mr'].includes(h.id) && Math.hypot(x-h.x,y-h.y)<10/scale){
-        saveHistory();
         isResizing=true;resizeHandle=h.id;
         if(document.getElementById('lockAspect').checked)aspectLock.ratio=layer.w/layer.h;
         return;
@@ -959,7 +927,7 @@ function onMouseDown(e){
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
-    saveHistory();
+    // Capture offset between mouse and layer CENTER (rotation pivot), so rotated layers drag correctly
     const fl=layers[found];
     dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
     updateRightPanel();updateFxPanel();
@@ -970,6 +938,24 @@ function onMouseDown(e){
 
 function onMouseMove(e){
   const {x,y}=canvasCoords(e);
+
+  // ── AUTO-STOP: agar operation chal raha hai aur cursor object se kaafi door gaya to band karo ──
+  if((isDragging||isResizing||isRotating) && selectedIndex>=0){
+    const l=layers[selectedIndex];
+    const BUFFER=60/scale; // 60px canvas-space buffer — thodi jagah dete hain
+    // Axis-aligned bounding box of the layer (ignoring rotation for simplicity, safe enough)
+    const outside =
+      x < l.x - BUFFER ||
+      x > l.x + l.w + BUFFER ||
+      y < l.y - BUFFER ||
+      y > l.y + l.h + BUFFER;
+    if(outside){
+      l.snappedX=false; l.snappedY=false;
+      isDragging=false; isResizing=false; isRotating=false; aspectLock={};
+      canvas.style.cursor='default';
+      redraw(); return;
+    }
+  }
 
   if(isPainting){
     paintAt(x,y,false);
@@ -1008,32 +994,33 @@ function onMouseMove(e){
 
     updateRightPanel();redraw();
   } else if(isResizing&&selectedIndex>=0){
+    saveHistory();
     const l=layers[selectedIndex],h=resizeHandle;
-    const rot=(l.rotation||0)*Math.PI/180;
-    const cosR=Math.cos(rot),sinR=Math.sin(rot);
+    // Unrotate mouse into layer local space so resize works correctly after rotation.
+    // Rotation anchor is always the center of the object.
     const oldCx=l.x+l.w/2, oldCy=l.y+l.h/2;
-    // Unrotate mouse into local space
-    const dxM=x-oldCx,dyM=y-oldCy;
-    const lx=oldCx+dxM*Math.cos(-rot)-dyM*Math.sin(-rot);
-    const ly=oldCy+dxM*Math.sin(-rot)+dyM*Math.cos(-rot);
-    // Pin the opposite corner/edge
-    const pinLx=h.includes('r')?l.x:(h.includes('l')?l.x+l.w:l.x+l.w/2);
-    const pinLy=h.includes('b')?l.y:(h.includes('t')?l.y+l.h:l.y+l.h/2);
-    let newW=l.w,newH=l.h;
-    if(h.includes('r')) newW=Math.max(10,lx-pinLx);
-    if(h.includes('l')) newW=Math.max(10,pinLx-lx);
-    if(h.includes('b')) newH=Math.max(10,ly-pinLy);
-    if(h.includes('t')) newH=Math.max(10,pinLy-ly);
-    if(document.getElementById('lockAspect').checked&&aspectLock.ratio){
-      if(h.includes('r')||h.includes('l'))newH=newW/aspectLock.ratio;
-      else newW=newH*aspectLock.ratio;
+    let lx=x, ly=y;
+    if(l.rotation){
+      const rad=-l.rotation*Math.PI/180;
+      const dx=x-oldCx, dy=y-oldCy;
+      lx=oldCx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=oldCy+dx*Math.sin(rad)+dy*Math.cos(rad);
     }
-    const newLx=h.includes('r')?pinLx:(h.includes('l')?pinLx-newW:l.x+(l.w-newW)/2);
-    const newLy=h.includes('b')?pinLy:(h.includes('t')?pinLy-newH:l.y+(l.h-newH)/2);
-    const dxC=newLx+newW/2-oldCx,dyC=newLy+newH/2-oldCy;
-    l.w=Math.round(newW);l.h=Math.round(newH);
-    l.x=Math.round(oldCx+dxC*cosR-dyC*sinR-newW/2);
-    l.y=Math.round(oldCy+dxC*sinR+dyC*cosR-newH/2);
+    if(h.includes('r')) l.w=Math.max(10,lx-l.x);
+    if(h.includes('l')){const newW=Math.max(10,l.x+l.w-lx);l.x=l.x+l.w-newW;l.w=newW;}
+    if(h.includes('b')) l.h=Math.max(10,ly-l.y);
+    if(h.includes('t')){const newH=Math.max(10,l.y+l.h-ly);l.y=l.y+l.h-newH;l.h=newH;}
+    if(document.getElementById('lockAspect').checked&&aspectLock.ratio){if(h.includes('r')||h.includes('l'))l.h=l.w/aspectLock.ratio;else l.w=l.h*aspectLock.ratio;}
+    // Re-anchor: after resize in local space, the world-space center may have shifted.
+    // Compensate so the rotation pivot stays at the original center.
+    if(l.rotation){
+      const newCx=l.x+l.w/2, newCy=l.y+l.h/2;
+      const dcx=newCx-oldCx, dcy=newCy-oldCy;
+      const rad=l.rotation*Math.PI/180;
+      const rotDx=dcx*Math.cos(rad)-dcy*Math.sin(rad);
+      const rotDy=dcx*Math.sin(rad)+dcy*Math.cos(rad);
+      l.x+=(dcx-rotDx); l.y+=(dcy-rotDy);
+    }
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
     const l=layers[selectedIndex];
@@ -1058,17 +1045,16 @@ function onMouseMove(e){
     const corner=getCornerZone(l,x,y);
     if(corner){
       if(corner.zone==='rotate'){
-        // Rotate cursor — angle = corner's natural direction + object rotation
-        const cornerBaseAngle = {tl:225, tr:315, bl:135, br:45};
-        const totalAngle = ((cornerBaseAngle[corner.id]||0) + rot + 360) % 360;
-        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g transform='rotate(${Math.round(totalAngle)},12,12)'><path d='M12 4 A8 8 0 0 1 20 12' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'/><polygon points='20,6 20,12 14,12' fill='black'/></g></svg>`;
+        // Custom rotate cursor - bidirectional curved arrow matching the rotate icon
+        // Arrow shape: bottom-left tip points LEFT (←), top-right tip points UP (↑), arc connects them
+        const rotateCursorSVG = `<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M6 22 C3 14 8 5 20 4' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/><polygon points='1,22 7,18 7,26' fill='black'/><polygon points='20,0 16,6 24,6' fill='black'/></svg>`;
         const encoded = 'data:image/svg+xml;base64,' + btoa(rotateCursorSVG);
-        canvas.style.cursor = `url('${encoded}') 12 12, grab`;
-        if(_hoverRotateCorner !== corner.id){ _hoverRotateCorner=corner.id; redraw(); }
+        canvas.style.cursor = `url('${encoded}') 14 14, grab`;
+        _hoverRotateCorner=corner.id; _hoverRotateX=x; _hoverRotateY=y; redraw();
       } else {
         if(_hoverRotateCorner){_hoverRotateCorner=null;redraw();}
         const baseAngles={tl:135,tr:45,bl:225,br:315};
-        const angle=(baseAngles[corner.id]+rot+360)%360;
+        const angle=(baseAngles[corner.id]+rot)%360;
         canvas.style.cursor=_diagCursorForAngle(angle);
       }
     } else {
@@ -1078,10 +1064,9 @@ function onMouseMove(e){
       for(const h of handles){
         if(!['tm','bm','ml','mr'].includes(h.id)) continue;
         if(Math.hypot(x-h.x,y-h.y)<10/scale){
-          // tm/bm natural axis = 0°, ml/mr = 90° — add object rotation for actual screen direction
           const baseAngles={tm:0,bm:0,ml:90,mr:90};
-          const angle=(baseAngles[h.id]+rot+360)%360;
-          cur=_diagCursorForAngle(angle);
+          const angle=((baseAngles[h.id]+rot)%180+180)%180;
+          cur=angle<45||angle>=135?'ns-resize':'ew-resize';
           break;
         }
       }
@@ -1926,6 +1911,8 @@ function toggleAppSheet(which){
 
   left.classList.remove('sheet-open');
   right.classList.remove('sheet-open');
+  // On mobile, remove drawer-open so it doesn't conflict with sheet-open
+  if(window.innerWidth<=768) left.classList.remove('drawer-open');
   btnTools.classList.remove('active');
   btnProps.classList.remove('active');
 
@@ -1959,15 +1946,25 @@ function openMobileExportSheet(){
 }
 
 function initAppMode(){
-  if(window.matchMedia('(max-width:768px)').matches){
+  const isMobile = window.matchMedia('(max-width:768px)').matches;
+  if(isMobile){
     document.body.classList.add('app-mode');
     setTimeout(fitCanvasToMobile, 50);
+  } else {
+    // Desktop: restore drawer-open on left panel (removed from HTML hardcode)
+    const lp = document.getElementById('leftPanelEl');
+    if(lp) lp.classList.add('drawer-open');
   }
 }
 window.addEventListener('resize', ()=>{
   const isMobile = window.matchMedia('(max-width:768px)').matches;
   document.body.classList.toggle('app-mode', isMobile);
-  if(!isMobile) closeAppSheets();
+  if(!isMobile){
+    closeAppSheets();
+    // Restore desktop drawer
+    const lp=document.getElementById('leftPanelEl');
+    if(lp) lp.classList.add('drawer-open');
+  }
   setTimeout(fitCanvasToMobile, 50);
 });
 initAppMode();
@@ -2026,7 +2023,7 @@ function openMobileFx(){if(selectedIndex<0){showToast('Select a layer first!');r
 function mobileToggleDraw(){
   toggleDrawingMode();
   const btn=document.getElementById('mobDrawBtn');
-  btn.classList.toggle('active',drawingMode);
+  if(btn) btn.classList.toggle('active',drawingMode);
   if(drawingMode) switchTabByName('brush');
 }
 function openMobileFonts(){if(selectedIndex<0||layers[selectedIndex].type!=='text'){showToast('Select a text layer!');return;}document.getElementById('mobileFontModal').classList.add('show');}
