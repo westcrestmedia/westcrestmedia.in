@@ -15,12 +15,27 @@ const slider     = document.getElementById('quality-slider');
 const qualityVal = document.getElementById('quality-val');
 const dropZone   = document.getElementById('drop-zone');
 
-/* ── FORMAT BUTTONS ── */
+/* ── FORMAT DROPDOWN ── */
+const fmtDropWrap    = document.getElementById('fmt-dropdown-wrap');
+const fmtDropTrigger = document.getElementById('fmt-dropdown-trigger');
+const fmtSelectedLbl = document.getElementById('fmt-selected-label');
+
+fmtDropTrigger && fmtDropTrigger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  fmtDropWrap.classList.toggle('is-open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!fmtDropWrap.contains(e.target)) fmtDropWrap.classList.remove('is-open');
+});
+
 document.querySelectorAll('.fmt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('is-active'));
     btn.classList.add('is-active');
     outputFormat = btn.dataset.fmt;
+    if (fmtSelectedLbl) fmtSelectedLbl.textContent = btn.dataset.fmt.toUpperCase();
+    fmtDropWrap && fmtDropWrap.classList.remove('is-open');
 
     const lossless = ['png', 'gif', 'bmp', 'ico', 'svg', 'wbmp', 'pdf'];
     const qWrap = slider.closest('.quality-wrap');
@@ -78,6 +93,10 @@ async function handleFiles(newFiles) {
   if (window.innerWidth <= 640 && files.length > 0) {
     buildMobileUI();
   }
+  // Desktop: switch to split view
+  if (window.innerWidth > 640 && files.length > 0) {
+    buildDesktopSplitUI();
+  }
 }
 
 function removeFile(index) {
@@ -98,6 +117,12 @@ function removeFile(index) {
       destroyMobileUI();
     } else {
       buildMobileUI();
+    }
+  } else {
+    if (files.length === 0) {
+      destroyDesktopSplitUI();
+    } else {
+      buildDesktopSplitUI();
     }
   }
 
@@ -221,7 +246,28 @@ function buildMobileUI() {
 
 function selectMobileImage(index) {
   selectedMobileIndex = index;
+  // Save current scroll position of thumb strip before rebuilding
+  const strip = document.querySelector('.mob-thumb-strip');
+  const savedScroll = strip ? strip.scrollLeft : 0;
+
   buildMobileUI();
+
+  // Restore scroll after rebuild
+  const newStrip = document.querySelector('.mob-thumb-strip');
+  if (newStrip) newStrip.scrollLeft = savedScroll;
+}
+
+function selectDesktopImage(index) {
+  selectedMobileIndex = index;
+  // Save current scroll position
+  const strip = document.querySelector('.desktop-preview-strip');
+  const savedScroll = strip ? strip.scrollLeft : 0;
+
+  buildDesktopSplitUI();
+
+  // Restore scroll after rebuild
+  const newStrip = document.querySelector('.desktop-preview-strip');
+  if (newStrip) newStrip.scrollLeft = savedScroll;
 }
 
 function destroyMobileUI() {
@@ -232,14 +278,114 @@ function destroyMobileUI() {
   if (fileList) fileList.style.display = '';
 }
 
-/* ── RENDER FILE LIST (desktop) ── */
-function renderFileList() {
-  const list = document.getElementById('file-list');
-  // On mobile, the mobile-ui handles display — desktop list stays empty/hidden
-  if (window.innerWidth <= 640) {
-    list.innerHTML = '';
-    return;
+/* ══════════════════════════════════════════
+   DESKTOP SPLIT UI
+══════════════════════════════════════════ */
+function buildDesktopSplitUI() {
+  // Hide original drop zone
+  dropZone.style.display = 'none';
+  const fileList = document.getElementById('file-list');
+  if (fileList) fileList.style.display = 'none';
+
+  let splitUI = document.getElementById('desktop-split-ui');
+  if (!splitUI) {
+    splitUI = document.createElement('div');
+    splitUI.id = 'desktop-split-ui';
+    splitUI.className = 'desktop-split';
+    dropZone.parentNode.insertBefore(splitUI, dropZone.nextSibling);
   }
+
+  const selFile = files[selectedMobileIndex];
+  let previewSrc = '';
+  if (selFile && !selFile.name.toLowerCase().match(/\.heic|\.heif/)) {
+    previewSrc = URL.createObjectURL(selFile);
+  }
+
+  // Thumb strip
+  const thumbsHTML = files.map((f, i) => {
+    const isHeic = f.name.toLowerCase().match(/\.heic|\.heif/);
+    const thumbSrc = isHeic ? '' : URL.createObjectURL(f);
+    const isActive = i === selectedMobileIndex ? 'desktop-thumb--active' : '';
+    const isDone = !!convertedBlobs[i];
+    return `
+    <div class="desktop-thumb-wrap">
+      <div class="desktop-thumb ${isActive}" onclick="selectDesktopImage(${i})">
+        ${isHeic
+          ? `<div style="font-size:0.55rem;color:var(--gold,#C9A84C);font-weight:700;">HEIC</div>`
+          : `<img src="${thumbSrc}" alt="${f.name}">`
+        }
+        ${isDone ? `<div class="desktop-thumb__done">✓</div>` : ''}
+      </div>
+      <div class="desktop-thumb-actions">
+        ${isDone
+          ? `<button class="desktop-act-btn desktop-act-btn--dl" onclick="event.stopPropagation();downloadFile(${i})" title="Download">↓</button>`
+          : `<button class="desktop-act-btn desktop-act-btn--dl desktop-act-btn--disabled" disabled title="Convert first">↓</button>`
+        }
+        <button class="desktop-act-btn desktop-act-btn--rm" onclick="event.stopPropagation();removeFile(${i})" title="Remove">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const convBlob = convertedBlobs[selectedMobileIndex];
+  const outputDetailHTML = convBlob ? `
+    <div class="desktop-detail-row">
+      <span class="desktop-detail-label">Output</span>
+      <span class="desktop-detail-chip desktop-detail-chip--out">${outputFormat.toUpperCase()}</span>
+      <span class="desktop-detail-val" id="dsk-out-res">—</span>
+      <span class="desktop-detail-val">${formatSize(convBlob.blob.size)}</span>
+    </div>` : '';
+
+  splitUI.innerHTML = `
+    <!-- LEFT: sticky preview panel -->
+    <div class="desktop-split__preview">
+      <div class="desktop-preview-img">
+        ${previewSrc
+          ? `<img src="${previewSrc}" alt="preview" id="dsk-preview-img">`
+          : `<div style="opacity:0.25;"><svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`
+        }
+      </div>
+      <div class="desktop-preview-detail">
+        <div class="desktop-preview-name">${selFile ? selFile.name : ''}</div>
+        <div class="desktop-detail-row">
+          <span class="desktop-detail-label">Input</span>
+          <span class="desktop-detail-chip">${selFile ? selFile.name.split('.').pop().toUpperCase() : '—'}</span>
+          <span class="desktop-detail-val" id="dsk-in-res">—</span>
+          <span class="desktop-detail-val">${selFile ? formatSize(selFile.size) : '—'}</span>
+        </div>
+        ${outputDetailHTML}
+      </div>
+      <div class="desktop-preview-strip">
+        ${thumbsHTML}
+        <div class="desktop-thumb-wrap" style="justify-content:center;">
+          <div style="width:52px;height:52px;min-width:52px;border-radius:7px;background:rgba(201,168,76,0.06);border:1.5px dashed rgba(201,168,76,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--gold,#C9A84C);font-size:0.6rem;font-weight:600;" onclick="document.getElementById('file-input').click()">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Add</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: file list -->
+    <div class="desktop-split__files" id="desktop-file-list"></div>
+  `;
+
+  // Resolve resolution
+  if (selFile) {
+    getImageResolution(selFile).then(({ w, h }) => {
+      const el = document.getElementById('dsk-in-res');
+      if (el) el.textContent = (w !== '—') ? `${w}×${h}` : '—';
+      const outEl = document.getElementById('dsk-out-res');
+      if (outEl) outEl.textContent = (w !== '—') ? `${w}×${h}` : '—';
+    });
+  }
+
+  // Render file rows into right column
+  renderDesktopFileRows();
+}
+
+function renderDesktopFileRows() {
+  const list = document.getElementById('desktop-file-list');
+  if (!list) return;
   list.innerHTML = '';
 
   files.forEach((file, i) => {
@@ -256,7 +402,6 @@ function renderFileList() {
       img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42"><rect width="42" height="42" rx="6" fill="%231c1c26"/><text y="26" x="21" text-anchor="middle" font-size="14" fill="%23c9a84c">HEIC</text></svg>';
     }
 
-    // Input details panel
     const infoWrap = document.createElement('div');
     infoWrap.className = 'file-info';
     infoWrap.innerHTML = `
@@ -281,7 +426,6 @@ function renderFileList() {
       </div>
     `;
 
-    // Fetch input resolution
     getImageResolution(file).then(({ w, h }) => {
       const el = document.getElementById('in-res-' + i);
       if (el) el.textContent = (w !== '—') ? `${w}×${h}` : '—';
@@ -296,19 +440,57 @@ function renderFileList() {
     status.id = 'status-' + i;
     status.textContent = 'Pending';
 
+    // Download button if already converted
+    if (convertedBlobs[i]) {
+      const dlBtn = document.createElement('button');
+      dlBtn.className = 'dl-btn';
+      dlBtn.textContent = '↓ Download';
+      dlBtn.onclick = () => downloadFile(i);
+      item.appendChild(progress);
+      item.appendChild(img);
+      item.appendChild(infoWrap);
+      item.appendChild(status);
+      item.appendChild(dlBtn);
+    } else {
+      item.appendChild(progress);
+      item.appendChild(img);
+      item.appendChild(infoWrap);
+      item.appendChild(status);
+    }
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-btn';
     removeBtn.innerHTML = '✕';
     removeBtn.title = 'Remove file';
     removeBtn.onclick = (e) => { e.stopPropagation(); removeFile(i); };
-
-    item.appendChild(progress);
-    item.appendChild(img);
-    item.appendChild(infoWrap);
-    item.appendChild(status);
     item.appendChild(removeBtn);
+
     list.appendChild(item);
   });
+}
+
+function destroyDesktopSplitUI() {
+  const splitUI = document.getElementById('desktop-split-ui');
+  if (splitUI) splitUI.remove();
+  dropZone.style.display = '';
+  const fileList = document.getElementById('file-list');
+  if (fileList) fileList.style.display = '';
+}
+
+/* ── RENDER FILE LIST (desktop legacy) ── */
+function renderFileList() {
+  const list = document.getElementById('file-list');
+  // On mobile or when split UI is active, skip legacy list
+  if (window.innerWidth <= 640) {
+    if (list) list.innerHTML = '';
+    return;
+  }
+  // If split UI exists, update it instead
+  if (document.getElementById('desktop-split-ui')) {
+    renderDesktopFileRows();
+    return;
+  }
+  if (list) list.innerHTML = '';
 }
 
 /* ── ACTION BAR ── */
@@ -354,6 +536,10 @@ async function convertAll() {
   // Refresh mobile UI to show output details
   if (window.innerWidth <= 640 && files.length > 0) {
     buildMobileUI();
+  }
+  // Refresh desktop split UI
+  if (window.innerWidth > 640 && files.length > 0 && document.getElementById('desktop-split-ui')) {
+    buildDesktopSplitUI();
   }
 }
 
@@ -654,6 +840,7 @@ function clearAll() {
   convertedBlobs = {};
   selectedMobileIndex = 0;
   destroyMobileUI();
+  destroyDesktopSplitUI();
   document.getElementById('file-list').innerHTML = '';
   document.getElementById('file-input').value    = '';
   document.getElementById('pro-tip').style.display = 'none';

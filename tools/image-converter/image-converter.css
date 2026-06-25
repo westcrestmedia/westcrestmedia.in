@@ -67,6 +67,14 @@
   font-family: 'DM Mono', monospace;
 }
 
+/* ── MOBILE BOX BASE ── */
+.mob-box {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 /* ── FILE ITEM PROGRESS BAR ── */
 .file-item__progress {
   position: absolute;
@@ -77,4 +85,61 @@
   width: 0%;
   transition: width 0.4s ease;
   border-radius: 0 0 0 var(--radius-sm);
+}
+
+/* ── DESKTOP FILE ITEM SIZING ── */
+@media (min-width: 641px) {
+  .desktop-split__files .file-item,
+  #desktop-file-list .file-item {
+    padding: 16px 20px;
+    gap: 18px;
+  }
+
+  .desktop-split__files .file-thumb,
+  #desktop-file-list .file-thumb {
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+    border-radius: 8px;
+  }
+
+  .desktop-split__files .file-name,
+  #desktop-file-list .file-name {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .desktop-split__files .file-detail-fmt,
+  #desktop-file-list .file-detail-fmt {
+    font-size: 0.73rem;
+    padding: 2px 8px;
+  }
+
+  .desktop-split__files .file-detail-res,
+  .desktop-split__files .file-detail-size,
+  #desktop-file-list .file-detail-res,
+  #desktop-file-list .file-detail-size {
+    font-size: 0.78rem;
+  }
+
+  .desktop-split__files .dl-btn,
+  #desktop-file-list .dl-btn {
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  .desktop-split__files .remove-btn,
+  #desktop-file-list .remove-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .desktop-split__files .file-status,
+  #desktop-file-list .file-status {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+  }
 }
