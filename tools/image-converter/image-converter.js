@@ -111,8 +111,10 @@ function removeFile(index) {
    MOBILE UI
 ══════════════════════════════════════════ */
 function buildMobileUI() {
-  // Hide original drop zone
+  // Hide original drop zone and desktop file list on mobile
   dropZone.style.display = 'none';
+  const fileList = document.getElementById('file-list');
+  if (fileList) fileList.style.display = 'none';
 
   let mobileUI = document.getElementById('mobile-ui');
   if (!mobileUI) {
@@ -210,11 +212,18 @@ function destroyMobileUI() {
   const mobileUI = document.getElementById('mobile-ui');
   if (mobileUI) mobileUI.remove();
   dropZone.style.display = '';
+  const fileList = document.getElementById('file-list');
+  if (fileList) fileList.style.display = '';
 }
 
 /* ── RENDER FILE LIST (desktop) ── */
 function renderFileList() {
   const list = document.getElementById('file-list');
+  // On mobile, the mobile-ui handles display — desktop list stays empty/hidden
+  if (window.innerWidth <= 640) {
+    list.innerHTML = '';
+    return;
+  }
   list.innerHTML = '';
 
   files.forEach((file, i) => {
