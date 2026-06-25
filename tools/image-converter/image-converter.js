@@ -358,7 +358,7 @@ function buildDesktopSplitUI() {
       <div class="desktop-preview-strip">
         ${thumbsHTML}
         <div class="desktop-thumb-wrap">
-          <div style="width:52px;height:52px;min-width:52px;border-radius:7px;background:rgba(201,168,76,0.06);border:1.5px dashed rgba(201,168,76,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--gold,#C9A84C);font-size:0.6rem;font-weight:600;" onclick="document.getElementById('file-input').click()">
+          <div style="width:68px;min-width:68px;height:104px;border-radius:8px;background:rgba(201,168,76,0.06);border:1.5px dashed rgba(201,168,76,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--gold,#C9A84C);font-size:0.6rem;font-weight:600;" onclick="document.getElementById('file-input').click()">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             <span>Add</span>
           </div>
