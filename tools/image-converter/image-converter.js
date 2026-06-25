@@ -134,16 +134,28 @@ function buildMobileUI() {
     previewSrc = URL.createObjectURL(selFile);
   }
 
-  // Thumbnail strip
+  // Thumbnail strip — each thumb has select, download (if converted), remove
   const thumbsHTML = files.map((f, i) => {
     const isHeic = f.name.toLowerCase().match(/\.heic|\.heif/);
     const thumbSrc = isHeic ? '' : URL.createObjectURL(f);
     const isActive = i === selectedMobileIndex ? 'mob-thumb--active' : '';
-    return `<div class="mob-thumb ${isActive}" onclick="selectMobileImage(${i})" data-index="${i}">
-      ${isHeic
-        ? `<div class="mob-thumb__heic">HEIC</div>`
-        : `<img src="${thumbSrc}" alt="${f.name}">`
-      }
+    const isDone   = !!convertedBlobs[i];
+    return `
+    <div class="mob-thumb-wrap">
+      <div class="mob-thumb ${isActive}" onclick="selectMobileImage(${i})" data-index="${i}">
+        ${isHeic
+          ? `<div class="mob-thumb__heic">HEIC</div>`
+          : `<img src="${thumbSrc}" alt="${f.name}">`
+        }
+        ${isDone ? `<div class="mob-thumb__done">✓</div>` : ''}
+      </div>
+      <div class="mob-thumb-actions">
+        ${isDone
+          ? `<button class="mob-act-btn mob-act-btn--dl" onclick="event.stopPropagation();downloadFile(${i})" title="Download">↓</button>`
+          : `<button class="mob-act-btn mob-act-btn--dl mob-act-btn--disabled" disabled title="Convert first">↓</button>`
+        }
+        <button class="mob-act-btn mob-act-btn--rm" onclick="event.stopPropagation();removeFile(${i})" title="Remove">✕</button>
+      </div>
     </div>`;
   }).join('');
 
@@ -159,7 +171,7 @@ function buildMobileUI() {
 
   mobileUI.innerHTML = `
     <div class="mob-boxes">
-      <!-- LEFT: Preview Box -->
+      <!-- TOP: Preview Box -->
       <div class="mob-box mob-box--preview">
         <div class="mob-preview-img">
           ${previewSrc
@@ -177,15 +189,19 @@ function buildMobileUI() {
           </div>
           ${outputDetailHTML}
         </div>
-        <div class="mob-thumb-strip">
-          ${thumbsHTML}
-        </div>
       </div>
 
-      <!-- RIGHT: Add More Box -->
-      <div class="mob-box mob-box--add" onclick="document.getElementById('file-input').click()">
-        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        <span>Add More</span>
+      <!-- BOTTOM ROW: Files strip + Add More -->
+      <div class="mob-bottom-row">
+        <div class="mob-box mob-box--files">
+          <div class="mob-thumb-strip">
+            ${thumbsHTML}
+          </div>
+        </div>
+        <div class="mob-box mob-box--add" onclick="document.getElementById('file-input').click()">
+          <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span>Add More</span>
+        </div>
       </div>
     </div>
   `;
