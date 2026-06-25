@@ -365,7 +365,6 @@ function buildDesktopSplitUI() {
         </div>
       </div>
     </div>
-    <div class="desktop-split__files" id="desktop-file-list"></div>
   `;
 
   if (selFile) {
@@ -377,8 +376,7 @@ function buildDesktopSplitUI() {
     });
   }
 
-  renderDesktopFileRows();
-}
+
 
 function renderDesktopFileRows() {
   const list = document.getElementById('desktop-file-list');
