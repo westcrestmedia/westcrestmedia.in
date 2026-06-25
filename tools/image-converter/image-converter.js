@@ -8,6 +8,7 @@ let jsPDF = window.jspdf ? window.jspdf.jsPDF : null;
 let files          = [];
 let outputFormat   = 'jpg';
 let convertedBlobs = {};
+let selectedMobileIndex = 0; // which image is shown in left preview box
 
 /* ── DOM REFS ── */
 const slider     = document.getElementById('quality-slider');
@@ -21,7 +22,6 @@ document.querySelectorAll('.fmt-btn').forEach(btn => {
     btn.classList.add('is-active');
     outputFormat = btn.dataset.fmt;
 
-    // Disable quality slider for lossless / special formats
     const lossless = ['png', 'gif', 'bmp', 'ico', 'svg', 'wbmp', 'pdf'];
     const qWrap = slider.closest('.quality-wrap');
     const isLossless = lossless.includes(outputFormat);
@@ -44,15 +44,26 @@ dropZone.addEventListener('drop', e => {
   handleFiles([...e.dataTransfer.files]);
 });
 dropZone.addEventListener('click', e => {
-  if (e.target.classList.contains('drop-zone__browse')) return;
   if (e.target.closest('.drop-zone__browse--mobile')) return;
-  if (window.innerWidth <= 640) return; // mobile: button handles it
+  if (window.innerWidth <= 640) return;
   document.getElementById('file-input').click();
 });
 document.getElementById('file-input').addEventListener('change', e => handleFiles([...e.target.files]));
 
+/* ── IMAGE RESOLUTION HELPER ── */
+function getImageResolution(file) {
+  return new Promise((resolve) => {
+    if (file.name.toLowerCase().match(/\.heic|\.heif/)) { resolve({ w: '—', h: '—' }); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { resolve({ w: img.naturalWidth, h: img.naturalHeight }); URL.revokeObjectURL(url); };
+    img.onerror = () => { resolve({ w: '—', h: '—' }); URL.revokeObjectURL(url); };
+    img.src = url;
+  });
+}
+
 /* ── FILE HANDLING ── */
-function handleFiles(newFiles) {
+async function handleFiles(newFiles) {
   const imageFiles = newFiles.filter(f =>
     f.type.startsWith('image/') || f.name.toLowerCase().match(/\.(heic|heif|wbmp)$/)
   );
@@ -62,13 +73,16 @@ function handleFiles(newFiles) {
   updateActionBar();
   const tip = document.getElementById('pro-tip');
   if (tip) tip.style.display = files.length > 0 ? 'block' : 'none';
+
+  // Mobile: switch to compact UI after first file
+  if (window.innerWidth <= 640 && files.length > 0) {
+    buildMobileUI();
+  }
 }
 
 function removeFile(index) {
   files.splice(index, 1);
   delete convertedBlobs[index];
-
-  // Re-index remaining blobs
   const newBlobs = {};
   Object.keys(convertedBlobs).forEach(k => {
     const ki = parseInt(k);
@@ -77,13 +91,128 @@ function removeFile(index) {
   });
   convertedBlobs = newBlobs;
 
+  if (selectedMobileIndex >= files.length) selectedMobileIndex = Math.max(0, files.length - 1);
+
+  if (window.innerWidth <= 640) {
+    if (files.length === 0) {
+      destroyMobileUI();
+    } else {
+      buildMobileUI();
+    }
+  }
+
   renderFileList();
   updateActionBar();
   const tip = document.getElementById('pro-tip');
   if (tip) tip.style.display = files.length > 0 ? 'block' : 'none';
 }
 
-/* ── RENDER FILE LIST ── */
+/* ══════════════════════════════════════════
+   MOBILE UI
+══════════════════════════════════════════ */
+function buildMobileUI() {
+  // Hide original drop zone
+  dropZone.style.display = 'none';
+
+  let mobileUI = document.getElementById('mobile-ui');
+  if (!mobileUI) {
+    mobileUI = document.createElement('div');
+    mobileUI.id = 'mobile-ui';
+    mobileUI.className = 'mobile-ui';
+    dropZone.parentNode.insertBefore(mobileUI, dropZone.nextSibling);
+  }
+
+  const selFile = files[selectedMobileIndex];
+  const inputFmt = selFile ? selFile.name.split('.').pop().toUpperCase() : '—';
+  const inputSize = selFile ? formatSize(selFile.size) : '—';
+
+  // Build preview src
+  let previewSrc = '';
+  if (selFile && !selFile.name.toLowerCase().match(/\.heic|\.heif/)) {
+    previewSrc = URL.createObjectURL(selFile);
+  }
+
+  // Thumbnail strip
+  const thumbsHTML = files.map((f, i) => {
+    const isHeic = f.name.toLowerCase().match(/\.heic|\.heif/);
+    const thumbSrc = isHeic ? '' : URL.createObjectURL(f);
+    const isActive = i === selectedMobileIndex ? 'mob-thumb--active' : '';
+    return `<div class="mob-thumb ${isActive}" onclick="selectMobileImage(${i})" data-index="${i}">
+      ${isHeic
+        ? `<div class="mob-thumb__heic">HEIC</div>`
+        : `<img src="${thumbSrc}" alt="${f.name}">`
+      }
+    </div>`;
+  }).join('');
+
+  // Input detail of selected file
+  const convBlob = convertedBlobs[selectedMobileIndex];
+  const outputDetailHTML = convBlob ? `
+    <div class="mob-detail__row mob-detail__row--out">
+      <span class="mob-detail__label">Output</span>
+      <span class="mob-detail__chip">${outputFormat.toUpperCase()}</span>
+      <span class="mob-detail__val" id="mob-out-res">—</span>
+      <span class="mob-detail__val">${formatSize(convBlob.blob.size)}</span>
+    </div>` : '';
+
+  mobileUI.innerHTML = `
+    <div class="mob-boxes">
+      <!-- LEFT: Preview Box -->
+      <div class="mob-box mob-box--preview">
+        <div class="mob-preview-img">
+          ${previewSrc
+            ? `<img src="${previewSrc}" alt="preview" id="mob-preview-img">`
+            : `<div class="mob-preview-placeholder"><svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`
+          }
+        </div>
+        <div class="mob-detail">
+          <div class="mob-detail__name">${selFile ? selFile.name : ''}</div>
+          <div class="mob-detail__row mob-detail__row--in">
+            <span class="mob-detail__label">Input</span>
+            <span class="mob-detail__chip">${inputFmt}</span>
+            <span class="mob-detail__val" id="mob-in-res">—</span>
+            <span class="mob-detail__val">${inputSize}</span>
+          </div>
+          ${outputDetailHTML}
+        </div>
+        <div class="mob-thumb-strip">
+          ${thumbsHTML}
+        </div>
+      </div>
+
+      <!-- RIGHT: Add More Box -->
+      <div class="mob-box mob-box--add" onclick="document.getElementById('file-input').click()">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Add More</span>
+      </div>
+    </div>
+  `;
+
+  // Fetch resolution for selected image
+  if (selFile) {
+    getImageResolution(selFile).then(({ w, h }) => {
+      const el = document.getElementById('mob-in-res');
+      if (el) el.textContent = (w !== '—') ? `${w}×${h}` : '—';
+
+      // Output resolution (same canvas size)
+      const outEl = document.getElementById('mob-out-res');
+      if (outEl) outEl.textContent = (w !== '—') ? `${w}×${h}` : '—';
+    });
+  }
+}
+
+function selectMobileImage(index) {
+  selectedMobileIndex = index;
+  buildMobileUI();
+}
+
+function destroyMobileUI() {
+  const mobileUI = document.getElementById('mobile-ui');
+  if (mobileUI) mobileUI.remove();
+  dropZone.style.display = '';
+}
+
+/* ── RENDER FILE LIST (desktop) ── */
 function renderFileList() {
   const list = document.getElementById('file-list');
   list.innerHTML = '';
@@ -93,7 +222,6 @@ function renderFileList() {
     item.className = 'file-item';
     item.id = 'item-' + i;
 
-    // Thumbnail
     const img = document.createElement('img');
     img.className = 'file-thumb';
     img.alt = file.name;
@@ -103,29 +231,46 @@ function renderFileList() {
       img.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42"><rect width="42" height="42" rx="6" fill="%231c1c26"/><text y="26" x="21" text-anchor="middle" font-size="14" fill="%23c9a84c">HEIC</text></svg>';
     }
 
-    // Info
-    const info = document.createElement('div');
-    info.className = 'file-info';
-    info.innerHTML = `
+    // Input details panel
+    const infoWrap = document.createElement('div');
+    infoWrap.className = 'file-info';
+    infoWrap.innerHTML = `
       <div class="file-name">${file.name}</div>
-      <div class="file-meta">
-        <span>${formatSize(file.size)}</span>
-        <span>${file.name.split('.').pop().toUpperCase()}</span>
+      <div class="file-details-grid">
+        <div class="file-detail-col file-detail-col--in">
+          <div class="file-detail-head">Input</div>
+          <div class="file-meta">
+            <span class="file-detail-fmt">${file.name.split('.').pop().toUpperCase()}</span>
+            <span class="file-detail-res" id="in-res-${i}">—</span>
+            <span class="file-detail-size">${formatSize(file.size)}</span>
+          </div>
+        </div>
+        <div class="file-detail-col file-detail-col--out" id="out-col-${i}" style="display:none;">
+          <div class="file-detail-head">Output</div>
+          <div class="file-meta">
+            <span class="file-detail-fmt" id="out-fmt-${i}">—</span>
+            <span class="file-detail-res" id="out-res-${i}">—</span>
+            <span class="file-detail-size" id="out-size-${i}">—</span>
+          </div>
+        </div>
       </div>
     `;
 
-    // Progress bar
+    // Fetch input resolution
+    getImageResolution(file).then(({ w, h }) => {
+      const el = document.getElementById('in-res-' + i);
+      if (el) el.textContent = (w !== '—') ? `${w}×${h}` : '—';
+    });
+
     const progress = document.createElement('div');
     progress.className = 'file-item__progress';
     progress.id = 'progress-' + i;
 
-    // Status badge
     const status = document.createElement('span');
     status.className = 'file-status status-pending';
     status.id = 'status-' + i;
     status.textContent = 'Pending';
 
-    // Remove button
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-btn';
     removeBtn.innerHTML = '✕';
@@ -134,7 +279,7 @@ function renderFileList() {
 
     item.appendChild(progress);
     item.appendChild(img);
-    item.appendChild(info);
+    item.appendChild(infoWrap);
     item.appendChild(status);
     item.appendChild(removeBtn);
     list.appendChild(item);
@@ -180,6 +325,11 @@ async function convertAll() {
   btn.disabled = false;
   btn.textContent = files.length === 1 ? 'Convert Again' : 'Convert All Again';
   updateActionBar();
+
+  // Refresh mobile UI to show output details
+  if (window.innerWidth <= 640 && files.length > 0) {
+    buildMobileUI();
+  }
 }
 
 function animateProgress(id, duration) {
@@ -200,8 +350,7 @@ function convertImage(file, index) {
     const statusEl = document.getElementById('status-' + index);
     const item     = document.getElementById('item-' + index);
 
-    statusEl.className = 'file-status status-converting';
-    statusEl.innerHTML = '<span class="spinner"></span>Converting';
+    if (statusEl) { statusEl.className = 'file-status status-converting'; statusEl.innerHTML = '<span class="spinner"></span>Converting'; }
     animateProgress(index, 1200);
 
     const reader = new FileReader();
@@ -214,17 +363,12 @@ function convertImage(file, index) {
         canvas.height = img.naturalHeight;
         const ctx = canvas.getContext('2d');
 
-        // White background for formats that don't support transparency
         const needsWhiteBg = ['jpg', 'bmp', 'tiff', 'pdf', 'ico'].includes(outputFormat);
-        if (needsWhiteBg) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        if (needsWhiteBg) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
         ctx.drawImage(img, 0, 0);
 
         const quality = parseInt(slider.value) / 100;
 
-        // ICO: resize to max 256px
         let exportCanvas = canvas;
         if (outputFormat === 'ico') {
           exportCanvas = document.createElement('canvas');
@@ -238,55 +382,48 @@ function convertImage(file, index) {
         }
 
         const mimeMap = {
-          jpg:  'image/jpeg',
-          png:  'image/png',
-          webp: 'image/webp',
-          avif: 'image/avif',
-          bmp:  'image/bmp',
-          gif:  'image/gif',
-          tiff: 'image/png',
-          ico:  'image/png',
-          svg:  'image/png',
-          wbmp: 'image/png',
+          jpg:'image/jpeg', png:'image/png', webp:'image/webp', avif:'image/avif',
+          bmp:'image/bmp', gif:'image/gif', tiff:'image/png', ico:'image/png',
+          svg:'image/png', wbmp:'image/png',
         };
         const mimeType = mimeMap[outputFormat] || 'image/png';
 
         exportCanvas.toBlob((blob) => {
           if (!blob) {
-            statusEl.className = 'file-status status-error';
-            statusEl.textContent = 'Error';
-            item.classList.add('is-error');
+            if (statusEl) { statusEl.className = 'file-status status-error'; statusEl.textContent = 'Error'; }
+            if (item) item.classList.add('is-error');
             resolve(); return;
           }
 
           convertedBlobs[index] = { blob, name: getOutputName(file.name) };
-          statusEl.className  = 'file-status status-done';
-          statusEl.textContent = '✓ Done';
-          item.classList.add('is-done');
+          if (statusEl) { statusEl.className = 'file-status status-done'; statusEl.textContent = '✓ Done'; }
+          if (item) item.classList.add('is-done');
 
-          // Update file-meta to show output size
-          const metaEl = item.querySelector('.file-meta');
-          if (metaEl) {
-            const spans = metaEl.querySelectorAll('span');
-            if (spans[0]) spans[0].textContent = formatSize(blob.size);
+          // Update desktop output details
+          const outCol = document.getElementById('out-col-' + index);
+          if (outCol) {
+            outCol.style.display = '';
+            document.getElementById('out-fmt-' + index).textContent  = outputFormat.toUpperCase();
+            document.getElementById('out-res-' + index).textContent  = `${exportCanvas.width}×${exportCanvas.height}`;
+            document.getElementById('out-size-' + index).textContent = formatSize(blob.size);
           }
 
-          // Inject download button
-          item.querySelector('.dl-btn')?.remove();
-          const dlBtn = document.createElement('button');
-          dlBtn.className   = 'dl-btn';
-          dlBtn.textContent = '↓ Download';
-          dlBtn.onclick     = () => downloadFile(index);
-          item.insertBefore(dlBtn, item.querySelector('.remove-btn'));
+          if (item) {
+            item.querySelector('.dl-btn')?.remove();
+            const dlBtn = document.createElement('button');
+            dlBtn.className   = 'dl-btn';
+            dlBtn.textContent = '↓ Download';
+            dlBtn.onclick     = () => downloadFile(index);
+            item.insertBefore(dlBtn, item.querySelector('.remove-btn'));
+          }
           resolve();
         }, mimeType, quality);
       };
 
       img.onerror = async () => {
-        // HEIC fallback via heic2any
         if (file.name.toLowerCase().match(/\.heic|\.heif/)) {
           try {
-            statusEl.innerHTML = '<span class="spinner"></span>Decoding HEIC';
+            if (statusEl) statusEl.innerHTML = '<span class="spinner"></span>Decoding HEIC';
             const heic2any = window.heic2any;
             if (heic2any) {
               const heicBlob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
@@ -301,44 +438,49 @@ function convertImage(file, index) {
                 cx2.fillRect(0, 0, c2.width, c2.height);
                 cx2.drawImage(img2, 0, 0);
                 const mm = {
-                  jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
-                  avif: 'image/avif', bmp: 'image/bmp', gif: 'image/gif',
-                  tiff: 'image/png', ico: 'image/png', svg: 'image/png', wbmp: 'image/png',
+                  jpg:'image/jpeg', png:'image/png', webp:'image/webp',
+                  avif:'image/avif', bmp:'image/bmp', gif:'image/gif',
+                  tiff:'image/png', ico:'image/png', svg:'image/png', wbmp:'image/png',
                 };
                 c2.toBlob((b) => {
                   convertedBlobs[index] = { blob: b, name: getOutputName(file.name) };
-                  statusEl.className  = 'file-status status-done';
-                  statusEl.textContent = '✓ Done';
-                  item.classList.add('is-done');
-                  item.querySelector('.dl-btn')?.remove();
-                  const dlBtn = document.createElement('button');
-                  dlBtn.className   = 'dl-btn';
-                  dlBtn.textContent = '↓ Download';
-                  dlBtn.onclick     = () => downloadFile(index);
-                  item.insertBefore(dlBtn, item.querySelector('.remove-btn'));
+                  if (statusEl) { statusEl.className = 'file-status status-done'; statusEl.textContent = '✓ Done'; }
+                  if (item) {
+                    item.classList.add('is-done');
+                    const outCol = document.getElementById('out-col-' + index);
+                    if (outCol) {
+                      outCol.style.display = '';
+                      document.getElementById('out-fmt-' + index).textContent  = outputFormat.toUpperCase();
+                      document.getElementById('out-res-' + index).textContent  = `${c2.width}×${c2.height}`;
+                      document.getElementById('out-size-' + index).textContent = formatSize(b.size);
+                    }
+                    item.querySelector('.dl-btn')?.remove();
+                    const dlBtn = document.createElement('button');
+                    dlBtn.className   = 'dl-btn';
+                    dlBtn.textContent = '↓ Download';
+                    dlBtn.onclick     = () => downloadFile(index);
+                    item.insertBefore(dlBtn, item.querySelector('.remove-btn'));
+                  }
                   URL.revokeObjectURL(url);
                   resolve();
                 }, mm[outputFormat] || 'image/jpeg', parseInt(slider.value) / 100);
               };
               img2.onerror = () => {
-                statusEl.className  = 'file-status status-error';
-                statusEl.textContent = 'HEIC Error';
-                item.classList.add('is-error');
+                if (statusEl) { statusEl.className = 'file-status status-error'; statusEl.textContent = 'HEIC Error'; }
+                if (item) item.classList.add('is-error');
                 resolve();
               };
               img2.src = url;
               return;
             }
           } catch {
-            statusEl.className  = 'file-status status-error';
-            statusEl.textContent = 'HEIC Error';
-            item.classList.add('is-error');
+            if (statusEl) { statusEl.className = 'file-status status-error'; statusEl.textContent = 'HEIC Error'; }
+            if (item) item.classList.add('is-error');
             resolve(); return;
           }
         }
-        statusEl.className  = 'file-status status-error';
-        statusEl.textContent = 'Error';
-        item.classList.add('is-error');
+        if (statusEl) { statusEl.className = 'file-status status-error'; statusEl.textContent = 'Error'; }
+        if (item) item.classList.add('is-error');
         resolve();
       };
 
@@ -353,8 +495,7 @@ async function convertToPDF() {
 
   files.forEach((_, i) => {
     const s = document.getElementById('status-' + i);
-    s.className = 'file-status status-converting';
-    s.innerHTML = '<span class="spinner"></span>Processing';
+    if (s) { s.className = 'file-status status-converting'; s.innerHTML = '<span class="spinner"></span>Processing'; }
     animateProgress(i, 2000);
   });
 
@@ -386,9 +527,10 @@ async function convertToPDF() {
           if (!firstPage) pdf.addPage();
           firstPage = false;
           pdf.addImage(dataUrl, files[i].type.includes('png') ? 'PNG' : 'JPEG', x, y, w, h);
-          document.getElementById('status-' + i).className  = 'file-status status-done';
-          document.getElementById('status-' + i).textContent = '✓ Added';
-          document.getElementById('item-' + i).classList.add('is-done');
+          const s = document.getElementById('status-' + i);
+          if (s) { s.className = 'file-status status-done'; s.textContent = '✓ Added'; }
+          const it = document.getElementById('item-' + i);
+          if (it) it.classList.add('is-done');
           resolve();
         };
         img.onerror = () => resolve();
@@ -417,8 +559,7 @@ async function convertToPDF() {
     console.error('PDF error:', err);
     files.forEach((_, i) => {
       const s = document.getElementById('status-' + i);
-      s.className  = 'file-status status-error';
-      s.textContent = 'Error';
+      if (s) { s.className = 'file-status status-error'; s.textContent = 'Error'; }
     });
   }
 }
@@ -426,10 +567,7 @@ async function convertToPDF() {
 /* ── HELPERS ── */
 function getOutputName(originalName) {
   const base   = originalName.replace(/\.[^/.]+$/, '');
-  const extMap = {
-    jpg:'jpg', png:'png', webp:'webp', avif:'avif', bmp:'bmp',
-    gif:'gif', tiff:'tiff', ico:'ico', svg:'svg', wbmp:'wbmp', pdf:'pdf',
-  };
+  const extMap = { jpg:'jpg', png:'png', webp:'webp', avif:'avif', bmp:'bmp', gif:'gif', tiff:'tiff', ico:'ico', svg:'svg', wbmp:'wbmp', pdf:'pdf' };
   return base + '.' + (extMap[outputFormat] || outputFormat);
 }
 
@@ -489,6 +627,8 @@ async function downloadZip() {
 function clearAll() {
   files = [];
   convertedBlobs = {};
+  selectedMobileIndex = 0;
+  destroyMobileUI();
   document.getElementById('file-list').innerHTML = '';
   document.getElementById('file-input').value    = '';
   document.getElementById('pro-tip').style.display = 'none';

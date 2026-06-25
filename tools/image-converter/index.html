@@ -64,6 +64,9 @@
 <link rel="stylesheet" href="/assets/css/tools-common.css">
 <link rel="stylesheet" href="./image-converter.css">
 <style>
+/* ── FILE INPUT: always hidden ── */
+#file-input { display: none !important; }
+
 /* ── DROP ZONE MOBILE / DESKTOP TOGGLE ── */
 .drop-zone__title--mobile,
 .drop-zone__sub--mobile,
@@ -130,6 +133,220 @@
     font-size: 0.82rem;
     padding: 10px 12px;
   }
+}
+
+/* ══════════════════════
+   DESKTOP: file-details grid
+══════════════════════ */
+.file-details-grid {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.file-detail-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.file-detail-head {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold, #C9A84C);
+  font-weight: 600;
+}
+
+.file-detail-col .file-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.file-detail-fmt {
+  background: rgba(201,168,76,0.15);
+  color: var(--gold, #C9A84C);
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.file-detail-res,
+.file-detail-size {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+}
+
+.file-detail-col--in { border-right: 1px solid rgba(255,255,255,0.07); padding-right: 16px; }
+
+/* ══════════════════════
+   MOBILE UI
+══════════════════════ */
+.mobile-ui {
+  width: 100%;
+  padding: 0 0 4px;
+}
+
+.mob-boxes {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  min-height: 180px;
+}
+
+/* LEFT: preview box */
+.mob-box--preview {
+  flex: 1 1 0;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mob-preview-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mob-preview-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mob-preview-placeholder {
+  opacity: 0.25;
+}
+
+.mob-detail {
+  padding: 8px 10px 4px;
+  flex: 1;
+}
+
+.mob-detail__name {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.mob-detail__row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.mob-detail__label {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  min-width: 32px;
+}
+
+.mob-detail__chip {
+  background: rgba(201,168,76,0.15);
+  color: var(--gold, #C9A84C);
+  font-size: 0.62rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.mob-detail__row--out .mob-detail__chip {
+  background: rgba(100,200,120,0.12);
+  color: #7ecb97;
+}
+
+.mob-detail__val {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+}
+
+/* Thumbnail strip inside preview box */
+.mob-thumb-strip {
+  display: flex;
+  gap: 5px;
+  padding: 6px 8px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.mob-thumb-strip::-webkit-scrollbar { display: none; }
+
+.mob-thumb {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: rgba(255,255,255,0.05);
+  transition: border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mob-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mob-thumb--active {
+  border-color: var(--gold, #C9A84C);
+}
+
+.mob-thumb__heic {
+  font-size: 0.55rem;
+  color: var(--gold, #C9A84C);
+  font-weight: 700;
+}
+
+/* RIGHT: add more box */
+.mob-box--add {
+  width: 72px;
+  min-width: 72px;
+  background: rgba(201,168,76,0.06);
+  border: 1.5px dashed rgba(201,168,76,0.35);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--gold, #C9A84C);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-box--add:active {
+  background: rgba(201,168,76,0.12);
+  border-color: rgba(201,168,76,0.6);
 }
 </style>
 
