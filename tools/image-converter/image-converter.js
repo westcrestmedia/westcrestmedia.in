@@ -26,7 +26,7 @@ fmtDropTrigger && fmtDropTrigger.addEventListener('click', (e) => {
 });
 
 document.addEventListener('click', (e) => {
-  if (!fmtDropWrap.contains(e.target)) fmtDropWrap.classList.remove('is-open');
+  if (fmtDropWrap && !fmtDropWrap.contains(e.target)) fmtDropWrap.classList.remove('is-open');
 });
 
 document.querySelectorAll('.fmt-btn').forEach(btn => {
@@ -35,7 +35,7 @@ document.querySelectorAll('.fmt-btn').forEach(btn => {
     btn.classList.add('is-active');
     outputFormat = btn.dataset.fmt;
     if (fmtSelectedLbl) fmtSelectedLbl.textContent = btn.dataset.fmt.toUpperCase();
-    fmtDropWrap && fmtDropWrap.classList.remove('is-open');
+    if (fmtDropWrap) fmtDropWrap.classList.remove('is-open');
 
     const lossless = ['png', 'gif', 'bmp', 'ico', 'svg', 'wbmp', 'pdf'];
     const qWrap = slider.closest('.quality-wrap');
@@ -89,11 +89,11 @@ async function handleFiles(newFiles) {
   const tip = document.getElementById('pro-tip');
   if (tip) tip.style.display = files.length > 0 ? 'block' : 'none';
 
-  // Mobile: switch to compact UI after first file
+  // Mobile: compact UI
   if (window.innerWidth <= 640 && files.length > 0) {
     buildMobileUI();
   }
-  // Desktop: switch to split view
+  // Desktop: split view
   if (window.innerWidth > 640 && files.length > 0) {
     buildDesktopSplitUI();
   }
@@ -246,28 +246,24 @@ function buildMobileUI() {
 
 function selectMobileImage(index) {
   selectedMobileIndex = index;
-  // Save current scroll position of thumb strip before rebuilding
   const strip = document.querySelector('.mob-thumb-strip');
   const savedScroll = strip ? strip.scrollLeft : 0;
-
   buildMobileUI();
-
-  // Restore scroll after rebuild
-  const newStrip = document.querySelector('.mob-thumb-strip');
-  if (newStrip) newStrip.scrollLeft = savedScroll;
+  requestAnimationFrame(() => {
+    const newStrip = document.querySelector('.mob-thumb-strip');
+    if (newStrip) newStrip.scrollLeft = savedScroll;
+  });
 }
 
 function selectDesktopImage(index) {
   selectedMobileIndex = index;
-  // Save current scroll position
   const strip = document.querySelector('.desktop-preview-strip');
   const savedScroll = strip ? strip.scrollLeft : 0;
-
   buildDesktopSplitUI();
-
-  // Restore scroll after rebuild
-  const newStrip = document.querySelector('.desktop-preview-strip');
-  if (newStrip) newStrip.scrollLeft = savedScroll;
+  requestAnimationFrame(() => {
+    const newStrip = document.querySelector('.desktop-preview-strip');
+    if (newStrip) newStrip.scrollLeft = savedScroll;
+  });
 }
 
 function destroyMobileUI() {
@@ -278,11 +274,18 @@ function destroyMobileUI() {
   if (fileList) fileList.style.display = '';
 }
 
+function destroyDesktopSplitUI() {
+  const splitUI = document.getElementById('desktop-split-ui');
+  if (splitUI) splitUI.remove();
+  dropZone.style.display = '';
+  const fileList = document.getElementById('file-list');
+  if (fileList) fileList.style.display = '';
+}
+
 /* ══════════════════════════════════════════
    DESKTOP SPLIT UI
 ══════════════════════════════════════════ */
 function buildDesktopSplitUI() {
-  // Hide original drop zone
   dropZone.style.display = 'none';
   const fileList = document.getElementById('file-list');
   if (fileList) fileList.style.display = 'none';
@@ -301,7 +304,6 @@ function buildDesktopSplitUI() {
     previewSrc = URL.createObjectURL(selFile);
   }
 
-  // Thumb strip
   const thumbsHTML = files.map((f, i) => {
     const isHeic = f.name.toLowerCase().match(/\.heic|\.heif/);
     const thumbSrc = isHeic ? '' : URL.createObjectURL(f);
@@ -336,11 +338,10 @@ function buildDesktopSplitUI() {
     </div>` : '';
 
   splitUI.innerHTML = `
-    <!-- LEFT: sticky preview panel -->
     <div class="desktop-split__preview">
       <div class="desktop-preview-img">
         ${previewSrc
-          ? `<img src="${previewSrc}" alt="preview" id="dsk-preview-img">`
+          ? `<img src="${previewSrc}" alt="preview">`
           : `<div style="opacity:0.25;"><svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`
         }
       </div>
@@ -356,7 +357,7 @@ function buildDesktopSplitUI() {
       </div>
       <div class="desktop-preview-strip">
         ${thumbsHTML}
-        <div class="desktop-thumb-wrap" style="justify-content:center;">
+        <div class="desktop-thumb-wrap">
           <div style="width:52px;height:52px;min-width:52px;border-radius:7px;background:rgba(201,168,76,0.06);border:1.5px dashed rgba(201,168,76,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--gold,#C9A84C);font-size:0.6rem;font-weight:600;" onclick="document.getElementById('file-input').click()">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
             <span>Add</span>
@@ -364,12 +365,9 @@ function buildDesktopSplitUI() {
         </div>
       </div>
     </div>
-
-    <!-- RIGHT: file list -->
     <div class="desktop-split__files" id="desktop-file-list"></div>
   `;
 
-  // Resolve resolution
   if (selFile) {
     getImageResolution(selFile).then(({ w, h }) => {
       const el = document.getElementById('dsk-in-res');
@@ -379,7 +377,6 @@ function buildDesktopSplitUI() {
     });
   }
 
-  // Render file rows into right column
   renderDesktopFileRows();
 }
 
@@ -440,22 +437,17 @@ function renderDesktopFileRows() {
     status.id = 'status-' + i;
     status.textContent = 'Pending';
 
-    // Download button if already converted
+    item.appendChild(progress);
+    item.appendChild(img);
+    item.appendChild(infoWrap);
+    item.appendChild(status);
+
     if (convertedBlobs[i]) {
       const dlBtn = document.createElement('button');
       dlBtn.className = 'dl-btn';
       dlBtn.textContent = '↓ Download';
       dlBtn.onclick = () => downloadFile(i);
-      item.appendChild(progress);
-      item.appendChild(img);
-      item.appendChild(infoWrap);
-      item.appendChild(status);
       item.appendChild(dlBtn);
-    } else {
-      item.appendChild(progress);
-      item.appendChild(img);
-      item.appendChild(infoWrap);
-      item.appendChild(status);
     }
 
     const removeBtn = document.createElement('button');
@@ -469,23 +461,13 @@ function renderDesktopFileRows() {
   });
 }
 
-function destroyDesktopSplitUI() {
-  const splitUI = document.getElementById('desktop-split-ui');
-  if (splitUI) splitUI.remove();
-  dropZone.style.display = '';
-  const fileList = document.getElementById('file-list');
-  if (fileList) fileList.style.display = '';
-}
-
-/* ── RENDER FILE LIST (desktop legacy) ── */
+/* ── RENDER FILE LIST ── */
 function renderFileList() {
   const list = document.getElementById('file-list');
-  // On mobile or when split UI is active, skip legacy list
   if (window.innerWidth <= 640) {
     if (list) list.innerHTML = '';
     return;
   }
-  // If split UI exists, update it instead
   if (document.getElementById('desktop-split-ui')) {
     renderDesktopFileRows();
     return;
@@ -533,12 +515,9 @@ async function convertAll() {
   btn.textContent = files.length === 1 ? 'Convert Again' : 'Convert All Again';
   updateActionBar();
 
-  // Refresh mobile UI to show output details
   if (window.innerWidth <= 640 && files.length > 0) {
     buildMobileUI();
-  }
-  // Refresh desktop split UI
-  if (window.innerWidth > 640 && files.length > 0 && document.getElementById('desktop-split-ui')) {
+  } else if (window.innerWidth > 640 && files.length > 0 && document.getElementById('desktop-split-ui')) {
     buildDesktopSplitUI();
   }
 }
