@@ -1052,6 +1052,8 @@ input[type="color"]:hover{
 /* ========== APP MODE (MOBILE FULL-SCREEN EDITOR OVERHAUL) ========== */
 .app-top-bar{display:none;}
 .app-bottom-nav{display:none;}
+.mob-add-sheet{display:none;}
+.mob-add-sheet-backdrop{display:none;}
 .app-sheet-backdrop{display:none;}
 
 @media(max-width:768px){
