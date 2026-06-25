@@ -823,7 +823,9 @@ window.addEventListener('load',()=>{
         _origRedraw.apply(this, arguments);
         if(window.innerWidth<=768 && selectedIndex!==_lastIdx){
           _lastIdx=selectedIndex;
-          ccpRefresh();
+          // sirf refresh karo agar panel already khula ho
+          const p = document.getElementById('canvaCtxPanel');
+          if(p && p.classList.contains('visible')) ccpRefresh();
         }
       };
     }
