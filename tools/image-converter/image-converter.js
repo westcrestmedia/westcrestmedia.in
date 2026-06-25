@@ -375,8 +375,7 @@ function buildDesktopSplitUI() {
       if (outEl) outEl.textContent = (w !== '—') ? `${w}×${h}` : '—';
     });
   }
-
-
+}
 
 function renderDesktopFileRows() {
   const list = document.getElementById('desktop-file-list');
