@@ -205,15 +205,14 @@
 
 /* ── DESKTOP SPLIT LAYOUT ── */
 @media (min-width: 641px) {
-  /* No grid — preview box is full width but capped */
+  /* No grid — preview box is full width */
   .desktop-split {
     display: block;
     margin-top: 0;
   }
 
   .desktop-split__preview {
-    max-width: 380px;
-    margin: 0 auto;
+    width: 100%;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
