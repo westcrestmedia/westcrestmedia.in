@@ -55,6 +55,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="thumbnail-maker.css">
+<link rel="stylesheet" href="thumbnail-maker-mobile.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Montserrat:wght@400;700;900&family=Playfair+Display:wght@700;900&family=Rajdhani:wght@600;700&family=Anton&family=Barlow+Condensed:wght@700;900&family=Righteous&family=Permanent+Marker&family=Russo+One&family=Orbitron:wght@700;900&family=Pacifico&family=Lobster&family=Dancing+Script:wght@700&family=Black+Han+Sans&family=Teko:wght@600;700&family=Fjalla+One&family=Bungee&family=Alfa+Slab+One&family=Exo+2:wght@700;900&family=Chakra+Petch:wght@700&family=Poppins:wght@400;600;700;900&family=Archivo+Black&family=Caveat:wght@700&family=Indie+Flower&family=Shrikhand&family=Baloo+2:wght@700;800&family=Kalam:wght@700&family=Yatra+One&family=Passion+One:wght@700;900&family=Bowlby+One+SC&family=Squada+One&family=Titan+One&family=Luckiest+Guy&family=Bangers&family=Fredoka:wght@600;700&family=Press+Start+2P&family=Audiowide&family=Monoton&family=Comfortaa:wght@700&family=Caveat+Brush&family=Amatic+SC:wght@700&family=Special+Elite&family=Vibur&family=Great+Vibes&display=swap">
 
 <script src="/assets/js/head-inject.js"></script>
@@ -194,7 +195,7 @@
 <div class="main">
 
 <!-- LEFT PANEL -->
-<div class="left-panel drawer-open" id="leftPanelEl">
+<div class="left-panel" id="leftPanelEl">
   <div class="panel-tabs-wrap">
     <div class="panel-tabs" id="leftTabs">
       <div class="tab active" onclick="switchTab(this,'layers')">
@@ -1340,14 +1341,21 @@
 
 <!-- APP MODE TOP BAR -->
 <div class="app-top-bar" id="appTopBar">
-  <button class="app-top-btn" onclick="undo()" title="Undo">↩</button>
-  <button class="app-top-btn" onclick="redo()" title="Redo">↪</button>
-  <button class="app-top-btn" onclick="openModal('formatModal')" title="Format"><span id="appFormatLabel">1280×720</span> ▾</button>
+  <button class="app-top-btn" id="appUndoBtn" onclick="undo()" title="Undo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+  </button>
+  <button class="app-top-btn" id="appRedoBtn" onclick="redo()" title="Redo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+  </button>
+  <button class="app-top-btn app-format-btn" onclick="openModal('formatModal')" title="Format">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M9 9h4M9 15h4M9 12h6"/></svg>
+    <span id="appFormatLabel">1280×720</span>
+  </button>
   <div class="app-top-spacer"></div>
-  <button class="app-top-btn" onclick="zoomMobile(-0.15)">−</button>
+  <button class="app-top-btn" onclick="zoomMobile(-0.15)" title="Zoom Out">−</button>
   <span class="app-top-zoom" id="appZoomLabel">60%</span>
-  <button class="app-top-btn" onclick="zoomMobile(0.15)">+</button>
-  <button class="app-top-btn" onclick="fitCanvasToMobile(true)">Fit</button>
+  <button class="app-top-btn" onclick="zoomMobile(0.15)" title="Zoom In">+</button>
+  <button class="app-top-btn" onclick="fitCanvasToMobile(true)" title="Fit">Fit</button>
 </div>
 
 <!-- CANVAS -->
@@ -1444,32 +1452,96 @@
 
 <!-- APP MODE: BOTTOM NAV BAR -->
 <div class="app-bottom-nav" id="appBottomNav">
+
+  <!-- Layers -->
+  <button class="app-nav-btn" id="appNavLayers" onclick="switchTabByName('layers');toggleAppSheet('left')">
+    <span class="anicon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+    </span>Layers
+  </button>
+
+  <!-- Tools / Add -->
   <button class="app-nav-btn" id="appNavTools" onclick="toggleAppSheet('left')">
     <span class="anicon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
     </span>Tools
   </button>
-  <button class="app-nav-btn" onclick="addText()">
+
+  <!-- CENTER: Add (highlighted) -->
+  <button class="app-nav-btn app-nav-add" onclick="openMobileAddSheet()">
     <span class="anicon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-    </span>Text
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </span>Add
   </button>
-  <button class="app-nav-btn" onclick="triggerUpload()">
+
+  <!-- Draw -->
+  <button class="app-nav-btn" id="mobDrawBtn" onclick="mobileToggleDraw()">
     <span class="anicon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    </span>Image
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    </span>Draw
   </button>
+
+  <!-- Edit/Props -->
   <button class="app-nav-btn" id="appNavProps" onclick="toggleAppSheet('right')">
     <span class="anicon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/><circle cx="18" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="17" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="7" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
     </span>Edit
   </button>
-  <button class="app-nav-btn" onclick="openMobileExportSheet()">
-    <span class="anicon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    </span>Export
+
+</div>
+
+<!-- MOBILE ADD SHEET (slide-up quick add) -->
+<div class="mob-add-sheet" id="mobAddSheet">
+  <div class="mob-add-sheet-handle"></div>
+  <div class="mob-add-sheet-title">Add to Canvas</div>
+  <div class="mob-add-grid">
+    <button class="mob-add-tile" onclick="addText('title');closeMobAddSheet()">
+      <span class="mob-add-icon" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#c8a96e;">Aa</span>
+      <span>Big Title</span>
+    </button>
+    <button class="mob-add-tile" onclick="addText('sub');closeMobAddSheet()">
+      <span class="mob-add-icon" style="font-family:'Montserrat',sans-serif;font-size:16px;">Aa</span>
+      <span>Subtitle</span>
+    </button>
+    <button class="mob-add-tile" onclick="addText();closeMobAddSheet()">
+      <span class="mob-add-icon">T</span>
+      <span>Text</span>
+    </button>
+    <button class="mob-add-tile" onclick="triggerUpload();closeMobAddSheet()">
+      <span class="mob-add-icon">🖼️</span>
+      <span>Image</span>
+    </button>
+    <button class="mob-add-tile" onclick="addRect();closeMobAddSheet()">
+      <span class="mob-add-icon">▬</span>
+      <span>Rect</span>
+    </button>
+    <button class="mob-add-tile" onclick="addCircle();closeMobAddSheet()">
+      <span class="mob-add-icon">●</span>
+      <span>Circle</span>
+    </button>
+    <button class="mob-add-tile" onclick="addStar();closeMobAddSheet()">
+      <span class="mob-add-icon">★</span>
+      <span>Star</span>
+    </button>
+    <button class="mob-add-tile" onclick="addArrow();closeMobAddSheet()">
+      <span class="mob-add-icon">➤</span>
+      <span>Arrow</span>
+    </button>
+    <button class="mob-add-tile" onclick="openStickerPicker();closeMobAddSheet()">
+      <span class="mob-add-icon">😀</span>
+      <span>Sticker</span>
+    </button>
+    <button class="mob-add-tile" onclick="switchTabByName('add');toggleAppSheet('left');closeMobAddSheet()">
+      <span class="mob-add-icon">⋯</span>
+      <span>More</span>
+    </button>
+  </div>
+  <button class="mob-add-export-btn" onclick="openMobileExportSheet();closeMobAddSheet()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export Thumbnail
   </button>
 </div>
+<div class="mob-add-sheet-backdrop" id="mobAddSheetBackdrop" onclick="closeMobAddSheet()"></div>
 
 <!-- DYNAMIC CONTEXTUAL QUICK ACTION BAR FOR MOBILE -->
 <div class="mobile-quick-actions-bar" id="mobileQuickActions"></div>

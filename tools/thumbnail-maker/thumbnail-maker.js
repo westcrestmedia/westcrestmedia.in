@@ -1917,6 +1917,22 @@ function openMobileExportSheet(){
   document.getElementById('mobileExportModal').classList.add('show');
 }
 
+function openMobileAddSheet(){
+  const sheet = document.getElementById('mobAddSheet');
+  const backdrop = document.getElementById('mobAddSheetBackdrop');
+  if(!sheet || !backdrop) return;
+  closeAppSheets();
+  sheet.classList.add('show');
+  backdrop.classList.add('show');
+}
+
+function closeMobAddSheet(){
+  const sheet = document.getElementById('mobAddSheet');
+  const backdrop = document.getElementById('mobAddSheetBackdrop');
+  if(sheet) sheet.classList.remove('show');
+  if(backdrop) backdrop.classList.remove('show');
+}
+
 function initAppMode(){
   const isMobile=window.matchMedia('(max-width:768px)').matches;
   if(isMobile){
