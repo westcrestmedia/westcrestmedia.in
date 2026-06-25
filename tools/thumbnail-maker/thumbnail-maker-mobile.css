@@ -155,7 +155,6 @@
   .mob-add-sheet-backdrop.show { display: block; }
 
   .mob-add-sheet {
-    display: block;
     position: fixed;
     bottom: calc(62px + max(env(safe-area-inset-bottom),0px));
     left: 0; right: 0; z-index: 500;
@@ -166,12 +165,15 @@
     padding: 0 14px calc(16px + max(env(safe-area-inset-bottom),0px));
     box-shadow: 0 -8px 40px rgba(0,0,0,0.7);
     transform: translateY(calc(100% + 10px));
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0.28s;
     pointer-events: none;
+    visibility: hidden;
   }
   .mob-add-sheet.show {
     transform: translateY(0);
     pointer-events: auto;
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0s;
   }
   .mob-add-sheet-handle {
     width: 40px; height: 4px;
