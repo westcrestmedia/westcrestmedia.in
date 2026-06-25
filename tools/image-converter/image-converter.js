@@ -45,6 +45,8 @@ dropZone.addEventListener('drop', e => {
 });
 dropZone.addEventListener('click', e => {
   if (e.target.classList.contains('drop-zone__browse')) return;
+  if (e.target.closest('.drop-zone__browse--mobile')) return;
+  if (window.innerWidth <= 640) return; // mobile: button handles it
   document.getElementById('file-input').click();
 });
 document.getElementById('file-input').addEventListener('change', e => handleFiles([...e.target.files]));

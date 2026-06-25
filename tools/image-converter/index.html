@@ -63,6 +63,75 @@
 <link rel="stylesheet" href="/assets/css/nav.css">
 <link rel="stylesheet" href="/assets/css/tools-common.css">
 <link rel="stylesheet" href="./image-converter.css">
+<style>
+/* ── DROP ZONE MOBILE / DESKTOP TOGGLE ── */
+.drop-zone__title--mobile,
+.drop-zone__sub--mobile,
+.drop-zone__browse--mobile { display: none; }
+
+.drop-zone__title--desktop,
+.drop-zone__sub--desktop   { display: block; }
+
+@media (max-width: 640px) {
+  .drop-zone__title--desktop,
+  .drop-zone__sub--desktop   { display: none; }
+
+  .drop-zone__title--mobile  { display: block; }
+  .drop-zone__sub--mobile    { display: block; }
+
+  .drop-zone__browse--mobile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px auto 4px;
+    padding: 12px 28px;
+    background: var(--gold, #C9A84C);
+    color: #0e0e16;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .drop-zone { cursor: default; }
+
+  .file-thumb {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+  }
+
+  .file-name {
+    font-size: 0.82rem;
+    word-break: break-all;
+  }
+
+  .file-meta { font-size: 0.72rem; }
+
+  .action-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .action-bar__btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .action-bar__btns .btn {
+    flex: 1 1 auto;
+    min-width: 100px;
+    text-align: center;
+    font-size: 0.82rem;
+    padding: 10px 12px;
+  }
+}
+</style>
 
 <!-- Third-party -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -102,9 +171,15 @@
     <div class="drop-zone__icon">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
     </div>
-    <p class="drop-zone__title">Drop Images Here</p>
-    <p class="drop-zone__sub">or click to browse your files</p>
-    <button class="drop-zone__browse" onclick="document.getElementById('file-input').click()">Choose Files</button>
+    <p class="drop-zone__title drop-zone__title--desktop">Drop Images Here</p>
+    <p class="drop-zone__sub drop-zone__sub--desktop">or click anywhere to browse</p>
+
+    <p class="drop-zone__title drop-zone__title--mobile">Select Your Images</p>
+    <p class="drop-zone__sub drop-zone__sub--mobile">Tap the button below to pick files from your gallery or files app</p>
+    <button class="drop-zone__browse drop-zone__browse--mobile" onclick="document.getElementById('file-input').click()">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      Choose Files
+    </button>
     <div class="drop-zone__formats">
       <span class="format-tag">JPG</span>
       <span class="format-tag">PNG</span>
