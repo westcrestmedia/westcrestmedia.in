@@ -164,7 +164,7 @@
     border-radius: 18px 18px 0 0;
     padding: 0 14px calc(16px + max(env(safe-area-inset-bottom),0px));
     box-shadow: 0 -8px 40px rgba(0,0,0,0.7);
-    transform: translateY(calc(100% + 10px));
+    transform: translateY(120%);
     transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0.28s;
     pointer-events: none;
     visibility: hidden;
