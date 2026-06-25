@@ -398,11 +398,17 @@ window.addEventListener('load',()=>{
   window.ccpClose = function(){
     const p = document.getElementById('canvaCtxPanel');
     if(p) p.classList.remove('visible');
+    document.body.classList.remove('ccp-open');
+    setTimeout(fitCanvasToMobile, 50);
   };
 
   function ccpShow(){ 
     const p = document.getElementById('canvaCtxPanel');
-    if(p && window.innerWidth <= 768) p.classList.add('visible');
+    if(p && window.innerWidth <= 768){
+      p.classList.add('visible');
+      document.body.classList.add('ccp-open');
+      setTimeout(fitCanvasToMobile, 50);
+    }
   }
 
   // ── Tab switch ──
@@ -797,7 +803,11 @@ window.addEventListener('load',()=>{
   const _origUpdate = window.updateMobileQuickActions;
   window.updateMobileQuickActions = function(){
     if(typeof _origUpdate==='function') _origUpdate.apply(this, arguments);
-    if(window.innerWidth <= 768) ccpRefresh();
+    // CCP panel sirf tab refresh hoga jab already visible ho — auto open nahi hoga
+    if(window.innerWidth <= 768){
+      const p = document.getElementById('canvaCtxPanel');
+      if(p && p.classList.contains('visible')) ccpRefresh();
+    }
   };
 
   // ── Also hook canvas click (deselect → show BG panel) ──
