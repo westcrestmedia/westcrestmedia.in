@@ -1,197 +1,367 @@
 /*
- * thumbnail-maker-mobile.css  — Canva-style Mobile UI
- * Loads AFTER thumbnail-maker.css. Only affects ≤768px.
- * Strategy: extend existing app-mode rules, don't fight them.
+ * thumbnail-maker-mobile.css — Canva-style Mobile UX v3
+ * Pure bottom-bar contextual approach — no panels covering canvas
+ * Loads AFTER thumbnail-maker.css · Only affects ≤768px
  */
 
-/* ═══════════════════════════════════════════════════════════
-   1. TOP BAR — upgrade existing .app-top-btn with SVG icons
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   0. RESET OLD CONFLICTING MOBILE STUFF
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  /* Make top bar icons look cleaner */
-  #appUndoBtn, #appRedoBtn {
-    padding: 6px 10px !important;
-    min-width: 36px;
-    justify-content: center;
-  }
-  #appUndoBtn svg, #appRedoBtn svg { width: 15px; height: 15px; }
+  /* Hide old panels / sheets / quick action bar — replaced below */
+  body.app-mode .left-panel,
+  body.app-mode .right-panel,
+  #canvaCtxPanel,
+  .mobile-quick-actions-bar { display: none !important; }
 
-  .app-format-btn {
-    font-size: 10px !important;
-    letter-spacing: 0.3px;
-    gap: 5px;
-  }
-  .app-format-btn #appFormatLabel { color: var(--gold); }
+  /* Hide old bottom nav — we replace it */
+  body.app-mode .app-bottom-nav { display: none !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   2. BOTTOM NAV — Canva-style with raised center Add button
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   1. LAYOUT — top bar + canvas + contextual bar + bottom tab bar
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* Nav bar itself — extend existing */
-  body.app-mode .app-bottom-nav {
-    height: 62px !important;
-    padding-bottom: max(env(safe-area-inset-bottom), 0px) !important;
-    justify-content: stretch !important;
+  /* Overall page in app mode */
+  body.app-mode {
+    overflow: hidden;
+    height: 100dvh;
   }
 
-  /* All nav buttons */
-  body.app-mode .app-nav-btn {
-    font-size: 9px !important;
-    letter-spacing: 0.3px;
-    padding: 0 !important;
-    gap: 2px !important;
+  /* Top bar: Undo | Redo | Format | spacer | Zoom- | % | Zoom+ | Fit | Export */
+  body.app-mode .app-top-bar {
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+    height: 48px;
+    padding: 0 10px;
+    background: var(--bg2);
+    border-bottom: 1px solid rgba(212,175,55,0.12);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    z-index: 100;
   }
-  body.app-mode .app-nav-btn .anicon {
-    width: 24px !important; height: 24px !important;
+  body.app-mode .app-top-bar::-webkit-scrollbar { display: none; }
+
+  body.app-mode .app-top-btn {
+    flex-shrink: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
     border-radius: 8px;
-    transition: background 0.2s;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Syne', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 32px;
+    -webkit-tap-highlight-color: transparent;
   }
-  body.app-mode .app-nav-btn.active .anicon {
-    background: rgba(212,175,55,0.15);
+  body.app-mode .app-top-btn:active { background: var(--bg4); border-color: var(--gold); }
+  body.app-mode .app-top-btn svg { width: 14px; height: 14px; }
+  body.app-mode .app-top-spacer { flex: 1; min-width: 4px; }
+  body.app-mode .app-top-zoom {
+    font-size: 11px; font-weight: 800; color: var(--text);
+    min-width: 38px; text-align: center; flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
   }
-  body.app-mode .app-nav-btn.active { color: var(--gold) !important; }
-  body.app-mode .app-nav-btn.active .anicon svg { stroke: var(--gold) !important; }
+  body.app-mode .app-format-btn { gap: 5px; }
+  body.app-mode .app-format-btn #appFormatLabel { color: var(--gold); font-size: 10px; }
 
-  /* CENTER ADD button — raised gold pill */
-  body.app-mode .app-nav-add .anicon {
-    width: 44px !important;
-    height: 44px !important;
+  /* Export btn in top bar — gold */
+  body.app-mode #appExportTopBtn {
     background: var(--gold) !important;
-    border-radius: 14px !important;
-    transform: translateY(-8px) !important;
-    box-shadow: 0 4px 20px rgba(212,175,55,0.5) !important;
+    color: #111 !important;
+    border-color: var(--gold) !important;
+    font-weight: 900;
+    letter-spacing: 0.3px;
   }
-  body.app-mode .app-nav-add .anicon svg {
-    stroke: #111 !important;
-    width: 22px !important; height: 22px !important;
-  }
-  body.app-mode .app-nav-add:active .anicon {
-    transform: translateY(-4px) !important;
-    box-shadow: 0 2px 8px rgba(212,175,55,0.3) !important;
-  }
+  body.app-mode #appExportTopBtn:active { opacity: 0.85; }
 
-  /* Adjust .main height for existing nav (62px) + safe area */
+  /* Main area — fills between top bar and ctx bar + tab bar */
   body.app-mode .main {
-    height: calc(100dvh - 52px - 44px - 62px) !important;
-  }
-
-  /* Toast above taller nav */
-  body.app-mode .toast {
-    bottom: calc(62px + max(env(safe-area-inset-bottom),0px) + 8px) !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   3. QUICK ACTION BAR — replace pill-buttons with icon cards
-═══════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  body.app-mode .mobile-quick-actions-bar {
-    bottom: calc(62px + max(env(safe-area-inset-bottom),0px)) !important;
-    height: auto !important;
-    min-height: 54px;
-    padding: 6px 8px !important;
-    gap: 6px !important;
-    background: rgba(10,10,16,0.97) !important;
-    border-top: 1px solid rgba(212,175,55,0.2) !important;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.5) !important;
-  }
-
-  body.app-mode .mob-quick-btn {
-    display: inline-flex !important;
+    height: calc(100dvh - 48px - 54px - 58px) !important;
     flex-direction: column !important;
+    overflow: hidden !important;
+    transition: height 0.22s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* When ctx bar is tall (sheet open), canvas shrinks more */
+  body.app-mode.ctx-sheet-open .main {
+    height: calc(100dvh - 48px - 54px - 58px - var(--ctx-sheet-h, 0px)) !important;
+  }
+
+  /* Canvas area fills main */
+  body.app-mode .canvas-area {
+    order: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 8px !important;
+    background: #040407 !important;
+    overflow: hidden !important;
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 3px !important;
-    min-width: 52px !important;
-    height: 46px !important;
-    padding: 4px 8px !important;
-    border-radius: 10px !important;
-    font-size: 8.5px !important;
+  }
+  body.app-mode .canvas-wrapper { max-width: 100% !important; max-height: 100% !important; }
+  body.app-mode .zoom-bar { display: none !important; }
+
+  /* Hide desktop elements */
+  body.app-mode .hero-section,
+  body.app-mode .sticky-toolbar,
+  body.app-mode .page-sections,
+  body.app-mode footer,
+  body.app-mode .mobile-tool-strip { display: none !important; }
+  body.app-mode .sticky-top { position: relative; }
+  body.app-mode .nav { height: 0 !important; overflow: hidden !important; padding: 0 !important; border: none !important; }
+  body.app-mode .right-panel-toggle { display: none !important; }
+
+  /* Toast */
+  body.app-mode .toast {
+    bottom: calc(58px + 54px + max(env(safe-area-inset-bottom),0px) + 8px) !important;
+    z-index: 9999;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2. CONTEXTUAL ACTION BAR — the scrollable bar above tab bar
+      Changes based on what's selected — Canva style
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  #mobCtxBar {
+    position: fixed;
+    bottom: calc(58px + max(env(safe-area-inset-bottom),0px));
+    left: 0; right: 0;
+    height: 54px;
+    background: rgba(14,14,20,0.98);
+    border-top: 1px solid rgba(212,175,55,0.15);
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    z-index: 300;
+    padding: 0 6px;
+    gap: 2px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  #mobCtxBar::-webkit-scrollbar { display: none; }
+
+  /* Each button in ctx bar */
+  .ctx-btn {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 52px;
+    height: 42px;
+    padding: 4px 6px;
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+    position: relative;
+  }
+  .ctx-btn svg { width: 18px; height: 18px; stroke: var(--text2); transition: stroke 0.15s; flex-shrink: 0; }
+  .ctx-btn:active, .ctx-btn.active {
+    background: rgba(212,175,55,0.12);
+    color: var(--gold);
+  }
+  .ctx-btn:active svg, .ctx-btn.active svg { stroke: var(--gold); }
+
+  /* Danger ctx button */
+  .ctx-btn.danger { color: #f87171; }
+  .ctx-btn.danger svg { stroke: #f87171; }
+  .ctx-btn.danger:active { background: rgba(239,68,68,0.12); }
+
+  /* Gold accent ctx button (e.g. Export) */
+  .ctx-btn.gold {
+    background: rgba(212,175,55,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.25);
+  }
+  .ctx-btn.gold svg { stroke: var(--gold); }
+  .ctx-btn.gold:active { background: rgba(212,175,55,0.22); }
+
+  /* Divider between ctx groups */
+  .ctx-sep {
+    flex-shrink: 0;
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.07);
+    margin: 0 3px;
+  }
+
+  /* Emoji icon in ctx-btn (sticker/badge) */
+  .ctx-btn .ctx-emoji {
+    font-size: 18px;
+    line-height: 1;
+    display: block;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3. BOTTOM TAB BAR — always visible, 5 static tabs
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  #mobTabBar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: calc(58px + max(env(safe-area-inset-bottom), 0px));
+    background: rgba(10,10,16,0.98);
+    border-top: 1px solid rgba(212,175,55,0.12);
+    display: flex;
+    align-items: flex-start;
+    padding-top: 4px;
+    z-index: 301;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .mob-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 50px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 9px;
+    font-weight: 700;
     letter-spacing: 0.3px;
-    background: var(--bg3) !important;
-    border: 1px solid var(--border) !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s;
+    padding: 0;
+    position: relative;
   }
-  body.app-mode .mob-quick-btn svg {
-    width: 15px !important; height: 15px !important;
-    stroke: var(--gold);
+  .mob-tab svg { width: 22px; height: 22px; stroke: var(--text3); transition: stroke 0.2s, transform 0.2s; }
+  .mob-tab.active { color: var(--gold); }
+  .mob-tab.active svg { stroke: var(--gold); }
+
+  /* Center ADD tab — raised gold */
+  #mobTabAdd { position: relative; }
+  #mobTabAdd .mob-tab-icon {
+    width: 46px; height: 46px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transform: translateY(-10px);
+    box-shadow: 0 4px 20px rgba(212,175,55,0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 2px;
   }
-  body.app-mode .mob-quick-btn:active {
-    background: var(--bg4) !important;
-    border-color: var(--gold) !important;
+  #mobTabAdd .mob-tab-icon svg { stroke: #111; width: 22px; height: 22px; }
+  #mobTabAdd:active .mob-tab-icon {
+    transform: translateY(-6px);
+    box-shadow: 0 2px 8px rgba(212,175,55,0.3);
   }
-  body.app-mode .mob-quick-btn.btn-danger { border-color: rgba(239,68,68,0.3) !important; }
-  body.app-mode .mob-quick-btn.btn-danger svg { stroke: #f87171 !important; }
+  #mobTabAdd span { margin-top: -6px; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   4. SHEETS — slide from bottom (over bottom nav)
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   4. BOTTOM SHEETS — slide up from above tab bar
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  body.app-mode .left-panel,
-  body.app-mode .right-panel {
-    bottom: calc(62px + max(env(safe-area-inset-bottom),0px)) !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    border-radius: 18px 18px 0 0 !important;
-    max-height: 72vh !important;
-    padding-bottom: 12px;
-    z-index: 400 !important; /* above CCP panel (360) */
-  }
-}
 
-/* ═══════════════════════════════════════════════════════════
-   5. ADD QUICK SHEET (mob-add-sheet)
-═══════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .mob-add-sheet-backdrop {
-    display: none;
+  .mob-sheet-backdrop {
     position: fixed; inset: 0; z-index: 490;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.6);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
   }
-  .mob-add-sheet-backdrop.show { display: block; }
+  .mob-sheet-backdrop.show { opacity: 1; pointer-events: auto; }
 
-  .mob-add-sheet {
+  .mob-sheet {
     position: fixed;
-    bottom: calc(62px + max(env(safe-area-inset-bottom),0px));
-    left: 0; right: 0; z-index: 500;
-    background: rgba(13,13,20,0.98);
+    bottom: calc(58px + max(env(safe-area-inset-bottom),0px));
+    left: 0; right: 0;
+    z-index: 500;
+    background: rgba(13,13,20,0.99);
     border: 1px solid rgba(212,175,55,0.2);
     border-bottom: none;
-    border-radius: 18px 18px 0 0;
-    padding: 0 14px calc(16px + max(env(safe-area-inset-bottom),0px));
+    border-radius: 20px 20px 0 0;
     box-shadow: 0 -8px 40px rgba(0,0,0,0.7);
-    transform: translateY(120%);
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0.28s;
+    transform: translateY(110%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
     pointer-events: none;
-    visibility: hidden;
+    max-height: 80dvh;
+    display: flex;
+    flex-direction: column;
   }
-  .mob-add-sheet.show {
+  .mob-sheet.show {
     transform: translateY(0);
     pointer-events: auto;
-    visibility: visible;
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), visibility 0s 0s;
   }
-  .mob-add-sheet-handle {
+
+  .mob-sheet-handle {
     width: 40px; height: 4px;
     background: rgba(212,175,55,0.25);
     border-radius: 99px;
-    margin: 10px auto 8px;
+    margin: 12px auto 0;
+    flex-shrink: 0;
   }
-  .mob-add-sheet-title {
+
+  .mob-sheet-title {
     font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
     text-transform: uppercase; color: var(--text2);
-    margin-bottom: 12px; text-align: center;
+    text-align: center; padding: 8px 16px 4px;
+    flex-shrink: 0;
   }
+
+  .mob-sheet-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 8px 14px 20px;
+    flex: 1;
+  }
+  .mob-sheet-body::-webkit-scrollbar { width: 3px; }
+  .mob-sheet-body::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 99px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. ADD SHEET — grid of add options
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
   .mob-add-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px; margin-bottom: 12px;
+    gap: 8px;
+    margin-bottom: 10px;
   }
+
   .mob-add-tile {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -205,449 +375,311 @@
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s, transform 0.1s, background 0.15s;
   }
-  .mob-add-tile:active {
-    transform: scale(0.91);
-    border-color: var(--gold);
-    background: var(--bg4);
-  }
+  .mob-add-tile:active { transform: scale(0.91); border-color: var(--gold); background: var(--bg4); }
   .mob-add-icon { font-size: 22px; line-height: 1; display: block; }
+
+  /* Section title in add sheet */
+  .mob-add-section {
+    font-size: 9px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text3);
+    margin: 14px 0 8px;
+  }
+
+  /* Export button inside add sheet */
   .mob-add-export-btn {
-    width: 100%; height: 44px; border-radius: 12px;
+    width: 100%; height: 46px; border-radius: 12px;
     background: rgba(212,175,55,0.1);
-    border: 1px solid rgba(212,175,55,0.35);
+    border: 1px solid rgba(212,175,55,0.3);
     color: var(--gold); font-size: 13px; font-weight: 800;
     font-family: 'Syne', sans-serif;
-    letter-spacing: 0.3px;
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    cursor: pointer; margin-top: 8px;
+    -webkit-tap-highlight-color: transparent;
     transition: opacity 0.15s, transform 0.1s;
   }
   .mob-add-export-btn svg { stroke: var(--gold); }
   .mob-add-export-btn:active { opacity: 0.8; transform: scale(0.98); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   6. CANVA-STYLE CONTEXTUAL PROPERTY PANEL
-      Shows when object is selected. Tabbed: Style|Transform|FX|Arrange
-      CRITICAL: Uses visibility+pointer-events (not display:none) so
-      CSS transition works. Canvas shrinks via body.ccp-open rule.
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   6. SHEET PANELS — font, color, filter, effects, position, etc.
+      These are the sheets that open from ctx bar buttons
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* The panel sits above bottom nav — always in DOM, slides up/down */
-  #canvaCtxPanel {
-    display: flex;                              /* always flex — transition works */
-    flex-direction: column;
-    position: fixed;
-    bottom: calc(62px + max(env(safe-area-inset-bottom),0px));
-    left: 0; right: 0;
-    z-index: 360;
-    background: rgba(10,10,16,0.98);
-    border-top: 1px solid rgba(212,175,55,0.2);
-    box-shadow: 0 -6px 28px rgba(0,0,0,0.55);
-    max-height: 52vh;                           /* never more than 52vh so canvas stays visible */
-    height: 52vh;
-    transform: translateY(110%);               /* hidden below screen */
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1),
-                visibility 0s linear 0.28s;
-    visibility: hidden;
-    pointer-events: none;
-  }
-  #canvaCtxPanel.visible {
-    transform: translateY(0);
-    visibility: visible;
-    pointer-events: auto;
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1),
-                visibility 0s linear 0s;
-  }
-
-  /* ── When CCP panel is open, shrink canvas area to make room ── */
-  /* Panel is 52vh, bottom nav 62px — canvas gets remaining space */
-  body.ccp-open.app-mode .main {
-    height: calc(100dvh - 52px - 44px - 62px - 52vh) !important;
-  }
-  /* Ensure canvas-area fills the shrunk .main */
-  body.ccp-open.app-mode .canvas-area {
-    height: 100% !important;
-  }
-
-  /* Drag handle + close row */
-  .ccp-topbar {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px 4px;
-    flex-shrink: 0;
-    gap: 8px;
-  }
-  .ccp-handle {
-    width: 36px; height: 4px;
-    background: rgba(212,175,55,0.25);
-    border-radius: 99px;
-    margin: 0 auto;
-    flex: 1;
-  }
-  .ccp-close {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text2);
-    font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Layer type badge */
-  .ccp-layer-badge {
-    font-size: 9px; font-weight: 800; letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--gold);
-    padding: 2px 8px;
-    background: rgba(212,175,55,0.1);
-    border: 1px solid rgba(212,175,55,0.25);
-    border-radius: 99px;
-    flex-shrink: 0;
-  }
-
-  /* Tab bar */
-  .ccp-tabs {
-    display: flex;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 0 10px;
-    gap: 0;
-  }
-  .ccp-tabs::-webkit-scrollbar { display: none; }
-
-  .ccp-tab {
-    flex-shrink: 0;
-    padding: 8px 14px;
-    font-size: 10px; font-weight: 800; letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--text2);
-    background: none; border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer; font-family: 'Syne', sans-serif;
-    transition: color 0.2s, border-color 0.2s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .ccp-tab.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
-
-  /* Tab panes */
-  .ccp-panes {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-  }
-  .ccp-pane { display: none; padding: 14px 14px 20px; }
-  .ccp-pane.active { display: block; }
-
-  /* ── SECTION LABEL ── */
-  .ccp-label {
+  /* ── Generic label ── */
+  .sp-label {
     font-size: 9px; font-weight: 800; letter-spacing: 1px;
     text-transform: uppercase; color: var(--text2);
-    margin: 10px 0 6px;
+    margin: 12px 0 6px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .ccp-label span { color: var(--gold); font-size: 10px; font-weight: 700; }
+  .sp-label span { color: var(--gold); font-size: 10px; font-weight: 700; font-family: 'DM Mono', monospace; }
 
-  /* ── SLIDER ROW ── */
-  .ccp-slider-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
+  /* ── Slider row ── */
+  .sp-slider {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
   }
-  .ccp-slider-row label {
+  .sp-slider label {
     font-size: 9px; font-weight: 800; letter-spacing: 0.5px;
-    text-transform: uppercase; color: var(--text2);
-    min-width: 56px; flex-shrink: 0;
+    text-transform: uppercase; color: var(--text3);
+    min-width: 60px; flex-shrink: 0;
   }
-  .ccp-slider-row input[type="range"] {
-    flex: 1;
-    -webkit-appearance: none; appearance: none;
-    height: 4px;
-    background: var(--bg3);
-    border-radius: 99px;
-    accent-color: var(--gold);
-    cursor: pointer;
-    border-radius: 99px;
+  .sp-slider input[type="range"] {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 4px; background: var(--bg3); border-radius: 99px;
+    accent-color: var(--gold); cursor: pointer;
   }
-  .ccp-slider-row input[type="range"]::-webkit-slider-thumb {
+  .sp-slider input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--gold);
-    border: 2px solid var(--bg);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.4);
-    cursor: pointer;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--bg);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.4); cursor: pointer;
   }
-  .ccp-val {
+  .sp-val {
     font-size: 11px; font-weight: 800; color: var(--text);
     font-family: 'DM Mono', monospace;
-    min-width: 36px; text-align: right; flex-shrink: 0;
+    min-width: 38px; text-align: right; flex-shrink: 0;
   }
 
-  /* ── NUM INPUT ROW (X, Y, W, H) ── */
-  .ccp-xywh {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 8px; margin-bottom: 12px;
-  }
-  .ccp-field {
-    display: flex; flex-direction: column; gap: 3px;
-  }
-  .ccp-field label {
-    font-size: 9px; font-weight: 800; letter-spacing: 0.5px;
-    text-transform: uppercase; color: var(--text2);
-  }
-  .ccp-field input[type="number"] {
-    height: 36px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 12px; font-weight: 700;
-    font-family: 'DM Mono', monospace;
-    text-align: center;
-    padding: 0 6px;
-    -webkit-appearance: none;
-  }
-  .ccp-field input[type="number"]:focus {
-    outline: none; border-color: var(--gold);
-  }
-
-  /* ── COLOR ROW ── */
-  .ccp-color-row {
+  /* ── Color row ── */
+  .sp-color-row {
     display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
   }
-  .ccp-color-row label {
-    font-size: 9px; font-weight: 800; letter-spacing: 0.5px;
-    text-transform: uppercase; color: var(--text2);
-    min-width: 50px; flex-shrink: 0;
+  .sp-color-row label {
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    color: var(--text3); min-width: 50px; flex-shrink: 0; letter-spacing: 0.4px;
   }
-  .ccp-color-row input[type="color"] {
-    width: 36px; height: 36px; border-radius: 8px;
+  .sp-color-row input[type="color"] {
+    width: 38px; height: 38px; border-radius: 8px;
     border: 1px solid var(--border); padding: 2px;
     background: var(--bg3); cursor: pointer; flex-shrink: 0;
   }
-  .ccp-color-row input[type="text"] {
-    flex: 1; height: 36px;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text);
-    font-size: 12px; font-family: 'DM Mono', monospace;
+  .sp-color-row input[type="text"] {
+    flex: 1; height: 38px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 12px; font-family: 'DM Mono', monospace;
     padding: 0 10px;
   }
-  .ccp-color-row input[type="text"]:focus { outline: none; border-color: var(--gold); }
+  .sp-color-row input[type="text"]:focus { outline: none; border-color: var(--gold); }
 
-  /* ── QUICK PALETTE ── */
-  .ccp-palette {
-    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px;
+  /* ── Palette swatches ── */
+  .sp-palette {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
   }
-  .ccp-swatch {
-    width: 26px; height: 26px; border-radius: 6px;
-    cursor: pointer; flex-shrink: 0;
-    border: 2px solid transparent;
-    transition: transform 0.12s, border-color 0.12s;
+  .sp-swatch {
+    width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: transform 0.12s, border-color 0.12s;
+    flex-shrink: 0;
   }
-  .ccp-swatch:active { transform: scale(0.86); }
-  .ccp-swatch.active-swatch { border-color: var(--gold) !important; }
+  .sp-swatch:active { transform: scale(0.84); }
+  .sp-swatch.on { border-color: var(--gold) !important; }
 
-  /* ── FONT SIZE ROW ── */
-  .ccp-fontsize-row {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  }
-  .ccp-fontsize-row label {
-    font-size: 9px; font-weight: 800; letter-spacing: 0.5px;
-    text-transform: uppercase; color: var(--text2); flex-shrink: 0;
-  }
-  .ccp-stepper {
-    display: flex; align-items: center; gap: 0;
-    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
-    background: var(--bg3);
-  }
-  .ccp-step-btn {
-    width: 36px; height: 36px;
-    background: none; border: none; color: var(--gold);
-    font-size: 18px; font-weight: 700; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; -webkit-tap-highlight-color: transparent;
-  }
-  .ccp-step-btn:active { background: var(--bg4); }
-  .ccp-step-val {
-    min-width: 44px; text-align: center;
-    font-size: 13px; font-weight: 800; color: var(--text);
-    font-family: 'DM Mono', monospace;
-    border-left: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    padding: 0 4px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* ── TEXT STYLE BUTTONS ── */
-  .ccp-style-row {
-    display: flex; gap: 6px; margin-bottom: 10px;
-  }
-  .ccp-style-btn {
-    flex: 1; height: 36px; border-radius: 8px;
+  /* ── Style toggle buttons (B, I, U, etc.) ── */
+  .sp-style-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .sp-style-btn {
+    flex: 1; min-width: 36px; height: 38px; border-radius: 8px;
     background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text); font-size: 13px; font-weight: 800;
+    color: var(--text); font-size: 14px; font-weight: 800;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-    font-family: 'Syne', sans-serif;
+    -webkit-tap-highlight-color: transparent; font-family: 'Syne', sans-serif;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
-  .ccp-style-btn:active { background: var(--bg4); }
-  .ccp-style-btn.on { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
+  .sp-style-btn:active { background: var(--bg4); }
+  .sp-style-btn.on { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
 
-  /* ── FX BUTTONS ── */
-  .ccp-fx-grid {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 10px;
-  }
-  .ccp-fx-btn {
-    height: 40px; border-radius: 8px;
-    background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text); font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
-    text-transform: uppercase; cursor: pointer; font-family: 'Syne', sans-serif;
-    display: flex; align-items: center; justify-content: center; gap: 4px;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .ccp-fx-btn:active { background: var(--bg4); border-color: var(--gold); }
-
-  /* ── ARRANGE BUTTONS ── */
-  .ccp-arrange-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px;
-  }
-  .ccp-arrange-btn {
-    height: 42px; border-radius: 8px;
-    background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text); font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
-    text-transform: uppercase; cursor: pointer; font-family: 'Syne', sans-serif;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .ccp-arrange-btn:active { background: var(--bg4); }
-  .ccp-arrange-btn svg { width: 14px; height: 14px; }
-  .ccp-arrange-btn.danger { border-color: rgba(239,68,68,0.3); color: #f87171; }
-  .ccp-arrange-btn.danger:active { background: rgba(239,68,68,0.1); }
-
-  /* ── IMAGE FILTER PILLS ── */
-  .ccp-filter-row {
-    display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
-  }
-  .ccp-filter-pill {
-    padding: 6px 12px; border-radius: 99px;
+  /* ── Grid buttons (filter pills, fx options, shapes) ── */
+  .sp-pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .sp-pill {
+    padding: 7px 13px; border-radius: 99px;
     background: var(--bg3); border: 1px solid var(--border);
     color: var(--text2); font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
     text-transform: uppercase; cursor: pointer; font-family: 'Syne', sans-serif;
     -webkit-tap-highlight-color: transparent;
     transition: border-color 0.15s, color 0.15s;
   }
-  .ccp-filter-pill.active { border-color: var(--gold); color: var(--gold); }
-  .ccp-filter-pill:active { background: var(--bg4); }
+  .sp-pill.on { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
+  .sp-pill:active { background: var(--bg4); }
 
-  /* ── LOCK ASPECT TOGGLE ── */
-  .ccp-toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
+  /* ── Grid of action buttons 3-col ── */
+  .sp-btn-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 10px; }
+  .sp-btn-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; margin-bottom: 10px; }
+  .sp-action-btn {
+    height: 42px; border-radius: 10px;
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    text-transform: uppercase; cursor: pointer; font-family: 'Syne', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    -webkit-tap-highlight-color: transparent; transition: background 0.15s, border-color 0.15s;
+  }
+  .sp-action-btn:active { background: var(--bg4); border-color: var(--gold); }
+  .sp-action-btn.danger { border-color: rgba(239,68,68,0.3); color: #f87171; }
+  .sp-action-btn.danger:active { background: rgba(239,68,68,0.1); }
+  .sp-action-btn.full { grid-column: 1 / -1; }
+  .sp-action-btn svg { width: 14px; height: 14px; }
+
+  /* ── X Y W H number inputs ── */
+  .sp-xywh { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .sp-field { display: flex; flex-direction: column; gap: 3px; }
+  .sp-field label { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text3); }
+  .sp-field input[type="number"] {
+    height: 38px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 700;
+    font-family: 'DM Mono', monospace; text-align: center; padding: 0 6px;
+    -webkit-appearance: none;
+  }
+  .sp-field input[type="number"]:focus { outline: none; border-color: var(--gold); }
+
+  /* ── Font size stepper ── */
+  .sp-stepper {
+    display: flex; align-items: center; border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; background: var(--bg3);
     margin-bottom: 10px;
   }
-  .ccp-toggle-row label {
-    font-size: 9px; font-weight: 800; letter-spacing: 0.5px;
-    text-transform: uppercase; color: var(--text2);
+  .sp-step-btn {
+    width: 44px; height: 42px; background: none; border: none;
+    color: var(--gold); font-size: 20px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
   }
-  .ccp-toggle {
-    width: 38px; height: 22px; border-radius: 99px;
+  .sp-step-btn:active { background: var(--bg4); }
+  .sp-step-val {
+    flex: 1; text-align: center; font-size: 16px; font-weight: 800;
+    color: var(--text); font-family: 'DM Mono', monospace;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+    height: 42px; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Font pills horizontal scroll ── */
+  .sp-font-scroll {
+    display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none;
+    margin-bottom: 12px; padding-bottom: 2px;
+  }
+  .sp-font-scroll::-webkit-scrollbar { display: none; }
+  .sp-font-pill {
+    flex-shrink: 0; padding: 9px 14px; border-radius: 10px;
     background: var(--bg3); border: 1px solid var(--border);
-    position: relative; cursor: pointer;
-    transition: background 0.2s;
+    color: var(--text); font-size: 14px; cursor: pointer; white-space: nowrap;
+    -webkit-tap-highlight-color: transparent; transition: border-color 0.15s;
   }
-  .ccp-toggle.on { background: var(--gold); border-color: var(--gold); }
-  .ccp-toggle::after {
-    content: ''; position: absolute;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: var(--text2); top: 2px; left: 2px;
-    transition: left 0.2s, background 0.2s;
-  }
-  .ccp-toggle.on::after { left: 18px; background: #111; }
+  .sp-font-pill.on { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
+  .sp-font-pill:active { background: var(--bg4); }
 
-  /* ── FONT MINI PICKER ── */
-  .ccp-font-scroll {
-    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
-    margin-bottom: 10px; padding-bottom: 2px;
+  /* ── Toggle switch ── */
+  .sp-toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
   }
-  .ccp-font-scroll::-webkit-scrollbar { display: none; }
-  .ccp-font-pill {
-    flex-shrink: 0; padding: 8px 12px; border-radius: 8px;
+  .sp-toggle-row label { font-size: 10px; font-weight: 700; color: var(--text2); letter-spacing: 0.3px; }
+  .sp-toggle {
+    width: 42px; height: 24px; border-radius: 99px;
     background: var(--bg3); border: 1px solid var(--border);
-    color: var(--text); font-size: 13px; cursor: pointer;
-    white-space: nowrap; -webkit-tap-highlight-color: transparent;
-    transition: border-color 0.15s;
+    position: relative; cursor: pointer; transition: background 0.2s;
   }
-  .ccp-font-pill.active { border-color: var(--gold); color: var(--gold); }
-  .ccp-font-pill:active { background: var(--bg4); }
+  .sp-toggle.on { background: var(--gold); border-color: var(--gold); }
+  .sp-toggle::after {
+    content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--text3); top: 2px; left: 2px; transition: left 0.2s, background 0.2s;
+  }
+  .sp-toggle.on::after { left: 20px; background: #111; }
 
-  /* ── BG GRADIENT MINI GRID ── */
-  .ccp-grad-mini {
-    display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; margin-bottom: 10px;
-  }
-  .ccp-grad-swatch {
-    aspect-ratio: 1; border-radius: 8px; cursor: pointer;
-    border: 2px solid transparent;
-    transition: transform 0.12s, border-color 0.12s;
-  }
-  .ccp-grad-swatch:active { transform: scale(0.88); }
-  .ccp-grad-swatch.active { border-color: var(--gold) !important; }
-
-  /* ── SELECT ── */
-  .ccp-select {
-    width: 100%; height: 38px; border-radius: 8px;
+  /* ── Select dropdown ── */
+  .sp-select {
+    width: 100%; height: 40px; border-radius: 8px;
     background: var(--bg3); border: 1px solid var(--border);
     color: var(--text); font-size: 12px; font-weight: 700;
     font-family: 'Syne', sans-serif; padding: 0 10px;
     -webkit-appearance: none; margin-bottom: 10px; cursor: pointer;
   }
-}
 
-/* ═══════════════════════════════════════════════════════════
-   7. MISC — make existing modals bottom-sheet on mobile
-═══════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  body.app-mode .modal-overlay {
-    align-items: flex-end !important;
-    padding: 0 !important;
+  /* ── Gradient mini grid ── */
+  .sp-grad-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; margin-bottom: 12px; }
+  .sp-grad-swatch {
+    aspect-ratio: 1; border-radius: 8px; cursor: pointer;
+    border: 2px solid transparent; transition: transform 0.12s, border-color 0.12s;
   }
+  .sp-grad-swatch:active { transform: scale(0.88); }
+  .sp-grad-swatch.on { border-color: var(--gold) !important; }
+
+  /* ── Brush type grid ── */
+  .sp-brush-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 12px; }
+  .sp-brush-btn {
+    height: 44px; border-radius: 10px; background: var(--bg3);
+    border: 1px solid var(--border); color: var(--text2);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+    cursor: pointer; font-family: 'Syne', sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sp-brush-btn.on { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
+  .sp-brush-btn:active { background: var(--bg4); }
+
+  /* ── Full-width primary sheet button ── */
+  .sp-primary-btn {
+    width: 100%; height: 46px; border-radius: 12px;
+    background: var(--gold); color: #111;
+    border: none; font-size: 13px; font-weight: 900;
+    font-family: 'Syne', sans-serif; letter-spacing: 0.3px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    cursor: pointer; margin-top: 8px;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .sp-primary-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+  /* ── More popup (long-press / "More" btn) ── */
+  #mobMorePopup {
+    position: fixed;
+    z-index: 600;
+    background: rgba(13,13,20,0.99);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 14px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+    padding: 6px;
+    min-width: 200px;
+    transform-origin: bottom center;
+    animation: popIn 0.18s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes popIn {
+    from { opacity:0; transform: scale(0.88) translateY(8px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+  .mob-more-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 8px;
+    color: var(--text); font-size: 13px; font-weight: 600;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: background 0.12s;
+    font-family: 'Syne', sans-serif;
+  }
+  .mob-more-item:active { background: rgba(255,255,255,0.06); }
+  .mob-more-item svg { width: 16px; height: 16px; stroke: var(--text2); flex-shrink: 0; }
+  .mob-more-item.danger { color: #f87171; }
+  .mob-more-item.danger svg { stroke: #f87171; }
+  .mob-more-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 3px 6px; }
+
+  /* ── Existing modals as bottom sheets on mobile ── */
+  body.app-mode .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
   body.app-mode .modal-box {
     width: 100% !important; max-width: 100% !important;
-    border-radius: 18px 18px 0 0 !important;
-    margin: 0 !important;
-    max-height: 80dvh;
-    overflow-y: auto;
-    padding: 20px 16px calc(24px + max(env(safe-area-inset-bottom),0px)) !important;
+    border-radius: 20px 20px 0 0 !important; margin: 0 !important;
+    max-height: 82dvh; overflow-y: auto;
+    padding: 20px 16px calc(20px + max(env(safe-area-inset-bottom),0px)) !important;
     animation: mobSheetUp 0.26s cubic-bezier(0.4,0,0.2,1);
   }
   @keyframes mobSheetUp {
     from { transform: translateY(40px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
+    to   { transform: translateY(0); opacity: 1; }
   }
   body.app-mode .modal-box.wide { width: 100% !important; }
-
-  /* Template grid 2-col in modal */
   body.app-mode .template-grid { grid-template-columns: repeat(2,1fr) !important; }
-
-  /* Export modal buttons bigger */
-  body.app-mode #mobileExportModal .btn {
-    height: 48px !important; font-size: 14px !important; justify-content: center;
-  }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   8. SMALL PHONES
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   7. SMALL PHONES (< 375px)
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 374px) {
-  body.app-mode .mob-add-grid { grid-template-columns: repeat(4,1fr) !important; }
-  body.app-mode .ccp-tabs .ccp-tab { padding: 8px 10px; font-size: 9px; }
-  body.app-mode .ccp-fx-grid { grid-template-columns: repeat(2,1fr) !important; }
+  .mob-add-grid { grid-template-columns: repeat(4,1fr) !important; }
+  .ctx-btn { min-width: 46px; font-size: 7.5px; }
+  .sp-btn-grid { grid-template-columns: repeat(2,1fr) !important; }
 }
