@@ -153,12 +153,13 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'font\')', svgFont(), 'Font')}
         ${ctxBtn('mobOpenSheet(\'textStyle\')', svgStyle(), 'Style')}
         ${ctxBtn('mobOpenSheet(\'fontSize\')', svgSize(), 'Size')}
-        ${ctxBtn('mobOpenSheet(\'textColor\')', svgColor(), 'Color')}
-        ${ctxBtn('mobOpenSheet(\'textOutline\')', svgOutline(), 'Outline')}
+        ${ctxBtn('mobOpenSheet(\'textColor\')', svgColor(), 'Fill')}
+        ${ctxBtn('mobOpenSheet(\'textOutline\')', svgStroke(), 'Stroke')}
         ${ctxBtn('mobOpenSheet(\'textShadow\')', svgShadow(), 'Shadow')}
         ${ctxBtn('mobOpenSheet(\'textGlow\')', svgGlow(), 'Glow')}
         ${ctxBtn('mobOpenSheet(\'textBgBox\')', svgBox(), 'BG Box')}
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
+        ${ctxBtn('mobOpenSheet(\'transform\')', svgTransform(), 'Transform')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
       ${permBtns}
@@ -174,19 +175,21 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'effects\')', svgFx(), 'Effects')}
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'blend\')', svgBlend(), 'Blend')}
+        ${ctxBtn('mobOpenSheet(\'transform\')', svgTransform(), 'Transform')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
       ${permBtns}
     `;
     } else if (l.type === 'shape') {
       bar.innerHTML = `
-        ${ctxBtn('mobOpenSheet(\'shapeColor\')', svgColor(), 'Color')}
-        ${ctxBtn('mobOpenSheet(\'shapeBorder\')', svgBorder(), 'Border')}
+        ${ctxBtn('mobOpenSheet(\'shapeColor\')', svgColor(), 'Fill')}
+        ${ctxBtn('mobOpenSheet(\'shapeBorder\')', svgStroke(), 'Stroke')}
         ${ctxBtn('mobOpenSheet(\'shapeRadius\')', svgRadius(), 'Radius')}
         ${ctxBtn('mobOpenSheet(\'shapeGrad\')', svgGrad(), 'Gradient')}
         ${ctxBtn('flipH()', svgFlipH(), 'Flip H')}
         ${ctxBtn('mobOpenSheet(\'effects\')', svgFx(), 'Effects')}
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
+        ${ctxBtn('mobOpenSheet(\'transform\')', svgTransform(), 'Transform')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
       ${permBtns}
@@ -197,6 +200,7 @@ function updateMobCtxBar() {
         ${ctxBtn('flipH()', svgFlipH(), 'Flip H')}
         ${ctxBtn('flipV()', svgFlipV(), 'Flip V')}
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
+        ${ctxBtn('mobOpenSheet(\'transform\')', svgTransform(), 'Transform')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
       ${permBtns}
@@ -207,6 +211,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'brush\')', svgEdit(), 'Brush')}
         ${ctxBtn('clearBrushLayer()', svgTrash(), 'Clear', false, 'danger')}
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
+        ${ctxBtn('mobOpenSheet(\'transform\')', svgTransform(), 'Transform')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
       ${permBtns}
@@ -226,6 +231,8 @@ function ctxSep() { return '<div class="ctx-sep"></div>'; }
 function svgTemplates() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>`; }
 function svgPlus()      { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`; }
 function svgLayers()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`; }
+function svgStroke()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1" fill="none"/></svg>`; }
+function svgTransform() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l4 4-4 4"/><path d="M19 21l-4-4 4-4"/><path d="M3 12h18"/><circle cx="12" cy="12" r="3"/></svg>`; }
 
 // =====================================================================
 // SHEET SYSTEM
@@ -573,15 +580,24 @@ function buildSheetHTML(type) {
       return `
         <div class="sp-label">Glow Size <span id="mobGsV">${l.glowSize||0}</span></div>
         <div class="sp-slider"><label>Size</label><input type="range" min="0" max="80" value="${l.glowSize||0}" oninput="if(selectedIndex>=0){layers[selectedIndex].glowSize=+this.value;document.getElementById('txtGlowSize').value=this.value;document.getElementById('mobGsV').textContent=this.value;updateSelectedText()}"><span class="sp-val">${l.glowSize||0}</span></div>
+        <div class="sp-label">Intensity <span id="mobGiV">${(l.glowIntensity||1).toFixed(1)}</span></div>
+        <div class="sp-slider"><label>Intensity</label><input type="range" min="1" max="5" step="0.1" value="${l.glowIntensity||1}" oninput="if(selectedIndex>=0){layers[selectedIndex].glowIntensity=+this.value;document.getElementById('mobGiV').textContent=(+this.value).toFixed(1);updateSelectedText()}"><span class="sp-val">${(l.glowIntensity||1).toFixed(1)}</span></div>
+        <div class="sp-label">Spread <span id="mobGspV">${l.glowSpread||0}</span></div>
+        <div class="sp-slider"><label>Spread</label><input type="range" min="0" max="40" value="${l.glowSpread||0}" oninput="if(selectedIndex>=0){layers[selectedIndex].glowSpread=+this.value;document.getElementById('mobGspV').textContent=this.value;updateSelectedText()}"><span class="sp-val">${l.glowSpread||0}</span></div>
         <div class="sp-label">Glow Color</div>
         <div class="sp-color-row">
           <label>Color</label>
           <input type="color" value="${l.glowColor||'#ffffff'}" oninput="if(selectedIndex>=0){layers[selectedIndex].glowColor=this.value;document.getElementById('txtGlowColor').value=this.value;updateSelectedText()}">
+          <input type="text" value="${l.glowColor||'#ffffff'}" placeholder="#ffffff" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)&&selectedIndex>=0){layers[selectedIndex].glowColor=this.value;document.getElementById('txtGlowColor').value=this.value;updateSelectedText()}">
         </div>
         <div class="sp-palette">${palHtml('mobSetGlowColor')}</div>
-        <div class="sp-label">Quick Glow</div>
+        <div class="sp-label">Quick Presets</div>
         <div class="sp-pill-row">
-          ${['#ffffff','#00ffff','#c8a96e','#ff00ff','#00ff88','#ff3300'].map(c=>`<button class="sp-pill" style="background:${c}22;border-color:${c}55;color:${c}" onclick="if(selectedIndex>=0){layers[selectedIndex].glowColor='${c}';layers[selectedIndex].glowSize=Math.max(layers[selectedIndex].glowSize||0,20);updateSelectedText();mobRefreshSheet('textGlow')}">●</button>`).join('')}
+          ${[{c:'#ffffff',n:'White'},{c:'#00ffff',n:'Cyan'},{c:'#c8a96e',n:'Gold'},{c:'#ff00ff',n:'Pink'},{c:'#00ff88',n:'Neon'},{c:'#ff3300',n:'Red'}].map(({c,n})=>`<button class="sp-pill" style="background:${c}22;border-color:${c}55;color:${c}" onclick="if(selectedIndex>=0){layers[selectedIndex].glowColor='${c}';layers[selectedIndex].glowSize=Math.max(layers[selectedIndex].glowSize||0,20);layers[selectedIndex].glowIntensity=layers[selectedIndex].glowIntensity||2;updateSelectedText();mobRefreshSheet('textGlow')}">${n}</button>`).join('')}
+        </div>
+        <div class="sp-btn-grid-2" style="margin-top:8px">
+          <button class="sp-action-btn" onclick="if(selectedIndex>=0){layers[selectedIndex].glowSize=0;layers[selectedIndex].glowIntensity=1;layers[selectedIndex].glowSpread=0;updateSelectedText();mobRefreshSheet('textGlow')}">✕ Remove</button>
+          <button class="sp-action-btn" onclick="if(selectedIndex>=0){layers[selectedIndex].glowSize=30;layers[selectedIndex].glowIntensity=3;layers[selectedIndex].glowSpread=10;layers[selectedIndex].glowColor=layers[selectedIndex].glowColor||'#ffffff';updateSelectedText();mobRefreshSheet('textGlow')}">✨ Strong</button>
         </div>
       `;
 
@@ -822,7 +838,30 @@ function buildSheetHTML(type) {
       `;
 
     // ─── BRUSH ─────────────────────────────────────────────────────
-    case 'brush': return `
+    case 'transform':
+      if (!l) return noLayer();
+      return `
+        <div class="sp-label">Rotate <span id="mobTrRotV">${l.rotation||0}°</span></div>
+        <div class="sp-slider"><label>Rotate</label><input type="range" min="-180" max="180" value="${l.rotation||0}" oninput="if(selectedIndex>=0){layers[selectedIndex].rotation=+this.value;document.getElementById('fxRotation').value=this.value;document.getElementById('mobTrRotV').textContent=this.value+'°';redraw()}"><span class="sp-val">${l.rotation||0}°</span></div>
+        <div class="sp-pill-row">
+          ${[-90,-45,-15,0,15,45,90].map(v=>`<button class="sp-pill" onclick="if(selectedIndex>=0){layers[selectedIndex].rotation=${v};document.getElementById('fxRotation').value=${v};redraw();mobRefreshSheet('transform')}">${v}°</button>`).join('')}
+        </div>
+        <div class="sp-label">Scale <span id="mobTrScV">${Math.round((l.scaleX||1)*100)}%</span></div>
+        <div class="sp-slider"><label>Scale</label><input type="range" min="10" max="300" value="${Math.round((l.scaleX||1)*100)}" oninput="if(selectedIndex>=0){const s=+this.value/100;layers[selectedIndex].scaleX=s;layers[selectedIndex].scaleY=s;document.getElementById('mobTrScV').textContent=this.value+'%';redraw()}"><span class="sp-val">${Math.round((l.scaleX||1)*100)}%</span></div>
+        <div class="sp-pill-row">
+          ${[50,75,100,125,150,200].map(v=>`<button class="sp-pill" onclick="if(selectedIndex>=0){const s=${v}/100;layers[selectedIndex].scaleX=s;layers[selectedIndex].scaleY=s;redraw();mobRefreshSheet('transform')}">${v}%</button>`).join('')}
+        </div>
+        <div class="sp-label">Opacity <span id="mobTrOpV">${l.opacity??100}%</span></div>
+        <div class="sp-slider"><label>Opacity</label><input type="range" min="0" max="100" value="${l.opacity??100}" oninput="if(selectedIndex>=0){layers[selectedIndex].opacity=+this.value;document.getElementById('fxOpacity').value=this.value;document.getElementById('mobTrOpV').textContent=this.value+'%';redraw()}"><span class="sp-val">${l.opacity??100}%</span></div>
+        <div class="sp-btn-grid-2" style="margin-top:6px">
+          <button class="sp-action-btn" onclick="if(selectedIndex>=0){layers[selectedIndex].rotation=0;redraw();mobRefreshSheet('transform')}">↺ Reset Rotate</button>
+          <button class="sp-action-btn" onclick="if(selectedIndex>=0){layers[selectedIndex].scaleX=1;layers[selectedIndex].scaleY=1;redraw();mobRefreshSheet('transform')}">↩ Reset Scale</button>
+          <button class="sp-action-btn" onclick="flipH()">↔ Flip H</button>
+          <button class="sp-action-btn" onclick="flipV()">↕ Flip V</button>
+        </div>
+      `;
+
+        case 'brush': return `
       <div class="sp-label">Brush Type</div>
       <div class="sp-brush-grid">
         ${BRUSH_TYPES.map(b=>`<button class="sp-brush-btn${brushSettings.type===b.id?' on':''}" onclick="brushSettings.type='${b.id}';document.querySelectorAll('.sp-brush-btn').forEach(x=>x.classList.remove('on'));this.classList.add('on')">${b.label}</button>`).join('')}
