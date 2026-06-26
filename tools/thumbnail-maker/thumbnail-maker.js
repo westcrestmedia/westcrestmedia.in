@@ -1266,6 +1266,26 @@ function onMouseDown(e){
     return;
   }
 
+  // Plain click (no Shift/Ctrl) on a layer that's ALREADY part of the current
+  // multi-selection: keep the whole selection intact and start dragging it together.
+  // Without this, a normal click-drag on one of several selected shapes would
+  // immediately collapse the selection down to just that one shape before the
+  // drag even begins — which is the bug where multi-selected layers wouldn't move together.
+  if(found>=0 && !multiKey && (found===selectedIndex || selectedIndices.includes(found))){
+    if(found!==selectedIndex){
+      // Dragging by a secondary layer: promote it to primary so dragOffX/Y track the right shape,
+      // demote the old primary into the secondary list. The set of selected layers stays the same.
+      selectedIndices=selectedIndices.filter(i=>i!==found);
+      selectedIndices.push(selectedIndex);
+      selectedIndex=found;
+    }
+    isDragging=true;saveHistory();
+    const fl=layers[selectedIndex];
+    dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
+    updateRightPanel();updateFxPanel();updateLayerList();redraw();
+    return;
+  }
+
   // Plain click: if the clicked layer belongs to a group, select the whole group
   if(found>=0 && layers[found].groupId!=null && !multiKey){
     const gid=layers[found].groupId;
