@@ -84,7 +84,7 @@
   }
   body.app-mode #appExportTopBtn:active { opacity: 0.85; }
 
-  /* Main area — fills between top bar and ctx bar (no bottom nav) */
+  /* Main area — fills between top bar and ctx bar + tab bar */
   body.app-mode .main {
     height: calc(100dvh - 48px - 54px) !important;
     flex-direction: column !important;

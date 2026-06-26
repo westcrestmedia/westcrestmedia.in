@@ -44,7 +44,7 @@ window.addEventListener('resize', () => {
     const lp = document.getElementById('leftPanelEl');
     if (lp) lp.classList.add('drawer-open');
   } else {
-    if (!document.getElementById('mobTabBar')) buildMobileUI();
+    if (!document.getElementById('mobCtxBar')) buildMobileUI();
   }
   setTimeout(fitCanvasToMobile, 60);
 });
@@ -53,36 +53,9 @@ window.addEventListener('resize', () => {
 // BUILD THE ENTIRE MOBILE UI (called once)
 // =====================================================================
 function buildMobileUI() {
-  if (document.getElementById('mobTabBar')) return; // already built
+  if (document.getElementById('mobCtxBar')) return; // already built
 
-  // ── 1. Bottom Tab Bar ──
-  const tabBar = document.createElement('div');
-  tabBar.id = 'mobTabBar';
-  tabBar.innerHTML = `
-    <button class="mob-tab" id="mobTabTemplates" onclick="mobOpenSheet('templates')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-      <span>Templates</span>
-    </button>
-    <button class="mob-tab" id="mobTabLayers" onclick="mobOpenSheet('layers')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-      <span>Layers</span>
-    </button>
-    <button class="mob-tab" id="mobTabAdd" onclick="mobOpenSheet('add')">
-      <span class="mob-tab-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </span>
-      <span>Add</span>
-    </button>
-    <button class="mob-tab" id="mobTabBg" onclick="mobOpenSheet('bg')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
-      <span>Background</span>
-    </button>
-    <button class="mob-tab" id="mobTabExport" onclick="mobOpenSheet('export')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>Export</span>
-    </button>
-  `;
-  document.body.appendChild(tabBar);
+  // ── Tab bar removed — 3 permanent buttons (Templates/Add/Layers) now live in ctx slider ──
 
   // ── 2. Contextual Action Bar ──
   const ctxBar = document.createElement('div');
@@ -134,8 +107,8 @@ function updateMobCtxBar() {
 
   bar.innerHTML = '';
 
-  // Always-present 3 buttons at the end of every state
-  const permBtns = () => `
+  // 3 permanent buttons always at the end of every state
+  const permBtns = `
     ${ctxSep()}
     ${ctxBtn("openModal('templatesModal')", svgTemplates(), 'Templates')}
     ${ctxBtn("openMobileAddSheet()", svgPlus(), 'Add')}
@@ -158,7 +131,7 @@ function updateMobCtxBar() {
       ${ctxBtn('mobileToggleDraw()', svgBrush(), 'Draw')}
       ${ctxSep()}
       ${ctxBtn('mobOpenSheet(\'export\')', svgExport(), 'Export', false, 'gold')}
-      ${permBtns()}
+      ${permBtns}
     `;
   } else {
     const l = layers[selectedIndex];
@@ -188,7 +161,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      ${permBtns()}
+      ${permBtns}
     `;
     } else if (l.type === 'image') {
       bar.innerHTML = `
@@ -203,7 +176,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'blend\')', svgBlend(), 'Blend')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      ${permBtns()}
+      ${permBtns}
     `;
     } else if (l.type === 'shape') {
       bar.innerHTML = `
@@ -216,7 +189,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      ${permBtns()}
+      ${permBtns}
     `;
     } else if (l.type === 'sticker') {
       bar.innerHTML = `
@@ -226,7 +199,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      ${permBtns()}
+      ${permBtns}
     `;
     } else if (l.type === 'draw') {
       bar.innerHTML = `
@@ -236,7 +209,7 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      ${permBtns()}
+      ${permBtns}
     `;
     }
   }
