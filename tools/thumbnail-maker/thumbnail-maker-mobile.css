@@ -293,9 +293,9 @@
 
   .mob-sheet-backdrop {
     position: fixed; inset: 0; z-index: 490;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s;
@@ -315,7 +315,7 @@
     transform: translateY(200%);
     transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
     pointer-events: none;
-    max-height: 80dvh;
+    max-height: 45dvh;
     display: flex;
     flex-direction: column;
   }
