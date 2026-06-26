@@ -134,6 +134,14 @@ function updateMobCtxBar() {
 
   bar.innerHTML = '';
 
+  // Always-present 3 buttons at the end of every state
+  const permBtns = () => `
+    ${ctxSep()}
+    ${ctxBtn("openModal('templatesModal')", svgTemplates(), 'Templates')}
+    ${ctxBtn("openMobileAddSheet()", svgPlus(), 'Add')}
+    ${ctxBtn("switchTabByName('layers');toggleAppSheet('left')", svgLayers(), 'Layers')}
+  `;
+
   if (selectedIndex < 0) {
     // ── Nothing selected — add & utility actions ──
     bar.innerHTML = `
@@ -150,6 +158,7 @@ function updateMobCtxBar() {
       ${ctxBtn('mobileToggleDraw()', svgBrush(), 'Draw')}
       ${ctxSep()}
       ${ctxBtn('mobOpenSheet(\'export\')', svgExport(), 'Export', false, 'gold')}
+      ${permBtns()}
     `;
   } else {
     const l = layers[selectedIndex];
@@ -179,7 +188,8 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      `;
+      ${permBtns()}
+    `;
     } else if (l.type === 'image') {
       bar.innerHTML = `
         ${ctxBtn('mobOpenSheet(\'imgFilters\')', svgFilter(), 'Filter')}
@@ -193,7 +203,8 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'blend\')', svgBlend(), 'Blend')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      `;
+      ${permBtns()}
+    `;
     } else if (l.type === 'shape') {
       bar.innerHTML = `
         ${ctxBtn('mobOpenSheet(\'shapeColor\')', svgColor(), 'Color')}
@@ -205,7 +216,8 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      `;
+      ${permBtns()}
+    `;
     } else if (l.type === 'sticker') {
       bar.innerHTML = `
         ${ctxBtn('mobOpenSheet(\'effects\')', svgFx(), 'Effects')}
@@ -214,7 +226,8 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      `;
+      ${permBtns()}
+    `;
     } else if (l.type === 'draw') {
       bar.innerHTML = `
         ${ctxBtn('mobileToggleDraw()', svgBrush(), 'Draw Mode', false, drawingMode ? 'active' : '')}
@@ -223,7 +236,8 @@ function updateMobCtxBar() {
         ${ctxBtn('mobOpenSheet(\'opacity\')', svgOpacity(), 'Opacity')}
         ${ctxBtn('mobOpenSheet(\'position\')', svgPos(), 'Position')}
         ${commonEnd}
-      `;
+      ${permBtns()}
+    `;
     }
   }
 }
@@ -236,6 +250,9 @@ function ctxBtn(onclick, icon, label, isEmoji = false, extraClass = '') {
   return `<button class="ctx-btn ${extraClass}" onclick="${onclick}">${iconHtml}<span>${label}</span></button>`;
 }
 function ctxSep() { return '<div class="ctx-sep"></div>'; }
+function svgTemplates() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>`; }
+function svgPlus()      { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`; }
+function svgLayers()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`; }
 
 // =====================================================================
 // SHEET SYSTEM
