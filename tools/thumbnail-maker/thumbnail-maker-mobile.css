@@ -84,9 +84,9 @@
   }
   body.app-mode #appExportTopBtn:active { opacity: 0.85; }
 
-  /* Main area — fills between top bar and ctx bar + tab bar */
+  /* Main area — fills between top bar and ctx bar (no bottom nav) */
   body.app-mode .main {
-    height: calc(100dvh - 48px - 54px - 58px) !important;
+    height: calc(100dvh - 48px - 54px) !important;
     flex-direction: column !important;
     overflow: hidden !important;
     transition: height 0.22s cubic-bezier(0.4,0,0.2,1);
@@ -94,7 +94,7 @@
 
   /* When ctx bar is tall (sheet open), canvas shrinks more */
   body.app-mode.ctx-sheet-open .main {
-    height: calc(100dvh - 48px - 54px - 58px - var(--ctx-sheet-h, 0px)) !important;
+    height: calc(100dvh - 48px - 54px - var(--ctx-sheet-h, 0px)) !important;
   }
 
   /* Canvas area fills main */
@@ -124,7 +124,7 @@
 
   /* Toast */
   body.app-mode .toast {
-    bottom: calc(58px + 54px + max(env(safe-area-inset-bottom),0px) + 8px) !important;
+    bottom: calc(54px + max(env(safe-area-inset-bottom),0px) + 8px) !important;
     z-index: 9999;
   }
 }
@@ -137,7 +137,7 @@
 
   #mobCtxBar {
     position: fixed;
-    bottom: calc(58px + max(env(safe-area-inset-bottom),0px));
+    bottom: max(env(safe-area-inset-bottom), 0px);
     left: 0; right: 0;
     height: 54px;
     background: rgba(14,14,20,0.98);
@@ -304,7 +304,7 @@
 
   .mob-sheet {
     position: fixed;
-    bottom: calc(58px + max(env(safe-area-inset-bottom),0px));
+    bottom: calc(54px + max(env(safe-area-inset-bottom),0px));
     left: 0; right: 0;
     z-index: 500;
     background: rgba(13,13,20,0.99);

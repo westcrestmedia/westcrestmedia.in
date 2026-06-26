@@ -139,7 +139,7 @@ function updateMobCtxBar() {
     ${ctxSep()}
     ${ctxBtn("openModal('templatesModal')", svgTemplates(), 'Templates')}
     ${ctxBtn("openMobileAddSheet()", svgPlus(), 'Add')}
-    ${ctxBtn("switchTabByName('layers');toggleAppSheet('left')", svgLayers(), 'Layers')}
+    ${ctxBtn("mobOpenSheet('layers')", svgLayers(), 'Layers')}
   `;
 
   if (selectedIndex < 0) {
