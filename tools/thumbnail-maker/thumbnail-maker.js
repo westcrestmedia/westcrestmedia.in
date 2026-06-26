@@ -16,6 +16,8 @@ let aspectLock = {};
 let selectedIndices = [];      // extra layers selected via Shift/Ctrl+Click, in addition to selectedIndex
 let nextGroupId = 1;           // incrementing id assigned to each new group
 let gapGuides = [];            // active gap-measurement guides shown while dragging
+let alignGuides = [];          // active object-to-object alignment guides shown while dragging
+let isMarqueeSelecting = false, marqueeStart = {x:0,y:0}, marqueeEnd = {x:0,y:0};
 
 // ===================== BRUSH STATE =====================
 let drawingMode = false, isPainting = false, lastPaintPos = null;
@@ -455,6 +457,9 @@ function redraw() {
   // Gap measurement guides (Canva-style spacing readout while dragging a shape near another)
   if(isDragging) drawGapGuides();
 
+  // Object-to-object alignment guides (edges/centers lining up with another shape)
+  if(isDragging) drawAlignGuides();
+
   // Group bounding box outline when a group (or an active multi-selection) is selected
   if(selectedIndices.length){
     const allIdx = selectedIndex>=0 ? [selectedIndex,...selectedIndices] : [...selectedIndices];
@@ -462,6 +467,19 @@ function redraw() {
     ctx.save();
     ctx.strokeStyle='#7dd3fc';ctx.lineWidth=1.5;ctx.setLineDash([7,4]);
     ctx.strokeRect(gb.x1-5,gb.y1-5,(gb.x2-gb.x1)+10,(gb.y2-gb.y1)+10);
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  // Marquee (rubber-band) selection box while dragging on empty canvas
+  if(isMarqueeSelecting){
+    const mx1=Math.min(marqueeStart.x,marqueeEnd.x), my1=Math.min(marqueeStart.y,marqueeEnd.y);
+    const mw=Math.abs(marqueeEnd.x-marqueeStart.x), mh=Math.abs(marqueeEnd.y-marqueeStart.y);
+    ctx.save();
+    ctx.fillStyle='rgba(125,211,252,0.10)';
+    ctx.strokeStyle='#7dd3fc';ctx.lineWidth=1;ctx.setLineDash([5,3]);
+    ctx.fillRect(mx1,my1,mw,mh);
+    ctx.strokeRect(mx1,my1,mw,mh);
     ctx.setLineDash([]);
     ctx.restore();
   }
@@ -1002,6 +1020,100 @@ function getGroupBBox(indices){
   };
 }
 
+// ===================== OBJECT-TO-OBJECT ALIGNMENT GUIDES =====================
+// While dragging, checks the moving layer's edges (left/right/top/bottom) and
+// centers (h/v) against every other layer's matching edges/centers. When close
+// enough, the layer snaps into exact alignment and a full-length guide line is
+// drawn through every shape that shares that line — so it's obvious at a glance
+// that "yes, these are all lined up", the same way Canva's smart guides work.
+const ALIGN_SNAP_RANGE = 6;
+function computeAlignGuides(activeIdx){
+  alignGuides=[];
+  const a=layers[activeIdx];
+  if(!a) return;
+  const ab=getRotatedBBox(a);
+  const aLines = {
+    x: [ {v:ab.x1,kind:'left'}, {v:(ab.x1+ab.x2)/2,kind:'centerX'}, {v:ab.x2,kind:'right'} ],
+    y: [ {v:ab.y1,kind:'top'}, {v:(ab.y1+ab.y2)/2,kind:'centerY'}, {v:ab.y2,kind:'bottom'} ]
+  };
+  let bestX=null, bestY=null;
+  layers.forEach((l,i)=>{
+    if(i===activeIdx||!l.visible) return;
+    const bb=getRotatedBBox(l);
+    const bLinesX=[bb.x1,(bb.x1+bb.x2)/2,bb.x2];
+    const bLinesY=[bb.y1,(bb.y1+bb.y2)/2,bb.y2];
+    aLines.x.forEach(al=>{
+      bLinesX.forEach(bv=>{
+        const d=Math.abs(al.v-bv);
+        if(d<ALIGN_SNAP_RANGE && (!bestX||d<bestX.dist)){
+          bestX={dist:d, pos:bv, aKind:al.kind, otherIdx:i};
+        }
+      });
+    });
+    aLines.y.forEach(al=>{
+      bLinesY.forEach(bv=>{
+        const d=Math.abs(al.v-bv);
+        if(d<ALIGN_SNAP_RANGE && (!bestY||d<bestY.dist)){
+          bestY={dist:d, pos:bv, aKind:al.kind, otherIdx:i};
+        }
+      });
+    });
+  });
+
+  // Snap the active layer (and any group members dragging with it) into place,
+  // then collect every layer whose matching line sits on that same position —
+  // that full set is what the guide line will be drawn through.
+  if(bestX){
+    const delta = bestX.pos - (bestX.aKind==='left'?ab.x1:bestX.aKind==='right'?ab.x2:(ab.x1+ab.x2)/2);
+    a.x = Math.round(a.x + delta);
+    if(selectedIndices.length) selectedIndices.forEach(idx=>{ if(layers[idx]) layers[idx].x = Math.round(layers[idx].x + delta); });
+    const onLine=collectLayersOnLine('x', bestX.pos);
+    alignGuides.push({axis:'x', pos:bestX.pos, members:onLine});
+  }
+  if(bestY){
+    const delta = bestY.pos - (bestY.aKind==='top'?ab.y1:bestY.aKind==='bottom'?ab.y2:(ab.y1+ab.y2)/2);
+    a.y = Math.round(a.y + delta);
+    if(selectedIndices.length) selectedIndices.forEach(idx=>{ if(layers[idx]) layers[idx].y = Math.round(layers[idx].y + delta); });
+    const onLine=collectLayersOnLine('y', bestY.pos);
+    alignGuides.push({axis:'y', pos:bestY.pos, members:onLine});
+  }
+}
+
+// Finds every visible layer whose left/center/right (axis 'x') or top/center/bottom
+// (axis 'y') sits within a hair of the given position, so the guide line can span
+// exactly the shapes that are actually aligned.
+function collectLayersOnLine(axis,pos){
+  const idxs=[];
+  layers.forEach((l,i)=>{
+    if(!l.visible) return;
+    const bb=getRotatedBBox(l);
+    const vals = axis==='x' ? [bb.x1,(bb.x1+bb.x2)/2,bb.x2] : [bb.y1,(bb.y1+bb.y2)/2,bb.y2];
+    if(vals.some(v=>Math.abs(v-pos)<1)) idxs.push(i);
+  });
+  return idxs;
+}
+
+function drawAlignGuides(){
+  if(!alignGuides.length) return;
+  ctx.save();
+  ctx.strokeStyle='#ff5fa8'; // magenta — distinct from the gold selection / purple snap colors
+  ctx.lineWidth=1.25;
+  alignGuides.forEach(g=>{
+    if(!g.members.length) return;
+    const boxes=g.members.map(i=>getRotatedBBox(layers[i]));
+    if(g.axis==='x'){
+      const yTop=Math.min(...boxes.map(b=>b.y1))-16;
+      const yBot=Math.max(...boxes.map(b=>b.y2))+16;
+      ctx.beginPath();ctx.moveTo(g.pos,Math.max(0,yTop));ctx.lineTo(g.pos,Math.min(canvasH,yBot));ctx.stroke();
+    } else {
+      const xLeft=Math.min(...boxes.map(b=>b.x1))-16;
+      const xRight=Math.max(...boxes.map(b=>b.x2))+16;
+      ctx.beginPath();ctx.moveTo(Math.max(0,xLeft),g.pos);ctx.lineTo(Math.min(canvasW,xRight),g.pos);ctx.stroke();
+    }
+  });
+  ctx.restore();
+}
+
 function rotatePoint(px,py,cx,cy,angleDeg){
   if(!angleDeg) return {x:px,y:py};
   const rad=angleDeg*Math.PI/180;
@@ -1119,6 +1231,24 @@ function onMouseDown(e){
   }
 
   const multiKey = e.shiftKey || e.ctrlKey || e.metaKey;
+  const altKey = e.altKey;
+
+  // Alt+drag on a layer: duplicate it in place, then drag the NEW copy.
+  // The original stays exactly where it was — Canva/Figma-style "stamp and drag".
+  if(altKey && found>=0 && !multiKey){
+    saveHistory();
+    const src=layers[found];
+    const copy={...src,img:src.img,name:(src.name||'Layer')+' Copy'};
+    if(src.type==='draw'&&src.drawCanvas) copy.drawCanvas=cloneDrawCanvas(src.drawCanvas);
+    layers.push(copy);
+    const newIdx=layers.length-1;
+    selectedIndex=newIdx;selectedIndices=[];
+    isDragging=true;
+    dragOffX=x-(copy.x+copy.w/2);dragOffY=y-(copy.y+copy.h/2);
+    updateRightPanel();updateFxPanel();updateLayerList();redraw();
+    showToast('Duplicated — drag to place');
+    return;
+  }
 
   if(multiKey && found>=0){
     // Shift/Ctrl+Click: toggle this layer in/out of the multi-selection (Canva-style)
@@ -1159,14 +1289,24 @@ function onMouseDown(e){
     const fl=layers[found];
     dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
     updateRightPanel();updateFxPanel();
+  } else {
+    // Clicked empty space: start a marquee (rubber-band) selection box.
+    // Dragging this box selects every shape it overlaps — release to commit.
+    isMarqueeSelecting=true;
+    marqueeStart={x,y};marqueeEnd={x,y};
+    updateRightPanel();
   }
-  else updateRightPanel();
   updateLayerList();redraw();
 }
 
 function onMouseMove(e){
   const {x,y}=canvasCoords(e);
 
+  if(isMarqueeSelecting){
+    marqueeEnd={x,y};
+    redraw();
+    return;
+  }
   if(isPainting){
     paintAt(x,y,false);
     lastPaintPos={x,y};
@@ -1191,6 +1331,7 @@ function onMouseMove(e){
       });
     }
     computeGapGuides(selectedIndex);
+    computeAlignGuides(selectedIndex);
     updateRightPanel();redraw();
   } else if(isResizing&&selectedIndex>=0){
     const l=layers[selectedIndex],h=resizeHandle;
@@ -1241,6 +1382,10 @@ function onMouseMove(e){
     redraw();
   }
   if(drawingMode){canvas.style.cursor='crosshair';return;}
+  if(e.altKey && !isDragging && !isResizing && !isRotating){
+    canvas.style.cursor='copy';
+    return;
+  }
   if(selectedIndex>=0&&!isDragging&&!isResizing&&!isRotating){
     const l=layers[selectedIndex];
     const rot=l.rotation||0;
@@ -1289,14 +1434,40 @@ function _diagCursorForAngle(angle){
 }
 let _hoverRotateCorner=null, _hoverRotateX=0, _hoverRotateY=0;
 function onMouseUp(){
+  if(isMarqueeSelecting){
+    isMarqueeSelecting=false;
+    commitMarqueeSelection();
+    redraw();
+    return;
+  }
   if(selectedIndex>=0){
     layers[selectedIndex].snappedX = false;
     layers[selectedIndex].snappedY = false;
   }
   isDragging=false;isResizing=false;isRotating=false;aspectLock={};isPainting=false;lastPaintPos=null;
-  gapGuides=[];
+  gapGuides=[];alignGuides=[];
   canvas.style.cursor = drawingMode ? 'crosshair' : 'default';
   redraw();
+}
+
+// Selects every visible, unlocked layer whose bounding box overlaps the marquee
+// rectangle the user just dragged. A tiny drag (essentially a click) selects nothing,
+// so clicking empty space to deselect still works as expected.
+function commitMarqueeSelection(){
+  const mx1=Math.min(marqueeStart.x,marqueeEnd.x), mx2=Math.max(marqueeStart.x,marqueeEnd.x);
+  const my1=Math.min(marqueeStart.y,marqueeEnd.y), my2=Math.max(marqueeStart.y,marqueeEnd.y);
+  if(mx2-mx1<4 && my2-my1<4){ selectedIndex=-1;selectedIndices=[];updateLayerList();updateRightPanel();return; }
+  const hits=[];
+  layers.forEach((l,i)=>{
+    if(!l.visible||l.locked) return;
+    const bb=getRotatedBBox(l);
+    const overlaps = bb.x1<mx2 && bb.x2>mx1 && bb.y1<my2 && bb.y2>my1;
+    if(overlaps) hits.push(i);
+  });
+  if(!hits.length){ selectedIndex=-1;selectedIndices=[]; }
+  else { selectedIndex=hits[0]; selectedIndices=hits.slice(1); }
+  updateLayerList();updateRightPanel();
+  if(hits.length>1) showToast(hits.length+' layers selected');
 }
 function onDblClick(e){if(selectedIndex>=0&&layers[selectedIndex].type==='text'){switchTabByName('text');document.getElementById('txtContent').value=layers[selectedIndex].text;document.getElementById('txtContent').focus();}}
 // Right-click on the canvas: select whatever is under the cursor (respecting groups
