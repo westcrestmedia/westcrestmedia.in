@@ -27,10 +27,16 @@ function toggleAppSheet(which){
   btnProps.classList.remove('active');
   if(!isOpen){
     if(which==='right' && window.innerWidth<=768){
-      // On mobile, Edit button opens CCP panel instead of right sheet
+      // Edit button → open CCP panel (contextual properties)
+      // Close any open sheets first
+      backdrop.classList.remove('show');
       if(typeof ccpRefresh==='function') ccpRefresh();
-      (which==='left'?btnTools:btnProps).classList.add('active');
+      btnProps.classList.add('active');
       return;
+    }
+    // Left sheet (Tools) — close CCP panel if open
+    if(which==='left'){
+      if(typeof ccpClose==='function') ccpClose();
     }
     target.classList.add('sheet-open');
     backdrop.classList.add('show');
@@ -45,6 +51,8 @@ function closeAppSheets(){
   document.getElementById('appSheetBackdrop').classList.remove('show');
   document.getElementById('appNavTools').classList.remove('active');
   document.getElementById('appNavProps').classList.remove('active');
+  // Also close CCP panel
+  if(typeof ccpClose==='function') ccpClose();
 }
 
 // ===================== ACCORDION =====================
@@ -65,6 +73,8 @@ function openMobileAddSheet(){
   const backdrop = document.getElementById('mobAddSheetBackdrop');
   if(!sheet || !backdrop) return;
   closeAppSheets();
+  // CCP band karo jab Add sheet khule
+  if(typeof ccpClose==='function') ccpClose();
   sheet.classList.add('show');
   backdrop.classList.add('show');
 }
@@ -74,6 +84,8 @@ function closeMobAddSheet(){
   const backdrop = document.getElementById('mobAddSheetBackdrop');
   if(sheet) sheet.classList.remove('show');
   if(backdrop) backdrop.classList.remove('show');
+  // Canvas refit after sheet closes
+  setTimeout(fitCanvasToMobile, 50);
 }
 
 function initAppMode(){
@@ -343,8 +355,10 @@ function fitCanvasToMobile(force){
   }
   const area = document.getElementById('canvasArea');
   const wrapper = document.getElementById('canvasWrapper');
+  // Use actual area dimensions — CSS already handles height via .main / body.ccp-open
   const areaW = area.clientWidth - 16;
   const areaH = area.clientHeight - 16;
+  if(areaW <= 0 || areaH <= 0) return; // not ready yet
   const scaleX = areaW / canvasW;
   const scaleY = areaH / canvasH;
   scale = Math.min(scaleX, scaleY, 1);
@@ -399,7 +413,8 @@ window.addEventListener('load',()=>{
     const p = document.getElementById('canvaCtxPanel');
     if(p) p.classList.remove('visible');
     document.body.classList.remove('ccp-open');
-    setTimeout(fitCanvasToMobile, 50);
+    // Refit canvas AFTER transition completes (280ms)
+    setTimeout(fitCanvasToMobile, 300);
   };
 
   function ccpShow(){ 
@@ -407,7 +422,8 @@ window.addEventListener('load',()=>{
     if(p && window.innerWidth <= 768){
       p.classList.add('visible');
       document.body.classList.add('ccp-open');
-      setTimeout(fitCanvasToMobile, 50);
+      // Refit canvas after panel slides in so canvas area recalculates
+      setTimeout(fitCanvasToMobile, 300);
     }
   }
 
@@ -787,6 +803,7 @@ window.addEventListener('load',()=>{
     tabsEl.innerHTML = tabs.map((t,i)=>`<button class="ccp-tab${i===0?' active':''}" onclick="ccpSwitchTab(${i})">${t.label}</button>`).join('');
     panesEl.innerHTML = tabs.map((t,i)=>`<div class="ccp-pane${i===0?' active':''}">${t.html}</div>`).join('');
 
+    // Always show panel when layer selected — Canva style
     ccpShow();
   }
 
@@ -803,29 +820,34 @@ window.addEventListener('load',()=>{
   const _origUpdate = window.updateMobileQuickActions;
   window.updateMobileQuickActions = function(){
     if(typeof _origUpdate==='function') _origUpdate.apply(this, arguments);
-    // CCP panel sirf tab refresh hoga jab already visible ho — auto open nahi hoga
     if(window.innerWidth <= 768){
-      const p = document.getElementById('canvaCtxPanel');
-      if(p && p.classList.contains('visible')) ccpRefresh();
+      if(selectedIndex >= 0){
+        // Layer selected — refresh & show CCP panel (Canva style: auto-open)
+        ccpRefresh();
+      } else {
+        // Nothing selected — close panel
+        ccpClose();
+      }
     }
   };
 
-  // ── Also hook canvas click (deselect → show BG panel) ──
-  // We wait for load then patch mousedown/touchend
+  // ── Hook canvas click / redraw to auto-refresh panel ──
   window.addEventListener('load', ()=>{
     wireLiveVals();
     buildPanel();
-    // Patch: after any redraw that changes selection, refresh panel
     const _origRedraw = window.redraw;
     if(typeof _origRedraw==='function'){
       let _lastIdx = -99;
       window.redraw = function(){
         _origRedraw.apply(this, arguments);
         if(window.innerWidth<=768 && selectedIndex!==_lastIdx){
-          _lastIdx=selectedIndex;
-          // sirf refresh karo agar panel already khula ho
-          const p = document.getElementById('canvaCtxPanel');
-          if(p && p.classList.contains('visible')) ccpRefresh();
+          _lastIdx = selectedIndex;
+          if(selectedIndex >= 0){
+            ccpRefresh();
+          } else {
+            // Deselected — close panel so full canvas is visible
+            ccpClose();
+          }
         }
       };
     }

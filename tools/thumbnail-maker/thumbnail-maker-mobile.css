@@ -138,6 +138,7 @@
     border-radius: 18px 18px 0 0 !important;
     max-height: 72vh !important;
     padding-bottom: 12px;
+    z-index: 400 !important; /* above CCP panel (360) */
   }
 }
 
@@ -228,12 +229,15 @@
 /* ═══════════════════════════════════════════════════════════
    6. CANVA-STYLE CONTEXTUAL PROPERTY PANEL
       Shows when object is selected. Tabbed: Style|Transform|FX|Arrange
+      CRITICAL: Uses visibility+pointer-events (not display:none) so
+      CSS transition works. Canvas shrinks via body.ccp-open rule.
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
 
-  /* The panel sits above quick-action bar */
+  /* The panel sits above bottom nav — always in DOM, slides up/down */
   #canvaCtxPanel {
-    display: none;
+    display: flex;                              /* always flex — transition works */
+    flex-direction: column;
     position: fixed;
     bottom: calc(62px + max(env(safe-area-inset-bottom),0px));
     left: 0; right: 0;
@@ -241,14 +245,30 @@
     background: rgba(10,10,16,0.98);
     border-top: 1px solid rgba(212,175,55,0.2);
     box-shadow: 0 -6px 28px rgba(0,0,0,0.55);
-    flex-direction: column;
-    max-height: 68vh;
-    transform: translateY(100%);
-    transition: transform 0.26s cubic-bezier(0.4,0,0.2,1);
+    max-height: 52vh;                           /* never more than 52vh so canvas stays visible */
+    height: 52vh;
+    transform: translateY(110%);               /* hidden below screen */
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1),
+                visibility 0s linear 0.28s;
+    visibility: hidden;
+    pointer-events: none;
   }
   #canvaCtxPanel.visible {
-    display: flex;
     transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1),
+                visibility 0s linear 0s;
+  }
+
+  /* ── When CCP panel is open, shrink canvas area to make room ── */
+  /* Panel is 52vh, bottom nav 62px — canvas gets remaining space */
+  body.ccp-open.app-mode .main {
+    height: calc(100dvh - 52px - 44px - 62px - 52vh) !important;
+  }
+  /* Ensure canvas-area fills the shrunk .main */
+  body.ccp-open.app-mode .canvas-area {
+    height: 100% !important;
   }
 
   /* Drag handle + close row */
