@@ -12,6 +12,11 @@ let isRotating = false, rotateStartAngle = 0, rotateStartRotation = 0;
 let canvasW = 1280, canvasH = 720;
 let aspectLock = {};
 
+// ===================== MULTI-SELECT / GROUP STATE =====================
+let selectedIndices = [];      // extra layers selected via Shift/Ctrl+Click, in addition to selectedIndex
+let nextGroupId = 1;           // incrementing id assigned to each new group
+let gapGuides = [];            // active gap-measurement guides shown while dragging
+
 // ===================== BRUSH STATE =====================
 let drawingMode = false, isPainting = false, lastPaintPos = null;
 let brushSettings = {type:'pencil', color:'#ffffff', size:20, opacity:100};
@@ -410,6 +415,7 @@ function redraw() {
     }
 
     if(i===selectedIndex) drawSelection(layer);
+    else if(selectedIndices.includes(i)) drawMultiSelectHighlight(layer);
   });
   // Canvas border
   const cbw = parseInt(document.getElementById('canvasBorderWidth').value)||0;
@@ -444,6 +450,20 @@ function redraw() {
       }
       ctx.restore();
     }
+  }
+
+  // Gap measurement guides (Canva-style spacing readout while dragging a shape near another)
+  if(isDragging) drawGapGuides();
+
+  // Group bounding box outline when a group (or an active multi-selection) is selected
+  if(selectedIndices.length){
+    const allIdx = selectedIndex>=0 ? [selectedIndex,...selectedIndices] : [...selectedIndices];
+    const gb = getGroupBBox(allIdx);
+    ctx.save();
+    ctx.strokeStyle='#7dd3fc';ctx.lineWidth=1.5;ctx.setLineDash([7,4]);
+    ctx.strokeRect(gb.x1-5,gb.y1-5,(gb.x2-gb.x1)+10,(gb.y2-gb.y1)+10);
+    ctx.setLineDash([]);
+    ctx.restore();
   }
 }
 
@@ -828,6 +848,158 @@ function drawSelection(layer) {
     }
   }
   ctx.restore();
+
+  // Live rotation degree badge (shown for ANY selected layer with non-zero rotation,
+  // and always while actively rotating). Drawn unrotated so the text stays upright.
+  if(isRotating || (layer.rotation && layer.rotation!==0)){
+    drawRotationBadge(layer);
+  }
+}
+
+// Shows a small pill above the layer's top-center handle with the current rotation in degrees.
+function drawRotationBadge(layer){
+  const cx=layer.x+layer.w/2, cy=layer.y+layer.h/2;
+  const topMid=rotatePoint(layer.x+layer.w/2, layer.y, cx, cy, layer.rotation||0);
+  const deg=Math.round(layer.rotation||0);
+  const label=deg+'°';
+  ctx.save();
+  ctx.font='600 13px "DM Mono", monospace';
+  const padX=8, padY=5;
+  const textW=ctx.measureText(label).width;
+  const boxW=textW+padX*2, boxH=22;
+  let bx=topMid.x-boxW/2, by=topMid.y-boxH-14;
+  // Keep the badge on-canvas even if the handle is near the top edge.
+  by=Math.max(4, by);
+  bx=Math.min(Math.max(4,bx), canvasW-boxW-4);
+  ctx.fillStyle='rgba(20,16,10,0.92)';
+  ctx.strokeStyle='#c8a96e';
+  ctx.lineWidth=1;
+  roundRectPath(ctx,bx,by,boxW,boxH,6);
+  ctx.fill();ctx.stroke();
+  ctx.fillStyle='#c8a96e';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,bx+boxW/2,by+boxH/2+1);
+  ctx.restore();
+}
+
+function roundRectPath(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);
+  c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+
+// Lighter highlight for additional layers that are part of a multi-selection
+// (the "primary" selected layer keeps the full handle treatment from drawSelection).
+function drawMultiSelectHighlight(layer){
+  ctx.save();
+  applyLayerTransform(layer);
+  ctx.strokeStyle='#7dd3fc';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+  ctx.strokeRect(layer.x-1.5,layer.y-1.5,layer.w+3,layer.h+3);
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// Draws Canva-style gap measurement lines + pill labels between the layer being
+// dragged and its nearest neighbor(s), computed fresh each frame in gapGuides.
+function drawGapGuides(){
+  if(!gapGuides.length) return;
+  ctx.save();
+  gapGuides.forEach(g=>{
+    ctx.strokeStyle='#c084fc';
+    ctx.lineWidth=1.5;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(g.x1,g.y1);
+    ctx.lineTo(g.x2,g.y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // small perpendicular end-caps so the gap reads like a dimension line
+    const capLen=5;
+    if(g.axis==='x'){
+      ctx.beginPath();ctx.moveTo(g.x1,g.y1-capLen);ctx.lineTo(g.x1,g.y1+capLen);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(g.x2,g.y2-capLen);ctx.lineTo(g.x2,g.y2+capLen);ctx.stroke();
+    } else {
+      ctx.beginPath();ctx.moveTo(g.x1-capLen,g.y1);ctx.lineTo(g.x1+capLen,g.y1);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(g.x2-capLen,g.y2);ctx.lineTo(g.x2+capLen,g.y2);ctx.stroke();
+    }
+    // label pill at midpoint
+    const mx=(g.x1+g.x2)/2, my=(g.y1+g.y2)/2;
+    const label=Math.round(g.distance)+'px';
+    ctx.font='600 11px "DM Mono", monospace';
+    const tw=ctx.measureText(label).width;
+    const bw=tw+12, bh=18;
+    ctx.fillStyle='#c084fc';
+    roundRectPath(ctx,mx-bw/2,my-bh/2,bw,bh,4);
+    ctx.fill();
+    ctx.fillStyle='#1a1a2e';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,mx,my+1);
+  });
+  ctx.restore();
+}
+
+// Computes the gap between the dragged layer's bounding box and the nearest
+// other layer's bounding box (axis-aligned approximation; rotation-aware bbox
+// is used so tilted shapes still measure correctly). Only reports a guide when
+// the layers are close enough (within GAP_SNAP_RANGE px) to be useful, mirroring
+// how Canva only surfaces spacing guides near other objects.
+const GAP_SNAP_RANGE = 80;
+function computeGapGuides(activeIdx){
+  gapGuides=[];
+  const a=layers[activeIdx];
+  if(!a) return;
+  const ab=getRotatedBBox(a);
+  let best=null;
+  layers.forEach((l,i)=>{
+    if(i===activeIdx||!l.visible) return;
+    const bb=getRotatedBBox(l);
+    // Horizontal gap: boxes overlap vertically, measure the x-gap between them
+    const vOverlap = Math.min(ab.y2,bb.y2) - Math.max(ab.y1,bb.y1);
+    if(vOverlap>0){
+      let gap=null, x1=0,x2=0,y=0;
+      if(ab.x1 > bb.x2){ gap=ab.x1-bb.x2; x1=bb.x2; x2=ab.x1; y=(Math.max(ab.y1,bb.y1)+Math.min(ab.y2,bb.y2))/2; }
+      else if(bb.x1 > ab.x2){ gap=bb.x1-ab.x2; x1=ab.x2; x2=bb.x1; y=(Math.max(ab.y1,bb.y1)+Math.min(ab.y2,bb.y2))/2; }
+      if(gap!=null && gap<GAP_SNAP_RANGE && (!best||gap<best.distance)){
+        best={axis:'x',distance:gap,x1,y1:y,x2,y2:y};
+      }
+    }
+    // Vertical gap: boxes overlap horizontally, measure the y-gap between them
+    const hOverlap = Math.min(ab.x2,bb.x2) - Math.max(ab.x1,bb.x1);
+    if(hOverlap>0){
+      let gap=null, y1=0,y2=0,x=0;
+      if(ab.y1 > bb.y2){ gap=ab.y1-bb.y2; y1=bb.y2; y2=ab.y1; x=(Math.max(ab.x1,bb.x1)+Math.min(ab.x2,bb.x2))/2; }
+      else if(bb.y1 > ab.y2){ gap=bb.y1-ab.y2; y1=ab.y2; y2=bb.y1; x=(Math.max(ab.x1,bb.x1)+Math.min(ab.x2,bb.x2))/2; }
+      if(gap!=null && gap<GAP_SNAP_RANGE && (!best||gap<best.distance)){
+        best={axis:'y',distance:gap,x1:x,y1,x2:x,y2};
+      }
+    }
+  });
+  if(best) gapGuides=[best];
+}
+
+// Axis-aligned bounding box of a layer after rotation is applied (so the gap
+// math above stays correct for tilted shapes too).
+function getRotatedBBox(l){
+  if(!l.rotation){ return {x1:l.x,y1:l.y,x2:l.x+l.w,y2:l.y+l.h}; }
+  const cx=l.x+l.w/2, cy=l.y+l.h/2;
+  const corners=[
+    {x:l.x,y:l.y},{x:l.x+l.w,y:l.y},{x:l.x,y:l.y+l.h},{x:l.x+l.w,y:l.y+l.h}
+  ].map(p=>rotatePoint(p.x,p.y,cx,cy,l.rotation));
+  const xs=corners.map(p=>p.x), ys=corners.map(p=>p.y);
+  return {x1:Math.min(...xs),y1:Math.min(...ys),x2:Math.max(...xs),y2:Math.max(...ys)};
+}
+
+// Bounding box that encloses a whole group (used for the group selection outline).
+function getGroupBBox(indices){
+  const boxes=indices.map(i=>getRotatedBBox(layers[i]));
+  return {
+    x1:Math.min(...boxes.map(b=>b.x1)), y1:Math.min(...boxes.map(b=>b.y1)),
+    x2:Math.max(...boxes.map(b=>b.x2)), y2:Math.max(...boxes.map(b=>b.y2))
+  };
 }
 
 function rotatePoint(px,py,cx,cy,angleDeg){
@@ -876,6 +1048,20 @@ function setupMouseEvents(){
   document.getElementById('canvasArea').addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();zoom(e.deltaY<0?.1:-.1);}},{passive:false});
   document.getElementById('canvasArea').addEventListener('dragover',e=>e.preventDefault());
   document.getElementById('canvasArea').addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))handleImageUpload({target:{files:[f]}});});
+  document.addEventListener('keydown',onGlobalKeyDown);
+}
+
+// Canva-style keyboard shortcuts. Ignored while typing in an input/textarea so
+// normal text editing (e.g. backspace in the text-content box) isn't hijacked.
+function onGlobalKeyDown(e){
+  const tag=(document.activeElement&&document.activeElement.tagName)||'';
+  if(tag==='INPUT'||tag==='TEXTAREA'||document.activeElement.isContentEditable) return;
+  const cmd = e.ctrlKey||e.metaKey;
+  if(cmd && e.key.toLowerCase()==='g' && !e.shiftKey){ e.preventDefault(); groupSelected(); }
+  else if(cmd && e.key.toLowerCase()==='g' && e.shiftKey){ e.preventDefault(); ungroupSelected(); }
+  else if(cmd && e.key.toLowerCase()==='d'){ e.preventDefault(); duplicateSelected(); }
+  else if(e.key==='Delete'||e.key==='Backspace'){ if(selectedIndex>=0||selectedIndices.length){ e.preventDefault(); deleteSelected(); } }
+  else if(e.key==='Escape'){ selectedIndices=[]; updateLayerList(); updateRightPanel(); redraw(); }
 }
 function touchEvt(e){return{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY};}
 function canvasCoords(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*(canvasW/r.width),y:(e.clientY-r.top)*(canvasH/r.height)};}
@@ -931,6 +1117,41 @@ function onMouseDown(e){
     }
     if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
   }
+
+  const multiKey = e.shiftKey || e.ctrlKey || e.metaKey;
+
+  if(multiKey && found>=0){
+    // Shift/Ctrl+Click: toggle this layer in/out of the multi-selection (Canva-style)
+    saveHistory();
+    if(found===selectedIndex){
+      // Demote current primary to a secondary selection, nothing else changes
+    } else if(selectedIndices.includes(found)){
+      selectedIndices=selectedIndices.filter(i=>i!==found);
+    } else if(selectedIndex>=0){
+      selectedIndices.push(found);
+    } else {
+      selectedIndex=found;
+    }
+    updateRightPanel();updateLayerList();redraw();
+    return;
+  }
+
+  // Plain click: if the clicked layer belongs to a group, select the whole group
+  if(found>=0 && layers[found].groupId!=null && !multiKey){
+    const gid=layers[found].groupId;
+    const members=[];
+    layers.forEach((l,i)=>{if(l.groupId===gid)members.push(i);});
+    selectedIndex=members[0];
+    selectedIndices=members.slice(1);
+    isDragging=true;saveHistory();
+    const fl=layers[selectedIndex];
+    dragOffX=x-(fl.x+fl.w/2);dragOffY=y-(fl.y+fl.h/2);
+    updateRightPanel();updateFxPanel();updateLayerList();redraw();
+    return;
+  }
+
+  // Plain click on empty space or a non-grouped layer clears any multi-selection
+  selectedIndices=[];
   selectedIndex=found;
   if(found>=0){
     isDragging=true;
@@ -958,8 +1179,18 @@ function onMouseMove(e){
     let snappedX=false,snappedY=false;
     if(Math.abs(targetX+layer.w/2-canvasW/2)<10){targetX=canvasW/2-layer.w/2;snappedX=true;}
     if(Math.abs(targetY+layer.h/2-canvasH/2)<10){targetY=canvasH/2-layer.h/2;snappedY=true;}
-    layer.x=Math.round(targetX);layer.y=Math.round(targetY);
+    const newX=Math.round(targetX), newY=Math.round(targetY);
+    const dx=newX-layer.x, dy=newY-layer.y;
+    layer.x=newX;layer.y=newY;
     layer.snappedX=snappedX;layer.snappedY=snappedY;
+    // If dragging as part of a multi-selection/group, move the other selected layers by the same delta
+    if(selectedIndices.length){
+      selectedIndices.forEach(idx=>{
+        const ol=layers[idx];
+        if(ol){ol.x=Math.round(ol.x+dx);ol.y=Math.round(ol.y+dy);}
+      });
+    }
+    computeGapGuides(selectedIndex);
     updateRightPanel();redraw();
   } else if(isResizing&&selectedIndex>=0){
     const l=layers[selectedIndex],h=resizeHandle;
@@ -990,6 +1221,10 @@ function onMouseMove(e){
     l.y=Math.round(oldCy+dxC*sinR+dyC*cosR-newH/2);
     updateRightPanel();redraw();
   } else if(isRotating&&selectedIndex>=0){
+    // Note: when a group is selected, rotation currently applies to the primary
+    // layer only (group members still move together via drag, and select/duplicate/
+    // delete/lock/order all apply to the whole group). Per-member orbit rotation
+    // around a shared group pivot is a larger change — ask if you want that added.
     const l=layers[selectedIndex];
     const cx=l.x+l.w/2,cy=l.y+l.h/2;
     const currentAngle=Math.atan2(y-cy,x-cx)*180/Math.PI;
@@ -1059,12 +1294,92 @@ function onMouseUp(){
     layers[selectedIndex].snappedY = false;
   }
   isDragging=false;isResizing=false;isRotating=false;aspectLock={};isPainting=false;lastPaintPos=null;
+  gapGuides=[];
   canvas.style.cursor = drawingMode ? 'crosshair' : 'default';
   redraw();
 }
 function onDblClick(e){if(selectedIndex>=0&&layers[selectedIndex].type==='text'){switchTabByName('text');document.getElementById('txtContent').value=layers[selectedIndex].text;document.getElementById('txtContent').focus();}}
-function onRightClick(e){e.preventDefault();if(selectedIndex<0)return;const m=document.getElementById('ctxMenu');m.style.display='block';m.style.left=Math.min(e.clientX,window.innerWidth-170)+'px';m.style.top=Math.min(e.clientY,window.innerHeight-200)+'px';}
-function hideCtx(){document.getElementById('ctxMenu').style.display='none';}
+// Right-click on the canvas: select whatever is under the cursor (respecting groups
+// and multi-select the same way a normal click does), then show a Canva-style
+// context menu built fresh each time so its options match what's actually selected.
+function onRightClick(e){
+  e.preventDefault();
+  const {x,y}=canvasCoords(e);
+  // If the right-clicked layer isn't already part of the current selection, select it
+  // (a right-click on an unselected shape should select just that shape, like Canva).
+  let found=-1;
+  for(let i=layers.length-1;i>=0;i--){
+    const l=layers[i];
+    if(!l.visible||l.locked)continue;
+    let lx=x, ly=y;
+    if(l.rotation){
+      const cx=l.x+l.w/2, cy=l.y+l.h/2;
+      const rad=-l.rotation*Math.PI/180;
+      const dx=x-cx, dy=y-cy;
+      lx=cx+dx*Math.cos(rad)-dy*Math.sin(rad);
+      ly=cy+dx*Math.sin(rad)+dy*Math.cos(rad);
+    }
+    if(lx>=l.x&&lx<=l.x+l.w&&ly>=l.y&&ly<=l.y+l.h){found=i;break;}
+  }
+  if(found>=0){
+    const alreadySelected = found===selectedIndex || selectedIndices.includes(found);
+    if(!alreadySelected){
+      if(layers[found].groupId!=null){
+        const gid=layers[found].groupId;
+        const members=[];layers.forEach((l,i)=>{if(l.groupId===gid)members.push(i);});
+        selectedIndex=members[0];selectedIndices=members.slice(1);
+      } else {
+        selectedIndex=found;selectedIndices=[];
+      }
+      updateLayerList();updateRightPanel();redraw();
+    }
+  }
+  if(selectedIndex<0 && !selectedIndices.length) return;
+  buildContextMenu();
+  const m=document.getElementById('ctxMenu');
+  m.style.display='block';
+  m.style.left=Math.min(e.clientX,window.innerWidth-190)+'px';
+  m.style.top=Math.min(e.clientY,window.innerHeight-320)+'px';
+}
+
+// Builds the right-click menu's contents based on the current selection:
+// multiple layers selected -> show "Group"; a grouped layer selected -> show "Ungroup".
+function buildContextMenu(){
+  const m=document.getElementById('ctxMenu');
+  if(!m) return;
+  const sel=getActiveSelection();
+  const isGroup = sel.length && layers[sel[0]] && layers[sel[0]].groupId!=null;
+  const isMulti = sel.length>1;
+  const locked = sel.length && layers[sel[0]] && layers[sel[0]].locked;
+
+  const items=[];
+  items.push({label:'⧉ Duplicate', action:'duplicateSelected()'});
+  if(isMulti && !isGroup) items.push({label:'▣ Group', action:'groupSelected()'});
+  if(isGroup) items.push({label:'▢ Ungroup', action:'ungroupSelected()'});
+  items.push({divider:true});
+  items.push({label:'↑ Bring Forward', action:'moveLayer(-1)'});
+  items.push({label:'↓ Send Backward', action:'moveLayer(1)'});
+  items.push({label:'⤒ Bring to Front', action:'bringToFront()'});
+  items.push({label:'⤓ Send to Back', action:'sendToBack()'});
+  // Center/Flip only make sense for a single shape, not a multi-selection/group
+  if(!isMulti && !isGroup){
+    items.push({divider:true});
+    items.push({label:'⊕ Center H', action:"alignLayer('center-h')"});
+    items.push({label:'⊕ Center V', action:"alignLayer('center-v')"});
+    items.push({label:'↔ Flip H', action:'flipH()'});
+    items.push({label:'↕ Flip V', action:'flipV()'});
+  }
+  items.push({divider:true});
+  items.push({label:locked?'🔓 Unlock':'🔒 Lock', action:'toggleLockSelected()'});
+  items.push({label:'🗑 Delete', action:'deleteSelected()', danger:true});
+
+  m.innerHTML = items.map(it=>{
+    if(it.divider) return `<div class="ctx-divider"></div>`;
+    return `<div class="ctx-item${it.danger?' danger':''}" onclick="${it.action};hideCtx()">${it.label}</div>`;
+  }).join('');
+}
+
+function hideCtx(){const m=document.getElementById('ctxMenu');if(m)m.style.display='none';}
 
 // ===================== ADD LAYERS =====================
 function newLayerBase(extra){return{opacity:100,rotation:0,visible:true,blendMode:'source-over',skewX:0,skewY:0,fxBlur:0,fxBlurType:'gaussian',fxMotionAngle:0,shadowBlur:0,shadowX:4,shadowY:4,shadowColor:'#000000',fxShadowOpacity:80,shadowAngle:135,shadowSpread:6,glowSize:0,glowColor:'#c8a96e',glowIntensity:50,mask:'none',fillEnabled:true,strokeEnabled:false,...extra};}
@@ -1667,19 +1982,87 @@ function updatePropRot2(){if(selectedIndex<0)return;layers[selectedIndex].rotati
 function updatePropOpacity2(){if(selectedIndex<0)return;layers[selectedIndex].opacity=parseInt(document.getElementById('propOpacity2').value)||100;const fo=document.getElementById('fxOpacity');if(fo)fo.value=layers[selectedIndex].opacity;const fov=document.getElementById('fxOpVal');if(fov)fov.textContent=layers[selectedIndex].opacity+'%';redraw();}
 
 // ===================== LAYER OPS =====================
+// Returns all currently-selected layer indices (primary + multi-selected), sorted ascending.
+function getActiveSelection(){
+  const all = selectedIndex>=0 ? [selectedIndex,...selectedIndices] : [...selectedIndices];
+  return [...new Set(all)].sort((a,b)=>a-b);
+}
+
 function moveLayer(dir){if(selectedIndex<0)return;moveLayerAt(selectedIndex,dir);}
-function bringToFront(){if(selectedIndex<0)return;const l=layers.splice(selectedIndex,1)[0];layers.push(l);selectedIndex=layers.length-1;updateLayerList();redraw();}
-function sendToBack(){if(selectedIndex<0)return;const l=layers.splice(selectedIndex,1)[0];layers.unshift(l);selectedIndex=0;updateLayerList();redraw();}
-function deleteSelected(){if(selectedIndex<0)return;saveHistory();layers.splice(selectedIndex,1);selectedIndex=Math.min(selectedIndex,layers.length-1);updateLayerList();updateRightPanel();redraw();}
-function toggleLockSelected(){if(selectedIndex<0)return;layers[selectedIndex].locked=!layers[selectedIndex].locked;updateLayerList();showToast(layers[selectedIndex].locked?'Locked':'Unlocked');}
+function bringToFront(){
+  const sel=getActiveSelection();if(!sel.length)return;saveHistory();
+  const moved=sel.map(i=>layers[i]);
+  layers=layers.filter((l,i)=>!sel.includes(i));
+  layers.push(...moved);
+  reindexSelectionAfterReorder(moved);
+  updateLayerList();redraw();
+}
+function sendToBack(){
+  const sel=getActiveSelection();if(!sel.length)return;saveHistory();
+  const moved=sel.map(i=>layers[i]);
+  layers=layers.filter((l,i)=>!sel.includes(i));
+  layers.unshift(...moved);
+  reindexSelectionAfterReorder(moved);
+  updateLayerList();redraw();
+}
+function reindexSelectionAfterReorder(movedLayerRefs){
+  const idxs=movedLayerRefs.map(ref=>layers.indexOf(ref));
+  selectedIndex=idxs[0];selectedIndices=idxs.slice(1);
+}
+function deleteSelected(){
+  const sel=getActiveSelection();if(!sel.length)return;saveHistory();
+  layers=layers.filter((l,i)=>!sel.includes(i));
+  selectedIndex=-1;selectedIndices=[];
+  updateLayerList();updateRightPanel();redraw();
+}
+function toggleLockSelected(){
+  const sel=getActiveSelection();if(!sel.length)return;
+  const lockedNow=!layers[selectedIndex>=0?selectedIndex:sel[0]].locked;
+  sel.forEach(i=>layers[i].locked=lockedNow);
+  updateLayerList();showToast(lockedNow?'Locked':'Unlocked');
+}
 
 function duplicateSelected(){
-  if(selectedIndex<0)return;saveHistory();
-  const src=layers[selectedIndex];
-  const copy={...src,img:src.img,x:src.x+20,y:src.y+20,name:(src.name||'Layer')+' Copy'};
-  if(src.type==='draw'&&src.drawCanvas) copy.drawCanvas=cloneDrawCanvas(src.drawCanvas);
-  layers.splice(selectedIndex+1,0,copy);selectedIndex=selectedIndex+1;
-  updateLayerList();updateRightPanel();redraw();showToast('Duplicated!');
+  const sel=getActiveSelection();
+  if(!sel.length)return;saveHistory();
+  const copies=sel.map(i=>{
+    const src=layers[i];
+    const copy={...src,img:src.img,x:src.x+20,y:src.y+20,name:(src.name||'Layer')+' Copy'};
+    if(src.type==='draw'&&src.drawCanvas) copy.drawCanvas=cloneDrawCanvas(src.drawCanvas);
+    if(copy.groupId!=null) copy.groupId=copy.groupId; // keep same group on duplicate of grouped items
+    return copy;
+  });
+  layers.push(...copies);
+  const newIdxs=copies.map(c=>layers.indexOf(c));
+  selectedIndex=newIdxs[0];selectedIndices=newIdxs.slice(1);
+  updateLayerList();updateRightPanel();redraw();showToast(sel.length>1?'Duplicated!':'Duplicated!');
+}
+
+// ===================== GROUPING =====================
+// Groups the current multi-selection (primary + extras) into a single group.
+// Layers keep their individual x/y/w/h — grouping only links selection & movement,
+// exactly like Canva: you can still double-click into a group to edit one item later,
+// but a plain click selects/moves/rotates the whole set together.
+function groupSelected(){
+  const sel=getActiveSelection();
+  if(sel.length<2){showToast('Select 2+ layers to group');return;}
+  saveHistory();
+  const gid=nextGroupId++;
+  sel.forEach(i=>{layers[i].groupId=gid;});
+  selectedIndex=sel[0];selectedIndices=sel.slice(1);
+  updateLayerList();updateRightPanel();redraw();showToast('Grouped '+sel.length+' layers');
+}
+
+// Ungroups whichever group the current selection belongs to.
+function ungroupSelected(){
+  const sel=getActiveSelection();
+  if(!sel.length)return;
+  const gid=layers[sel[0]].groupId;
+  if(gid==null){showToast('Not a group');return;}
+  saveHistory();
+  layers.forEach(l=>{if(l.groupId===gid)delete l.groupId;});
+  selectedIndices=[];
+  updateLayerList();updateRightPanel();redraw();showToast('Ungrouped');
 }
 
 function flipH(){
@@ -1713,7 +2096,7 @@ function updateLayerList(){
   [...layers].reverse().forEach((l,ri)=>{
     const i=layers.length-1-ri;
     const div=document.createElement('div');
-    div.className='layer-item'+(i===selectedIndex?' selected':'');
+    div.className='layer-item'+(i===selectedIndex?' selected':(selectedIndices.includes(i)?' multi-selected':''));
     div.draggable=true;
     // lock icon: clearly colored SVGs
     const lockIcon=l.locked
@@ -1728,7 +2111,15 @@ function updateLayerList(){
     div.innerHTML=`<span class="layer-drag-handle" title="Drag to reorder">⠿</span><span class="layer-icon">${icons[l.type]||'◼'}</span><span class="layer-name">${l.name||l.text||l.shape||'Layer'}</span>${visIcon}${lockIcon}<span class="layer-order-wrap">${upBtn}${dnBtn}</span><span class="layer-del" onclick="delLayer(${i},event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
     div.onclick=(e)=>{
       if(e.target.classList.contains('layer-del')||e.target.classList.contains('layer-vis')||e.target.classList.contains('layer-lock')||e.target.classList.contains('layer-order-btn')||e.target.classList.contains('layer-drag-handle'))return;
-      selectedIndex=i;updateLayerList();updateRightPanel();updateFxPanel();redraw();
+      if(e.shiftKey||e.ctrlKey||e.metaKey){
+        if(i===selectedIndex){/* clicking the primary again: no-op */}
+        else if(selectedIndices.includes(i)) selectedIndices=selectedIndices.filter(x=>x!==i);
+        else if(selectedIndex>=0) selectedIndices.push(i);
+        else selectedIndex=i;
+      } else {
+        selectedIndices=[];selectedIndex=i;
+      }
+      updateLayerList();updateRightPanel();updateFxPanel();redraw();
     };
     // drag reorder
     div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(i));div.style.opacity='0.5';});
@@ -1760,7 +2151,13 @@ function moveLayerAt(i,dir){
 }
 function toggleVis(i,e){e.stopPropagation();layers[i].visible=layers[i].visible===false?true:false;updateLayerList();redraw();}
 function toggleLock(i,e){e.stopPropagation();layers[i].locked=!layers[i].locked;updateLayerList();showToast(layers[i].locked?'🔒 Locked':'🔓 Unlocked');}
-function delLayer(i,e){e.stopPropagation();saveHistory();layers.splice(i,1);if(selectedIndex>=i)selectedIndex=Math.max(-1,selectedIndex-1);updateLayerList();updateRightPanel();redraw();}
+function delLayer(i,e){
+  e.stopPropagation();saveHistory();
+  layers.splice(i,1);
+  if(selectedIndex>=i)selectedIndex=Math.max(-1,selectedIndex-1);
+  selectedIndices=selectedIndices.filter(idx=>idx!==i).map(idx=>idx>i?idx-1:idx);
+  updateLayerList();updateRightPanel();redraw();
+}
 
 // ===================== TEMPLATES =====================
 function buildTemplateGrid(){
@@ -1823,7 +2220,7 @@ function saveHistory(){
 function restoreState(state){
   const s=JSON.parse(state);bgType=s.bgType;bgSolidColor=s.bgSolidColor;bgGradient=s.bgGradient;
   layers=deserializeLayers(s.layers);
-  selectedIndex=-1;updateLayerList();updateRightPanel();redraw();
+  selectedIndex=-1;selectedIndices=[];gapGuides=[];updateLayerList();updateRightPanel();redraw();
 }
 function undo(){if(!historyStack.length)return;redoStack.push(JSON.stringify({layers:serializeLayers(),bgType,bgSolidColor,bgGradient}));restoreState(historyStack.pop());showToast('Undo!');}
 function redo(){if(!redoStack.length)return;historyStack.push(JSON.stringify({layers:serializeLayers(),bgType,bgSolidColor,bgGradient}));restoreState(redoStack.pop());showToast('Redo!');}
@@ -1852,7 +2249,7 @@ function loadProject(e){
       const d=JSON.parse(ev.target.result);
       if(d.version){canvasW=d.canvasW||1280;canvasH=d.canvasH||720;bgType=d.bgType;bgSolidColor=d.bgSolidColor;bgGradient=d.bgGradient;
       layers=deserializeLayers(d.layers);
-      fitCanvas();selectedIndex=-1;updateLayerList();updateRightPanel();redraw();showToast('Project loaded!');}
+      fitCanvas();selectedIndex=-1;selectedIndices=[];updateLayerList();updateRightPanel();redraw();showToast('Project loaded!');}
     }catch(err){showToast('Invalid project file');}
   };reader.readAsText(file);e.target.value='';
 }
@@ -1866,7 +2263,7 @@ function toggleRightPanel(){
   setTimeout(fitCanvas, 230);
 }
 
-function clearCanvas(){if(!confirm('Clear all layers?'))return;saveHistory();layers=[];selectedIndex=-1;updateLayerList();updateRightPanel();redraw();}
+function clearCanvas(){if(!confirm('Clear all layers?'))return;saveHistory();layers=[];selectedIndex=-1;selectedIndices=[];updateLayerList();updateRightPanel();redraw();}
 
 function switchTab(el,pane){
   const leftPanel = el.closest('.left-panel');
