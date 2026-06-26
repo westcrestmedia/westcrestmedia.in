@@ -689,7 +689,7 @@ function buildSheetHTML(type) {
       if (!l) return noLayer();
       return `
         <div class="sp-label">Fill Type</div>
-        <select class="sp-select" onchange="if(selectedIndex>=0){layers[selectedIndex].fillType=this.value;document.getElementById('shapeFillType').value=this.value;redraw();mobRefreshSheet('shapeColor')}">
+        <select class="sp-select" onchange="if(selectedIndex>=0){layers[selectedIndex].fillType=this.value;const _sft=document.getElementById('shapeFillType');if(_sft)_sft.value=this.value;redraw();mobRefreshSheet('shapeColor')}">
           <option value="solid"${(l.fillType||'solid')==='solid'?' selected':''}>Solid Color</option>
           <option value="gradient"${l.fillType==='gradient'?' selected':''}>Gradient</option>
           <option value="none"${l.fillType==='none'?' selected':''}>No Fill (Border Only)</option>
@@ -698,8 +698,8 @@ function buildSheetHTML(type) {
           <div class="sp-label">Fill Color</div>
           <div class="sp-color-row">
             <label>Color</label>
-            <input type="color" value="${l.fill||'#c8a96e'}" oninput="if(selectedIndex>=0){layers[selectedIndex].fill=this.value;document.getElementById('shapeFill').value=this.value;redraw()}">
-            <input type="text" value="${l.fill||'#c8a96e'}" placeholder="#c8a96e" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)&&selectedIndex>=0){layers[selectedIndex].fill=this.value;document.getElementById('shapeFill').value=this.value;redraw()}">
+            <input type="color" value="${l.fill||'#c8a96e'}" oninput="if(selectedIndex>=0){layers[selectedIndex].fill=this.value;const _sf=document.getElementById('shapeFill');if(_sf)_sf.value=this.value;redraw()}">
+            <input type="text" value="${l.fill||'#c8a96e'}" placeholder="#c8a96e" oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)&&selectedIndex>=0){layers[selectedIndex].fill=this.value;const _sf=document.getElementById('shapeFill');if(_sf)_sf.value=this.value;redraw()}">
           </div>
           <div class="sp-palette">${palHtml('mobSetShapeColor')}</div>
         ` : ''}
@@ -707,14 +707,14 @@ function buildSheetHTML(type) {
           <div class="sp-label">Gradient</div>
           <div class="sp-color-row">
             <label>C1 → C2</label>
-            <input type="color" value="${l.gradC1||'#c8a96e'}" oninput="if(selectedIndex>=0){layers[selectedIndex].gradC1=this.value;redraw()}">
-            <input type="color" value="${l.gradC2||'#ff6b6b'}" oninput="if(selectedIndex>=0){layers[selectedIndex].gradC2=this.value;redraw()}">
+            <input type="color" value="${l.gradC1||'#c8a96e'}" oninput="if(selectedIndex>=0){layers[selectedIndex].gradC1=this.value;layers[selectedIndex].fillType='gradient';redraw()}">
+            <input type="color" value="${l.gradC2||'#ff6b6b'}" oninput="if(selectedIndex>=0){layers[selectedIndex].gradC2=this.value;layers[selectedIndex].fillType='gradient';redraw()}">
           </div>
-          <select class="sp-select" onchange="if(selectedIndex>=0){layers[selectedIndex].gradDir=this.value;redraw()}">
-            <option value="to right">→ Horizontal</option>
-            <option value="to bottom">↓ Vertical</option>
-            <option value="to bottom right">↘ Diagonal</option>
-            <option value="radial">◉ Radial</option>
+          <select class="sp-select" onchange="if(selectedIndex>=0){layers[selectedIndex].gradDir=this.value;layers[selectedIndex].fillType='gradient';redraw()}">
+            <option value="to right"${(l.gradDir||'to right')==='to right'?' selected':''}>→ Horizontal</option>
+            <option value="to bottom"${l.gradDir==='to bottom'?' selected':''}>↓ Vertical</option>
+            <option value="to bottom right"${l.gradDir==='to bottom right'?' selected':''}>↘ Diagonal</option>
+            <option value="radial"${l.gradDir==='radial'?' selected':''}>◉ Radial</option>
           </select>
         ` : ''}
       `;
@@ -1005,7 +1005,7 @@ window.mobSetTextColor = (c) => { if(selectedIndex<0)return; layers[selectedInde
 window.mobSetOutlineColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].outlineColor=c; document.getElementById('txtOutlineColor').value=c; redraw(); };
 window.mobSetGlowColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].glowColor=c; document.getElementById('txtGlowColor').value=c; redraw(); };
 window.mobSetBgBoxColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].bgBoxColor=c; document.getElementById('txtBgBoxColor').value=c; updateSelectedText(); };
-window.mobSetShapeColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].fill=c; document.getElementById('shapeFill').value=c; redraw(); };
+window.mobSetShapeColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].fill=c; layers[selectedIndex].fillType='solid'; const _sf=document.getElementById('shapeFill'); if(_sf)_sf.value=c; redraw(); };
 window.mobSetBorderColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].borderColor=c; document.getElementById('shapeBorder').value=c; redraw(); };
 window.mobSetImgBorderColor = (c) => { if(selectedIndex<0)return; layers[selectedIndex].imgBorderColor=c; redraw(); };
 window.mobSetBrushColor = (c) => { brushSettings.color=c; document.getElementById('brushColor').value=c; };
