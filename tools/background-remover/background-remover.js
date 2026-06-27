@@ -2193,3 +2193,145 @@ if (document.readyState === 'loading') {
 // lazily inserted — cheap no-op for already-enhanced sliders.
 window.enhanceSliders = enhanceSliders;
 
+/* ══════════════════════════════════════════════════════════
+   BEFORE / AFTER COMPARISON SLIDER
+   - Drag divider left/right to reveal original vs result
+   - Works on desktop (mousemove) and mobile (touchmove)
+   - Activates only when an image is loaded in editor
+   ══════════════════════════════════════════════════════════ */
+window._compareMode = false;
+let _compareDragging = false;
+let _comparePos = 0.5; // 0–1, position of divider
+
+window.toggleCompare = function() {
+  if (!wCanvas) return;
+  window._compareMode = !window._compareMode;
+
+  const overlay     = document.getElementById('compare-overlay');
+  const btn         = document.getElementById('btn-compare');
+  const mobBtn      = document.getElementById('mob-btn-compare');
+  const displayC    = document.getElementById('display-canvas');
+  const cursorC     = document.getElementById('cursor-canvas');
+
+  if (window._compareMode) {
+    // Populate compare canvases
+    _drawCompareCanvases();
+    overlay.style.display = 'block';
+    displayC.style.opacity = '0';
+    cursorC.style.opacity  = '0';
+    // Style button as active
+    if (btn) { btn.style.borderColor = 'var(--gold)'; btn.style.color = 'var(--gold)'; btn.style.background = 'var(--gold-dim)'; }
+    if (mobBtn) { mobBtn.style.color = 'var(--gold)'; }
+    _setDividerPos(_comparePos);
+  } else {
+    overlay.style.display  = 'none';
+    displayC.style.opacity = '1';
+    cursorC.style.opacity  = '1';
+    if (btn) { btn.style.borderColor = 'var(--faint)'; btn.style.color = 'var(--text-muted)'; btn.style.background = 'var(--dark-4)'; }
+    if (mobBtn) { mobBtn.style.color = ''; }
+  }
+};
+
+function _drawCompareCanvases() {
+  if (!wCanvas || !origData) return;
+  const vp = document.getElementById('canvas-viewport');
+  const dw = vp.clientWidth, dh = vp.clientHeight;
+
+  // Original (before) canvas
+  const origC = document.getElementById('compare-original-canvas');
+  origC.width = dw; origC.height = dh;
+  const oCtx = origC.getContext('2d');
+  oCtx.clearRect(0, 0, dw, dh);
+  // Draw checker pattern for original too
+  _drawChecker(oCtx, dw, dh);
+  // Draw original image centred/fitted
+  const ratio = Math.min(dw / origData.width, dh / origData.height, 1);
+  const iw = origData.width * ratio, ih = origData.height * ratio;
+  const ix = (dw - iw) / 2, iy = (dh - ih) / 2;
+  const tmpC = document.createElement('canvas');
+  tmpC.width = origData.width; tmpC.height = origData.height;
+  tmpC.getContext('2d').putImageData(origData, 0, 0);
+  oCtx.drawImage(tmpC, ix, iy, iw, ih);
+
+  // Result (after) canvas — copy from display-canvas
+  const resC = document.getElementById('compare-result-canvas');
+  resC.width = dw; resC.height = dh;
+  const rCtx = resC.getContext('2d');
+  rCtx.clearRect(0, 0, dw, dh);
+  // Copy current display-canvas (which has bg + subject composite)
+  const dc = document.getElementById('display-canvas');
+  rCtx.drawImage(dc, parseInt(dc.style.left || panX || 0), parseInt(dc.style.top || panY || 0));
+}
+
+function _drawChecker(ctx, w, h) {
+  const sz = 12;
+  for (let y = 0; y < h; y += sz) {
+    for (let x = 0; x < w; x += sz) {
+      ctx.fillStyle = ((x / sz + y / sz) % 2 === 0) ? '#2a2a2a' : '#1a1a1a';
+      ctx.fillRect(x, y, sz, sz);
+    }
+  }
+}
+
+function _setDividerPos(pos) {
+  const overlay  = document.getElementById('compare-overlay');
+  const divider  = document.getElementById('compare-divider');
+  const clipDiv  = document.getElementById('compare-clip');
+  if (!overlay || !divider || !clipDiv) return;
+  const w = overlay.clientWidth;
+  const px = Math.round(pos * w);
+  divider.style.left = px + 'px';
+  clipDiv.style.left = px + 'px';
+  clipDiv.style.right = '0';
+  clipDiv.style.width  = (w - px) + 'px';
+}
+
+// Mouse events on compare overlay
+(function() {
+  function getOverlay() { return document.getElementById('compare-overlay'); }
+
+  function onMove(clientX) {
+    if (!_compareDragging) return;
+    const overlay = getOverlay();
+    if (!overlay) return;
+    const rect = overlay.getBoundingClientRect();
+    _comparePos = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    _setDividerPos(_comparePos);
+  }
+
+  document.addEventListener('mousedown', e => {
+    if (!window._compareMode) return;
+    const overlay = getOverlay();
+    if (overlay && overlay.contains(e.target)) { _compareDragging = true; e.preventDefault(); }
+  });
+  document.addEventListener('mousemove', e => { if (_compareDragging) onMove(e.clientX); });
+  document.addEventListener('mouseup',   () => { _compareDragging = false; });
+
+  document.addEventListener('touchstart', e => {
+    if (!window._compareMode) return;
+    const overlay = getOverlay();
+    if (overlay && overlay.contains(e.target)) { _compareDragging = true; }
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (_compareDragging && e.touches.length === 1) onMove(e.touches[0].clientX);
+  }, { passive: true });
+  document.addEventListener('touchend', () => { _compareDragging = false; });
+})();
+
+// Show/hide Compare button when editor opens/closes
+// Patch into openEditor to show the button
+const _origOpenEditor = window.__openEditorPatched;
+(function patchEditorForCompare() {
+  const editorWrap = document.getElementById('editor-wrap');
+  if (!editorWrap) { setTimeout(patchEditorForCompare, 200); return; }
+  const observer = new MutationObserver(() => {
+    const isActive = editorWrap.classList.contains('active');
+    const btn    = document.getElementById('btn-compare');
+    const mobBtn = document.getElementById('mob-btn-compare');
+    if (btn)    btn.style.display    = isActive ? '' : 'none';
+    if (mobBtn) mobBtn.style.display = isActive ? '' : 'none';
+    // If compare mode was on and editor re-opened, turn it off
+    if (!isActive && window._compareMode) window.toggleCompare();
+  });
+  observer.observe(editorWrap, { attributes: true, attributeFilter: ['class'] });
+})();
