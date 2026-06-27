@@ -364,6 +364,18 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
   .mob-tb-btn.mode-restore{color:#7ddb7d;background:rgba(50,180,50,.12);}
   .mob-tb-btn.mode-smart-edge{color:var(--gold);background:var(--gold-dim);}
 
+  /* Smart Edge pill in brush bar */
+  #mob-smart-edge-pill{
+    flex-shrink:0;padding:3px 9px;font-size:10px;font-weight:700;
+    font-family:'DM Sans',sans-serif;letter-spacing:.04em;
+    background:var(--dark-4);border:1.5px solid var(--faint);
+    color:var(--text-muted);border-radius:99px;cursor:pointer;
+    transition:all .15s;white-space:nowrap;
+  }
+  #mob-smart-edge-pill.active{
+    background:var(--gold-dim);border-color:var(--gold-border);color:var(--gold);
+  }
+
   /* ── Brush size bar (shown above toolbar when erase/restore active) ── */
   .mob-brush-bar{
     display:none;

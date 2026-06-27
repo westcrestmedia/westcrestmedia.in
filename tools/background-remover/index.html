@@ -926,11 +926,6 @@
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/><path d="M16 12l-4-4-4 4M12 8v8"/></svg>
       Restore
     </button>
-    <!-- Smart Edge -->
-    <button class="mob-tb-btn" id="mob-btn-smart-edge" onclick="mobToggleSmartEdge()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 Q7 4 12 12 Q17 20 21 12"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/></svg>
-      Smart
-    </button>
     <!-- BG Color -->
     <button class="mob-tb-btn" onclick="openMobSheet('bg')">
       <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.17-.6-1.6-.37-.43-.6-.98-.6-1.4a2.5 2.5 0 0 1 2.5-2.5H18c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
@@ -964,15 +959,12 @@
   <span>Size</span>
   <input type="range" id="mob-brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('mob-brush-size-val').textContent=this.value+'px'">
   <span id="mob-brush-size-val">20px</span>
-  <!-- Smart Edge sensitivity — only visible when smart edge ON -->
-  <span id="mob-se-tol-label" style="display:none;flex-shrink:0;font-size:10px;color:var(--gold);">Sens</span>
-  <input type="range" id="mob-smart-edge-tol" min="1" max="100" value="30" style="display:none;flex:1;height:3px;-webkit-appearance:none;appearance:none;background:var(--dark-5);border-radius:99px;outline:none;" oninput="window.smartEdgeTol=+this.value;document.getElementById('mob-se-tol-val').textContent=this.value">
-  <span id="mob-se-tol-val" style="display:none;font-size:10px;color:var(--gold);min-width:20px;font-family:'DM Mono',monospace;">30</span>
   <div class="brush-undo-group">
     <button class="undo-btn" onclick="undoStroke()">↩</button>
     <button class="undo-btn" onclick="redoStroke()">↪</button>
   </div>
-  <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--text-muted);" onclick="mobSetBrush(null)">✕ Done</button>
+  <button id="mob-smart-edge-pill" onclick="mobToggleSmartEdge()" title="Smart Edge — long-press Erase/Restore to toggle">⌇ Smart</button>
+  <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--text-muted);" onclick="mobSetBrush(null)">✕</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

@@ -1044,8 +1044,13 @@ function touchPos(t){
   const dr=dc.getBoundingClientRect();
   const scaleX=dc.width/dr.width,scaleY=dc.height/dr.height;
   const cx=(t.clientX-dr.left)*scaleX,cy=(t.clientY-dr.top)*scaleY;
-  if(cx<0||cy<0||cx>dc.width||cy>dc.height)return null;
-  return{x:cx,y:cy};
+  if(cx<0||cy<0||cx>dc.width)return null;
+  // On mobile: allow finger below canvas bottom by MOB_CURSOR_OFFSET_PX so the brush
+  // (which is offset upward) can still reach the bottom edge of the image.
+  const bottomSlack = isMobile() ? MOB_CURSOR_OFFSET_PX * scaleY : 0;
+  if(cy > dc.height + bottomSlack) return null;
+  // Clamp y to canvas bounds (brush offset will pull it up into valid range)
+  return{x:cx, y:Math.min(cy, dc.height)};
 }
 // Returns brush position offset upward from finger (mobile only)
 function mobOffsetBrushPos(rawPos) {
@@ -1372,31 +1377,15 @@ window.toggleSmartEdge = function() {
 window.mobToggleSmartEdge = function() {
   window.smartEdge = !window.smartEdge;
 
-  // Mobile toolbar button
-  const mobBtn = document.getElementById('mob-btn-smart-edge');
-  if (mobBtn) mobBtn.classList.toggle('mode-smart-edge', window.smartEdge);
+  // Pill button in brush bar
+  const pill = document.getElementById('mob-smart-edge-pill');
+  if (pill) pill.classList.toggle('active', window.smartEdge);
 
-  // Desktop button sync
+  // Sync desktop button + sensitivity wrap
   const deskBtn = document.getElementById('btn-smart-edge');
-  if (deskBtn) {
-    deskBtn.classList.toggle('mode-smart-edge', window.smartEdge);
-    const tolWrap = document.getElementById('smart-edge-tol-wrap');
-    if (tolWrap) tolWrap.style.display = window.smartEdge ? '' : 'none';
-  }
-
-  // Show/hide sensitivity controls in mob-brush-bar
-  const seLabel = document.getElementById('mob-se-tol-label');
-  const seSlider = document.getElementById('mob-smart-edge-tol');
-  const seVal = document.getElementById('mob-se-tol-val');
-  const showSe = window.smartEdge ? '' : 'none';
-  if (seLabel)  seLabel.style.display  = showSe;
-  if (seSlider) seSlider.style.display = showSe;
-  if (seVal)    seVal.style.display    = showSe;
-
-  // Auto-open brush bar so sensitivity slider is immediately accessible
-  if (window.smartEdge && brushMode) {
-    document.getElementById('mob-brush-bar').classList.add('active');
-  }
+  if (deskBtn) deskBtn.classList.toggle('mode-smart-edge', window.smartEdge);
+  const tolWrap = document.getElementById('smart-edge-tol-wrap');
+  if (tolWrap) tolWrap.style.display = window.smartEdge ? '' : 'none';
 };
 
 /* ── BG COLOR ── */
@@ -2063,11 +2052,6 @@ window.mobSetBrush = function(mode) {
   // Sync brush size
   const mobSz = document.getElementById('mob-brush-size');
   if (mobSz) window.brushSize = +mobSz.value;
-  // Sync smart edge sensitivity slider value
-  const mobTol = document.getElementById('mob-smart-edge-tol');
-  if (mobTol) mobTol.value = window.smartEdgeTol;
-  const mobTolVal = document.getElementById('mob-se-tol-val');
-  if (mobTolVal) mobTolVal.textContent = window.smartEdgeTol;
 };
 
 /* ── Tab switch (mobile) — My Photo vs Background controls ── */
