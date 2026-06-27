@@ -144,15 +144,13 @@ const fileIn   = document.getElementById('file-in');
 const dropZone = document.getElementById('drop-zone');
 
 fileIn.addEventListener('change', e => { if (e.target.files.length) addFiles(Array.from(e.target.files)); });
-if (window.innerWidth > 768) {
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault(); dropZone.classList.remove('drag-over');
-    const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
-    if (files.length) addFiles(files);
-  });
-}
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  if (files.length) addFiles(files);
+});
 dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
 
 /* ── ADD FILES ── */
@@ -270,15 +268,13 @@ function renderBatchGrid() {
     addMore.className = 'batch-add-more';
     addMore.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Add More</span><span class="batch-add-more-drag-text" style="font-size:10px;opacity:0.6;">or drag &amp; drop images here</span>`;
     addMore.addEventListener('click', () => fileIn.click());
-    if (!isMobile()) {
-      addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
-      addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
-      addMore.addEventListener('drop', e => {
-        e.preventDefault(); addMore.classList.remove('drag-over');
-        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-        if (files.length) addFiles(files);
-      });
-    }
+    addMore.addEventListener('dragover', e => { e.preventDefault(); addMore.classList.add('drag-over'); });
+    addMore.addEventListener('dragleave', () => addMore.classList.remove('drag-over'));
+    addMore.addEventListener('drop', e => {
+      e.preventDefault(); addMore.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (files.length) addFiles(files);
+    });
     grid.appendChild(addMore);
   }
 }
@@ -306,7 +302,6 @@ window.removeItem = function(id) {
     wCanvas = null; wCtx = null; origData = null;
     document.getElementById('editor-wrap').classList.remove('active');
     document.getElementById('proc-overlay').classList.remove('active');
-    mobShowToolbar(false);
     const nextDone = items.find(i => i.status === 'done');
     if (nextDone) openEditor(nextDone.id, true);
   }
@@ -389,7 +384,7 @@ async function processItem(item) {
       procTitle.textContent = modelCached ? 'Optimising Image…' : 'Downloading AI Model…';
       procSub.textContent   = modelCached
         ? 'Preparing image for background removal'
-        : `Downloading ${isMobile() ? '~40 MB' : '~170 MB'} model (once only — cached forever after)`;
+        : `Downloading ~170 MB model (once only — cached forever after)`;
       procPct.textContent   = '0%';
     }
 
@@ -411,7 +406,7 @@ async function processItem(item) {
             procTitle.textContent = 'Downloading AI Model…';
             procSub.textContent   = modelCached
               ? 'Loading model from browser cache…'
-              : `⏳ First-time download (${isMobile() ? '~40 MB' : '~170 MB'}). Next time it's instant!`;
+              : `⏳ First-time download (~170 MB). Next time it's instant!`;
           }
           if (p > 0) procPct.textContent = p + '%';
         } else if (key && key.includes('execute')) {
@@ -446,7 +441,7 @@ async function processItem(item) {
           procPct.textContent = p + '%';
         }
       },
-      model: isMobile() ? 'small' : 'large',
+      model: 'large',
       output: { format: 'image/png', quality: 1 },
     });
 
@@ -540,15 +535,6 @@ async function openEditor(id, noScroll) {
   if (syEl) { syEl.value = subjectY; document.getElementById('subject-y-val').textContent = subjectY; }
   const srEl = document.getElementById('subject-rotate');
   if (srEl) { srEl.value = subjectRotation; document.getElementById('subject-rotate-val').textContent = subjectRotation+'°'; }
-  // Mobile subject sliders
-  const mssEl = document.getElementById('mob-subject-scale');
-  if (mssEl) { mssEl.value = Math.round(subjectScale*100); document.getElementById('mob-subject-scale-val').textContent = Math.round(subjectScale*100)+'%'; }
-  const msxEl = document.getElementById('mob-subject-x');
-  if (msxEl) { msxEl.value = subjectX; document.getElementById('mob-subject-x-val').textContent = subjectX; }
-  const msyEl = document.getElementById('mob-subject-y');
-  if (msyEl) { msyEl.value = subjectY; document.getElementById('mob-subject-y-val').textContent = subjectY; }
-  const msrEl = document.getElementById('mob-subject-rotate');
-  if (msrEl) { msrEl.value = subjectRotation; document.getElementById('mob-subject-rotate-val').textContent = subjectRotation+'°'; }
   // Shadow
   document.getElementById('shadow-enable').checked = shadowEnabled;
   document.getElementById('shadow-controls').style.display = shadowEnabled ? 'flex' : 'none';
@@ -557,32 +543,21 @@ async function openEditor(id, noScroll) {
   document.getElementById('shadow-blur').value    = shadowBlur;    document.getElementById('shadow-blur-val').textContent    = shadowBlur+'px';
   document.getElementById('shadow-distance').value= shadowDistance; document.getElementById('shadow-distance-val').textContent= shadowDistance+'px';
   document.getElementById('shadow-angle').value   = shadowAngle;   document.getElementById('shadow-angle-val').textContent   = shadowAngle+'°';
-  // Mobile shadow
-  const mse = document.getElementById('mob-shadow-enable'); if(mse) { mse.checked = shadowEnabled; document.getElementById('mob-shadow-controls').style.display = shadowEnabled?'flex':'none'; }
-  const msc = document.getElementById('mob-shadow-color');    if(msc) msc.value = shadowColor;
-  const mso = document.getElementById('mob-shadow-opacity');  if(mso) { mso.value = shadowOpacity; document.getElementById('mob-shadow-opacity-val').textContent = shadowOpacity+'%'; }
-  const msb = document.getElementById('mob-shadow-blur');     if(msb) { msb.value = shadowBlur;    document.getElementById('mob-shadow-blur-val').textContent    = shadowBlur+'px'; }
-  const msd = document.getElementById('mob-shadow-distance'); if(msd) { msd.value = shadowDistance; document.getElementById('mob-shadow-distance-val').textContent= shadowDistance+'px'; }
-  const msa = document.getElementById('mob-shadow-angle');    if(msa) { msa.value = shadowAngle;   document.getElementById('mob-shadow-angle-val').textContent   = shadowAngle+'°'; }
   // BG blur
   document.getElementById('bg-blur').value = bgBlur; document.getElementById('bg-blur-val').textContent = bgBlur+'px';
-  const mbgb = document.getElementById('mob-bg-blur'); if(mbgb) { mbgb.value = bgBlur; document.getElementById('mob-bg-blur-val').textContent = bgBlur+'px'; }
   // Outline
   document.getElementById('outline-enable').checked = outlineEnabled;
   document.getElementById('outline-controls').style.display = outlineEnabled ? 'flex' : 'none';
   document.getElementById('outline-color').value = outlineColor;
   document.getElementById('outline-width').value = outlineWidth; document.getElementById('outline-width-val').textContent = outlineWidth+'px';
-  const moe=document.getElementById('mob-outline-enable'); if(moe){moe.checked=outlineEnabled; document.getElementById('mob-outline-controls').style.display=outlineEnabled?'flex':'none'; document.getElementById('mob-outline-color').value=outlineColor; document.getElementById('mob-outline-width').value=outlineWidth; document.getElementById('mob-outline-width-val').textContent=outlineWidth+'px';}
   // Glow
   document.getElementById('glow-enable').checked = glowEnabled;
   document.getElementById('glow-controls').style.display = glowEnabled ? 'flex' : 'none';
   document.getElementById('glow-color').value = glowColor;
   document.getElementById('glow-strength').value = glowStrength; document.getElementById('glow-strength-val').textContent = glowStrength+'%';
   document.getElementById('glow-blur').value = glowBlur; document.getElementById('glow-blur-val').textContent = glowBlur+'px';
-  const mge=document.getElementById('mob-glow-enable'); if(mge){mge.checked=glowEnabled; document.getElementById('mob-glow-controls').style.display=glowEnabled?'flex':'none'; document.getElementById('mob-glow-color').value=glowColor; document.getElementById('mob-glow-strength').value=glowStrength; document.getElementById('mob-glow-strength-val').textContent=glowStrength+'%'; document.getElementById('mob-glow-blur').value=glowBlur; document.getElementById('mob-glow-blur-val').textContent=glowBlur+'px';}
   // Feather UI sync
   const featherEl = document.getElementById('feather-radius'); if(featherEl){ featherEl.value=featherRadius; document.getElementById('feather-radius-val').textContent=featherRadius+'px'; }
-  const mFeatherEl = document.getElementById('mob-feather-radius'); if(mFeatherEl){ mFeatherEl.value=featherRadius; document.getElementById('mob-feather-radius-val').textContent=featherRadius+'px'; }
   // BG color swatches
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.photo-thumb').forEach(t => t.classList.remove('active'));
@@ -642,18 +617,8 @@ function computeBaseSize() {
   const maxW = vp.clientWidth || 600;
   const isPortrait = wCanvas.height > wCanvas.width;
 
-  // On mobile: subtract fixed UI bars from available height so canvas bottom is never hidden
-  let reservedH = 0;
-  if (isMobile()) {
-    const tb = document.getElementById('mob-toolbar');
-    const bb = document.getElementById('mob-brush-bar');
-    const tbH = (tb && tb.offsetHeight) ? tb.offsetHeight : 72;
-    const bbH = (bb && bb.classList.contains('active') && bb.offsetHeight) ? bb.offsetHeight : 0;
-    reservedH = tbH + bbH + 8; // +8px breathing room
-  }
-
-  const availH = window.innerHeight - reservedH;
-  const maxHFactor = isMobile() ? (isPortrait ? 0.88 : 0.70) : 0.72;
+  const availH = window.innerHeight;
+  const maxHFactor = 0.72;
   const maxH = Math.min(availH * maxHFactor, isPortrait ? 1100 : 650);
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
   baseW = Math.round(wCanvas.width * ratio);
@@ -934,11 +899,11 @@ function updateFlipButtons() {
   const baseStyle = 'flex:1;padding:5px;font-size:11px;font-weight:600;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;border-width:1.5px;border-style:solid;';
   const activeStyle   = baseStyle + 'background:var(--gold-dim);border-color:var(--gold-border);color:var(--gold);';
   const inactiveStyle = baseStyle + 'background:var(--dark4);border-color:var(--faint);color:var(--muted);';
-  ['btn-flip-x','mob-btn-flip-x'].forEach(id => {
+  ['btn-flip-x'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.cssText = flipX ? activeStyle : inactiveStyle;
   });
-  ['btn-flip-y','mob-btn-flip-y'].forEach(id => {
+  ['btn-flip-y'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.cssText = flipY ? activeStyle : inactiveStyle;
   });
@@ -1016,9 +981,9 @@ function attachEvents() {
     const t = e.touches[0];
     const rawPos = touchPos(t);
     if (!rawPos) return;
-    const brushPos = mobOffsetBrushPos(rawPos, t);
+    const brushPos = rawPos;
     _brushScreenX = t.clientX; _brushScreenY = t.clientY;
-    // Show cursor ring + loupe immediately on touch (not just on move)
+    // Show cursor ring immediately on touch (not just on move)
     drawCursorRing(brushPos.x, brushPos.y, t.clientX, t.clientY);
     isPainting=true; saveSnapshot(); applyBrush(brushPos.x, brushPos.y, rawPos, t);
   },{passive:false});
@@ -1036,7 +1001,7 @@ function attachEvents() {
     const t = e.touches[0];
     const rawPos = touchPos(t);
     if (!rawPos) { clearCursor(); return; }
-    const brushPos = mobOffsetBrushPos(rawPos, t);
+    const brushPos = rawPos;
     drawCursorRing(brushPos.x, brushPos.y, t.clientX, t.clientY);
     if (isPainting) { _brushScreenX = t.clientX; _brushScreenY = t.clientY; applyBrush(brushPos.x, brushPos.y, rawPos, t); }
   },{passive:false});
@@ -1056,48 +1021,26 @@ function touchPos(t){
   const scaleX=dc.width/dr.width,scaleY=dc.height/dr.height;
   const cx=(t.clientX-dr.left)*scaleX,cy=(t.clientY-dr.top)*scaleY;
   if(cx<0||cy<0||cx>dc.width)return null;
-  // On mobile: allow finger below canvas bottom by MOB_CURSOR_OFFSET_PX so the brush
-  // (which is offset upward) can still reach the bottom edge of the image.
-  const bottomSlack = isMobile() ? MOB_CURSOR_OFFSET_PX * scaleY : 0;
-  if(cy > dc.height + bottomSlack) return null;
-  // Clamp y to canvas bounds (brush offset will pull it up into valid range)
+  if(cy > dc.height) return null;
   return{x:cx, y:Math.min(cy, dc.height)};
-}
-// Returns brush position offset upward from finger (mobile only)
-function mobOffsetBrushPos(rawPos) {
-  if (!isMobile()) return rawPos;
-  const dr = dc.getBoundingClientRect();
-  const scaleX = dc.width / dr.width;
-  const offsetDc = MOB_CURSOR_OFFSET_PX * scaleX;
-  return { x: rawPos.x, y: rawPos.y - offsetDc };
 }
 
 /* ── CURSOR ── */
 function clearCursor(){
   cctx.clearRect(0,0,cc.width,cc.height);
-  hideMobileLupe();
 }
-
-// Mobile finger-offset: how many screen-px above finger the brush ring appears
-const MOB_CURSOR_OFFSET_PX = 80;
 
 function drawCursorRing(x, y, touchScreenX, touchScreenY) {
   cctx.clearRect(0, 0, cc.width, cc.height);
   if (!brushMode) return;
 
-  const isMob = isMobile();
   const dr = dc.getBoundingClientRect();
   const scaleX = dc.width / dr.width;
 
-  // On mobile: offset the ring upward in dc-pixel space
-  let rx = x, ry = y;
-  if (isMob) {
-    const offsetInDc = MOB_CURSOR_OFFSET_PX * scaleX;
-    ry = y - offsetInDc;
-  }
+  const rx = x, ry = y;
 
   const ringR = (window.brushSize / 2) * scaleX;
-  const col = window.smartEdge && !isMob
+  const col = window.smartEdge
     ? 'rgba(201,168,76,.95)'                            // gold = smart-edge mode
     : brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
 
@@ -1108,127 +1051,7 @@ function drawCursorRing(x, y, touchScreenX, touchScreenY) {
   // Centre dot
   cctx.beginPath(); cctx.arc(rx, ry, 1.5 * scaleX, 0, Math.PI * 2);
   cctx.fillStyle = col; cctx.fill();
-  // On mobile: draw a thin line from ring down to finger tip
-  if (isMob && touchScreenX !== undefined) {
-    cctx.beginPath();
-    cctx.moveTo(rx, ry + ringR);
-    cctx.lineTo(x, y);
-    cctx.strokeStyle = col;
-    cctx.lineWidth = 1 * scaleX;
-    cctx.setLineDash([3 * scaleX, 3 * scaleX]);
-    cctx.stroke();
-    cctx.setLineDash([]);
-  }
   cctx.restore();
-
-  // Show loupe on mobile
-  if (isMob && touchScreenX !== undefined) {
-    showMobileLupe(x, y, touchScreenX, touchScreenY);
-  }
-}
-
-/* ── MOBILE MAGNIFIER LOUPE ── */
-let _lupeEl = null;
-let _lupeCtx = null;
-const LUPE_SIZE = 140;    // px, CSS size of the loupe square
-const LUPE_ZOOM = 4;      // magnification inside loupe
-const LUPE_CANVAS_PX = LUPE_SIZE * (window.devicePixelRatio || 1);
-
-function getLupe() {
-  if (_lupeEl) return _lupeEl;
-  const wrap = document.createElement('div');
-  wrap.id = 'mob-lupe';
-  wrap.className = 'mob-lupe';
-  const cvs = document.createElement('canvas');
-  cvs.width = LUPE_CANVAS_PX; cvs.height = LUPE_CANVAS_PX;
-  cvs.style.width = LUPE_SIZE + 'px'; cvs.style.height = LUPE_SIZE + 'px';
-  wrap.appendChild(cvs);
-  document.body.appendChild(wrap);
-  _lupeEl = wrap;
-  _lupeCtx = cvs.getContext('2d');
-  return wrap;
-}
-
-function showMobileLupe(dcX, dcY, screenX, screenY) {
-  if (!wCanvas || !dc) return;
-  const lupe = getLupe();
-
-  // Position loupe: float near the brush ring (which is already offset above finger)
-  const lupeSize = LUPE_SIZE;
-  const margin = 12;
-  const vpRect = viewport.getBoundingClientRect();
-
-  // Ring is at screenY - MOB_CURSOR_OFFSET_PX (above finger)
-  const ringScreenY = screenY - MOB_CURSOR_OFFSET_PX;
-  let lupeTop = ringScreenY - lupeSize / 2;
-  lupeTop = Math.max(vpRect.top + margin, Math.min(vpRect.bottom - lupeSize - margin, lupeTop));
-
-  // Horizontal: place on opposite side from finger
-  const fingerRight = screenX > vpRect.left + vpRect.width / 2;
-  let lupeLeft;
-  if (fingerRight) {
-    lupeLeft = vpRect.left + margin;
-  } else {
-    lupeLeft = vpRect.right - lupeSize - margin;
-  }
-
-  lupe.style.position = 'fixed';
-  lupe.style.left  = lupeLeft + 'px';
-  lupe.style.top   = lupeTop + 'px';
-  lupe.style.right = 'auto';
-  lupe.style.display = 'block';
-
-  const ctx = _lupeCtx;
-  const sz = LUPE_CANVAS_PX;
-  ctx.clearRect(0, 0, sz, sz);
-
-  // Draw checker background (shows transparency)
-  const tile = 10 * (window.devicePixelRatio || 1);
-  for (let ty = 0; ty < sz; ty += tile) {
-    for (let tx = 0; tx < sz; tx += tile) {
-      ctx.fillStyle = ((Math.floor(tx/tile) + Math.floor(ty/tile)) % 2 === 0) ? '#2a2a2a' : '#3a3a3a';
-      ctx.fillRect(tx, ty, tile, tile);
-    }
-  }
-
-  // Sample from dc (display canvas) centred on brush position
-  // dcX/dcY are in dc-pixel space
-  const sampleW = LUPE_SIZE / LUPE_ZOOM;  // how many dc-css-px to sample
-  const dr = dc.getBoundingClientRect();
-  const dcCssPxPerDcPx = dr.width / dc.width;
-  const sampleDcPx = sampleW / dcCssPxPerDcPx;   // in actual dc pixels
-
-  const srcX = dcX - sampleDcPx / 2;
-  const srcY = dcY - sampleDcPx / 2;
-
-  ctx.save();
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(dc, srcX, srcY, sampleDcPx, sampleDcPx, 0, 0, sz, sz);
-  ctx.restore();
-
-  // Crosshair in centre
-  const col = brushMode === 'erase' ? 'rgba(255,80,80,.85)' : 'rgba(80,220,80,.85)';
-  const mid = sz / 2;
-  const brushScreenR = (window.brushSize / 2);
-  const brushLupeR = brushScreenR * (LUPE_ZOOM) * (window.devicePixelRatio || 1);
-  ctx.save();
-  ctx.strokeStyle = col; ctx.lineWidth = 1.5 * (window.devicePixelRatio || 1);
-  ctx.beginPath(); ctx.arc(mid, mid, brushLupeR, 0, Math.PI * 2); ctx.stroke();
-  // crosshair lines
-  ctx.beginPath(); ctx.moveTo(mid - brushLupeR - 6, mid); ctx.lineTo(mid + brushLupeR + 6, mid); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(mid, mid - brushLupeR - 6); ctx.lineTo(mid, mid + brushLupeR + 6); ctx.stroke();
-  ctx.restore();
-
-  // Border
-  ctx.save();
-  ctx.strokeStyle = brushMode === 'erase' ? 'rgba(255,80,80,.5)' : 'rgba(80,220,80,.5)';
-  ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
-  ctx.strokeRect(0, 0, sz, sz);
-  ctx.restore();
-}
-
-function hideMobileLupe() {
-  if (_lupeEl) _lupeEl.style.display = 'none';
 }
 
 /* ── BRUSH ── */
@@ -1384,25 +1207,6 @@ window.toggleSmartEdge = function() {
   }
 };
 
-/* ── SMART EDGE TOGGLE (mobile) ── */
-window.mobToggleSmartEdge = function() {
-  window.smartEdge = !window.smartEdge;
-
-  // Pill button in brush bar
-  const pill = document.getElementById('mob-smart-edge-pill');
-  if (pill) pill.classList.toggle('active', window.smartEdge);
-
-  // Show/hide mobile sensitivity row
-  const mobSensRow = document.getElementById('mob-smart-edge-sensitivity-row');
-  if (mobSensRow) mobSensRow.style.display = window.smartEdge ? 'flex' : 'none';
-
-  // Sync desktop button + sensitivity wrap
-  const deskBtn = document.getElementById('btn-smart-edge');
-  if (deskBtn) deskBtn.classList.toggle('mode-smart-edge', window.smartEdge);
-  const tolWrap = document.getElementById('smart-edge-tol-wrap');
-  if (tolWrap) tolWrap.style.display = window.smartEdge ? '' : 'none';
-};
-
 /* ── BG COLOR ── */
 window.setBg=function(color,el){
   currentBgColor=color; currentPhotoBg=null;
@@ -1458,13 +1262,9 @@ window.updateEffects=function(){
   document.getElementById('glow-strength-val').textContent=glowStrength+'%';
   glowBlur=+document.getElementById('glow-blur').value;
   document.getElementById('glow-blur-val').textContent=glowBlur+'px';
-  // Sync to mobile controls
-  const moe=document.getElementById('mob-outline-enable'); if(moe){moe.checked=outlineEnabled; document.getElementById('mob-outline-controls').style.display=outlineEnabled?'flex':'none'; document.getElementById('mob-outline-color').value=outlineColor; document.getElementById('mob-outline-width').value=outlineWidth; document.getElementById('mob-outline-width-val').textContent=outlineWidth+'px';}
-  const mge=document.getElementById('mob-glow-enable'); if(mge){mge.checked=glowEnabled; document.getElementById('mob-glow-controls').style.display=glowEnabled?'flex':'none'; document.getElementById('mob-glow-color').value=glowColor; document.getElementById('mob-glow-strength').value=glowStrength; document.getElementById('mob-glow-strength-val').textContent=glowStrength+'%'; document.getElementById('mob-glow-blur').value=glowBlur; document.getElementById('mob-glow-blur-val').textContent=glowBlur+'px';}
   // Feather
   featherRadius = +document.getElementById('feather-radius').value;
   document.getElementById('feather-radius-val').textContent = featherRadius+'px';
-  const mfr = document.getElementById('mob-feather-radius'); if(mfr){ mfr.value=featherRadius; document.getElementById('mob-feather-radius-val').textContent=featherRadius+'px'; }
   drawComposite();
 };
 
@@ -1571,9 +1371,6 @@ window.searchPhotos = async function() {
   if (searchBtn) { searchBtn.disabled = true; searchBtn.textContent = '…'; }
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
-  // Sync to mobile
-  const mobQ = document.getElementById('mob-photo-query');
-  if (mobQ) mobQ.value = q;
 
   if (desktopPhotoObs) { desktopPhotoObs.disconnect(); desktopPhotoObs = null; }
   photoSearchState = { query:q, page:1, loading:true, exhausted:false, source:'' };
@@ -1606,63 +1403,6 @@ window.searchPhotos = async function() {
         photoSearchState.exhausted = true;
       }
       photoSearchState.loading = false;
-    });
-  }
-};
-
-let mobPhotoObs = null;
-let _searchingMob = false;
-window.mobSearchPhotos = async function() {
-  if (_searchingMob) return;
-  const q = document.getElementById('mob-photo-query').value.trim();
-  if (!q) {
-    document.getElementById('mob-photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
-    return;
-  }
-  _searchingMob = true;
-  const mobSearchBtn = document.getElementById('mob-photo-search-btn');
-  if (mobSearchBtn) { mobSearchBtn.disabled = true; mobSearchBtn.textContent = '…'; }
-  const grid = document.getElementById('mob-photo-grid');
-  grid.innerHTML = '<div class="photo-loading">Searching…</div>';
-  // Sync to desktop
-  const deskQ = document.getElementById('photo-query');
-  if (deskQ) deskQ.value = q;
-
-  if (mobPhotoObs) { mobPhotoObs.disconnect(); mobPhotoObs = null; }
-  let mobState = { page:1, loading:true, exhausted:false };
-
-  const result = await fetchPhotoPage(q, 1);
-  _searchingMob = false;
-  if (mobSearchBtn) { mobSearchBtn.disabled = false; mobSearchBtn.textContent = 'Search'; }
-  grid.innerHTML = '';
-  if (!result || !result.photos.length) {
-    grid.innerHTML = '<div class="photo-loading">No results. Try a different search.</div>';
-    return;
-  }
-  appendPhotosToGrid(grid, result.photos, (img, full) => { applyPhotoBg(img, full); closeMobSheet(); });
-  mobState = { page:1, loading:false, exhausted:!result.hasMore };
-
-  // Update mobile attribution
-  const mobAttr = document.getElementById('mob-photo-attribution');
-  if (mobAttr) {
-    mobAttr.innerHTML = result.source === 'pixabay'
-      ? 'Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a>'
-      : 'Photos via <a href="https://www.pexels.com" target="_blank">Pexels</a>';
-  }
-
-  if (result.hasMore) {
-    mobPhotoObs = setupInfiniteScroll(grid, async () => {
-      if (mobState.loading || mobState.exhausted) return;
-      mobState.loading = true;
-      const more = await fetchPhotoPage(q, mobState.page + 1);
-      if (more && more.photos.length) {
-        appendPhotosToGrid(grid, more.photos, (img, full) => { applyPhotoBg(img, full); closeMobSheet(); });
-        mobState.page++;
-        mobState.exhausted = !more.hasMore;
-      } else {
-        mobState.exhausted = true;
-      }
-      mobState.loading = false;
     });
   }
 };
@@ -1719,8 +1459,6 @@ window.updateSubjectTransform = function() {
   document.getElementById('subject-x-val').textContent = subjectX;
   document.getElementById('subject-y-val').textContent = subjectY;
   document.getElementById('subject-rotate-val').textContent = subjectRotation + '°';
-  // Sync mobile
-  const mr = document.getElementById('mob-subject-rotate'); if(mr){mr.value=subjectRotation;document.getElementById('mob-subject-rotate-val').textContent=subjectRotation+'°';}
   drawComposite();
 };
 
@@ -1735,7 +1473,6 @@ window.resetSubjectTransform = function() {
   document.getElementById('subject-x-val').textContent = '0';
   document.getElementById('subject-y-val').textContent = '0';
   document.getElementById('subject-rotate-val').textContent = '0°';
-  const mr = document.getElementById('mob-subject-rotate'); if(mr){mr.value=0;document.getElementById('mob-subject-rotate-val').textContent='0°';}
   updateFlipButtons();
   drawComposite();
 };
@@ -1748,10 +1485,6 @@ window.updateBgTransform = function() {
   document.getElementById('bg-scale-val').textContent = Math.round(bgScale*100) + '%';
   document.getElementById('bg-offset-x-val').textContent = bgOffsetX;
   document.getElementById('bg-offset-y-val').textContent = bgOffsetY;
-  // Sync mobile sliders
-  const mbs = document.getElementById('mob-bg-scale'); if(mbs){mbs.value=Math.round(bgScale*100);document.getElementById('mob-bg-scale-val').textContent=Math.round(bgScale*100)+'%';}
-  const mbx = document.getElementById('mob-bg-x'); if(mbx){mbx.value=bgOffsetX;document.getElementById('mob-bg-x-val').textContent=bgOffsetX;}
-  const mby = document.getElementById('mob-bg-y'); if(mby){mby.value=bgOffsetY;document.getElementById('mob-bg-y-val').textContent=bgOffsetY;}
   drawComposite();
 };
 
@@ -1763,47 +1496,14 @@ window.resetBgTransform = function() {
   document.getElementById('bg-scale-val').textContent = '100%';
   document.getElementById('bg-offset-x-val').textContent = '0';
   document.getElementById('bg-offset-y-val').textContent = '0';
-  const mbs = document.getElementById('mob-bg-scale'); if(mbs){mbs.value=100;document.getElementById('mob-bg-scale-val').textContent='100%';}
-  const mbx = document.getElementById('mob-bg-x'); if(mbx){mbx.value=0;document.getElementById('mob-bg-x-val').textContent='0';}
-  const mby = document.getElementById('mob-bg-y'); if(mby){mby.value=0;document.getElementById('mob-bg-y-val').textContent='0';}
   drawComposite();
 };
 
-/* ── BACKGROUND PHOTO TRANSFORM (mobile) ── */
-window.mobUpdateBgTransform = function() {
-  bgScale   = +document.getElementById('mob-bg-scale').value / 100;
-  bgOffsetX = +document.getElementById('mob-bg-x').value;
-  bgOffsetY = +document.getElementById('mob-bg-y').value;
-  document.getElementById('mob-bg-scale-val').textContent = Math.round(bgScale*100) + '%';
-  document.getElementById('mob-bg-x-val').textContent = bgOffsetX;
-  document.getElementById('mob-bg-y-val').textContent = bgOffsetY;
-  // Sync desktop sliders
-  const bs = document.getElementById('bg-scale'); if(bs){bs.value=Math.round(bgScale*100);document.getElementById('bg-scale-val').textContent=Math.round(bgScale*100)+'%';}
-  const bx = document.getElementById('bg-offset-x'); if(bx){bx.value=bgOffsetX;document.getElementById('bg-offset-x-val').textContent=bgOffsetX;}
-  const by = document.getElementById('bg-offset-y'); if(by){by.value=bgOffsetY;document.getElementById('bg-offset-y-val').textContent=bgOffsetY;}
-  drawComposite();
-};
-
-window.mobResetBgTransform = function() {
-  bgScale = 1; bgOffsetX = 0; bgOffsetY = 0;
-  ['mob-bg-scale','mob-bg-x','mob-bg-y'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=[100,0,0][i];});
-  document.getElementById('mob-bg-scale-val').textContent='100%';
-  document.getElementById('mob-bg-x-val').textContent='0';
-  document.getElementById('mob-bg-y-val').textContent='0';
-  const bs = document.getElementById('bg-scale'); if(bs){bs.value=100;document.getElementById('bg-scale-val').textContent='100%';}
-  const bx = document.getElementById('bg-offset-x'); if(bx){bx.value=0;document.getElementById('bg-offset-x-val').textContent='0';}
-  const by = document.getElementById('bg-offset-y'); if(by){by.value=0;document.getElementById('bg-offset-y-val').textContent='0';}
-  drawComposite();
-};
-
-// Show/hide the background-position controls (desktop + mobile) based on whether a photo bg is active
+// Show/hide the background-position controls based on whether a photo bg is active
 function updateBgTransformVisibility() {
   const show = !!currentPhotoBg;
   const dEl = document.getElementById('bg-transform-controls');
   if (dEl) dEl.style.display = show ? 'flex' : 'none';
-  // Mobile: show/hide bg tab availability info (the bg panel content is always accessible, just show a note if no photo)
-  const mNote = document.getElementById('mob-bg-transform-note');
-  if (mNote) mNote.style.display = show ? 'none' : '';
 }
 
 /* ── PANEL TOGGLE ── */
@@ -1932,9 +1632,9 @@ window.setFormat = function(fmt, btn) {
   document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('fmt-btn-active'));
   document.querySelectorAll(`.fmt-btn[data-fmt="${fmt}"]`).forEach(b => b.classList.add('fmt-btn-active'));
   const showQ = fmt === 'jpeg' || fmt === 'webp';
-  [document.getElementById('fmt-quality-row'), document.getElementById('mob-fmt-quality-row')].forEach(el => { if(el) el.style.display = showQ ? 'flex' : 'none'; });
+  const qRow = document.getElementById('fmt-quality-row'); if(qRow) qRow.style.display = showQ ? 'flex' : 'none';
   const label = fmt.toUpperCase();
-  [document.getElementById('dl-btn-label'), document.getElementById('mob-dl-btn-label')].forEach(el => { if(el) el.textContent = 'Download ' + label; });
+  const dlLabel = document.getElementById('dl-btn-label'); if(dlLabel) dlLabel.textContent = 'Download ' + label;
 };
 
 function _getMimeAndExt() {
@@ -1996,229 +1696,6 @@ window.clearAll=function(){
   document.getElementById('editor-wrap').classList.remove('active');
   dropZone.classList.remove('hidden');
 };
-
-/* ── MOBILE UI ── */
-const isMobile = () => window.innerWidth <= 768;
-
-// Show/hide toolbar when editor opens
-const _origOpenEditor = window._origOpenEditor;
-function mobShowToolbar(show) {
-  const tb = document.getElementById('mob-toolbar');
-  if (tb) tb.classList.toggle('active', show);
-}
-
-// Intercept openEditor to also show mob toolbar
-const _openEditorOrig = openEditor;
-// We patch via observer since openEditor is defined in same scope:
-// Instead watch editor-wrap class changes
-const editorWrapEl = document.getElementById('editor-wrap');
-if (editorWrapEl) {
-  new MutationObserver(() => {
-    const active = editorWrapEl.classList.contains('active');
-    mobShowToolbar(active && isMobile());
-  }).observe(editorWrapEl, { attributes:true, attributeFilter:['class'] });
-}
-window.addEventListener('resize', () => {
-  const active = editorWrapEl && editorWrapEl.classList.contains('active');
-  mobShowToolbar(active && isMobile());
-});
-
-/* ── Sheet open/close ── */
-let currentSheet = null;
-window.openMobSheet = function(name) {
-  closeMobSheet();
-  const sheet = document.getElementById('mob-sheet-' + name);
-  const backdrop = document.getElementById('mob-backdrop');
-  if (!sheet) return;
-  currentSheet = name;
-  backdrop.classList.add('active');
-  sheet.classList.add('open');
-};
-window.closeMobSheet = function() {
-  document.querySelectorAll('.mob-sheet').forEach(s => s.classList.remove('open'));
-  document.getElementById('mob-backdrop').classList.remove('active');
-  currentSheet = null;
-};
-
-/* ── Brush mode (mobile) ── */
-window.mobSetBrush = function(mode) {
-  // Toggle off if same
-  if (brushMode === mode || mode === null) {
-    brushMode = null;
-    updateViewportCursor();
-    document.getElementById('mob-btn-erase').classList.remove('mode-erase');
-    document.getElementById('mob-btn-restore').classList.remove('mode-restore');
-    document.getElementById('mob-brush-bar').classList.remove('active');
-    // Hide sensitivity row too
-    const sensRow = document.getElementById('mob-smart-edge-sensitivity-row');
-    if (sensRow) sensRow.style.display = 'none';
-    // Also sync desktop buttons
-    document.getElementById('btn-erase').classList.remove('mode-erase');
-    document.getElementById('btn-restore').classList.remove('mode-restore');
-    // Recompute canvas size now brush bar is hidden
-    if (wCanvas) { computeBaseSize(); renderAll(); }
-    return;
-  }
-  brushMode = mode;
-  viewport.style.cursor = 'none';
-  document.getElementById('mob-btn-erase').classList.toggle('mode-erase', mode==='erase');
-  document.getElementById('mob-btn-erase').classList.toggle('mode-restore', false);
-  document.getElementById('mob-btn-restore').classList.toggle('mode-restore', mode==='restore');
-  document.getElementById('mob-btn-restore').classList.toggle('mode-erase', false);
-  document.getElementById('mob-brush-bar').classList.add('active');
-  // Sync desktop
-  document.getElementById('btn-erase').classList.toggle('mode-erase', mode==='erase');
-  document.getElementById('btn-restore').classList.toggle('mode-restore', mode==='restore');
-  // Sync brush size
-  const mobSz = document.getElementById('mob-brush-size');
-  if (mobSz) window.brushSize = +mobSz.value;
-  // Recompute canvas size now brush bar is visible
-  if (wCanvas) { computeBaseSize(); renderAll(); }
-};
-
-/* ── Tab switch (mobile) — My Photo vs Background controls ── */
-window.mobSwitchTab = function(which) {
-  const subjBtn = document.getElementById('mob-tab-subject');
-  const bgBtn   = document.getElementById('mob-tab-bg');
-  const subjPanel = document.getElementById('mob-transform-subject');
-  const bgPanel   = document.getElementById('mob-transform-bg');
-  const isSubj = which === 'subject';
-  subjPanel.style.display = isSubj ? '' : 'none';
-  bgPanel.style.display   = isSubj ? 'none' : '';
-  subjBtn.style.background = isSubj ? 'var(--gold)' : 'transparent';
-  subjBtn.style.color      = isSubj ? '#000' : 'var(--muted)';
-  subjBtn.style.borderColor= isSubj ? 'var(--gold)' : 'var(--faint)';
-  bgBtn.style.background   = isSubj ? 'transparent' : 'var(--gold)';
-  bgBtn.style.color        = isSubj ? 'var(--muted)' : '#000';
-  bgBtn.style.borderColor  = isSubj ? 'var(--faint)' : 'var(--gold)';
-};
-
-/* ── Subject transform (mobile) ── */
-window.mobUpdateSubject = function() {
-  subjectScale = +document.getElementById('mob-subject-scale').value / 100;
-  subjectX = +document.getElementById('mob-subject-x').value;
-  subjectY = +document.getElementById('mob-subject-y').value;
-  subjectRotation = +document.getElementById('mob-subject-rotate').value;
-  document.getElementById('mob-subject-scale-val').textContent = Math.round(subjectScale*100) + '%';
-  document.getElementById('mob-subject-x-val').textContent = subjectX;
-  document.getElementById('mob-subject-y-val').textContent = subjectY;
-  document.getElementById('mob-subject-rotate-val').textContent = subjectRotation + '°';
-  // Sync desktop sliders
-  const ss = document.getElementById('subject-scale'); if(ss){ss.value=Math.round(subjectScale*100);document.getElementById('subject-scale-val').textContent=Math.round(subjectScale*100)+'%';}
-  const sx = document.getElementById('subject-x'); if(sx){sx.value=subjectX;document.getElementById('subject-x-val').textContent=subjectX;}
-  const sy = document.getElementById('subject-y'); if(sy){sy.value=subjectY;document.getElementById('subject-y-val').textContent=subjectY;}
-  const sr = document.getElementById('subject-rotate'); if(sr){sr.value=subjectRotation;document.getElementById('subject-rotate-val').textContent=subjectRotation+'°';}
-  drawComposite();
-};
-window.mobResetSubject = function() {
-  subjectScale=1;subjectX=0;subjectY=0;subjectRotation=0;
-  ['mob-subject-scale','mob-subject-x','mob-subject-y','mob-subject-rotate'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=[100,0,0,0][i];});
-  document.getElementById('mob-subject-scale-val').textContent='100%';
-  document.getElementById('mob-subject-x-val').textContent='0';
-  document.getElementById('mob-subject-y-val').textContent='0';
-  document.getElementById('mob-subject-rotate-val').textContent='0°';
-  resetSubjectTransform();
-};
-
-/* ── Shadow (mobile) ── */
-window.mobUpdateShadow = function() {
-  const en = document.getElementById('mob-shadow-enable').checked;
-  // Sync to desktop shadow inputs
-  document.getElementById('shadow-enable').checked = en;
-  if (en) {
-    document.getElementById('shadow-color').value = document.getElementById('mob-shadow-color').value;
-    document.getElementById('shadow-opacity').value = document.getElementById('mob-shadow-opacity').value;
-    document.getElementById('shadow-blur').value = document.getElementById('mob-shadow-blur').value;
-    document.getElementById('shadow-distance').value = document.getElementById('mob-shadow-distance').value;
-    document.getElementById('shadow-angle').value = document.getElementById('mob-shadow-angle').value;
-  }
-  document.getElementById('mob-shadow-controls').style.display = en ? 'flex' : 'none';
-  // Update display vals
-  document.getElementById('mob-shadow-opacity-val').textContent = document.getElementById('mob-shadow-opacity').value + '%';
-  document.getElementById('mob-shadow-blur-val').textContent = document.getElementById('mob-shadow-blur').value + 'px';
-  document.getElementById('mob-shadow-distance-val').textContent = document.getElementById('mob-shadow-distance').value + 'px';
-  document.getElementById('mob-shadow-angle-val').textContent = document.getElementById('mob-shadow-angle').value + '°';
-  updateEffects();
-};
-
-/* ── Outline (mobile) ── */
-window.mobUpdateOutline = function() {
-  const en = document.getElementById('mob-outline-enable').checked;
-  document.getElementById('outline-enable').checked = en;
-  outlineEnabled = en;
-  document.getElementById('mob-outline-controls').style.display = en ? 'flex' : 'none';
-  document.getElementById('outline-controls').style.display = en ? 'flex' : 'none';
-  if (en) {
-    outlineColor = document.getElementById('mob-outline-color').value;
-    outlineWidth = +document.getElementById('mob-outline-width').value;
-    document.getElementById('outline-color').value = outlineColor;
-    document.getElementById('outline-width').value = outlineWidth;
-    document.getElementById('outline-width-val').textContent = outlineWidth + 'px';
-  }
-  document.getElementById('mob-outline-width-val').textContent = document.getElementById('mob-outline-width').value + 'px';
-  drawComposite();
-};
-
-/* ── Glow (mobile) ── */
-window.mobUpdateGlow = function() {
-  const en = document.getElementById('mob-glow-enable').checked;
-  document.getElementById('glow-enable').checked = en;
-  glowEnabled = en;
-  document.getElementById('mob-glow-controls').style.display = en ? 'flex' : 'none';
-  document.getElementById('glow-controls').style.display = en ? 'flex' : 'none';
-  if (en) {
-    glowColor = document.getElementById('mob-glow-color').value;
-    glowStrength = +document.getElementById('mob-glow-strength').value;
-    glowBlur = +document.getElementById('mob-glow-blur').value;
-    document.getElementById('glow-color').value = glowColor;
-    document.getElementById('glow-strength').value = glowStrength;
-    document.getElementById('glow-blur').value = glowBlur;
-    document.getElementById('glow-strength-val').textContent = glowStrength + '%';
-    document.getElementById('glow-blur-val').textContent = glowBlur + 'px';
-  }
-  document.getElementById('mob-glow-strength-val').textContent = document.getElementById('mob-glow-strength').value + '%';
-  document.getElementById('mob-glow-blur-val').textContent = document.getElementById('mob-glow-blur').value + 'px';
-  drawComposite();
-};
-
-/* ── BG Blur (mobile) ── */
-window.mobUpdateBgBlur = function(val) {
-  bgBlur = +val;
-  document.getElementById('mob-bg-blur-val').textContent = val + 'px';
-  document.getElementById('bg-blur').value = val;
-  document.getElementById('bg-blur-val').textContent = val + 'px';
-  drawComposite();
-};
-
-/* ── Photo search (mobile) — defined above in shared search section ── */
-/* ── Touch subject drag ── */
-// We patch into the existing touch events via a flag approach
-// When no brushMode and single finger touch, drag subject
-let mobTouchDragActive = false;
-let mobTouchDragStart = {x:0, y:0};
-
-viewport.addEventListener('touchstart', e => {
-  if (e.touches.length === 1 && !brushMode) {
-    mobTouchDragActive = true;
-    mobTouchDragStart = { x: e.touches[0].clientX - subjectX, y: e.touches[0].clientY - subjectY };
-  }
-}, { passive: true, capture: true });
-
-viewport.addEventListener('touchmove', e => {
-  if (mobTouchDragActive && e.touches.length === 1 && !brushMode) {
-    e.preventDefault();
-    subjectX = e.touches[0].clientX - mobTouchDragStart.x;
-    subjectY = e.touches[0].clientY - mobTouchDragStart.y;
-    // Sync mobile sliders
-    const sxEl = document.getElementById('mob-subject-x');
-    const syEl = document.getElementById('mob-subject-y');
-    if (sxEl) { sxEl.value = Math.max(-500, Math.min(500, Math.round(subjectX))); document.getElementById('mob-subject-x-val').textContent = Math.round(subjectX); }
-    if (syEl) { syEl.value = Math.max(-500, Math.min(500, Math.round(subjectY))); document.getElementById('mob-subject-y-val').textContent = Math.round(subjectY); }
-    drawComposite();
-  }
-}, { passive: false, capture: true });
-
-viewport.addEventListener('touchend', () => { mobTouchDragActive = false; }, { passive: true, capture: true });
 
 /* ── FAQ ── */
 window.toggleFaq = function(el) {
@@ -2391,7 +1868,7 @@ if (document.readyState === 'loading') {
   enhanceSliders();
 }
 
-// Re-scan whenever mobile sheets / panels open, in case new sliders were
+// Re-scan when panels open, in case new sliders were
 // lazily inserted — cheap no-op for already-enhanced sliders.
 window.enhanceSliders = enhanceSliders;
 
