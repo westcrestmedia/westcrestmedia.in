@@ -1309,43 +1309,53 @@ let photoSearchState = { query:'', page:1, loading:false, exhausted:false, sourc
 const PIXABAY_API_KEY = '56195183-28e328d32f454f70395ff87ba';
 const PEXELS_API_KEY  = 'o4lyPnNivfvjZiCGp6IfzVomd465edTzsZmJWlUMUHcvuJJoUmLVbAiC';
 
+// Which source worked last — start with pixabay, auto-switch on failure
+let preferredSource = 'pixabay';
+
 async function fetchPhotoPage(query, page) {
-  // Always try Pexels first (better quality & more photos),
-  // fall back to Pixabay only if Pexels fails or returns no results.
+  // Try preferred source first, then fallback to the other
+  const order = preferredSource === 'pixabay'
+    ? ['pixabay', 'pexels']
+    : ['pexels', 'pixabay'];
 
-  // -- Pexels first --
-  try {
-    const res = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,
-      { headers: { Authorization: PEXELS_API_KEY } }
-    );
-    if (!res.ok) throw new Error('pexels ' + res.status);
-    const data = await res.json();
-    const photos = data.photos || [];
-    if (!photos.length) throw new Error('empty');
-    return {
-      photos: photos.map(p => ({ thumb: p.src.medium, full: p.src.large2x || p.src.large, label: p.photographer })),
-      source: 'pexels',
-      hasMore: !!data.next_page
-    };
-  } catch(e) { console.warn('Pexels failed, trying Pixabay:', e.message); }
+  for (const src of order) {
+    if (src === 'pixabay') {
+      try {
+        const res = await fetch(
+          `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`
+        );
+        if (!res.ok) throw new Error('pixabay ' + res.status);
+        const data = await res.json();
+        const hits = data.hits || [];
+        if (!hits.length) throw new Error('empty');
+        preferredSource = 'pixabay'; // mark as working
+        return {
+          photos: hits.map(p => ({ thumb: p.webformatURL, full: p.largeImageURL, label: p.user })),
+          source: 'pixabay',
+          hasMore: data.totalHits > page * 18
+        };
+      } catch(e) { console.warn('Pixabay failed:', e.message); }
+    }
 
-  // -- Pixabay fallback --
-  try {
-    const res = await fetch(
-      `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`
-    );
-    if (!res.ok) throw new Error('pixabay ' + res.status);
-    const data = await res.json();
-    const hits = data.hits || [];
-    if (!hits.length) throw new Error('empty');
-    return {
-      photos: hits.map(p => ({ thumb: p.webformatURL, full: p.largeImageURL, label: p.user })),
-      source: 'pixabay',
-      hasMore: data.totalHits > page * 18
-    };
-  } catch(e) { console.warn('Pixabay also failed:', e.message); }
-
+    if (src === 'pexels') {
+      try {
+        const res = await fetch(
+          `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,
+          { headers: { Authorization: PEXELS_API_KEY } }
+        );
+        if (!res.ok) throw new Error('pexels ' + res.status);
+        const data = await res.json();
+        const photos = data.photos || [];
+        if (!photos.length) throw new Error('empty');
+        preferredSource = 'pexels'; // mark as working
+        return {
+          photos: photos.map(p => ({ thumb: p.src.small, full: p.src.large, label: p.photographer })),
+          source: 'pexels',
+          hasMore: !!data.next_page
+        };
+      } catch(e) { console.warn('Pexels failed:', e.message); }
+    }
+  }
   return null;
 }
 
@@ -1775,94 +1785,21 @@ function _getQuality() {
 
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
-  // Bake latest wCanvas edits into resultCanvas
   if(wCanvas){
     const cvs=document.createElement('canvas');cvs.width=wCanvas.width;cvs.height=wCanvas.height;
     cvs.getContext('2d').drawImage(wCanvas,0,0);
     item.resultCanvas=cvs;
   }
-  // Always sync bgSnapshot from current display state before exporting
-  // so shadow/bg/effects applied on this session are included immediately
-  if(item.bgSnapshot && dc.width > 0 && dc.height > 0){
-    item.bgSnapshot.dcWidth  = dc.width;
-    item.bgSnapshot.dcHeight = dc.height;
-    item.bgSnapshot.photoBg       = currentPhotoBg;
-    item.bgSnapshot.bgColor       = currentBgColor;
-    item.bgSnapshot.bgBlur        = bgBlur;
-    item.bgSnapshot.bgScale       = bgScale;
-    item.bgSnapshot.bgOffsetX     = bgOffsetX;
-    item.bgSnapshot.bgOffsetY     = bgOffsetY;
-    item.bgSnapshot.shadowEnabled = shadowEnabled;
-    item.bgSnapshot.shadowColor   = shadowColor;
-    item.bgSnapshot.shadowOpacity = shadowOpacity;
-    item.bgSnapshot.shadowBlur    = shadowBlur;
-    item.bgSnapshot.shadowDistance= shadowDistance;
-    item.bgSnapshot.shadowAngle   = shadowAngle;
-    item.bgSnapshot.outlineEnabled= outlineEnabled;
-    item.bgSnapshot.outlineColor  = outlineColor;
-    item.bgSnapshot.outlineWidth  = outlineWidth;
-    item.bgSnapshot.glowEnabled   = glowEnabled;
-    item.bgSnapshot.glowColor     = glowColor;
-    item.bgSnapshot.glowStrength  = glowStrength;
-    item.bgSnapshot.glowBlur      = glowBlur;
-    item.bgSnapshot.featherRadius = featherRadius;
-    item.bgSnapshot.subjectScale  = subjectScale;
-    item.bgSnapshot.subjectX      = subjectX;
-    item.bgSnapshot.subjectY      = subjectY;
-    item.bgSnapshot.subjectRotation = subjectRotation;
-    item.bgSnapshot.flipX         = flipX;
-    item.bgSnapshot.flipY         = flipY;
-  } else if(!item.bgSnapshot) {
-    // First-time download with no snapshot yet — build one from current state
-    item.bgSnapshot = {
-      dcWidth: dc.width, dcHeight: dc.height,
-      photoBg: currentPhotoBg, bgColor: currentBgColor,
-      bgBlur, bgScale, bgOffsetX, bgOffsetY,
-      shadowEnabled, shadowColor, shadowOpacity, shadowBlur, shadowDistance, shadowAngle,
-      outlineEnabled, outlineColor, outlineWidth,
-      glowEnabled, glowColor, glowStrength, glowBlur,
-      featherRadius, subjectScale, subjectX, subjectY, subjectRotation, flipX, flipY
-    };
-  }
   const exp=buildExportCanvasForItem(item);
   const {mime,ext}=_getMimeAndExt();
-  exp.toBlob(b=>{
-    if(!b){console.error('toBlob returned null');return;}
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(b);
-    a.download=`wc-bg-removed.${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a);},1000);
-  },mime,_getQuality());
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-bg-removed.${ext}`;a.click();},mime,_getQuality());
 };
 
 window.downloadItem=async function(id){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
-  // If this is the active item, sync latest state into bgSnapshot before exporting
-  if(item.id == activeId && dc.width > 0){
-    if(!item.bgSnapshot) item.bgSnapshot = {};
-    Object.assign(item.bgSnapshot, {
-      dcWidth: dc.width, dcHeight: dc.height,
-      photoBg: currentPhotoBg, bgColor: currentBgColor,
-      bgBlur, bgScale, bgOffsetX, bgOffsetY,
-      shadowEnabled, shadowColor, shadowOpacity, shadowBlur, shadowDistance, shadowAngle,
-      outlineEnabled, outlineColor, outlineWidth,
-      glowEnabled, glowColor, glowStrength, glowBlur,
-      featherRadius, subjectScale, subjectX, subjectY, subjectRotation, flipX, flipY
-    });
-  }
   const exp=buildExportCanvasForItem(item);
   const {mime,ext}=_getMimeAndExt();
-  exp.toBlob(b=>{
-    if(!b){console.error('toBlob returned null');return;}
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(b);
-    a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a);},1000);
-  },mime,_getQuality());
+  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;a.click();},mime,_getQuality());
 };
 
 window.downloadAll=async function(){
@@ -2256,145 +2193,3 @@ if (document.readyState === 'loading') {
 // lazily inserted — cheap no-op for already-enhanced sliders.
 window.enhanceSliders = enhanceSliders;
 
-/* ══════════════════════════════════════════════════════════
-   BEFORE / AFTER COMPARISON SLIDER
-   - Drag divider left/right to reveal original vs result
-   - Works on desktop (mousemove) and mobile (touchmove)
-   - Activates only when an image is loaded in editor
-   ══════════════════════════════════════════════════════════ */
-window._compareMode = false;
-let _compareDragging = false;
-let _comparePos = 0.5; // 0–1, position of divider
-
-window.toggleCompare = function() {
-  if (!wCanvas) return;
-  window._compareMode = !window._compareMode;
-
-  const overlay     = document.getElementById('compare-overlay');
-  const btn         = document.getElementById('btn-compare');
-  const mobBtn      = document.getElementById('mob-btn-compare');
-  const displayC    = document.getElementById('display-canvas');
-  const cursorC     = document.getElementById('cursor-canvas');
-
-  if (window._compareMode) {
-    _drawCompareCanvases();
-    overlay.style.display       = 'block';
-    overlay.style.pointerEvents = 'auto';
-    displayC.style.opacity = '0';
-    cursorC.style.opacity  = '0';
-    if (btn) { btn.style.borderColor = 'var(--gold)'; btn.style.color = 'var(--gold)'; btn.style.background = 'var(--gold-dim)'; }
-    if (mobBtn) { mobBtn.style.color = 'var(--gold)'; }
-    _setDividerPos(_comparePos);
-  } else {
-    overlay.style.display       = 'none';
-    overlay.style.pointerEvents = 'none';
-    displayC.style.opacity = '1';
-    cursorC.style.opacity  = '1';
-    if (btn) { btn.style.borderColor = 'var(--faint)'; btn.style.color = 'var(--text-muted)'; btn.style.background = 'var(--dark-4)'; }
-    if (mobBtn) { mobBtn.style.color = ''; }
-  }
-};
-
-function _drawCompareCanvases() {
-  if (!wCanvas || !origData) return;
-  const vp = document.getElementById('canvas-viewport');
-  const dw = vp.clientWidth, dh = vp.clientHeight;
-
-  // Original (before) canvas
-  const origC = document.getElementById('compare-original-canvas');
-  origC.width = dw; origC.height = dh;
-  const oCtx = origC.getContext('2d');
-  oCtx.clearRect(0, 0, dw, dh);
-  // Draw checker pattern for original too
-  _drawChecker(oCtx, dw, dh);
-  // Draw original image centred/fitted
-  const ratio = Math.min(dw / origData.width, dh / origData.height, 1);
-  const iw = origData.width * ratio, ih = origData.height * ratio;
-  const ix = (dw - iw) / 2, iy = (dh - ih) / 2;
-  const tmpC = document.createElement('canvas');
-  tmpC.width = origData.width; tmpC.height = origData.height;
-  tmpC.getContext('2d').putImageData(origData, 0, 0);
-  oCtx.drawImage(tmpC, ix, iy, iw, ih);
-
-  // Result (after) canvas — copy from display-canvas
-  const resC = document.getElementById('compare-result-canvas');
-  resC.width = dw; resC.height = dh;
-  const rCtx = resC.getContext('2d');
-  rCtx.clearRect(0, 0, dw, dh);
-  // Copy current display-canvas (which has bg + subject composite)
-  const dc = document.getElementById('display-canvas');
-  rCtx.drawImage(dc, parseInt(dc.style.left || panX || 0), parseInt(dc.style.top || panY || 0));
-}
-
-function _drawChecker(ctx, w, h) {
-  const sz = 12;
-  for (let y = 0; y < h; y += sz) {
-    for (let x = 0; x < w; x += sz) {
-      ctx.fillStyle = ((x / sz + y / sz) % 2 === 0) ? '#2a2a2a' : '#1a1a1a';
-      ctx.fillRect(x, y, sz, sz);
-    }
-  }
-}
-
-function _setDividerPos(pos) {
-  const overlay  = document.getElementById('compare-overlay');
-  const divider  = document.getElementById('compare-divider');
-  const clipDiv  = document.getElementById('compare-clip');
-  if (!overlay || !divider || !clipDiv) return;
-  const w = overlay.clientWidth;
-  const px = Math.round(pos * w);
-  divider.style.left = px + 'px';
-  clipDiv.style.left = px + 'px';
-  clipDiv.style.right = '0';
-  clipDiv.style.width  = (w - px) + 'px';
-}
-
-// Mouse events on compare overlay
-(function() {
-  function getOverlay() { return document.getElementById('compare-overlay'); }
-
-  function onMove(clientX) {
-    if (!_compareDragging) return;
-    const overlay = getOverlay();
-    if (!overlay) return;
-    const rect = overlay.getBoundingClientRect();
-    _comparePos = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-    _setDividerPos(_comparePos);
-  }
-
-  document.addEventListener('mousedown', e => {
-    if (!window._compareMode) return;
-    const overlay = getOverlay();
-    if (overlay && overlay.contains(e.target)) { _compareDragging = true; }
-  });
-  document.addEventListener('mousemove', e => { if (_compareDragging) onMove(e.clientX); });
-  document.addEventListener('mouseup',   () => { _compareDragging = false; });
-
-  document.addEventListener('touchstart', e => {
-    if (!window._compareMode) return;
-    const overlay = getOverlay();
-    if (overlay && overlay.contains(e.target)) { _compareDragging = true; }
-  }, { passive: true });
-  document.addEventListener('touchmove', e => {
-    if (_compareDragging && e.touches.length === 1) onMove(e.touches[0].clientX);
-  }, { passive: true });
-  document.addEventListener('touchend', () => { _compareDragging = false; });
-})();
-
-// Show/hide Compare button when editor opens/closes
-// Patch into openEditor to show the button
-const _origOpenEditor = window.__openEditorPatched;
-(function patchEditorForCompare() {
-  const editorWrap = document.getElementById('editor-wrap');
-  if (!editorWrap) { setTimeout(patchEditorForCompare, 200); return; }
-  const observer = new MutationObserver(() => {
-    const isActive = editorWrap.classList.contains('active');
-    const btn    = document.getElementById('btn-compare');
-    const mobBtn = document.getElementById('mob-btn-compare');
-    if (btn)    btn.style.display    = isActive ? '' : 'none';
-    if (mobBtn) mobBtn.style.display = isActive ? '' : 'none';
-    // If compare mode was on and editor re-opened, turn it off
-    if (!isActive && window._compareMode) window.toggleCompare();
-  });
-  observer.observe(editorWrap, { attributes: true, attributeFilter: ['class'] });
-})();
