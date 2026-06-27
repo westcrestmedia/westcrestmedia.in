@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
 
 Sitemap: https://westcrestmedia.in/sitemap.xml
