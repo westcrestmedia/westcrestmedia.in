@@ -140,6 +140,8 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
 .brush-btn:hover{border-color:var(--gold-border);color:var(--text);}
 .brush-btn.mode-erase{border-color:#e55;color:#ff7070;background:rgba(220,50,50,.12);}
 .brush-btn.mode-restore{border-color:#5b5;color:#7ddb7d;background:rgba(50,180,50,.12);}
+.brush-btn.mode-smart-edge{border-color:var(--gold-border);color:var(--gold);background:var(--gold-dim);}
+.brush-btn.mode-smart-edge svg{stroke:var(--gold);}
 .dot-e{width:7px;height:7px;border-radius:50%;background:#e55;flex-shrink:0;}
 .dot-r{width:7px;height:7px;border-radius:50%;background:#5b5;flex-shrink:0;}
 .undo-btn{display:flex;align-items:center;gap:4px;background:var(--dark-4);border:1.5px solid var(--faint);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:6px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;flex-shrink:0;}
@@ -360,6 +362,7 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
   .mob-tb-btn:hover,.mob-tb-btn.active{color:var(--gold);background:var(--gold-dim);}
   .mob-tb-btn.mode-erase{color:#ff7070;background:rgba(220,50,50,.12);}
   .mob-tb-btn.mode-restore{color:#7ddb7d;background:rgba(50,180,50,.12);}
+  .mob-tb-btn.mode-smart-edge{color:var(--gold);background:var(--gold-dim);}
 
   /* ── Brush size bar (shown above toolbar when erase/restore active) ── */
   .mob-brush-bar{

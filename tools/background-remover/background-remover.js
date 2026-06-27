@@ -25,6 +25,8 @@ let batchLoopRunning = false; // hard lock — prevents two addFiles() calls fro
 let wCanvas = null, wCtx = null, origData = null;
 let brushMode = null, isPainting = false;
 window.brushSize = 20;
+window.smartEdge = false;       // desktop smart-edge toggle
+window.smartEdgeTol = 30;       // colour tolerance 0-100
 const MAX_UNDO = 30;
 let undoStack = [], redoStack = [];
 let zoom = 1, panX = 0, panY = 0, isPanning = false, panStart = {x:0,y:0}, spaceDown = false;
@@ -1079,7 +1081,9 @@ function drawCursorRing(x, y, touchScreenX, touchScreenY) {
   }
 
   const ringR = (window.brushSize / 2) * scaleX;
-  const col = brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
+  const col = window.smartEdge && !isMob
+    ? 'rgba(201,168,76,.95)'                            // gold = smart-edge mode
+    : brushMode === 'erase' ? 'rgba(255,80,80,.9)' : 'rgba(80,220,80,.9)';
 
   cctx.save();
   // Outer ring
@@ -1134,16 +1138,13 @@ function showMobileLupe(dcX, dcY, screenX, screenY) {
   const lupe = getLupe();
 
   // Position loupe: float near the brush ring (which is already offset above finger)
-  // Place it to the left or right of the brush ring, avoiding edges
   const lupeSize = LUPE_SIZE;
   const margin = 12;
   const vpRect = viewport.getBoundingClientRect();
 
   // Ring is at screenY - MOB_CURSOR_OFFSET_PX (above finger)
   const ringScreenY = screenY - MOB_CURSOR_OFFSET_PX;
-  // Try to position loupe centred on the ring vertically
   let lupeTop = ringScreenY - lupeSize / 2;
-  // Clamp within viewport
   lupeTop = Math.max(vpRect.top + margin, Math.min(vpRect.bottom - lupeSize - margin, lupeTop));
 
   // Horizontal: place on opposite side from finger
@@ -1218,17 +1219,22 @@ function hideMobileLupe() {
 function applyBrush(dispX,dispY){
   // dc coords → wCanvas coords, accounting for subjectScale+offset
   const dw=dc.width, dh=dc.height;
-  // Subject is drawn on dc at: origin=(dw-dw*subjectScale)/2+subjectX, size=dw*subjectScale
   const drawnW = dw * subjectScale;
   const drawnH = dh * subjectScale;
   const originX = (dw - drawnW) / 2 + subjectX;
   const originY = (dh - drawnH) / 2 + subjectY;
-  // Map dispX/Y back into wCanvas pixel space
   const fx = ((dispX - originX) / drawnW) * wCanvas.width;
   const fy = ((dispY - originY) / drawnH) * wCanvas.height;
-  // Brush radius in wCanvas pixels (screen px / subjectScale / zoom → wCanvas px)
   const sx = wCanvas.width / drawnW;
   const fr = (window.brushSize / 2) * sx;
+
+  // ── Smart Edge Mode ──────────────────────────────────────────────
+  if (window.smartEdge) {
+    applySmartEdgeBrush(fx, fy, fr);
+    drawComposite(); drawCursorRing(dispX, dispY, _brushScreenX, _brushScreenY);
+    return;
+  }
+  // ── Normal brush ─────────────────────────────────────────────────
   if (brushMode==='erase'){
     wCtx.save(); wCtx.globalCompositeOperation='destination-out';
     wCtx.beginPath(); wCtx.arc(fx,fy,fr,0,Math.PI*2); wCtx.fillStyle='rgba(0,0,0,1)'; wCtx.fill(); wCtx.restore();
@@ -1245,6 +1251,64 @@ function applyBrush(dispX,dispY){
     wCtx.putImageData(patch,x0,y0);
   }
   drawComposite(); drawCursorRing(dispX, dispY, _brushScreenX, _brushScreenY);
+}
+
+/* ── SMART EDGE BRUSH ───────────────────────────────────────────────
+   Samples the original image colour at the brush centre, then only
+   affects pixels inside the circle whose colour is "similar enough"
+   (within tolerance) to that seed colour.  Pixels near edges (colour
+   change) are left alone, giving a clean, edge-respecting stroke.
+   ----------------------------------------------------------------- */
+function applySmartEdgeBrush(fx, fy, fr) {
+  const W = wCanvas.width, H = wCanvas.height;
+  const x0 = Math.max(0, Math.floor(fx - fr));
+  const y0 = Math.max(0, Math.floor(fy - fr));
+  const x1 = Math.min(W, Math.ceil(fx + fr));
+  const y1 = Math.min(H, Math.ceil(fy + fr));
+  const pw = x1 - x0, ph = y1 - y0;
+  if (pw <= 0 || ph <= 0) return;
+
+  // Sample seed colour from origData at brush centre
+  const seedX = Math.max(0, Math.min(W-1, Math.round(fx)));
+  const seedY = Math.max(0, Math.min(H-1, Math.round(fy)));
+  const od = origData.data, oW = origData.width;
+  const si = (seedY * oW + seedX) * 4;
+  const sr = od[si], sg = od[si+1], sb = od[si+2];
+
+  // Tolerance: 0-100 slider → 0-441 colour distance (max possible = sqrt(255²*3) ≈ 441)
+  const tol = (window.smartEdgeTol / 100) * 441;
+
+  const patch = wCtx.getImageData(x0, y0, pw, ph);
+  const d = patch.data;
+
+  for (let py = 0; py < ph; py++) {
+    for (let px = 0; px < pw; px++) {
+      // Must be inside circle
+      if ((x0+px-fx)**2 + (y0+py-fy)**2 > fr*fr) continue;
+
+      // Colour similarity check against origData
+      const oi = ((y0+py) * oW + (x0+px)) * 4;
+      const dr = od[oi]-sr, dg = od[oi+1]-sg, db = od[oi+2]-sb;
+      const dist = Math.sqrt(dr*dr + dg*dg + db*db);
+      if (dist > tol) continue;   // edge pixel — skip
+
+      // Soft falloff at tolerance boundary (smooth transition)
+      const strength = tol > 0 ? Math.max(0, 1 - dist / tol) : 1;
+
+      const i = (py * pw + px) * 4;
+      if (brushMode === 'erase') {
+        // Reduce alpha proportional to strength
+        d[i+3] = Math.max(0, d[i+3] - Math.round(255 * strength));
+      } else {
+        // Restore: blend from origData weighted by strength
+        d[i]   = Math.round(d[i]   * (1-strength) + od[oi]   * strength);
+        d[i+1] = Math.round(d[i+1] * (1-strength) + od[oi+1] * strength);
+        d[i+2] = Math.round(d[i+2] * (1-strength) + od[oi+2] * strength);
+        d[i+3] = Math.round(d[i+3] * (1-strength) + od[oi+3] * strength);
+      }
+    }
+  }
+  wCtx.putImageData(patch, x0, y0);
 }
 let _brushScreenX, _brushScreenY;
 
@@ -1288,6 +1352,51 @@ window.redoStroke=function(){
 window.setBrushMode=function(mode){
   if(brushMode===mode){brushMode=null;updateViewportCursor();document.getElementById('btn-erase').classList.remove('mode-erase');document.getElementById('btn-restore').classList.remove('mode-restore');}
   else{brushMode=mode;viewport.style.cursor='none';document.getElementById('btn-erase').classList.toggle('mode-erase',mode==='erase');document.getElementById('btn-restore').classList.toggle('mode-restore',mode==='restore');document.getElementById('btn-erase').classList.toggle('mode-restore',false);document.getElementById('btn-restore').classList.toggle('mode-erase',false);}
+};
+
+/* ── SMART EDGE TOGGLE ── */
+window.toggleSmartEdge = function() {
+  window.smartEdge = !window.smartEdge;
+  const btn = document.getElementById('btn-smart-edge');
+  const tolWrap = document.getElementById('smart-edge-tol-wrap');
+  if (window.smartEdge) {
+    btn.classList.add('mode-smart-edge');
+    if (tolWrap) tolWrap.style.display = '';
+  } else {
+    btn.classList.remove('mode-smart-edge');
+    if (tolWrap) tolWrap.style.display = 'none';
+  }
+};
+
+/* ── SMART EDGE TOGGLE (mobile) ── */
+window.mobToggleSmartEdge = function() {
+  window.smartEdge = !window.smartEdge;
+
+  // Mobile toolbar button
+  const mobBtn = document.getElementById('mob-btn-smart-edge');
+  if (mobBtn) mobBtn.classList.toggle('mode-smart-edge', window.smartEdge);
+
+  // Desktop button sync
+  const deskBtn = document.getElementById('btn-smart-edge');
+  if (deskBtn) {
+    deskBtn.classList.toggle('mode-smart-edge', window.smartEdge);
+    const tolWrap = document.getElementById('smart-edge-tol-wrap');
+    if (tolWrap) tolWrap.style.display = window.smartEdge ? '' : 'none';
+  }
+
+  // Show/hide sensitivity controls in mob-brush-bar
+  const seLabel = document.getElementById('mob-se-tol-label');
+  const seSlider = document.getElementById('mob-smart-edge-tol');
+  const seVal = document.getElementById('mob-se-tol-val');
+  const showSe = window.smartEdge ? '' : 'none';
+  if (seLabel)  seLabel.style.display  = showSe;
+  if (seSlider) seSlider.style.display = showSe;
+  if (seVal)    seVal.style.display    = showSe;
+
+  // Auto-open brush bar so sensitivity slider is immediately accessible
+  if (window.smartEdge && brushMode) {
+    document.getElementById('mob-brush-bar').classList.add('active');
+  }
 };
 
 /* ── BG COLOR ── */
@@ -1954,6 +2063,11 @@ window.mobSetBrush = function(mode) {
   // Sync brush size
   const mobSz = document.getElementById('mob-brush-size');
   if (mobSz) window.brushSize = +mobSz.value;
+  // Sync smart edge sensitivity slider value
+  const mobTol = document.getElementById('mob-smart-edge-tol');
+  if (mobTol) mobTol.value = window.smartEdgeTol;
+  const mobTolVal = document.getElementById('mob-se-tol-val');
+  if (mobTolVal) mobTolVal.textContent = window.smartEdgeTol;
 };
 
 /* ── Tab switch (mobile) — My Photo vs Background controls ── */
