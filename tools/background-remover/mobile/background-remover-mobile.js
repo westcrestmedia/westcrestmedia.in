@@ -173,6 +173,8 @@ async function processItem(item){
     let lastStage='';
     const blob=await rbFn(item.file,{
       publicPath:`https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
+      proxyToWorker:false,
+      numThreads:1,
       progress:(key,cur,tot)=>{
         const p=tot>0?Math.round(cur/tot*100):0;
         const bar=document.getElementById('prog-'+item.id);if(bar)bar.style.width=p+'%';
@@ -192,10 +194,17 @@ async function processItem(item){
     if(showOnCanvas){setStage(4);document.getElementById('proc-pct').textContent='✓';document.getElementById('proc-title').textContent='Done!';await new Promise(r=>setTimeout(r,500));}
   }catch(err){
     item.status='error';console.error(err);
-    if(showOnCanvas){document.getElementById('proc-pct').textContent='!';document.getElementById('proc-title').textContent='Something went wrong';}
+    if(showOnCanvas){document.getElementById('proc-pct').textContent='!';document.getElementById('proc-title').textContent='Something went wrong. Try again.';}
   }
   if(showOnCanvas)ov.classList.remove('active');
-  if(showOnCanvas&&item.status==='error'&&!wCanvas)document.getElementById('editor-wrap').classList.remove('active');
+  // Only hide editor if there's truly nothing to show (no previous canvas loaded)
+  if(showOnCanvas&&item.status==='error'&&!wCanvas){
+    document.getElementById('editor-wrap').classList.remove('active');
+    showToolbar(false);
+  } else if(showOnCanvas&&item.status==='error'&&wCanvas){
+    // Keep toolbar visible — previous image still loaded
+    showToolbar(true);
+  }
   renderBatchGrid();
 }
 
@@ -1008,8 +1017,12 @@ window.toggleFaq=function(el){
 window.addEventListener('resize',()=>{if(wCanvas){computeBaseSize();renderAll();}});
 
 /* ── Expose for editor observer ── */
+let _toolbarDebounce=null;
 new MutationObserver(()=>{
-  const active=document.getElementById('editor-wrap').classList.contains('active');
-  showToolbar(active);
+  clearTimeout(_toolbarDebounce);
+  _toolbarDebounce=setTimeout(()=>{
+    const active=document.getElementById('editor-wrap').classList.contains('active');
+    showToolbar(active);
+  },50);
 }).observe(document.getElementById('editor-wrap'),{attributes:true,attributeFilter:['class']});
 
