@@ -2277,19 +2277,17 @@ window.toggleCompare = function() {
   const cursorC     = document.getElementById('cursor-canvas');
 
   if (window._compareMode) {
-    // Populate compare canvases
     _drawCompareCanvases();
     overlay.style.display       = 'block';
-    overlay.style.pointerEvents = 'auto';   // allow drag on overlay
+    overlay.style.pointerEvents = 'auto';
     displayC.style.opacity = '0';
     cursorC.style.opacity  = '0';
-    // Style button as active
     if (btn) { btn.style.borderColor = 'var(--gold)'; btn.style.color = 'var(--gold)'; btn.style.background = 'var(--gold-dim)'; }
     if (mobBtn) { mobBtn.style.color = 'var(--gold)'; }
     _setDividerPos(_comparePos);
   } else {
     overlay.style.display       = 'none';
-    overlay.style.pointerEvents = 'none';   // never intercept clicks/drag when hidden
+    overlay.style.pointerEvents = 'none';
     displayC.style.opacity = '1';
     cursorC.style.opacity  = '1';
     if (btn) { btn.style.borderColor = 'var(--faint)'; btn.style.color = 'var(--text-muted)'; btn.style.background = 'var(--dark-4)'; }
@@ -2367,7 +2365,6 @@ function _setDividerPos(pos) {
   document.addEventListener('mousedown', e => {
     if (!window._compareMode) return;
     const overlay = getOverlay();
-    // Only activate drag on overlay - do NOT preventDefault so file inputs still work
     if (overlay && overlay.contains(e.target)) { _compareDragging = true; }
   });
   document.addEventListener('mousemove', e => { if (_compareDragging) onMove(e.clientX); });

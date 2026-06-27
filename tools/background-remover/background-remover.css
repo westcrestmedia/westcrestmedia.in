@@ -493,7 +493,7 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
   user-select: none;
   touch-action: none;
   z-index: 10;
-  pointer-events: none; /* disabled by default; JS sets to auto when compare is active */
+  pointer-events: none;
 }
 #compare-original-canvas,
 #compare-result-canvas {
