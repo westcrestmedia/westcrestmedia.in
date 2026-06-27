@@ -1309,53 +1309,43 @@ let photoSearchState = { query:'', page:1, loading:false, exhausted:false, sourc
 const PIXABAY_API_KEY = '56195183-28e328d32f454f70395ff87ba';
 const PEXELS_API_KEY  = 'o4lyPnNivfvjZiCGp6IfzVomd465edTzsZmJWlUMUHcvuJJoUmLVbAiC';
 
-// Which source worked last — start with pixabay, auto-switch on failure
-let preferredSource = 'pixabay';
-
 async function fetchPhotoPage(query, page) {
-  // Try preferred source first, then fallback to the other
-  const order = preferredSource === 'pixabay'
-    ? ['pixabay', 'pexels']
-    : ['pexels', 'pixabay'];
+  // Always try Pexels first (better quality & more photos),
+  // fall back to Pixabay only if Pexels fails or returns no results.
 
-  for (const src of order) {
-    if (src === 'pixabay') {
-      try {
-        const res = await fetch(
-          `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`
-        );
-        if (!res.ok) throw new Error('pixabay ' + res.status);
-        const data = await res.json();
-        const hits = data.hits || [];
-        if (!hits.length) throw new Error('empty');
-        preferredSource = 'pixabay'; // mark as working
-        return {
-          photos: hits.map(p => ({ thumb: p.webformatURL, full: p.largeImageURL, label: p.user })),
-          source: 'pixabay',
-          hasMore: data.totalHits > page * 18
-        };
-      } catch(e) { console.warn('Pixabay failed:', e.message); }
-    }
+  // -- Pexels first --
+  try {
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,
+      { headers: { Authorization: PEXELS_API_KEY } }
+    );
+    if (!res.ok) throw new Error('pexels ' + res.status);
+    const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) throw new Error('empty');
+    return {
+      photos: photos.map(p => ({ thumb: p.src.medium, full: p.src.large2x || p.src.large, label: p.photographer })),
+      source: 'pexels',
+      hasMore: !!data.next_page
+    };
+  } catch(e) { console.warn('Pexels failed, trying Pixabay:', e.message); }
 
-    if (src === 'pexels') {
-      try {
-        const res = await fetch(
-          `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}&orientation=landscape`,
-          { headers: { Authorization: PEXELS_API_KEY } }
-        );
-        if (!res.ok) throw new Error('pexels ' + res.status);
-        const data = await res.json();
-        const photos = data.photos || [];
-        if (!photos.length) throw new Error('empty');
-        preferredSource = 'pexels'; // mark as working
-        return {
-          photos: photos.map(p => ({ thumb: p.src.small, full: p.src.large, label: p.photographer })),
-          source: 'pexels',
-          hasMore: !!data.next_page
-        };
-      } catch(e) { console.warn('Pexels failed:', e.message); }
-    }
-  }
+  // -- Pixabay fallback --
+  try {
+    const res = await fetch(
+      `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=horizontal&per_page=18&page=${page}&safesearch=true`
+    );
+    if (!res.ok) throw new Error('pixabay ' + res.status);
+    const data = await res.json();
+    const hits = data.hits || [];
+    if (!hits.length) throw new Error('empty');
+    return {
+      photos: hits.map(p => ({ thumb: p.webformatURL, full: p.largeImageURL, label: p.user })),
+      source: 'pixabay',
+      hasMore: data.totalHits > page * 18
+    };
+  } catch(e) { console.warn('Pixabay also failed:', e.message); }
+
   return null;
 }
 
@@ -1785,21 +1775,94 @@ function _getQuality() {
 
 window.downloadCurrent=function(){
   const item=items.find(i=>i.id==activeId); if(!item)return;
+  // Bake latest wCanvas edits into resultCanvas
   if(wCanvas){
     const cvs=document.createElement('canvas');cvs.width=wCanvas.width;cvs.height=wCanvas.height;
     cvs.getContext('2d').drawImage(wCanvas,0,0);
     item.resultCanvas=cvs;
   }
+  // Always sync bgSnapshot from current display state before exporting
+  // so shadow/bg/effects applied on this session are included immediately
+  if(item.bgSnapshot && dc.width > 0 && dc.height > 0){
+    item.bgSnapshot.dcWidth  = dc.width;
+    item.bgSnapshot.dcHeight = dc.height;
+    item.bgSnapshot.photoBg       = currentPhotoBg;
+    item.bgSnapshot.bgColor       = currentBgColor;
+    item.bgSnapshot.bgBlur        = bgBlur;
+    item.bgSnapshot.bgScale       = bgScale;
+    item.bgSnapshot.bgOffsetX     = bgOffsetX;
+    item.bgSnapshot.bgOffsetY     = bgOffsetY;
+    item.bgSnapshot.shadowEnabled = shadowEnabled;
+    item.bgSnapshot.shadowColor   = shadowColor;
+    item.bgSnapshot.shadowOpacity = shadowOpacity;
+    item.bgSnapshot.shadowBlur    = shadowBlur;
+    item.bgSnapshot.shadowDistance= shadowDistance;
+    item.bgSnapshot.shadowAngle   = shadowAngle;
+    item.bgSnapshot.outlineEnabled= outlineEnabled;
+    item.bgSnapshot.outlineColor  = outlineColor;
+    item.bgSnapshot.outlineWidth  = outlineWidth;
+    item.bgSnapshot.glowEnabled   = glowEnabled;
+    item.bgSnapshot.glowColor     = glowColor;
+    item.bgSnapshot.glowStrength  = glowStrength;
+    item.bgSnapshot.glowBlur      = glowBlur;
+    item.bgSnapshot.featherRadius = featherRadius;
+    item.bgSnapshot.subjectScale  = subjectScale;
+    item.bgSnapshot.subjectX      = subjectX;
+    item.bgSnapshot.subjectY      = subjectY;
+    item.bgSnapshot.subjectRotation = subjectRotation;
+    item.bgSnapshot.flipX         = flipX;
+    item.bgSnapshot.flipY         = flipY;
+  } else if(!item.bgSnapshot) {
+    // First-time download with no snapshot yet — build one from current state
+    item.bgSnapshot = {
+      dcWidth: dc.width, dcHeight: dc.height,
+      photoBg: currentPhotoBg, bgColor: currentBgColor,
+      bgBlur, bgScale, bgOffsetX, bgOffsetY,
+      shadowEnabled, shadowColor, shadowOpacity, shadowBlur, shadowDistance, shadowAngle,
+      outlineEnabled, outlineColor, outlineWidth,
+      glowEnabled, glowColor, glowStrength, glowBlur,
+      featherRadius, subjectScale, subjectX, subjectY, subjectRotation, flipX, flipY
+    };
+  }
   const exp=buildExportCanvasForItem(item);
   const {mime,ext}=_getMimeAndExt();
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-bg-removed.${ext}`;a.click();},mime,_getQuality());
+  exp.toBlob(b=>{
+    if(!b){console.error('toBlob returned null');return;}
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download=`wc-bg-removed.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a);},1000);
+  },mime,_getQuality());
 };
 
 window.downloadItem=async function(id){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
+  // If this is the active item, sync latest state into bgSnapshot before exporting
+  if(item.id == activeId && dc.width > 0){
+    if(!item.bgSnapshot) item.bgSnapshot = {};
+    Object.assign(item.bgSnapshot, {
+      dcWidth: dc.width, dcHeight: dc.height,
+      photoBg: currentPhotoBg, bgColor: currentBgColor,
+      bgBlur, bgScale, bgOffsetX, bgOffsetY,
+      shadowEnabled, shadowColor, shadowOpacity, shadowBlur, shadowDistance, shadowAngle,
+      outlineEnabled, outlineColor, outlineWidth,
+      glowEnabled, glowColor, glowStrength, glowBlur,
+      featherRadius, subjectScale, subjectX, subjectY, subjectRotation, flipX, flipY
+    });
+  }
   const exp=buildExportCanvasForItem(item);
   const {mime,ext}=_getMimeAndExt();
-  exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;a.click();},mime,_getQuality());
+  exp.toBlob(b=>{
+    if(!b){console.error('toBlob returned null');return;}
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download=`wc-${item.name.replace(/\.[^.]+$/,'')}-nobg.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);document.body.removeChild(a);},1000);
+  },mime,_getQuality());
 };
 
 window.downloadAll=async function(){
@@ -2216,7 +2279,8 @@ window.toggleCompare = function() {
   if (window._compareMode) {
     // Populate compare canvases
     _drawCompareCanvases();
-    overlay.style.display = 'block';
+    overlay.style.display       = 'block';
+    overlay.style.pointerEvents = 'auto';   // allow drag on overlay
     displayC.style.opacity = '0';
     cursorC.style.opacity  = '0';
     // Style button as active
@@ -2224,7 +2288,8 @@ window.toggleCompare = function() {
     if (mobBtn) { mobBtn.style.color = 'var(--gold)'; }
     _setDividerPos(_comparePos);
   } else {
-    overlay.style.display  = 'none';
+    overlay.style.display       = 'none';
+    overlay.style.pointerEvents = 'none';   // never intercept clicks/drag when hidden
     displayC.style.opacity = '1';
     cursorC.style.opacity  = '1';
     if (btn) { btn.style.borderColor = 'var(--faint)'; btn.style.color = 'var(--text-muted)'; btn.style.background = 'var(--dark-4)'; }
@@ -2302,7 +2367,8 @@ function _setDividerPos(pos) {
   document.addEventListener('mousedown', e => {
     if (!window._compareMode) return;
     const overlay = getOverlay();
-    if (overlay && overlay.contains(e.target)) { _compareDragging = true; e.preventDefault(); }
+    // Only activate drag on overlay - do NOT preventDefault so file inputs still work
+    if (overlay && overlay.contains(e.target)) { _compareDragging = true; }
   });
   document.addEventListener('mousemove', e => { if (_compareDragging) onMove(e.clientX); });
   document.addEventListener('mouseup',   () => { _compareDragging = false; });
