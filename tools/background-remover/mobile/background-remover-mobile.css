@@ -177,7 +177,6 @@
   z-index:300;
   background:rgba(14,14,20,0.97);
   border-top:1px solid var(--gold-border);
-  backdrop-filter:blur(16px);
   padding:4px 0 calc(4px + env(safe-area-inset-bottom));
 }
 .mob-toolbar.active{display:block;}
@@ -214,7 +213,6 @@
   border-top:1px solid var(--gold-border);
   flex-direction:column;
   gap:0;
-  backdrop-filter:blur(10px);
 }
 .mob-brush-bar.active{display:flex;}
 
@@ -271,7 +269,7 @@
 ══════════════════════════════ */
 .mob-sheet-backdrop{
   display:none;position:fixed;inset:0;z-index:400;
-  background:rgba(0,0,0,0.55);
+  background:transparent;
 }
 .mob-sheet-backdrop.active{display:block;}
 
@@ -280,7 +278,7 @@
   background:var(--dark-2);
   border-top:1px solid var(--gold-border);
   border-radius:18px 18px 0 0;
-  max-height:82vh;
+  max-height:58vh;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   transform:translateY(100%);
