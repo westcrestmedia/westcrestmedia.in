@@ -1005,6 +1005,8 @@ function attachEvents() {
     if (!rawPos) return;
     const brushPos = mobOffsetBrushPos(rawPos, t);
     _brushScreenX = t.clientX; _brushScreenY = t.clientY;
+    // Show cursor ring + loupe immediately on touch (not just on move)
+    drawCursorRing(brushPos.x, brushPos.y, t.clientX, t.clientY);
     isPainting=true; saveSnapshot(); applyBrush(brushPos.x, brushPos.y, rawPos, t);
   },{passive:false});
   viewport.addEventListener('touchmove', e => {
@@ -1108,8 +1110,8 @@ function drawCursorRing(x, y, touchScreenX, touchScreenY) {
 /* ── MOBILE MAGNIFIER LOUPE ── */
 let _lupeEl = null;
 let _lupeCtx = null;
-const LUPE_SIZE = 120;    // px, CSS size of the loupe square
-const LUPE_ZOOM = 3;      // magnification inside loupe
+const LUPE_SIZE = 140;    // px, CSS size of the loupe square
+const LUPE_ZOOM = 4;      // magnification inside loupe
 const LUPE_CANVAS_PX = LUPE_SIZE * (window.devicePixelRatio || 1);
 
 function getLupe() {
@@ -1131,12 +1133,32 @@ function showMobileLupe(dcX, dcY, screenX, screenY) {
   if (!wCanvas || !dc) return;
   const lupe = getLupe();
 
-  // Position loupe: top-right corner, but flip left if finger is on right side
+  // Position loupe: float near the brush ring (which is already offset above finger)
+  // Place it to the left or right of the brush ring, avoiding edges
+  const lupeSize = LUPE_SIZE;
+  const margin = 12;
   const vpRect = viewport.getBoundingClientRect();
+
+  // Ring is at screenY - MOB_CURSOR_OFFSET_PX (above finger)
+  const ringScreenY = screenY - MOB_CURSOR_OFFSET_PX;
+  // Try to position loupe centred on the ring vertically
+  let lupeTop = ringScreenY - lupeSize / 2;
+  // Clamp within viewport
+  lupeTop = Math.max(vpRect.top + margin, Math.min(vpRect.bottom - lupeSize - margin, lupeTop));
+
+  // Horizontal: place on opposite side from finger
   const fingerRight = screenX > vpRect.left + vpRect.width / 2;
-  lupe.style.left  = fingerRight ? (vpRect.left + 8) + 'px' : 'auto';
-  lupe.style.right = fingerRight ? 'auto' : (window.innerWidth - vpRect.right + 8) + 'px';
-  lupe.style.top   = (vpRect.top + 8) + 'px';
+  let lupeLeft;
+  if (fingerRight) {
+    lupeLeft = vpRect.left + margin;
+  } else {
+    lupeLeft = vpRect.right - lupeSize - margin;
+  }
+
+  lupe.style.position = 'fixed';
+  lupe.style.left  = lupeLeft + 'px';
+  lupe.style.top   = lupeTop + 'px';
+  lupe.style.right = 'auto';
   lupe.style.display = 'block';
 
   const ctx = _lupeCtx;

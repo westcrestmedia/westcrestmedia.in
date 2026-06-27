@@ -446,8 +446,8 @@ input.slider-val-input:focus{border-color:var(--gold-border);color:var(--gold);}
   display: none;
   position: fixed;
   z-index: 9999;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 0 0 2px var(--gold-border), 0 4px 20px rgba(0,0,0,.7);
