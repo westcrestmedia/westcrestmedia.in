@@ -4,9 +4,9 @@
 <!-- Mobile redirect: send small-screen / touch-primary devices to the dedicated mobile build -->
 <script>
   (function () {
-    var isSmallScreen = window.innerWidth <= 768;
-    var isTouchPrimary = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    if (isSmallScreen && isTouchPrimary) {
+    var isSmallScreen = window.innerWidth <= 900;
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isSmallScreen && isTouch) {
       window.location.replace('./mobile/' + window.location.search + window.location.hash);
     }
   })();
