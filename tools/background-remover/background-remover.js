@@ -28,6 +28,8 @@ window.brushSize = 20;
 const MAX_UNDO = 30;
 let undoStack = [], redoStack = [];
 let zoom = 1, panX = 0, panY = 0, isPanning = false, panStart = {x:0,y:0}, spaceDown = false;
+let beforeAfterMode = false; // true = showing original "before" image
+window._baMode = false;
 let baseW = 0, baseH = 0;
 let currentBgColor = 'transparent';
 let currentPhotoBg = null; // { url, img }
@@ -610,6 +612,16 @@ async function openEditor(id, noScroll) {
   origCtx.drawImage(origImg, 0, 0, wCanvas.width, wCanvas.height);
   origData = origCtx.getImageData(0, 0, wCanvas.width, wCanvas.height);
 
+  // Reset before/after mode on new image
+  beforeAfterMode = false; window._baMode = false;
+  const baBtn = document.getElementById('btn-before-after');
+  if (baBtn) {
+    baBtn.style.display = '';
+    baBtn.style.borderColor = 'var(--faint)';
+    baBtn.style.color = 'var(--text-muted)';
+    baBtn.textContent = '⇔ Before/After';
+  }
+
   attachEvents();
   requestAnimationFrame(() => {
     computeBaseSize();
@@ -656,11 +668,30 @@ function renderAll() {
   document.getElementById('zoom-level').textContent = Math.round(zoom*100)+'%';
   const resetBtn = document.getElementById('btn-zoom-reset');
   if (resetBtn) resetBtn.style.opacity = zoom === 1 && panX === 0 && panY === 0 ? '0.35' : '1';
+  if (beforeAfterMode) {
+    // Re-draw original image at new canvas size
+    const dw2 = dc.width, dh2 = dc.height;
+    dctx.clearRect(0, 0, dw2, dh2);
+    const tmpC2 = document.createElement('canvas');
+    tmpC2.width = origData.width; tmpC2.height = origData.height;
+    tmpC2.getContext('2d').putImageData(origData, 0, 0);
+    dctx.drawImage(tmpC2, 0, 0, dw2, dh2);
+    return;
+  }
   drawComposite();
 }
 
 function drawComposite() {
   if (!wCanvas) return;
+  // In before/after mode: skip redraw (original is already shown), but silently update snapshot
+  if (beforeAfterMode) {
+    // Still update bgSnapshot so state is saved, then return
+    const activeItem = items.find(i=>i.id==activeId);
+    if (activeItem) {
+      activeItem.bgSnapshot = { photoBg:currentPhotoBg, bgColor:currentBgColor, bgBlur, bgScale, bgOffsetX, bgOffsetY, shadowEnabled, shadowColor, shadowOpacity, shadowBlur, shadowDistance, shadowAngle, outlineEnabled, outlineColor, outlineWidth, glowEnabled, glowColor, glowStrength, glowBlur, featherRadius, subjectScale, subjectX, subjectY, subjectRotation, flipX, flipY, dcWidth:dc.width, dcHeight:dc.height };
+    }
+    return;
+  }
   const dw = dc.width, dh = dc.height;
   dctx.clearRect(0, 0, dw, dh);
 
@@ -2055,7 +2086,36 @@ window.toggleFaq = function(el) {
   el.classList.toggle('open');
 };
 
-/* ── UTIL ── */
+/* ── BEFORE / AFTER COMPARE ── */
+window.toggleBeforeAfter = function() {
+  if (!wCanvas || !origData) return;
+  beforeAfterMode = !beforeAfterMode;
+  window._baMode = beforeAfterMode;
+  const baBtn = document.getElementById('btn-before-after');
+  if (baBtn) {
+    if (beforeAfterMode) {
+      baBtn.style.borderColor = 'var(--gold-border)';
+      baBtn.style.color = 'var(--gold)';
+      baBtn.style.background = 'var(--gold-dim)';
+      baBtn.textContent = '← Back to Result';
+      // Draw original image on display canvas
+      const dw = dc.width, dh = dc.height;
+      dctx.clearRect(0, 0, dw, dh);
+      const tmpC = document.createElement('canvas');
+      tmpC.width = origData.width; tmpC.height = origData.height;
+      tmpC.getContext('2d').putImageData(origData, 0, 0);
+      dctx.drawImage(tmpC, 0, 0, dw, dh);
+    } else {
+      baBtn.style.borderColor = 'var(--faint)';
+      baBtn.style.color = 'var(--text-muted)';
+      baBtn.style.background = 'var(--dark-4)';
+      baBtn.textContent = '⇔ Before/After';
+      drawComposite(); // restore result view
+    }
+  }
+};
+
+// ── UTIL ── */
 function loadImg(src){
   return new Promise((res, rej) => {
     const i = new Image();

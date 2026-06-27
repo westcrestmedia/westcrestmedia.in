@@ -237,6 +237,7 @@
       <div class="canvas-card-header">
         <span class="canvas-label" id="editor-filename">Edit Image</span>
         <div style="display:flex;align-items:center;gap:6px;">
+          <button id="btn-before-after" onclick="toggleBeforeAfter()" title="Toggle Before/After preview" style="font-size:10px;padding:2px 8px;background:var(--dark-4);border:1.5px solid var(--faint);color:var(--text-muted);border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;display:none;" onmouseover="this.style.borderColor='var(--gold-border)';this.style.color='var(--gold)'" onmouseout="if(!window._baMode){this.style.borderColor='var(--faint)';this.style.color='var(--text-muted)'}">⇔ Before/After</button>
           <span style="font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;" id="zoom-level">100%</span>
           <button id="btn-zoom-reset" onclick="resetZoom()" title="Reset zoom to 100%" style="font-size:10px;padding:2px 8px;background:var(--dark-4);border:1.5px solid var(--faint);color:var(--text-muted);border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold-border)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--faint)';this.style.color='var(--text-muted)'">Reset</button>
         </div>
