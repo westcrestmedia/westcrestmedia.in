@@ -956,15 +956,25 @@
 
 <!-- Mobile brush size bar -->
 <div class="mob-brush-bar" id="mob-brush-bar">
-  <span>Size</span>
-  <input type="range" id="mob-brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('mob-brush-size-val').textContent=this.value+'px'">
-  <span id="mob-brush-size-val">20px</span>
-  <div class="brush-undo-group">
-    <button class="undo-btn" onclick="undoStroke()">↩</button>
-    <button class="undo-btn" onclick="redoStroke()">↪</button>
+  <!-- Row 1: Size + Undo/Redo + Smart Edge toggle + Close -->
+  <div class="mob-brush-bar-row1">
+    <span class="mob-brush-bar-label">Size</span>
+    <input type="range" id="mob-brush-size" min="4" max="80" value="20" oninput="window.brushSize=+this.value;document.getElementById('mob-brush-size-val').textContent=this.value+'px'">
+    <span id="mob-brush-size-val">20px</span>
+    <div class="brush-undo-group">
+      <button class="undo-btn" onclick="undoStroke()">↩</button>
+      <button class="undo-btn" onclick="redoStroke()">↪</button>
+    </div>
+    <button id="mob-smart-edge-pill" onclick="mobToggleSmartEdge()" title="Smart Edge toggle">⌇ Smart</button>
+    <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--text-muted);" onclick="mobSetBrush(null)">✕</button>
   </div>
-  <button id="mob-smart-edge-pill" onclick="mobToggleSmartEdge()" title="Smart Edge — long-press Erase/Restore to toggle">⌇ Smart</button>
-  <button class="mob-tb-btn" style="flex-shrink:0;padding:4px 8px;font-size:10px;color:var(--text-muted);" onclick="mobSetBrush(null)">✕</button>
+  <!-- Row 2: Sensitivity (only when Smart Edge is ON) -->
+  <div class="mob-brush-bar-row2" id="mob-smart-edge-sensitivity-row" style="display:none;">
+    <span class="mob-brush-bar-label" style="color:var(--gold);">Sensitivity</span>
+    <input type="range" id="mob-smart-edge-tol" min="1" max="100" value="30"
+      oninput="window.smartEdgeTol=+this.value;document.getElementById('smart-edge-tol').value=this.value;document.getElementById('smart-edge-tol-val').textContent=this.value;document.getElementById('mob-smart-edge-tol-val').textContent=this.value;">
+    <span id="mob-smart-edge-tol-val" style="font-size:11px;color:var(--gold);min-width:24px;text-align:right;font-family:'DM Mono',monospace;font-weight:600;">30</span>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

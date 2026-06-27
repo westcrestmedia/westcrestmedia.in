@@ -641,9 +641,20 @@ function computeBaseSize() {
   const vp = viewport.parentElement;
   const maxW = vp.clientWidth || 600;
   const isPortrait = wCanvas.height > wCanvas.width;
-  // On mobile: portrait images get up to 90vh, landscape 65vh
-  const maxHFactor = isMobile() ? (isPortrait ? 0.92 : 0.75) : 0.72;
-  const maxH = Math.min(window.innerHeight * maxHFactor, isPortrait ? 1100 : 650);
+
+  // On mobile: subtract fixed UI bars from available height so canvas bottom is never hidden
+  let reservedH = 0;
+  if (isMobile()) {
+    const tb = document.getElementById('mob-toolbar');
+    const bb = document.getElementById('mob-brush-bar');
+    const tbH = (tb && tb.offsetHeight) ? tb.offsetHeight : 72;
+    const bbH = (bb && bb.classList.contains('active') && bb.offsetHeight) ? bb.offsetHeight : 0;
+    reservedH = tbH + bbH + 8; // +8px breathing room
+  }
+
+  const availH = window.innerHeight - reservedH;
+  const maxHFactor = isMobile() ? (isPortrait ? 0.88 : 0.70) : 0.72;
+  const maxH = Math.min(availH * maxHFactor, isPortrait ? 1100 : 650);
   const ratio = Math.min(maxW / wCanvas.width, maxH / wCanvas.height, 1);
   baseW = Math.round(wCanvas.width * ratio);
   baseH = Math.round(wCanvas.height * ratio);
@@ -1381,6 +1392,10 @@ window.mobToggleSmartEdge = function() {
   const pill = document.getElementById('mob-smart-edge-pill');
   if (pill) pill.classList.toggle('active', window.smartEdge);
 
+  // Show/hide mobile sensitivity row
+  const mobSensRow = document.getElementById('mob-smart-edge-sensitivity-row');
+  if (mobSensRow) mobSensRow.style.display = window.smartEdge ? 'flex' : 'none';
+
   // Sync desktop button + sensitivity wrap
   const deskBtn = document.getElementById('btn-smart-edge');
   if (deskBtn) deskBtn.classList.toggle('mode-smart-edge', window.smartEdge);
@@ -2034,9 +2049,14 @@ window.mobSetBrush = function(mode) {
     document.getElementById('mob-btn-erase').classList.remove('mode-erase');
     document.getElementById('mob-btn-restore').classList.remove('mode-restore');
     document.getElementById('mob-brush-bar').classList.remove('active');
+    // Hide sensitivity row too
+    const sensRow = document.getElementById('mob-smart-edge-sensitivity-row');
+    if (sensRow) sensRow.style.display = 'none';
     // Also sync desktop buttons
     document.getElementById('btn-erase').classList.remove('mode-erase');
     document.getElementById('btn-restore').classList.remove('mode-restore');
+    // Recompute canvas size now brush bar is hidden
+    if (wCanvas) { computeBaseSize(); renderAll(); }
     return;
   }
   brushMode = mode;
@@ -2052,6 +2072,8 @@ window.mobSetBrush = function(mode) {
   // Sync brush size
   const mobSz = document.getElementById('mob-brush-size');
   if (mobSz) window.brushSize = +mobSz.value;
+  // Recompute canvas size now brush bar is visible
+  if (wCanvas) { computeBaseSize(); renderAll(); }
 };
 
 /* ── Tab switch (mobile) — My Photo vs Background controls ── */
