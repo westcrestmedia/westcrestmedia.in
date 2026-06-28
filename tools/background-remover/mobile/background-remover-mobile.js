@@ -468,8 +468,9 @@ function touchToCanvas(t){
   const cy=(t.clientY-dr.top)*scaleY;
   // Allow a bit below canvas bottom (finger offset) but block sides
   if(cx<0||cx>dc.width)return null;
-  if(cy<-dc.height*0.1||cy>dc.height*1.2)return null;
-  return{x:Math.max(0,Math.min(dc.width,cx)), y:Math.max(0,Math.min(dc.height,cy))};
+  // Y ko clamp mat karo — thumb canvas se neeche ja sake taaki circle bottom pe aaye
+  if(cy<-dc.height*0.5)return null;
+  return{x:Math.max(0,Math.min(dc.width,cx)), y:cy};
 }
 
 // Brush position: circle hamesha 80px upar thumb se
@@ -482,8 +483,7 @@ function brushPos(rawDcPos){
   const offsetDc=BRUSH_OFFSET_PX*scaleY;
   // rawDcPos.y canvas ke andar ho ya bahar — circle hamesha offset upar
   // Math.min(dc.height, rawDcPos.y) se canvas ke neeche bahar gaye thumb ko clamp karo
-  const clampedY=Math.min(dc.height, rawDcPos.y);
-  return{x:rawDcPos.x, y:Math.max(0, clampedY-offsetDc)};
+  return{x:rawDcPos.x, y:Math.max(0, rawDcPos.y-offsetDc)};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
