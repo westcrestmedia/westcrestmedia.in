@@ -341,7 +341,14 @@ function renderAll(){
 }
 
 /* ── Draw Composite ── */
+let _rafPending = false;
 window.drawComposite = function drawComposite(){
+  if(!wCanvas)return;
+  if(_rafPending)return;
+  _rafPending=true;
+  requestAnimationFrame(()=>{ _rafPending=false; _drawCompositeNow(); });
+};
+function _drawCompositeNow(){
   if(!wCanvas)return;
   const dw=dc.width,dh=dc.height;
   dctx.clearRect(0,0,dw,dh);
@@ -411,7 +418,7 @@ window.drawComposite = function drawComposite(){
   // Save snapshot
   const ai=items.find(i=>i.id==activeId);
   if(ai)ai.bgSnapshot={photoBg:currentPhotoBg,bgColor:currentBgColor,bgBlur,bgScale,bgOffsetX,bgOffsetY,shadowEnabled,shadowColor,shadowOpacity,shadowBlur,shadowDistance,shadowAngle,outlineEnabled,outlineColor,outlineWidth,glowEnabled,glowColor,glowStrength,glowBlur,featherRadius,subjectScale,subjectX,subjectY,subjectRotation,flipX,flipY,dcWidth:dc.width,dcHeight:dc.height};
-};
+}
 
 /* ── Feather ── */
 function applyFeather(src,radius){

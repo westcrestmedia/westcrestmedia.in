@@ -230,6 +230,14 @@
       <div class="photo-loading">Search for photos above</div>
     </div>
 
+    <div class="form-row" style="margin-top:8px;">
+      <span class="form-label">Blur</span>
+      <div class="slider-wrap">
+        <input type="range" id="mob-bg-blur" min="0" max="30" value="0"
+          oninput="bgBlur=+this.value;document.getElementById('mob-bg-blur-val').textContent=this.value+'px';drawComposite();">
+        <span class="slider-val" id="mob-bg-blur-val">0px</span>
+      </div>
+    </div>
     <p class="photo-attribution" id="mob-photo-attr">Photos via <a href="https://pixabay.com" target="_blank">Pixabay</a></p>
   </div>
 </div>
@@ -320,21 +328,6 @@
   <div class="mob-sheet-handle"></div>
   <div class="mob-sheet-title">✦ Effects</div>
   <div class="mob-sheet-body" style="padding:0;">
-
-    <!-- Background Blur -->
-    <div class="fx-sub-header" onclick="toggleFxSub('mob-fx-bgblur')">
-      <span>💧 Background Blur</span><span id="mob-fx-bgblur-arr">▾</span>
-    </div>
-    <div class="fx-sub-body" id="mob-fx-bgblur">
-      <div class="form-row">
-        <span class="form-label">Amount</span>
-        <div class="slider-wrap">
-          <input type="range" id="mob-bg-blur" min="0" max="30" value="0"
-            oninput="bgBlur=+this.value;document.getElementById('mob-bg-blur-val').textContent=this.value+'px';drawComposite();">
-          <span class="slider-val" id="mob-bg-blur-val">0px</span>
-        </div>
-      </div>
-    </div>
 
     <!-- Drop Shadow -->
     <div class="fx-sub-header" onclick="toggleFxSub('mob-fx-shadow')">
