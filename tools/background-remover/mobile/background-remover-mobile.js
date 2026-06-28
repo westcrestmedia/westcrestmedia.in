@@ -348,12 +348,21 @@ window.drawComposite = function drawComposite(){
 
   // Background
   if(currentPhotoBg&&currentPhotoBg.img){
-    dctx.save();
-    if(bgBlur>0)dctx.filter=`blur(${bgBlur}px)`;
     const iw=currentPhotoBg.img.naturalWidth,ih=currentPhotoBg.img.naturalHeight;
     const sc=Math.max(dw/iw,dh/ih)*bgScale;
-    dctx.drawImage(currentPhotoBg.img,(dw-iw*sc)/2+bgOffsetX,(dh-ih*sc)/2+bgOffsetY,iw*sc,ih*sc);
-    dctx.filter='none';dctx.restore();
+    const bx=(dw-iw*sc)/2+bgOffsetX, by=(dh-ih*sc)/2+bgOffsetY;
+    if(bgBlur>0){
+      // Draw to offscreen canvas with padding to avoid blur edge clipping
+      const pad=bgBlur*3;
+      const ofc=document.createElement('canvas');ofc.width=dw+pad*2;ofc.height=dh+pad*2;
+      const ofctx=ofc.getContext('2d');
+      ofctx.filter=`blur(${bgBlur}px)`;
+      ofctx.drawImage(currentPhotoBg.img,bx+pad,by+pad,iw*sc,ih*sc);
+      ofctx.filter='none';
+      dctx.drawImage(ofc,-pad,-pad,dw+pad*2,dh+pad*2);
+    } else {
+      dctx.drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
+    }
   } else if(currentBgColor!=='transparent'){
     dctx.save();
     const grad=getGradient(currentBgColor,dw,dh);
@@ -497,22 +506,47 @@ function brushPos(rawDcPos){
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
 
+/* ── Subject drag state ── */
+let isDraggingSubject=false;
+let dragSubjectStart={x:0,y:0,sx:0,sy:0};
+
+// Check if touch point hits the subject area on canvas
+function touchHitsSubject(clientX,clientY){
+  if(!wCanvas)return false;
+  const dr=dc.getBoundingClientRect();
+  if(dr.width===0)return false;
+  // Convert screen px to base canvas px
+  const scaleX=baseW/dr.width, scaleY=baseH/dr.height;
+  const bx=(clientX-dr.left)*scaleX/zoom, by=(clientY-dr.top)*scaleY/zoom;
+  const sw=baseW*subjectScale, sh=baseH*subjectScale;
+  const sx=(baseW-sw)/2+subjectX, sy=(baseH-sh)/2+subjectY;
+  return bx>=sx&&bx<=sx+sw&&by>=sy&&by<=sy+sh;
+}
+
 viewport.addEventListener('touchstart',e=>{
   e.preventDefault();
   lastTouches=e.touches;
 
   // 2-finger pinch start
-  if(e.touches.length===2){isPainting=false;isPanning=false;return;}
+  if(e.touches.length===2){isPainting=false;isPanning=false;isDraggingSubject=false;return;}
+
+  const t=e.touches[0];
 
   if(!brushMode){
-    // Pan
-    isPanning=true;
-    panStart={x:e.touches[0].clientX-panX, y:e.touches[0].clientY-panY};
+    // Check if finger is on subject — drag to move
+    if(touchHitsSubject(t.clientX,t.clientY)){
+      isDraggingSubject=true;isPanning=false;
+      dragSubjectStart={x:t.clientX,y:t.clientY,sx:subjectX,sy:subjectY};
+      viewport.style.cursor='grabbing';
+      return;
+    }
+    // Pan canvas
+    isPanning=true;isDraggingSubject=false;
+    panStart={x:t.clientX-panX, y:t.clientY-panY};
     return;
   }
 
   // Brush start
-  const t=e.touches[0];
   const raw=touchToCanvas(t);
   if(!raw)return;
   const bp=brushPos(raw);
@@ -538,25 +572,40 @@ viewport.addEventListener('touchmove',e=>{
     zoom=nz;lastTouches=e.touches;renderAll();return;
   }
 
+  const t=e.touches[0];
+
+  // Subject drag move
+  if(isDraggingSubject&&e.touches.length===1){
+    const dr=dc.getBoundingClientRect();
+    // Convert screen delta to base-canvas delta (account for zoom)
+    const scaleX=baseW/(dr.width||baseW), scaleY=baseH/(dr.height||baseH);
+    const dx=(t.clientX-dragSubjectStart.x)*scaleX/zoom;
+    const dy=(t.clientY-dragSubjectStart.y)*scaleY/zoom;
+    subjectX=Math.round(dragSubjectStart.sx+dx);
+    subjectY=Math.round(dragSubjectStart.sy+dy);
+    // Sync sliders
+    const elx=document.getElementById('mob-subj-x'),ely=document.getElementById('mob-subj-y');
+    const evx=document.getElementById('mob-subj-x-v'),evy=document.getElementById('mob-subj-y-v');
+    if(elx){elx.value=subjectX;if(evx)evx.textContent=subjectX;}
+    if(ely){ely.value=subjectY;if(evy)evy.textContent=subjectY;}
+    drawComposite();return;
+  }
+
   if(isPanning&&e.touches.length===1){
-    panX=e.touches[0].clientX-panStart.x;panY=e.touches[0].clientY-panStart.y;renderAll();return;
+    panX=t.clientX-panStart.x;panY=t.clientY-panStart.y;renderAll();return;
   }
 
   if(!brushMode||!isPainting){clearCursor();return;}
 
-  const t=e.touches[0];
   let raw=touchToCanvas(t);
   // Agar thumb canvas ke neeche bahar chali gayi — clamp karke painting jari rakho
-  // Yahi "death zone" fix hai: canvas boundary ke bahar bhi brush chalega
   if(!raw){
     const dr=dc.getBoundingClientRect();
     if(dr.width===0||dr.height===0){clearCursor();return;}
     const scaleX=dc.width/dr.width, scaleY=dc.height/dr.height;
     const cx=(t.clientX-dr.left)*scaleX;
     const cy=(t.clientY-dr.top)*scaleY;
-    // Sirf left/right bahar ho to skip karo, upar bhi skip karo
     if(cx<0||cx>dc.width||cy<-dc.height*0.5){clearCursor();return;}
-    // Neeche bahar gaya — canvas ke bottom edge pe clamp karo
     raw={x:Math.max(0,Math.min(dc.width,cx)), y:dc.height};
   }
   const bp=brushPos(raw);
@@ -567,13 +616,14 @@ viewport.addEventListener('touchmove',e=>{
 
 viewport.addEventListener('touchend',e=>{
   lastTouches=e.touches.length>0?e.touches:null;
+  if(isDraggingSubject){isDraggingSubject=false;viewport.style.cursor='';bakeToItem();}
   isPanning=false;
   if(isPainting){isPainting=false;bakeToItem();}
   clearCursor();
 },{passive:true});
 
 viewport.addEventListener('touchcancel',e=>{
-  isPanning=false;isPainting=false;lastTouches=null;clearCursor();
+  isPanning=false;isPainting=false;isDraggingSubject=false;lastTouches=null;viewport.style.cursor='';clearCursor();
 },{passive:true});
 
 /* ── Cursor Ring ── */
@@ -805,6 +855,20 @@ window.openMobSheet=function(name){
   currentSheet=name;
   document.getElementById('mob-backdrop').classList.add('active');
   sheet.classList.add('open');
+  // Inject close button if not already present
+  if(!sheet.querySelector('.mob-sheet-close-btn')){
+    const hdr=sheet.querySelector('.mob-sheet-header,.sheet-header,.mob-sheet-title,[class*="sheet-head"]');
+    const btn=document.createElement('button');
+    btn.className='mob-sheet-close-btn';
+    btn.innerHTML='✕';
+    btn.title='Close';
+    btn.style.cssText='position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text-muted);font-size:18px;line-height:1;cursor:pointer;padding:4px 6px;border-radius:6px;z-index:10;';
+    btn.onclick=()=>closeMobSheet();
+    // Ensure sheet has relative positioning for absolute close btn
+    const curPos=getComputedStyle(sheet).position;
+    if(curPos==='static')sheet.style.position='relative';
+    sheet.appendChild(btn);
+  }
 };
 window.closeMobSheet=function(){
   document.querySelectorAll('.mob-sheet').forEach(s=>s.classList.remove('open'));
@@ -1007,11 +1071,20 @@ function buildExport(item){
   const dcW0=bg.dcWidth||w,ratio=w/dcW0;
 
   if(bg.photoBg&&bg.photoBg.img){
-    ectx.save();if(bg.bgBlur>0)ectx.filter=`blur(${bg.bgBlur}px)`;
     const iw=bg.photoBg.img.naturalWidth,ih=bg.photoBg.img.naturalHeight;
     const sc=Math.max(w/iw,h/ih)*(bg.bgScale||1);
-    ectx.drawImage(bg.photoBg.img,(w-iw*sc)/2+(bg.bgOffsetX||0)*ratio,(h-ih*sc)/2+(bg.bgOffsetY||0)*ratio,iw*sc,ih*sc);
-    ectx.filter='none';ectx.restore();
+    const bx=(w-iw*sc)/2+(bg.bgOffsetX||0)*ratio, by=(h-ih*sc)/2+(bg.bgOffsetY||0)*ratio;
+    if(bg.bgBlur>0){
+      const pad=bg.bgBlur*3;
+      const ofc=document.createElement('canvas');ofc.width=w+pad*2;ofc.height=h+pad*2;
+      const ofctx=ofc.getContext('2d');
+      ofctx.filter=`blur(${bg.bgBlur}px)`;
+      ofctx.drawImage(bg.photoBg.img,bx+pad,by+pad,iw*sc,ih*sc);
+      ofctx.filter='none';
+      ectx.drawImage(ofc,-pad,-pad,w+pad*2,h+pad*2);
+    } else {
+      ectx.drawImage(bg.photoBg.img,bx,by,iw*sc,ih*sc);
+    }
   } else if(bg.bgColor&&bg.bgColor!=='transparent'){
     if(gradients[bg.bgColor]){const g=ectx.createLinearGradient(0,0,w,h);g.addColorStop(0,gradients[bg.bgColor][0]);g.addColorStop(1,gradients[bg.bgColor][1]);ectx.fillStyle=g;}
     else ectx.fillStyle=bg.bgColor;
