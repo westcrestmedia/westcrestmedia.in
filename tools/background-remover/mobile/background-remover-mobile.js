@@ -476,32 +476,25 @@ function getGradient(color,w,h){
    TOUCH EVENTS — Clean, standalone, correct
 ════════════════════════════════════════ */
 
-// Convert touch point to canvas pixel coords
-// Returns null if touch is completely outside canvas
+// Convert touch point to screen-px coords relative to dc element top-left.
+// dc is rendered at exactly dc.width x dc.height CSS px (no CSS scaling), so
+// screen-px == dc-canvas-px. We keep coords in screen-px here and let
+// applyBrush do the single authoritative conversion to wCanvas space.
 function touchToCanvas(t){
   const dr=dc.getBoundingClientRect();
   if(dr.width===0||dr.height===0)return null;
-  const scaleX=dc.width/dr.width, scaleY=dc.height/dr.height;
-  const cx=(t.clientX-dr.left)*scaleX;
-  const cy=(t.clientY-dr.top)*scaleY;
-  // Allow a bit below canvas bottom (finger offset) but block sides
-  if(cx<0||cx>dc.width)return null;
-  // Y ko clamp mat karo — thumb canvas se neeche ja sake taaki circle bottom pe aaye
-  if(cy<-dc.height*0.5)return null;
-  return{x:Math.max(0,Math.min(dc.width,cx)), y:cy};
+  const cx=t.clientX-dr.left;
+  const cy=t.clientY-dr.top;
+  if(cx<0||cx>dr.width)return null;
+  if(cy<-dr.height*0.5)return null;
+  return{x:Math.max(0,Math.min(dr.width,cx)), y:cy};
 }
 
-// Brush position: circle hamesha 80px upar thumb se
-// Canvas boundary se bahar nahi jaayega — clamp karo
+// Brush circle sits BRUSH_OFFSET_PX screen-px above the finger.
+// Input/output: screen-px relative to dc element top-left.
 const BRUSH_OFFSET_PX=80;
-function brushPos(rawDcPos){
-  const dr=dc.getBoundingClientRect();
-  if(dr.width===0)return rawDcPos;
-  const scaleY=dc.height/dr.height;
-  const offsetDc=BRUSH_OFFSET_PX*scaleY;
-  // rawDcPos.y canvas ke andar ho ya bahar — circle hamesha offset upar
-  // Math.min(dc.height, rawDcPos.y) se canvas ke neeche bahar gaye thumb ko clamp karo
-  return{x:rawDcPos.x, y:Math.max(0, rawDcPos.y-offsetDc)};
+function brushPos(rawScreenPos){
+  return{x:rawScreenPos.x, y:Math.max(0, rawScreenPos.y-BRUSH_OFFSET_PX)};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
@@ -598,15 +591,14 @@ viewport.addEventListener('touchmove',e=>{
   if(!brushMode||!isPainting){clearCursor();return;}
 
   let raw=touchToCanvas(t);
-  // Agar thumb canvas ke neeche bahar chali gayi — clamp karke painting jari rakho
+  // Thumb canvas ke neeche gayi — clamp to bottom edge in screen-px
   if(!raw){
     const dr=dc.getBoundingClientRect();
     if(dr.width===0||dr.height===0){clearCursor();return;}
-    const scaleX=dc.width/dr.width, scaleY=dc.height/dr.height;
-    const cx=(t.clientX-dr.left)*scaleX;
-    const cy=(t.clientY-dr.top)*scaleY;
-    if(cx<0||cx>dc.width||cy<-dc.height*0.5){clearCursor();return;}
-    raw={x:Math.max(0,Math.min(dc.width,cx)), y:dc.height};
+    const cx=t.clientX-dr.left;
+    const cy=t.clientY-dr.top;
+    if(cx<0||cx>dr.width||cy<-dr.height*0.5){clearCursor();return;}
+    raw={x:Math.max(0,Math.min(dr.width,cx)), y:dr.height};
   }
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
@@ -629,32 +621,24 @@ viewport.addEventListener('touchcancel',e=>{
 /* ── Cursor Ring ── */
 function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);hideLupe();}
 
-function drawCursorRing(dcX,dcY,screenX,screenY){
+function drawCursorRing(screenX,screenY,fingerScreenX,fingerScreenY){
   cctx.clearRect(0,0,cc.width,cc.height);
   if(!brushMode)return;
-  const dr=dc.getBoundingClientRect();
-  // Ring radius in dc-canvas pixels: brushSize is in screen-px, convert to dc-px
-  // dc.style.width = dc.width px on screen (1:1 mapping since no CSS scaling)
-  // So dc-px per screen-px = dc.width / dr.width ≈ 1, but use actual ratio
-  const screenToDc=dc.width/(dr.width||dc.width);
-  // Brush radius in screen pixels = brushSize/2
-  // In dc-canvas pixels = brushSize/2 * screenToDc
-  // But we want ring to match actual erase area:
-  // erase radius in wCanvas = fr = brushSize/2 * wCanvas.width/(baseW*subjectScale)
-  // erase radius in dc pixels = fr * (baseW*subjectScale*zoom / wCanvas.width) * screenToDc ... simplifies to:
-  const ringR=(window.brushSize/2)*zoom*screenToDc;
+  // cc canvas == dc canvas in size (baseW*zoom x baseH*zoom) and rendered 1:1 CSS px.
+  // screenX/Y are px relative to dc/cc element top-left (== dc canvas px coords).
+  // Ring radius must match actual painted area. Brush radius in wCanvas px = brushSize/2 * (wCanvas.width/(baseW*subjectScale))
+  // That same area on screen = brushSize/2 * (wCanvas.width/(baseW*subjectScale)) * (baseW*subjectScale*zoom/wCanvas.width) = brushSize/2 * zoom
+  const ringR=(window.brushSize/2)*zoom;
   const col=window.smartEdge?'rgba(201,168,76,.95)':brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)';
   cctx.save();
-  cctx.beginPath();cctx.arc(dcX,dcY,ringR,0,Math.PI*2);
-  cctx.strokeStyle=col;cctx.lineWidth=Math.max(1.5,1.5*screenToDc);cctx.stroke();
-  cctx.beginPath();cctx.arc(dcX,dcY,Math.max(1.5,1.5*screenToDc),0,Math.PI*2);
+  cctx.beginPath();cctx.arc(screenX,screenY,ringR,0,Math.PI*2);
+  cctx.strokeStyle=col;cctx.lineWidth=1.5;cctx.stroke();
+  cctx.beginPath();cctx.arc(screenX,screenY,1.5,0,Math.PI*2);
   cctx.fillStyle=col;cctx.fill();
-  // Line from ring bottom to where finger actually is
-  const offsetDc=BRUSH_OFFSET_PX*screenToDc;
-  cctx.beginPath();cctx.moveTo(dcX,dcY+ringR);cctx.lineTo(dcX,dcY+ringR+(offsetDc*0.8));
-  cctx.strokeStyle=col;cctx.lineWidth=Math.max(1,screenToDc);cctx.setLineDash([3*screenToDc,3*screenToDc]);cctx.stroke();cctx.setLineDash([]);
+  cctx.beginPath();cctx.moveTo(screenX,screenY+ringR);cctx.lineTo(screenX,screenY+ringR+BRUSH_OFFSET_PX*0.8);
+  cctx.strokeStyle=col;cctx.lineWidth=1;cctx.setLineDash([3,3]);cctx.stroke();cctx.setLineDash([]);
   cctx.restore();
-  showLupe(dcX,dcY,screenX,screenY);
+  showLupe(screenX,screenY,fingerScreenX,fingerScreenY);
 }
 
 /* ── Loupe ── */
@@ -667,14 +651,14 @@ lupeCvs.width=lupeSize*lupeDpr;lupeCvs.height=lupeSize*lupeDpr;
 lupeCvs.style.width=lupeSize+'px';lupeCvs.style.height=lupeSize+'px';
 const lupeCtx=lupeCvs.getContext('2d');
 
-function showLupe(dcX,dcY,screenX,screenY){
+function showLupe(ringScreenX,ringScreenY,fingerClientX,fingerClientY){
   if(!wCanvas||!dc)return;
   const vpRect=viewport.getBoundingClientRect();
   const margin=10;
-  const ringScreenY=screenY-BRUSH_OFFSET_PX;
-  let top=ringScreenY-lupeSize/2;
+  // Position lupe beside the ring (which is already at screen offset above finger)
+  let top=ringScreenY+vpRect.top-lupeSize/2;
   top=Math.max(vpRect.top+margin,Math.min(vpRect.bottom-lupeSize-margin,top));
-  const right=screenX>vpRect.left+vpRect.width/2;
+  const right=(fingerClientX>vpRect.left+vpRect.width/2);
   const left=right?vpRect.left+margin:vpRect.right-lupeSize-margin;
   lupeEl.style.cssText=`display:block;position:fixed;left:${left}px;top:${top}px;width:${lupeSize}px;height:${lupeSize}px;`;
 
@@ -683,16 +667,18 @@ function showLupe(dcX,dcY,screenX,screenY){
   const tile=10*lupeDpr;
   for(let ty=0;ty<sz;ty+=tile)for(let tx=0;tx<sz;tx+=tile){lupeCtx.fillStyle=((Math.floor(tx/tile)+Math.floor(ty/tile))%2===0)?'#2a2a2a':'#3a3a3a';lupeCtx.fillRect(tx,ty,tile,tile);}
 
+  // Convert ring screen-px (relative to dc element) → dc canvas px
   const dr=dc.getBoundingClientRect();
-  const sampleDcPx=(lupeSize/lupeZoom)/(dr.width/dc.width);
+  const toDcPx=dc.width/(dr.width||dc.width);
+  const dcX=ringScreenX*toDcPx, dcY=ringScreenY*toDcPx;
+  const sampleDcPx=(lupeSize/lupeZoom);
   lupeCtx.save();lupeCtx.imageSmoothingEnabled=false;
   lupeCtx.drawImage(dc,dcX-sampleDcPx/2,dcY-sampleDcPx/2,sampleDcPx,sampleDcPx,0,0,sz,sz);
   lupeCtx.restore();
 
   const col=brushMode==='erase'?'rgba(255,80,80,.85)':'rgba(80,220,80,.85)';
   const mid=sz/2;
-  const scaleX=dc.width/(dr.width||1);
-  const brushR=(window.brushSize/2)*lupeZoom*lupeDpr;
+  const brushR=(window.brushSize/2)*zoom*lupeZoom*lupeDpr;
   lupeCtx.save();lupeCtx.strokeStyle=col;lupeCtx.lineWidth=1.5*lupeDpr;
   lupeCtx.beginPath();lupeCtx.arc(mid,mid,brushR,0,Math.PI*2);lupeCtx.stroke();
   lupeCtx.beginPath();lupeCtx.moveTo(mid-brushR-6,mid);lupeCtx.lineTo(mid+brushR+6,mid);lupeCtx.stroke();
@@ -704,21 +690,22 @@ function showLupe(dcX,dcY,screenX,screenY){
 function hideLupe(){lupeEl.style.display='none';}
 
 /* ── Apply Brush ── */
-function applyBrush(dispX,dispY){
-  const dw=dc.width,dh=dc.height;
-  // dispX/dispY are dc pixel coords (already zoomed: dc.width = baseW*zoom)
-  // wCanvas coords: divide by zoom to get base canvas pixels, then map to wCanvas
+// screenX/Y: px relative to dc element top-left (== dc canvas px, since dc is rendered 1:1 CSS)
+function applyBrush(screenX,screenY){
+  // Step 1: screen-px → base-canvas-px (undo zoom). baseW*zoom = dc.width on screen.
+  const basX=screenX/zoom, basY=screenY/zoom;
+  // Step 2: base-canvas-px → wCanvas-px (account for subject scale & position)
   const drawnW=baseW*subjectScale, drawnH=baseH*subjectScale;
   const originX=(baseW-drawnW)/2+subjectX, originY=(baseH-drawnH)/2+subjectY;
-  // Convert dc pixels → base pixels (undo zoom)
-  const basX=dispX/zoom, basY=dispY/zoom;
   const fx=((basX-originX)/drawnW)*wCanvas.width;
   const fy=((basY-originY)/drawnH)*wCanvas.height;
-  // Brush radius in wCanvas pixels — must match what ring shows on screen
-  // Ring is drawn at brushSize/2 screen-px, which equals brushSize/2 * (wCanvas.width/baseW/subjectScale) wCanvas-px
-  const fr=(window.brushSize/2)*(wCanvas.width/(baseW*subjectScale));
+  // Brush radius in wCanvas px.
+  // On screen the ring is brushSize/2 * zoom px wide.
+  // wCanvas covers drawnW base-px wide → ratio = wCanvas.width/drawnW
+  // So wCanvas radius = (brushSize/2 * zoom) / zoom * (wCanvas.width/drawnW) = brushSize/2 * wCanvas.width/drawnW
+  const fr=(window.brushSize/2)*(wCanvas.width/drawnW);
 
-  if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(dispX,dispY,_touchBrushScreenX,_touchBrushScreenY);return;}
+  if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(screenX,screenY,_touchBrushScreenX,_touchBrushScreenY);return;}
 
   if(brushMode==='erase'){
     wCtx.save();wCtx.globalCompositeOperation='destination-out';
@@ -735,7 +722,7 @@ function applyBrush(dispX,dispY){
     }
     wCtx.putImageData(patch,x0,y0);
   }
-  drawComposite();drawCursorRing(dispX,dispY,_touchBrushScreenX,_touchBrushScreenY);
+  drawComposite();drawCursorRing(screenX,screenY,_touchBrushScreenX,_touchBrushScreenY);
 }
 
 function applySmartEdge(fx,fy,fr){
