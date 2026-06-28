@@ -472,15 +472,18 @@ function touchToCanvas(t){
   return{x:Math.max(0,Math.min(dc.width,cx)), y:Math.max(0,Math.min(dc.height,cy))};
 }
 
-// Brush position: circle HAMESHA finger ke upar rahe (80px)
-// Agar upar boundary aa jaaye to wahan ruk jaao — canvas ke andar hi rahe
+// Brush position: circle hamesha 80px upar thumb se
+// Canvas boundary se bahar nahi jaayega — clamp karo
 const BRUSH_OFFSET_PX=80;
 function brushPos(rawDcPos){
   const dr=dc.getBoundingClientRect();
   if(dr.width===0)return rawDcPos;
   const scaleY=dc.height/dr.height;
   const offsetDc=BRUSH_OFFSET_PX*scaleY;
-  return{x:rawDcPos.x, y:Math.max(0, rawDcPos.y-offsetDc)};
+  // rawDcPos.y canvas ke andar ho ya bahar — circle hamesha offset upar
+  // Math.min(dc.height, rawDcPos.y) se canvas ke neeche bahar gaye thumb ko clamp karo
+  const clampedY=Math.min(dc.height, rawDcPos.y);
+  return{x:rawDcPos.x, y:Math.max(0, clampedY-offsetDc)};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
@@ -508,7 +511,7 @@ viewport.addEventListener('touchstart',e=>{
   drawCursorRing(bp.x,bp.y,t.clientX,t.clientY);
   isPainting=true;
   saveSnapshot();
-  applyBrush(raw.x,raw.y);
+  applyBrush(bp.x,bp.y);
 },{passive:false});
 
 viewport.addEventListener('touchmove',e=>{
@@ -538,7 +541,7 @@ viewport.addEventListener('touchmove',e=>{
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
   drawCursorRing(bp.x,bp.y,t.clientX,t.clientY);
-  applyBrush(raw.x,raw.y);
+  applyBrush(bp.x,bp.y);
 },{passive:false});
 
 viewport.addEventListener('touchend',e=>{
