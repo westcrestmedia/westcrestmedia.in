@@ -495,6 +495,7 @@ function brushPos(rawCanvasPos){
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
+let _lastBrushDispX=0, _lastBrushDispY=0;
 
 /* ── Subject drag state ── */
 let isDraggingSubject=false;
@@ -541,6 +542,7 @@ viewport.addEventListener('touchstart',e=>{
   if(!raw)return;
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
+  _lastBrushDispX=bp.x;_lastBrushDispY=bp.y;
   drawCursorRing(bp.x,bp.y,t.clientX,t.clientY);
   isPainting=true;
   saveSnapshot();
@@ -600,6 +602,7 @@ viewport.addEventListener('touchmove',e=>{
   }
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
+  _lastBrushDispX=bp.x;_lastBrushDispY=bp.y;
   drawCursorRing(bp.x,bp.y,t.clientX,t.clientY);
   applyBrush(bp.x,bp.y);
 },{passive:false});
@@ -702,7 +705,7 @@ function applyBrush(dispX,dispY){
   const sx=wCanvas.width/drawnW;
   const fr=(window.brushSize/2)*sx;
 
-  if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(screenX,screenY,_touchBrushScreenX,_touchBrushScreenY);return;}
+  if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(_lastBrushDispX,_lastBrushDispY,_touchBrushScreenX,_touchBrushScreenY);return;}
 
   if(brushMode==='erase'){
     wCtx.save();wCtx.globalCompositeOperation='destination-out';
@@ -719,7 +722,7 @@ function applyBrush(dispX,dispY){
     }
     wCtx.putImageData(patch,x0,y0);
   }
-  drawComposite();drawCursorRing(screenX,screenY,_touchBrushScreenX,_touchBrushScreenY);
+  drawComposite();drawCursorRing(_lastBrushDispX,_lastBrushDispY,_touchBrushScreenX,_touchBrushScreenY);
 }
 
 function applySmartEdge(fx,fy,fr){
