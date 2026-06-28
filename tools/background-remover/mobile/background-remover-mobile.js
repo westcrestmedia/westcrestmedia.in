@@ -472,19 +472,22 @@ function touchToCanvas(t){
   return{x:Math.max(0,Math.min(dc.width,cx)), y:Math.max(0,Math.min(dc.height,cy))};
 }
 
-// Brush position: offset upward from raw touch position
-// so finger doesn't cover the brush ring
-const BRUSH_OFFSET_PX=80; // screen pixels away from finger
+// Brush position: offset from raw touch position so finger doesn't cover the brush ring
+// Canvas ke neeche 30% mein → offset ZERO (circle seedha finger pe) taaki bottom erase ho sake
+// Baaki poore canvas mein → circle 80px UPAR jaata hai finger se
+const BRUSH_OFFSET_PX=80;
 function brushPos(rawDcPos){
   const dr=dc.getBoundingClientRect();
   if(dr.width===0)return rawDcPos;
   const scaleY=dc.height/dr.height;
   const offsetDc=BRUSH_OFFSET_PX*scaleY;
-  // Top half → brush neeche finger ke | Bottom half → brush upar finger ke
-  const canvasMidDc=dc.height/2;
-  if(rawDcPos.y < canvasMidDc){
-    return{x:rawDcPos.x, y:Math.min(dc.height, rawDcPos.y+offsetDc)};
+  // Canvas ke bottom 30% check karo
+  const canvasBottom30=dc.height*0.70;
+  if(rawDcPos.y > canvasBottom30){
+    // Neeche area: koi offset nahi, seedha finger pe kaam karo
+    return{x:rawDcPos.x, y:rawDcPos.y};
   } else {
+    // Normal: circle upar jaaye taaki thumb na chupe
     return{x:rawDcPos.x, y:Math.max(0, rawDcPos.y-offsetDc)};
   }
 }
