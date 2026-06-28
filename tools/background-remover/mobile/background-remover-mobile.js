@@ -319,11 +319,13 @@ function computeBaseSize(){
 function renderAll(){
   if(!wCanvas)return;
   const dw=Math.round(baseW*zoom), dh=Math.round(baseH*zoom);
-  const vpW=viewport.clientWidth, vpH=viewport.clientHeight;
-  panX=Math.min(0,Math.max(vpW-dw,panX));
-  panY=Math.min(0,Math.max(vpH-dh,panY));
-  if(dw<=vpW)panX=Math.round((vpW-dw)/2);
-  if(dh<=vpH)panY=Math.round((vpH-dh)/2);
+  const vpW=viewport.offsetWidth||viewport.clientWidth||360;
+  const vpH=viewport.offsetHeight||viewport.clientHeight||baseH;
+  // When canvas fits inside viewport, center it; otherwise clamp pan
+  if(dw<=vpW){ panX=Math.round((vpW-dw)/2); }
+  else { panX=Math.min(0,Math.max(vpW-dw,panX)); }
+  if(dh<=vpH){ panY=Math.round((vpH-dh)/2); }
+  else { panY=Math.min(0,Math.max(vpH-dh,panY)); }
   dc.width=dw;dc.height=dh;dc.style.width=dw+'px';dc.style.height=dh+'px';
   dc.style.transform=`translate(${panX}px,${panY}px)`;
   cc.width=dw;cc.height=dh;cc.style.width=dw+'px';cc.style.height=dh+'px';
@@ -581,17 +583,26 @@ function drawCursorRing(dcX,dcY,screenX,screenY){
   cctx.clearRect(0,0,cc.width,cc.height);
   if(!brushMode)return;
   const dr=dc.getBoundingClientRect();
-  const scaleX=dc.width/(dr.width||1);
-  const ringR=(window.brushSize/2)*scaleX;
+  // Ring radius in dc-canvas pixels: brushSize is in screen-px, convert to dc-px
+  // dc.style.width = dc.width px on screen (1:1 mapping since no CSS scaling)
+  // So dc-px per screen-px = dc.width / dr.width ≈ 1, but use actual ratio
+  const screenToDc=dc.width/(dr.width||dc.width);
+  // Brush radius in screen pixels = brushSize/2
+  // In dc-canvas pixels = brushSize/2 * screenToDc
+  // But we want ring to match actual erase area:
+  // erase radius in wCanvas = fr = brushSize/2 * wCanvas.width/(baseW*subjectScale)
+  // erase radius in dc pixels = fr * (baseW*subjectScale*zoom / wCanvas.width) * screenToDc ... simplifies to:
+  const ringR=(window.brushSize/2)*zoom*screenToDc;
   const col=window.smartEdge?'rgba(201,168,76,.95)':brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)';
   cctx.save();
   cctx.beginPath();cctx.arc(dcX,dcY,ringR,0,Math.PI*2);
-  cctx.strokeStyle=col;cctx.lineWidth=1.5*scaleX;cctx.stroke();
-  cctx.beginPath();cctx.arc(dcX,dcY,1.5*scaleX,0,Math.PI*2);
+  cctx.strokeStyle=col;cctx.lineWidth=Math.max(1.5,1.5*screenToDc);cctx.stroke();
+  cctx.beginPath();cctx.arc(dcX,dcY,Math.max(1.5,1.5*screenToDc),0,Math.PI*2);
   cctx.fillStyle=col;cctx.fill();
   // Line from ring bottom to where finger actually is
-  cctx.beginPath();cctx.moveTo(dcX,dcY+ringR);cctx.lineTo(dcX,dcY+ringR+(BRUSH_OFFSET_PX*scaleX*0.8));
-  cctx.strokeStyle=col;cctx.lineWidth=1*scaleX;cctx.setLineDash([3*scaleX,3*scaleX]);cctx.stroke();cctx.setLineDash([]);
+  const offsetDc=BRUSH_OFFSET_PX*screenToDc;
+  cctx.beginPath();cctx.moveTo(dcX,dcY+ringR);cctx.lineTo(dcX,dcY+ringR+(offsetDc*0.8));
+  cctx.strokeStyle=col;cctx.lineWidth=Math.max(1,screenToDc);cctx.setLineDash([3*screenToDc,3*screenToDc]);cctx.stroke();cctx.setLineDash([]);
   cctx.restore();
   showLupe(dcX,dcY,screenX,screenY);
 }
@@ -645,12 +656,17 @@ function hideLupe(){lupeEl.style.display='none';}
 /* ── Apply Brush ── */
 function applyBrush(dispX,dispY){
   const dw=dc.width,dh=dc.height;
-  const drawnW=dw*subjectScale,drawnH=dh*subjectScale;
-  const originX=(dw-drawnW)/2+subjectX,originY=(dh-drawnH)/2+subjectY;
-  const fx=((dispX-originX)/drawnW)*wCanvas.width;
-  const fy=((dispY-originY)/drawnH)*wCanvas.height;
-  const sxF=wCanvas.width/drawnW;
-  const fr=(window.brushSize/2)*sxF;
+  // dispX/dispY are dc pixel coords (already zoomed: dc.width = baseW*zoom)
+  // wCanvas coords: divide by zoom to get base canvas pixels, then map to wCanvas
+  const drawnW=baseW*subjectScale, drawnH=baseH*subjectScale;
+  const originX=(baseW-drawnW)/2+subjectX, originY=(baseH-drawnH)/2+subjectY;
+  // Convert dc pixels → base pixels (undo zoom)
+  const basX=dispX/zoom, basY=dispY/zoom;
+  const fx=((basX-originX)/drawnW)*wCanvas.width;
+  const fy=((basY-originY)/drawnH)*wCanvas.height;
+  // Brush radius in wCanvas pixels — must match what ring shows on screen
+  // Ring is drawn at brushSize/2 screen-px, which equals brushSize/2 * (wCanvas.width/baseW/subjectScale) wCanvas-px
+  const fr=(window.brushSize/2)*(wCanvas.width/(baseW*subjectScale));
 
   if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(dispX,dispY,_touchBrushScreenX,_touchBrushScreenY);return;}
 
@@ -723,6 +739,32 @@ window.redoStroke=function(){
   const snap=document.createElement('canvas');snap.width=wCanvas.width;snap.height=wCanvas.height;snap.getContext('2d').drawImage(wCanvas,0,0);undoStack.push(snap);
   const next=redoStack.pop();wCtx.clearRect(0,0,wCanvas.width,wCanvas.height);wCtx.drawImage(next,0,0);
   drawComposite();updateUndoUI();bakeToItem();
+};
+
+/* ── Zoom Controls ── */
+window.zoomIn=function(){
+  if(!wCanvas)return;
+  const vpW=viewport.offsetWidth||360;
+  const vpH=viewport.offsetHeight||baseH;
+  const midX=vpW/2, midY=vpH/2;
+  const nz=Math.min(8,zoom*1.25);
+  panX-=(midX-panX)*(nz/zoom-1);
+  panY-=(midY-panY)*(nz/zoom-1);
+  zoom=nz;renderAll();
+};
+window.zoomOut=function(){
+  if(!wCanvas)return;
+  const vpW=viewport.offsetWidth||360;
+  const vpH=viewport.offsetHeight||baseH;
+  const midX=vpW/2, midY=vpH/2;
+  const nz=Math.max(0.25,zoom/1.25);
+  panX-=(midX-panX)*(nz/zoom-1);
+  panY-=(midY-panY)*(nz/zoom-1);
+  zoom=nz;renderAll();
+};
+window.resetZoom=function(){
+  if(!wCanvas)return;
+  zoom=1;panX=0;panY=0;renderAll();
 };
 
 /* ── Toolbar ── */
@@ -1028,6 +1070,34 @@ window.clearAll=function(){
   dropZone.classList.remove('hidden');
   showToolbar(false);
 };
+
+/* ── Mouse Wheel Zoom ── */
+viewport.addEventListener('wheel',e=>{
+  if(!wCanvas)return;
+  e.preventDefault();
+  const r=viewport.getBoundingClientRect();
+  const midX=e.clientX-r.left, midY=e.clientY-r.top;
+  const delta=e.deltaY<0?1.1:0.909;
+  const nz=Math.min(8,Math.max(0.25,zoom*delta));
+  panX-=(midX-panX)*(nz/zoom-1);
+  panY-=(midY-panY)*(nz/zoom-1);
+  zoom=nz;renderAll();
+},{passive:false});
+
+/* ── Inject Reset Zoom button next to zoom-level display ── */
+(function injectResetZoomBtn(){
+  const zl=document.getElementById('zoom-level');
+  if(!zl)return;
+  // Already injected?
+  if(document.getElementById('btn-reset-zoom'))return;
+  const btn=document.createElement('button');
+  btn.id='btn-reset-zoom';
+  btn.textContent='↺ Reset';
+  btn.title='Reset zoom to 100%';
+  btn.style.cssText='font-size:11px;padding:4px 9px;border-radius:6px;border:1.5px solid var(--faint);background:var(--dark-4);color:var(--text-muted);cursor:pointer;margin-left:6px;flex-shrink:0;';
+  btn.onclick=window.resetZoom;
+  zl.parentNode.insertBefore(btn,zl.nextSibling);
+})();
 
 /* ── FAQ ── */
 window.toggleFaq=function(el){
