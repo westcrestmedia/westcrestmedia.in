@@ -86,14 +86,17 @@ async function addFiles(files){
   renderBatchGrid(); updateBatchHeader(); hideUploadOverlay();
   if(batchLoopRunning){renderBatchGrid();updateBatchHeader();return;}
   batchLoopRunning=true;
-  try{
-    let next;
-    while((next=items.find(i=>i.status==='queued'))){
-      await processItem(next);
-      if(next.status==='done'&&!editorOpened){editorOpened=true;await openEditor(next.id);}
-    }
-    updateBatchHeader();
-  }finally{batchLoopRunning=false;}
+  // Run in background — don't block; first-done photo opens editor, rest process silently
+  (async()=>{
+    try{
+      let next;
+      while((next=items.find(i=>i.status==='queued'))){
+        await processItem(next);
+        if(next.status==='done'&&!editorOpened){editorOpened=true;openEditor(next.id);}
+      }
+      updateBatchHeader();
+    }finally{batchLoopRunning=false;}
+  })();
 }
 
 /* ── Render Batch Grid ── */
@@ -122,6 +125,8 @@ function renderBatchGrid(){
       </div>`;
     if(item.resultCanvas){const cvs=card.querySelector('canvas');if(cvs)cvs.getContext('2d').drawImage(item.resultCanvas,0,0);}
     card.addEventListener('click',()=>{if(item.status==='done')openEditor(item.id,true);});
+    // Visual hint: done cards are always interactive even while batch is processing
+    if(item.status==='done') card.style.cursor='pointer';
     grid.appendChild(card);
   });
   if(items.length>0&&items.length<MAX_BATCH){
@@ -151,7 +156,9 @@ window.removeItem=function(id){
 async function processItem(item){
   item.status='processing'; renderBatchGrid();
   const ov=document.getElementById('proc-overlay');
-  const showOnCanvas=!activeId;
+  // Show full-screen overlay ONLY for the very first image (before any editor has opened)
+  // Once editor is open, user can keep working — only card-level spinner shows for queued photos
+  const showOnCanvas=!editorOpened&&!activeId;
   const modelCached=localStorage.getItem('wc_model_cached')==='1';
 
   function setStage(n){for(let i=1;i<=4;i++){const el=document.getElementById('proc-stage-'+i);if(el)el.classList.toggle('active',i===n);}}
@@ -173,7 +180,7 @@ async function processItem(item){
     let lastStage='';
     const blob=await rbFn(item.file,{
       publicPath:`https://staticimgly.com/@imgly/background-removal-data/${LIB_VERSION}/dist/`,
-      proxyToWorker:false,
+      proxyToWorker:true,
       numThreads:1,
       progress:(key,cur,tot)=>{
         const p=tot>0?Math.round(cur/tot*100):0;
