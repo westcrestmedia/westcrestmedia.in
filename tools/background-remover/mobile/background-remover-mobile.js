@@ -536,8 +536,20 @@ viewport.addEventListener('touchmove',e=>{
   if(!brushMode||!isPainting){clearCursor();return;}
 
   const t=e.touches[0];
-  const raw=touchToCanvas(t);
-  if(!raw){clearCursor();return;}
+  let raw=touchToCanvas(t);
+  // Agar thumb canvas ke neeche bahar chali gayi — clamp karke painting jari rakho
+  // Yahi "death zone" fix hai: canvas boundary ke bahar bhi brush chalega
+  if(!raw){
+    const dr=dc.getBoundingClientRect();
+    if(dr.width===0||dr.height===0){clearCursor();return;}
+    const scaleX=dc.width/dr.width, scaleY=dc.height/dr.height;
+    const cx=(t.clientX-dr.left)*scaleX;
+    const cy=(t.clientY-dr.top)*scaleY;
+    // Sirf left/right bahar ho to skip karo, upar bhi skip karo
+    if(cx<0||cx>dc.width||cy<-dc.height*0.5){clearCursor();return;}
+    // Neeche bahar gaya — canvas ke bottom edge pe clamp karo
+    raw={x:Math.max(0,Math.min(dc.width,cx)), y:dc.height};
+  }
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
   drawCursorRing(bp.x,bp.y,t.clientX,t.clientY);
