@@ -213,6 +213,7 @@ async function openEditor(id, noScroll){
   const item=items.find(i=>i.id==id); if(!item||!item.resultCanvas)return;
   activeId=id;
   document.getElementById('editor-wrap').classList.add('active');
+  showToolbar(true);
   document.getElementById('editor-filename').textContent=item.name;
   brushMode=null;isPainting=false;isPanning=false;lastTouches=null;
   zoom=1;panX=0;panY=0;baseW=0;baseH=0;
@@ -254,7 +255,6 @@ async function openEditor(id, noScroll){
   const baBtn=document.getElementById('btn-before-after');if(baBtn)baBtn.style.display='';
 
   requestAnimationFrame(()=>{computeBaseSize();renderAll();});
-  showToolbar(true);
   renderBatchGrid();
 }
 
@@ -1017,12 +1017,5 @@ window.toggleFaq=function(el){
 window.addEventListener('resize',()=>{if(wCanvas){computeBaseSize();renderAll();}});
 
 /* ── Expose for editor observer ── */
-let _toolbarDebounce=null;
-new MutationObserver(()=>{
-  clearTimeout(_toolbarDebounce);
-  _toolbarDebounce=setTimeout(()=>{
-    const active=document.getElementById('editor-wrap').classList.contains('active');
-    showToolbar(active);
-  },50);
-}).observe(document.getElementById('editor-wrap'),{attributes:true,attributeFilter:['class']});
+// MutationObserver removed — showToolbar() is called explicitly at correct points
 
