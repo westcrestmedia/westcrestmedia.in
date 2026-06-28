@@ -351,39 +351,12 @@ window.drawComposite = function drawComposite(){
     const iw=currentPhotoBg.img.naturalWidth,ih=currentPhotoBg.img.naturalHeight;
     const sc=Math.max(dw/iw,dh/ih)*bgScale;
     const bx=(dw-iw*sc)/2+bgOffsetX, by=(dh-ih*sc)/2+bgOffsetY;
-    if(bgBlur>0){
-      // Use separate offscreen canvas (no willReadFrequently) so CSS filter works on Safari/Chrome mobile.
-      const pad=Math.ceil(bgBlur*3);
-      const ofc=document.createElement('canvas');ofc.width=dw+pad*2;ofc.height=dh+pad*2;
-      const ofctx=ofc.getContext('2d');
-      ofctx.filter=`blur(${bgBlur}px)`;
-      ofctx.drawImage(currentPhotoBg.img,bx+pad,by+pad,iw*sc,ih*sc);
-      ofctx.filter='none';
-      // Fallback: if CSS filter had no visible effect (some Android WebViews), simulate blur via downsample
-      const testPx=ofctx.getImageData(pad,pad,1,1).data;
-      const noBlur=testPx[3]===0; // blurred edge pixel should be semi-transparent; if 0, filter likely failed
-      if(noBlur){
-        // Iterative downscale+upscale approximation
-        const iters=Math.min(Math.round(bgBlur/4)+1,5);
-        let cur=document.createElement('canvas');cur.width=dw;cur.height=dh;
-        cur.getContext('2d').drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
-        for(let i=0;i<iters;i++){
-          const hw=Math.max(1,cur.width>>1),hh=Math.max(1,cur.height>>1);
-          const dn=document.createElement('canvas');dn.width=hw;dn.height=hh;
-          const dnx=dn.getContext('2d');dnx.imageSmoothingEnabled=true;dnx.imageSmoothingQuality='high';
-          dnx.drawImage(cur,0,0,hw,hh);
-          const up=document.createElement('canvas');up.width=dw;up.height=dh;
-          const upx=up.getContext('2d');upx.imageSmoothingEnabled=true;upx.imageSmoothingQuality='high';
-          upx.drawImage(dn,0,0,dw,dh);
-          cur=up;
-        }
-        dctx.drawImage(cur,0,0);
-      } else {
-        dctx.drawImage(ofc,-pad,-pad,dw+pad*2,dh+pad*2);
-      }
-    } else {
-      dctx.drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
-    }
+    // Exact same approach as desktop: set dctx.filter directly
+    dctx.save();
+    if(bgBlur>0) dctx.filter=`blur(${bgBlur}px)`;
+    dctx.drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
+    dctx.filter='none';
+    dctx.restore();
   } else if(currentBgColor!=='transparent'){
     dctx.save();
     const grad=getGradient(currentBgColor,dw,dh);
@@ -504,18 +477,21 @@ function getGradient(color,w,h){
 function touchToCanvas(t){
   const dr=dc.getBoundingClientRect();
   if(dr.width===0||dr.height===0)return null;
-  const cx=t.clientX-dr.left;
-  const cy=t.clientY-dr.top;
-  if(cx<0||cx>dr.width)return null;
-  if(cy<-dr.height*0.5)return null;
-  return{x:Math.max(0,Math.min(dr.width,cx)), y:cy};
+  const scaleX=dc.width/dr.width, scaleY=dc.height/dr.height;
+  const cx=(t.clientX-dr.left)*scaleX;
+  const cy=(t.clientY-dr.top)*scaleY;
+  if(cx<0||cx>dc.width)return null;
+  if(cy<-dc.height*0.5)return null;
+  return{x:Math.max(0,Math.min(dc.width,cx)), y:Math.min(cy,dc.height)};
 }
 
 // Brush circle sits BRUSH_OFFSET_PX screen-px above the finger.
-// Input/output: screen-px relative to dc element top-left.
+// Input/output: dc canvas px. Offset is converted from screen-px to canvas-px.
 const BRUSH_OFFSET_PX=80;
-function brushPos(rawScreenPos){
-  return{x:rawScreenPos.x, y:Math.max(0, rawScreenPos.y-BRUSH_OFFSET_PX)};
+function brushPos(rawCanvasPos){
+  const dr=dc.getBoundingClientRect();
+  const scaleY=dr.height>0?(dc.height/dr.height):1;
+  return{x:rawCanvasPos.x, y:Math.max(0, rawCanvasPos.y-BRUSH_OFFSET_PX*scaleY)};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
@@ -619,7 +595,8 @@ viewport.addEventListener('touchmove',e=>{
     const cx=t.clientX-dr.left;
     const cy=t.clientY-dr.top;
     if(cx<0||cx>dr.width||cy<-dr.height*0.5){clearCursor();return;}
-    raw={x:Math.max(0,Math.min(dr.width,cx)), y:dr.height};
+    const scaleX2=dc.width/dr.width,scaleY2=dc.height/dr.height;
+    raw={x:Math.max(0,Math.min(dc.width,cx*scaleX2)), y:dc.height};
   }
   const bp=brushPos(raw);
   _touchBrushScreenX=t.clientX;_touchBrushScreenY=t.clientY;
@@ -642,26 +619,24 @@ viewport.addEventListener('touchcancel',e=>{
 /* ── Cursor Ring ── */
 function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);hideLupe();}
 
-function drawCursorRing(screenX,screenY,fingerScreenX,fingerScreenY){
+function drawCursorRing(dispX,dispY,fingerClientX,fingerClientY){
   cctx.clearRect(0,0,cc.width,cc.height);
   if(!brushMode)return;
-  // screenX/Y are px relative to dc element top-left.
-  // cc may be positioned differently from dc in the DOM, so offset to cc-relative coords.
-  const dcr=dc.getBoundingClientRect();
-  const ccr=cc.getBoundingClientRect();
-  const ccX=screenX+(dcr.left-ccr.left);
-  const ccY=screenY+(dcr.top-ccr.top);
-  const ringR=(window.brushSize/2)*zoom;
+  // dispX/Y are dc canvas pixels. cc is same size as dc (1:1), so draw directly.
+  // Ring radius: same formula as desktop — brushSize/2 * scaleX (dc canvas px per CSS px)
+  const dr=dc.getBoundingClientRect();
+  const scaleX=dr.width>0?dc.width/dr.width:1;
+  const ringR=(window.brushSize/2)*scaleX;
   const col=window.smartEdge?'rgba(201,168,76,.95)':brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)';
   cctx.save();
-  cctx.beginPath();cctx.arc(ccX,ccY,ringR,0,Math.PI*2);
-  cctx.strokeStyle=col;cctx.lineWidth=1.5;cctx.stroke();
-  cctx.beginPath();cctx.arc(ccX,ccY,1.5,0,Math.PI*2);
+  cctx.beginPath();cctx.arc(dispX,dispY,ringR,0,Math.PI*2);
+  cctx.strokeStyle=col;cctx.lineWidth=1.5*scaleX;cctx.stroke();
+  cctx.beginPath();cctx.arc(dispX,dispY,1.5*scaleX,0,Math.PI*2);
   cctx.fillStyle=col;cctx.fill();
-  cctx.beginPath();cctx.moveTo(ccX,ccY+ringR);cctx.lineTo(ccX,ccY+ringR+BRUSH_OFFSET_PX*0.8);
-  cctx.strokeStyle=col;cctx.lineWidth=1;cctx.setLineDash([3,3]);cctx.stroke();cctx.setLineDash([]);
+  cctx.beginPath();cctx.moveTo(dispX,dispY+ringR);cctx.lineTo(dispX,dispY+ringR+BRUSH_OFFSET_PX*scaleX*0.8);
+  cctx.strokeStyle=col;cctx.lineWidth=scaleX;cctx.setLineDash([3*scaleX,3*scaleX]);cctx.stroke();cctx.setLineDash([]);
   cctx.restore();
-  showLupe(screenX,screenY,fingerScreenX,fingerScreenY);
+  showLupe(dispX,dispY,fingerClientX,fingerClientY);
 }
 
 /* ── Loupe ── */
@@ -678,8 +653,11 @@ function showLupe(ringScreenX,ringScreenY,fingerClientX,fingerClientY){
   if(!wCanvas||!dc)return;
   const vpRect=viewport.getBoundingClientRect();
   const margin=10;
-  // Position lupe beside the ring (which is already at screen offset above finger)
-  let top=ringScreenY+vpRect.top-lupeSize/2;
+  // Position lupe based on finger client position (screen coords)
+  const dr0=dc.getBoundingClientRect();
+  const scaleX0=dr0.width>0?dc.width/dr0.width:1;
+  const ringClientY=dr0.top+ringScreenY/scaleX0; // convert canvas px back to client y for positioning
+  let top=ringClientY-lupeSize/2;
   top=Math.max(vpRect.top+margin,Math.min(vpRect.bottom-lupeSize-margin,top));
   const right=(fingerClientX>vpRect.left+vpRect.width/2);
   const left=right?vpRect.left+margin:vpRect.right-lupeSize-margin;
@@ -690,18 +668,18 @@ function showLupe(ringScreenX,ringScreenY,fingerClientX,fingerClientY){
   const tile=10*lupeDpr;
   for(let ty=0;ty<sz;ty+=tile)for(let tx=0;tx<sz;tx+=tile){lupeCtx.fillStyle=((Math.floor(tx/tile)+Math.floor(ty/tile))%2===0)?'#2a2a2a':'#3a3a3a';lupeCtx.fillRect(tx,ty,tile,tile);}
 
-  // Convert ring screen-px (relative to dc element) → dc canvas px
+  // ringScreenX/Y are now dc canvas pixels — use directly
   const dr=dc.getBoundingClientRect();
-  const toDcPx=dc.width/(dr.width||dc.width);
-  const dcX=ringScreenX*toDcPx, dcY=ringScreenY*toDcPx;
-  const sampleDcPx=(lupeSize/lupeZoom);
+  const scaleX=dr.width>0?dc.width/dr.width:1;
+  const dcX=ringScreenX, dcY=ringScreenY;
+  const sampleDcPx=(lupeSize/lupeZoom)*scaleX;
   lupeCtx.save();lupeCtx.imageSmoothingEnabled=false;
   lupeCtx.drawImage(dc,dcX-sampleDcPx/2,dcY-sampleDcPx/2,sampleDcPx,sampleDcPx,0,0,sz,sz);
   lupeCtx.restore();
 
   const col=brushMode==='erase'?'rgba(255,80,80,.85)':'rgba(80,220,80,.85)';
   const mid=sz/2;
-  const brushR=(window.brushSize/2)*zoom*lupeZoom*lupeDpr;
+  const brushR=(window.brushSize/2)*scaleX*lupeZoom*lupeDpr;
   lupeCtx.save();lupeCtx.strokeStyle=col;lupeCtx.lineWidth=1.5*lupeDpr;
   lupeCtx.beginPath();lupeCtx.arc(mid,mid,brushR,0,Math.PI*2);lupeCtx.stroke();
   lupeCtx.beginPath();lupeCtx.moveTo(mid-brushR-6,mid);lupeCtx.lineTo(mid+brushR+6,mid);lupeCtx.stroke();
@@ -713,20 +691,16 @@ function showLupe(ringScreenX,ringScreenY,fingerClientX,fingerClientY){
 function hideLupe(){lupeEl.style.display='none';}
 
 /* ── Apply Brush ── */
-// screenX/Y: px relative to dc element top-left (== dc canvas px, since dc is rendered 1:1 CSS)
-function applyBrush(screenX,screenY){
-  // Step 1: screen-px → base-canvas-px (undo zoom). baseW*zoom = dc.width on screen.
-  const basX=screenX/zoom, basY=screenY/zoom;
-  // Step 2: base-canvas-px → wCanvas-px (account for subject scale & position)
-  const drawnW=baseW*subjectScale, drawnH=baseH*subjectScale;
-  const originX=(baseW-drawnW)/2+subjectX, originY=(baseH-drawnH)/2+subjectY;
-  const fx=((basX-originX)/drawnW)*wCanvas.width;
-  const fy=((basY-originY)/drawnH)*wCanvas.height;
-  // Brush radius in wCanvas px.
-  // On screen the ring is brushSize/2 * zoom px wide.
-  // wCanvas covers drawnW base-px wide → ratio = wCanvas.width/drawnW
-  // So wCanvas radius = (brushSize/2 * zoom) / zoom * (wCanvas.width/drawnW) = brushSize/2 * wCanvas.width/drawnW
-  const fr=(window.brushSize/2)*(wCanvas.width/drawnW);
+// dispX/Y: dc canvas pixels (same coordinate space as desktop version)
+function applyBrush(dispX,dispY){
+  // Exact same formula as desktop background-remover.js
+  const dw=dc.width, dh=dc.height;
+  const drawnW=dw*subjectScale, drawnH=dh*subjectScale;
+  const originX=(dw-drawnW)/2+subjectX, originY=(dh-drawnH)/2+subjectY;
+  const fx=((dispX-originX)/drawnW)*wCanvas.width;
+  const fy=((dispY-originY)/drawnH)*wCanvas.height;
+  const sx=wCanvas.width/drawnW;
+  const fr=(window.brushSize/2)*sx;
 
   if(window.smartEdge){applySmartEdge(fx,fy,fr);drawComposite();drawCursorRing(screenX,screenY,_touchBrushScreenX,_touchBrushScreenY);return;}
 
