@@ -474,13 +474,19 @@ function touchToCanvas(t){
 
 // Brush position: offset upward from raw touch position
 // so finger doesn't cover the brush ring
-const BRUSH_OFFSET_PX=80; // screen pixels above finger
+const BRUSH_OFFSET_PX=80; // screen pixels away from finger
 function brushPos(rawDcPos){
   const dr=dc.getBoundingClientRect();
   if(dr.width===0)return rawDcPos;
   const scaleY=dc.height/dr.height;
   const offsetDc=BRUSH_OFFSET_PX*scaleY;
-  return{x:rawDcPos.x, y:Math.max(0,rawDcPos.y-offsetDc)};
+  // Top half → brush neeche finger ke | Bottom half → brush upar finger ke
+  const canvasMidDc=dc.height/2;
+  if(rawDcPos.y < canvasMidDc){
+    return{x:rawDcPos.x, y:Math.min(dc.height, rawDcPos.y+offsetDc)};
+  } else {
+    return{x:rawDcPos.x, y:Math.max(0, rawDcPos.y-offsetDc)};
+  }
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
