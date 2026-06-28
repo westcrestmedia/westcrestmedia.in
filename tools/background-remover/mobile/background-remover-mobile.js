@@ -41,7 +41,6 @@ let currentBgColor = 'transparent';
 let currentPhotoBg = null;
 let shadowEnabled=false, shadowColor='#000000', shadowOpacity=60, shadowBlur=20, shadowDistance=10, shadowAngle=135;
 let bgBlur=0;
-let _blurredBgCache=null; // cached blurred bg canvas {canvas, blur, src, dw, dh}
 let outlineEnabled=false, outlineColor='#ffffff', outlineWidth=4;
 let glowEnabled=false, glowColor='#c8a96e', glowStrength=60, glowBlur=20;
 let featherRadius=0;
@@ -353,30 +352,36 @@ window.drawComposite = function drawComposite(){
     const sc=Math.max(dw/iw,dh/ih)*bgScale;
     const bx=(dw-iw*sc)/2+bgOffsetX, by=(dh-ih*sc)/2+bgOffsetY;
     if(bgBlur>0){
-      // Use cached blurred canvas if parameters match; otherwise rebuild
-      const needRebuild=!_blurredBgCache
-        ||_blurredBgCache.blur!==bgBlur
-        ||_blurredBgCache.dw!==dw
-        ||_blurredBgCache.dh!==dh
-        ||_blurredBgCache.src!==currentPhotoBg.url
-        ||_blurredBgCache.bx!==bx
-        ||_blurredBgCache.by!==by
-        ||_blurredBgCache.iw!==iw*sc
-        ||_blurredBgCache.ih!==ih*sc;
-      if(needRebuild){
-        const pad=Math.ceil(bgBlur*3);
-        const ofc=document.createElement('canvas');
-        ofc.width=dw+pad*2;ofc.height=dh+pad*2;
-        const ofctx=ofc.getContext('2d'); // no willReadFrequently — filter must work
-        ofctx.filter=`blur(${bgBlur}px)`;
-        ofctx.drawImage(currentPhotoBg.img,bx+pad,by+pad,iw*sc,ih*sc);
-        ofctx.filter='none';
-        _blurredBgCache={canvas:ofc,blur:bgBlur,dw,dh,src:currentPhotoBg.url,bx,by,iw:iw*sc,ih:ih*sc,pad};
+      // Use separate offscreen canvas (no willReadFrequently) so CSS filter works on Safari/Chrome mobile.
+      const pad=Math.ceil(bgBlur*3);
+      const ofc=document.createElement('canvas');ofc.width=dw+pad*2;ofc.height=dh+pad*2;
+      const ofctx=ofc.getContext('2d');
+      ofctx.filter=`blur(${bgBlur}px)`;
+      ofctx.drawImage(currentPhotoBg.img,bx+pad,by+pad,iw*sc,ih*sc);
+      ofctx.filter='none';
+      // Fallback: if CSS filter had no visible effect (some Android WebViews), simulate blur via downsample
+      const testPx=ofctx.getImageData(pad,pad,1,1).data;
+      const noBlur=testPx[3]===0; // blurred edge pixel should be semi-transparent; if 0, filter likely failed
+      if(noBlur){
+        // Iterative downscale+upscale approximation
+        const iters=Math.min(Math.round(bgBlur/4)+1,5);
+        let cur=document.createElement('canvas');cur.width=dw;cur.height=dh;
+        cur.getContext('2d').drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
+        for(let i=0;i<iters;i++){
+          const hw=Math.max(1,cur.width>>1),hh=Math.max(1,cur.height>>1);
+          const dn=document.createElement('canvas');dn.width=hw;dn.height=hh;
+          const dnx=dn.getContext('2d');dnx.imageSmoothingEnabled=true;dnx.imageSmoothingQuality='high';
+          dnx.drawImage(cur,0,0,hw,hh);
+          const up=document.createElement('canvas');up.width=dw;up.height=dh;
+          const upx=up.getContext('2d');upx.imageSmoothingEnabled=true;upx.imageSmoothingQuality='high';
+          upx.drawImage(dn,0,0,dw,dh);
+          cur=up;
+        }
+        dctx.drawImage(cur,0,0);
+      } else {
+        dctx.drawImage(ofc,-pad,-pad,dw+pad*2,dh+pad*2);
       }
-      const {canvas:ofc,pad}=_blurredBgCache;
-      dctx.drawImage(ofc,-pad,-pad,dw+pad*2,dh+pad*2);
     } else {
-      _blurredBgCache=null;
       dctx.drawImage(currentPhotoBg.img,bx,by,iw*sc,ih*sc);
     }
   } else if(currentBgColor!=='transparent'){
@@ -524,9 +529,9 @@ function touchHitsSubject(clientX,clientY){
   if(!wCanvas)return false;
   const dr=dc.getBoundingClientRect();
   if(dr.width===0)return false;
-  // Convert client px → dc-canvas px (dc is rendered 1:1 CSS, so dr.width == dc.width == baseW*zoom)
-  // Then divide by zoom once to get base-canvas px
-  const bx=(clientX-dr.left)/zoom, by=(clientY-dr.top)/zoom;
+  // Convert screen px to base canvas px
+  const scaleX=baseW/dr.width, scaleY=baseH/dr.height;
+  const bx=(clientX-dr.left)*scaleX/zoom, by=(clientY-dr.top)*scaleY/zoom;
   const sw=baseW*subjectScale, sh=baseH*subjectScale;
   const sx=(baseW-sw)/2+subjectX, sy=(baseH-sh)/2+subjectY;
   return bx>=sx&&bx<=sx+sw&&by>=sy&&by<=sy+sh;
@@ -585,9 +590,11 @@ viewport.addEventListener('touchmove',e=>{
 
   // Subject drag move
   if(isDraggingSubject&&e.touches.length===1){
-    // Convert client px delta → base-canvas delta (dc CSS width = baseW*zoom, so 1 client px = 1/zoom base-px)
-    const dx=(t.clientX-dragSubjectStart.x)/zoom;
-    const dy=(t.clientY-dragSubjectStart.y)/zoom;
+    const dr=dc.getBoundingClientRect();
+    // Convert screen delta to base-canvas delta (account for zoom)
+    const scaleX=baseW/(dr.width||baseW), scaleY=baseH/(dr.height||baseH);
+    const dx=(t.clientX-dragSubjectStart.x)*scaleX/zoom;
+    const dy=(t.clientY-dragSubjectStart.y)*scaleY/zoom;
     subjectX=Math.round(dragSubjectStart.sx+dx);
     subjectY=Math.round(dragSubjectStart.sy+dy);
     // Sync sliders
@@ -638,18 +645,20 @@ function clearCursor(){cctx.clearRect(0,0,cc.width,cc.height);hideLupe();}
 function drawCursorRing(screenX,screenY,fingerScreenX,fingerScreenY){
   cctx.clearRect(0,0,cc.width,cc.height);
   if(!brushMode)return;
-  // cc canvas == dc canvas in size (baseW*zoom x baseH*zoom) and rendered 1:1 CSS px.
-  // screenX/Y are px relative to dc/cc element top-left (== dc canvas px coords).
-  // Ring radius must match actual painted area. Brush radius in wCanvas px = brushSize/2 * (wCanvas.width/(baseW*subjectScale))
-  // That same area on screen = brushSize/2 * (wCanvas.width/(baseW*subjectScale)) * (baseW*subjectScale*zoom/wCanvas.width) = brushSize/2 * zoom
+  // screenX/Y are px relative to dc element top-left.
+  // cc may be positioned differently from dc in the DOM, so offset to cc-relative coords.
+  const dcr=dc.getBoundingClientRect();
+  const ccr=cc.getBoundingClientRect();
+  const ccX=screenX+(dcr.left-ccr.left);
+  const ccY=screenY+(dcr.top-ccr.top);
   const ringR=(window.brushSize/2)*zoom;
   const col=window.smartEdge?'rgba(201,168,76,.95)':brushMode==='erase'?'rgba(255,80,80,.9)':'rgba(80,220,80,.9)';
   cctx.save();
-  cctx.beginPath();cctx.arc(screenX,screenY,ringR,0,Math.PI*2);
+  cctx.beginPath();cctx.arc(ccX,ccY,ringR,0,Math.PI*2);
   cctx.strokeStyle=col;cctx.lineWidth=1.5;cctx.stroke();
-  cctx.beginPath();cctx.arc(screenX,screenY,1.5,0,Math.PI*2);
+  cctx.beginPath();cctx.arc(ccX,ccY,1.5,0,Math.PI*2);
   cctx.fillStyle=col;cctx.fill();
-  cctx.beginPath();cctx.moveTo(screenX,screenY+ringR);cctx.lineTo(screenX,screenY+ringR+BRUSH_OFFSET_PX*0.8);
+  cctx.beginPath();cctx.moveTo(ccX,ccY+ringR);cctx.lineTo(ccX,ccY+ringR+BRUSH_OFFSET_PX*0.8);
   cctx.strokeStyle=col;cctx.lineWidth=1;cctx.setLineDash([3,3]);cctx.stroke();cctx.setLineDash([]);
   cctx.restore();
   showLupe(screenX,screenY,fingerScreenX,fingerScreenY);
@@ -901,7 +910,7 @@ window.applyUploadedBg=async function(input){
   const img=await loadImg(url);
   document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
   viewport.classList.remove('checker-bg-vp');
-  currentPhotoBg={url,img};currentBgColor='transparent';_blurredBgCache=null;
+  currentPhotoBg={url,img};currentBgColor='transparent';
   drawComposite();closeMobSheet();
 };
 
@@ -956,7 +965,6 @@ window.mobSearchPhotos=async function(){
         const i=await loadImg(full);
         currentPhotoBg={url:full,img:i};
         currentBgColor='transparent';
-        _blurredBgCache=null;
         drawComposite();
       }catch(e){console.warn('Photo load failed',e);}
       img.style.opacity='';
@@ -1035,10 +1043,7 @@ window.mobResetBgTransform=function(){
 window.mobUpdateEffects=function(){
   // bgBlur — background blur slider
   const bbEl=document.getElementById('mob-bg-blur');
-  const prevBlur=bgBlur;
   if(bbEl){bgBlur=+bbEl.value;const bv=document.getElementById('mob-bg-blur-val');if(bv)bv.textContent=bgBlur+'px';}
-  // If only blur changed and photo bg exists, force redraw
-  if(prevBlur!==bgBlur&&currentPhotoBg){_blurredBgCache=null;}
   shadowEnabled=document.getElementById('mob-shadow-en').checked;
   document.getElementById('mob-shadow-ctrls').style.display=shadowEnabled?'flex':'none';
   shadowColor=document.getElementById('mob-shadow-color').value;
@@ -1165,7 +1170,7 @@ window.clearAll=function(){
   items=[];activeId=null;editorOpened=false;wCanvas=null;wCtx=null;origData=null;
   brushMode=null;isPainting=false;isPanning=false;zoom=1;panX=0;panY=0;baseW=0;baseH=0;
   undoStack=[];redoStack=[];
-  currentBgColor='transparent';currentPhotoBg=null;_blurredBgCache=null;
+  currentBgColor='transparent';currentPhotoBg=null;
   fileIn.value='';dc.width=0;dc.height=0;cc.width=0;cc.height=0;
   document.getElementById('batch-grid').innerHTML='';
   document.getElementById('batch-header').classList.remove('active');
