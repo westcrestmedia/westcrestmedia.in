@@ -907,14 +907,25 @@ window.applyUploadedBg=async function(input){
 /* ── Photo Search ── */
 const PIXABAY_KEY='56195183-28e328d32f454f70395ff87ba';
 const PEXELS_KEY='o4lyPnNivfvjZiCGp6IfzVomd465edTzsZmJWlUMUHcvuJJoUmLVbAiC';
-let preferredSrc='pixabay';
+let preferredSrc='pexels';
 
 async function fetchPhotos(query,page){
-  const order=preferredSrc==='pixabay'?['pixabay','pexels']:['pexels','pixabay'];
-  for(const src of order){
-    if(src==='pixabay'){try{const res=await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=18&page=${page}&safesearch=true`);if(!res.ok)throw new Error();const d=await res.json();if(!d.hits?.length)throw new Error();preferredSrc='pixabay';return{photos:d.hits.map(p=>({thumb:p.webformatURL,full:p.largeImageURL})),hasMore:d.totalHits>page*18,source:'pixabay'};}catch(e){}}
-    if(src==='pexels'){try{const res=await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}`,{headers:{Authorization:PEXELS_KEY}});if(!res.ok)throw new Error();const d=await res.json();if(!d.photos?.length)throw new Error();preferredSrc='pexels';return{photos:d.photos.map(p=>({thumb:p.src.small,full:p.src.large})),hasMore:!!d.next_page,source:'pexels'};}catch(e){}}
-  }
+  // Always try Pexels first; fall back to Pixabay only if Pexels fails
+  try{
+    const res=await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=18&page=${page}`,{headers:{Authorization:PEXELS_KEY}});
+    if(!res.ok)throw new Error('pexels_err');
+    const d=await res.json();
+    if(!d.photos?.length)throw new Error('pexels_empty');
+    return{photos:d.photos.map(p=>({thumb:p.src.small,full:p.src.large})),hasMore:!!d.next_page,source:'pexels'};
+  }catch(e){}
+  // Pixabay fallback
+  try{
+    const res=await fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=18&page=${page}&safesearch=true`);
+    if(!res.ok)throw new Error('pixabay_err');
+    const d=await res.json();
+    if(!d.hits?.length)throw new Error('pixabay_empty');
+    return{photos:d.hits.map(p=>({thumb:p.webformatURL,full:p.largeImageURL})),hasMore:d.totalHits>page*18,source:'pixabay'};
+  }catch(e){}
   return null;
 }
 
@@ -934,15 +945,26 @@ window.mobSearchPhotos=async function(){
   result.photos.forEach(({thumb,full})=>{
     const img=document.createElement('img');img.className='photo-thumb';img.crossOrigin='anonymous';img.src=thumb;
     img.addEventListener('click',async()=>{
+      // Mark selected immediately — no double-click needed
       document.querySelectorAll('.photo-thumb').forEach(t=>t.classList.remove('active'));
-      img.classList.add('active');img.style.opacity='0.6';
+      img.classList.add('active');
+      img.style.opacity='0.5';
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
       viewport.classList.remove('checker-bg-vp');
-      try{const i=await loadImg(full);currentPhotoBg={url:full,img:i};currentBgColor='transparent';drawComposite();}catch(e){}
-      img.style.opacity='';closeMobSheet();
+      try{
+        const i=await loadImg(full);
+        currentPhotoBg={url:full,img:i};
+        currentBgColor='transparent';
+        drawComposite();
+      }catch(e){console.warn('Photo load failed',e);}
+      img.style.opacity='';
+      closeMobSheet();
     });
     grid.appendChild(img);
   });
+  // Enter key support — search field pe Enter dabane se search ho
+  const qEl=document.getElementById('mob-photo-query');
+  qEl.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();window.mobSearchPhotos();}};
   const attr=document.getElementById('mob-photo-attr');
   if(attr)attr.innerHTML=`Photos via <a href="https://${result.source==='pixabay'?'pixabay.com':'www.pexels.com'}" target="_blank">${result.source==='pixabay'?'Pixabay':'Pexels'}</a>`;
 };
@@ -1009,6 +1031,9 @@ window.mobResetBgTransform=function(){
 
 /* ── Effects (Mobile) ── */
 window.mobUpdateEffects=function(){
+  // bgBlur — background blur slider
+  const bbEl=document.getElementById('mob-bg-blur');
+  if(bbEl){bgBlur=+bbEl.value;const bv=document.getElementById('mob-bg-blur-val');if(bv)bv.textContent=bgBlur+'px';}
   shadowEnabled=document.getElementById('mob-shadow-en').checked;
   document.getElementById('mob-shadow-ctrls').style.display=shadowEnabled?'flex':'none';
   shadowColor=document.getElementById('mob-shadow-color').value;
