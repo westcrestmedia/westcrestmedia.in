@@ -4,9 +4,12 @@
 <!-- Mobile redirect: send small-screen / touch-primary devices to the dedicated mobile build -->
 <script>
   (function () {
-    var isSmallScreen = window.innerWidth <= 900;
-    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    if (isSmallScreen && isTouch) {
+    var w = window.innerWidth || screen.width || window.screen.width;
+    var isSmallScreen = w <= 900;
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+    var ua = navigator.userAgent || '';
+    var isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(ua);
+    if (isSmallScreen || isTouch || isMobileUA) {
       window.location.replace('./mobile/' + window.location.search + window.location.hash);
     }
   })();
