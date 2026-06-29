@@ -1319,7 +1319,7 @@ async function fetchPhotoPage(query, page) {
   return null;
 }
 
-function appendPhotosToGrid(gridEl, photos, onPick) {
+function appendPhotosToGrid(gridEl, photos, onPick, beforeEl) {
   photos.forEach(({thumb, full, label}) => {
     const img = document.createElement('img');
     img.className = 'photo-thumb';
@@ -1342,46 +1342,45 @@ function appendPhotosToGrid(gridEl, photos, onPick) {
       if (img._picking) return; // prevent double-click spam
       onPick(img, full);
     });
-    gridEl.appendChild(img);
+    // Insert before the sentinel (if present) so the sentinel stays the
+    // last child — i.e. stays at the true bottom of the scrollable list.
+    if (beforeEl && beforeEl.parentElement === gridEl) gridEl.insertBefore(img, beforeEl);
+    else gridEl.appendChild(img);
   });
 }
 
 function setupInfiniteScroll(gridEl, onLoadMore) {
-  // Remove old sentinel
-  const old = gridEl.parentElement.querySelector('.photo-sentinel');
+  // #photo-grid is itself the overflow-y:auto scroll box (see CSS:
+  // max-height:360px; overflow-y:auto). The sentinel MUST live inside it
+  // to ever move/scroll — placing it as a sibling after the grid (the old
+  // code) put it completely outside the scrollable area, so it only fired
+  // once on initial layout and never again no matter how much the user
+  // scrolled inside the photo list.
+  const old = gridEl.querySelector('.photo-sentinel');
   if (old) old.remove();
   const sentinel = document.createElement('div');
   sentinel.className = 'photo-sentinel';
-  sentinel.style.cssText = 'height:1px;width:100%;';
-  gridEl.after(sentinel);
-  // Deliberately no explicit `root` here — letting it default to the
-  // viewport means IntersectionObserver correctly accounts for whichever
-  // ancestor actually has the scrollbar/clipping, regardless of DOM nesting.
-  // Passing the wrong element as root made this fire once on initial layout
-  // and then never again as the user kept scrolling.
+  sentinel.style.cssText = 'height:1px;width:100%;grid-column:1/-1;';
+  gridEl.appendChild(sentinel);
   const obs = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting) onLoadMore();
-  }, { rootMargin: '400px 0px', threshold: 0 });
+  }, { root: gridEl, rootMargin: '150px 0px', threshold: 0 });
   obs.observe(sentinel);
-  return obs;
+  return { obs, sentinel };
 }
 
 let desktopPhotoObs = null;
 let _searchingDesktop = false;
-window.searchPhotos = async function() {
-  if (_searchingDesktop) return; // prevent spam clicks
-  const q = document.getElementById('photo-query').value.trim();
-  if (!q) {
-    document.getElementById('photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
-    return;
-  }
+
+async function runPhotoSearch(q) {
+  if (_searchingDesktop) return;
   _searchingDesktop = true;
   const searchBtn = document.querySelector('.photo-search-row button');
   if (searchBtn) { searchBtn.disabled = true; searchBtn.textContent = '…'; }
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '<div class="photo-loading">Searching…</div>';
 
-  if (desktopPhotoObs) { desktopPhotoObs.disconnect(); desktopPhotoObs = null; }
+  if (desktopPhotoObs) { desktopPhotoObs.obs.disconnect(); desktopPhotoObs = null; }
   photoSearchState = { query:q, page:1, loading:true, exhausted:false, source:'' };
 
   const result = await fetchPhotoPage(q, 1);
@@ -1405,7 +1404,7 @@ window.searchPhotos = async function() {
       const nextPage = photoSearchState.page + 1;
       const more = await fetchPhotoPage(photoSearchState.query, nextPage);
       if (more && more.photos.length) {
-        appendPhotosToGrid(grid, more.photos, applyPhotoBg);
+        appendPhotosToGrid(grid, more.photos, applyPhotoBg, desktopPhotoObs.sentinel);
         photoSearchState.page = nextPage;
         photoSearchState.exhausted = !more.hasMore;
       } else {
@@ -1414,7 +1413,26 @@ window.searchPhotos = async function() {
       photoSearchState.loading = false;
     });
   }
+}
+
+window.searchPhotos = async function() {
+  const q = document.getElementById('photo-query').value.trim();
+  if (!q) {
+    document.getElementById('photo-grid').innerHTML = '<div class="photo-loading">Type something and press Search.</div>';
+    return;
+  }
+  await runPhotoSearch(q);
 };
+
+// Pre-fill the grid with a default set of photos as soon as the tool loads,
+// so the panel never looks empty — it visually signals "pick a background
+// here" right away. The search box itself stays untouched/empty so the
+// user can still search for whatever they actually want afterwards.
+(function initDefaultPhotoGrid(){
+  const grid = document.getElementById('photo-grid');
+  if (!grid) return;
+  runPhotoSearch('gradient background');
+})();
 
 // Upload BG from PC
 window.applyUploadedBg = async function(input) {
