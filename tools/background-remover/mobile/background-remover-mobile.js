@@ -486,7 +486,7 @@ function touchToCanvas(t){
   const cy=(t.clientY-dr.top)*scaleY;
   if(cx<0||cx>dc.width)return null;
   if(cy<-dc.height*0.5)return null;
-  return{x:Math.max(0,Math.min(dc.width,cx)), y:Math.min(cy,dc.height)};
+  return{x:Math.max(0,Math.min(dc.width,cx)), y:cy};
 }
 
 // Brush circle sits BRUSH_OFFSET_PX screen-px above the finger.
@@ -495,7 +495,7 @@ const BRUSH_OFFSET_PX=80;
 function brushPos(rawCanvasPos){
   const dr=dc.getBoundingClientRect();
   const scaleY=dr.height>0?(dc.height/dr.height):1;
-  return{x:rawCanvasPos.x, y:rawCanvasPos.y-BRUSH_OFFSET_PX*scaleY};
+  return{x:rawCanvasPos.x, y:Math.max(0, rawCanvasPos.y-BRUSH_OFFSET_PX*scaleY)};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
