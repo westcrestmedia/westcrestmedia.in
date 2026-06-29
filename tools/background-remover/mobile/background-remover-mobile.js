@@ -341,12 +341,9 @@ function renderAll(){
 }
 
 /* ── Draw Composite ── */
-let _rafPending = false;
 window.drawComposite = function drawComposite(){
   if(!wCanvas)return;
-  if(_rafPending)return;
-  _rafPending=true;
-  requestAnimationFrame(()=>{ _rafPending=false; _drawCompositeNow(); });
+  requestAnimationFrame(_drawCompositeNow);
 };
 function _drawCompositeNow(){
   if(!wCanvas)return;
@@ -498,7 +495,7 @@ const BRUSH_OFFSET_PX=80;
 function brushPos(rawCanvasPos){
   const dr=dc.getBoundingClientRect();
   const scaleY=dr.height>0?(dc.height/dr.height):1;
-  return{x:rawCanvasPos.x, y:Math.max(0, rawCanvasPos.y-BRUSH_OFFSET_PX*scaleY)};
+  return{x:rawCanvasPos.x, y:rawCanvasPos.y-BRUSH_OFFSET_PX*scaleY};
 }
 
 let _touchBrushScreenX=0, _touchBrushScreenY=0;
