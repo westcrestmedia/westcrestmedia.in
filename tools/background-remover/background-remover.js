@@ -1275,16 +1275,12 @@ let photoSearchState = { query:'', page:1, loading:false, exhausted:false, sourc
 const PIXABAY_API_KEY = '56195183-28e328d32f454f70395ff87ba';
 const PEXELS_API_KEY  = 'o4lyPnNivfvjZiCGp6IfzVomd465edTzsZmJWlUMUHcvuJJoUmLVbAiC';
 
-// Which source worked last — start with pixabay, auto-switch on failure
-let preferredSource = 'pixabay';
+// Fixed priority: always try Pexels first, fall back to Pixabay if Pexels
+// fails or returns no results for that page.
+const SOURCE_ORDER = ['pexels', 'pixabay'];
 
 async function fetchPhotoPage(query, page) {
-  // Try preferred source first, then fallback to the other
-  const order = preferredSource === 'pixabay'
-    ? ['pixabay', 'pexels']
-    : ['pexels', 'pixabay'];
-
-  for (const src of order) {
+  for (const src of SOURCE_ORDER) {
     if (src === 'pixabay') {
       try {
         const res = await fetch(
@@ -1294,7 +1290,6 @@ async function fetchPhotoPage(query, page) {
         const data = await res.json();
         const hits = data.hits || [];
         if (!hits.length) throw new Error('empty');
-        preferredSource = 'pixabay'; // mark as working
         return {
           photos: hits.map(p => ({ thumb: p.webformatURL, full: p.largeImageURL, label: p.user })),
           source: 'pixabay',
@@ -1313,7 +1308,6 @@ async function fetchPhotoPage(query, page) {
         const data = await res.json();
         const photos = data.photos || [];
         if (!photos.length) throw new Error('empty');
-        preferredSource = 'pexels'; // mark as working
         return {
           photos: photos.map(p => ({ thumb: p.src.small, full: p.src.large, label: p.photographer })),
           source: 'pexels',
@@ -1329,11 +1323,21 @@ function appendPhotosToGrid(gridEl, photos, onPick) {
   photos.forEach(({thumb, full, label}) => {
     const img = document.createElement('img');
     img.className = 'photo-thumb';
-    img.crossOrigin = 'anonymous';
     img.title = label || '';
-    // Do NOT use loading="lazy" with crossOrigin — causes cache/CORS conflict
-    // Set src after crossOrigin is set
+    img.loading = 'lazy';
+    img._fullUrl = full;
+    // NOTE: no crossOrigin here on purpose. These are display-only preview
+    // thumbnails — we never read their pixels. Forcing crossOrigin='anonymous'
+    // requires the CDN to send CORS headers; Pixabay/Pexels don't always do
+    // that reliably, which made thumbnails randomly fail to show at all.
     img.src = thumb;
+    img.onerror = () => {
+      // One silent retry with a cache-buster — covers transient CDN hiccups
+      // instead of leaving a permanently broken thumbnail.
+      if (img._retried) return;
+      img._retried = true;
+      img.src = thumb + (thumb.includes('?') ? '&' : '?') + '_r=' + Date.now();
+    };
     img.addEventListener('click', () => {
       if (img._picking) return; // prevent double-click spam
       onPick(img, full);
@@ -1350,9 +1354,14 @@ function setupInfiniteScroll(gridEl, onLoadMore) {
   sentinel.className = 'photo-sentinel';
   sentinel.style.cssText = 'height:1px;width:100%;';
   gridEl.after(sentinel);
+  // Deliberately no explicit `root` here — letting it default to the
+  // viewport means IntersectionObserver correctly accounts for whichever
+  // ancestor actually has the scrollbar/clipping, regardless of DOM nesting.
+  // Passing the wrong element as root made this fire once on initial layout
+  // and then never again as the user kept scrolling.
   const obs = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting) onLoadMore();
-  }, { root: gridEl.parentElement, threshold: 0 });
+  }, { rootMargin: '400px 0px', threshold: 0 });
   obs.observe(sentinel);
   return obs;
 }
@@ -1427,6 +1436,33 @@ window.applyUploadedBg = async function(input) {
   lbl.querySelector('div').children[0].textContent = '✓ ' + file.name.slice(0,18);
 };
 
+function showBgPhotoLoading(show) {
+  let el = document.getElementById('bg-photo-loading-badge');
+  if (show) {
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'bg-photo-loading-badge';
+      el.textContent = 'Loading photo…';
+      el.style.cssText = 'position:absolute;top:10px;left:10px;z-index:50;background:rgba(0,0,0,0.72);color:#fff;font-size:12px;font-family:inherit;padding:6px 10px;border-radius:6px;pointer-events:none;display:flex;align-items:center;gap:6px;';
+      const spin = document.createElement('span');
+      spin.style.cssText = 'width:10px;height:10px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:bgPhotoSpin 0.7s linear infinite;';
+      el.prepend(spin);
+      if (!document.getElementById('bg-photo-spin-style')) {
+        const style = document.createElement('style');
+        style.id = 'bg-photo-spin-style';
+        style.textContent = '@keyframes bgPhotoSpin{to{transform:rotate(360deg);}}';
+        document.head.appendChild(style);
+      }
+      const cs = getComputedStyle(viewport);
+      if (cs.position === 'static') viewport.style.position = 'relative';
+      viewport.appendChild(el);
+    }
+    el.style.display = 'flex';
+  } else if (el) {
+    el.style.display = 'none';
+  }
+}
+
 async function applyPhotoBg(el, url) {
   if (el._picking) return; // guard against rapid clicks
   el._picking = true;
@@ -1435,15 +1471,25 @@ async function applyPhotoBg(el, url) {
   el.style.opacity = '0.6';
   document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
   viewport.classList.remove('checker-bg-vp');
+
+  // Instant feedback: the clicked thumbnail is already loaded in the browser,
+  // so draw it on the canvas right away (slightly soft/low-res) instead of
+  // waiting for the full-resolution image. The real image swaps in seamlessly
+  // once it's ready, with a small loading badge shown in the meantime.
+  currentPhotoBg = { url, img: el, isPlaceholder: true };
+  currentBgColor = 'transparent';
+  updateBgTransformVisibility();
+  drawComposite();
+  showBgPhotoLoading(true);
+
   try {
     const img = await loadImg(url);
     currentPhotoBg = { url, img };
-    currentBgColor = 'transparent';
-    updateBgTransformVisibility();
     drawComposite();
   } catch(e) {
     console.warn('applyPhotoBg failed:', e);
   } finally {
+    showBgPhotoLoading(false);
     el.style.opacity = '';
     el._picking = false;
   }
