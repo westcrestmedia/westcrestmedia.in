@@ -1022,11 +1022,20 @@ window.mobResetBgTransform=function(){
   drawComposite();
 };
 
-/* ── Effects (Mobile) ── */
-window.mobUpdateEffects=function(){
-  // bgBlur — background blur slider
+window.mobUpdateBgBlur=function(){
   const bbEl=document.getElementById('mob-bg-blur');
   if(bbEl){bgBlur=+bbEl.value;const bv=document.getElementById('mob-bg-blur-val');if(bv)bv.textContent=bgBlur+'px';}
+  drawComposite();
+};
+
+window.mobUpdateFeather=function(){
+  const fEl=document.getElementById('mob-feather');
+  if(fEl){featherRadius=+fEl.value;const fv=document.getElementById('mob-feather-v');if(fv)fv.textContent=featherRadius+'px';}
+  drawComposite();
+};
+
+/* ── Effects (Mobile) ── */
+window.mobUpdateEffects=function(){
   shadowEnabled=document.getElementById('mob-shadow-en').checked;
   document.getElementById('mob-shadow-ctrls').style.display=shadowEnabled?'flex':'none';
   shadowColor=document.getElementById('mob-shadow-color').value;
