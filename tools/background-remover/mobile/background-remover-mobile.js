@@ -1003,6 +1003,8 @@ function updateFlipBtns(){
 }
 
 window.mobUpdateBgTransform=function(){
+  const bbEl=document.getElementById('mob-bg-blur');
+  if(bbEl){bgBlur=+bbEl.value;const bv=document.getElementById('mob-bg-blur-val');if(bv)bv.textContent=bgBlur+'px';}
   bgScale=+document.getElementById('mob-bg-scale').value/100;
   bgOffsetX=+document.getElementById('mob-bg-x').value;
   bgOffsetY=+document.getElementById('mob-bg-y').value;
