@@ -153,6 +153,13 @@ dropZone.addEventListener('drop', e => {
 });
 dropZone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') fileIn.click(); });
 
+// ── Cross-tool connector adapter: loads an incoming file from another tool
+// exactly like a normal upload — used by tool-connect.js for the
+// "restore previous work" / "continue from another tool" banners.
+window.WM_loadIncomingFile = async function(file) {
+  await addFiles([file]);
+};
+
 /* ── ADD FILES ── */
 function showUploadOverlay(title, sub) {
   document.getElementById('upload-overlay-title').textContent = title;
@@ -1723,6 +1730,23 @@ window.downloadCurrent=function(){
   const exp=buildExportCanvasForItem(item);
   const {mime,ext}=_getMimeAndExt();
   exp.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`wc-bg-removed.${ext}`;a.click();},mime,_getQuality());
+};
+
+// ── Cross-tool connector adapter: returns the current result as a blob ──
+// without triggering a download — used by tool-connect.js when the user
+// clicks "Send to another tool".
+window.WM_getCurrentBlob = async function() {
+  const item = items.find(i => i.id == activeId);
+  if (!item) return null;
+  if (wCanvas) {
+    const cvs = document.createElement('canvas'); cvs.width = wCanvas.width; cvs.height = wCanvas.height;
+    cvs.getContext('2d').drawImage(wCanvas, 0, 0);
+    item.resultCanvas = cvs;
+  }
+  const exp = buildExportCanvasForItem(item);
+  const { mime, ext } = _getMimeAndExt();
+  const blob = await new Promise(res => exp.toBlob(res, mime, _getQuality()));
+  return { blob, fileName: `wc-bg-removed.${ext}`, mimeType: mime };
 };
 
 window.downloadItem=async function(id){

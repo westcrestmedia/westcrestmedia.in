@@ -11,7 +11,7 @@ const WC_TOOLS = [
     desc: "Remove backgrounds instantly. Batch support.",
     icon: "✂️",
     url: "https://westcrestmedia.in/tools/background-remover/",
-    related: ["image-converter", "image-compressor", "thumbnail-maker", "color-palette"]
+    related: ["photo-editor-pro", "image-converter", "image-compressor", "thumbnail-maker", "color-palette"]
   },
   {
     name: "Color Palette Generator",
@@ -82,5 +82,12 @@ const WC_TOOLS = [
     icon: "📑",
     url: "https://westcrestmedia.in/tools/pdf-studio/",
     related: ["image-converter", "image-compressor", "aspect-ratio", "font-pairing"]
+  },
+  {
+    name: "Photo Editor Pro",
+    desc: "Edit, retouch and enhance your photos with professional tools.",
+    icon: "🖌️",
+    url: "https://westcrestmedia.in/tools/photo-editor-pro/",
+    related: ["background-remover", "image-converter", "image-compressor", "thumbnail-maker"]
   },
 ];
