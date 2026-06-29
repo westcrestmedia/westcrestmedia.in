@@ -65,6 +65,13 @@ dropZone.addEventListener('click', e => {
 });
 document.getElementById('file-input').addEventListener('change', e => handleFiles([...e.target.files]));
 
+// ── Cross-tool connector adapter: loads an incoming file from another tool
+// exactly like a normal upload — used by tool-connect.js for the
+// "restore previous work" / "continue from another tool" banners.
+window.WM_loadIncomingFile = async function(file) {
+  await handleFiles([file]);
+};
+
 /* ── IMAGE RESOLUTION HELPER ── */
 function getImageResolution(file) {
   return new Promise((resolve) => {
@@ -810,6 +817,20 @@ async function downloadZip() {
   zipBtn.textContent = origTxt;
   zipBtn.disabled    = false;
 }
+
+// ── Cross-tool connector adapter: returns the currently-focused converted
+// image as a blob — used by tool-connect.js when the user clicks
+// "Send to another tool". PDF mode merges multiple files into one
+// document, which isn't a single-image handoff, so it's skipped.
+window.WM_getCurrentBlob = async function() {
+  if (outputFormat === 'pdf') return null;
+
+  const idx = convertedBlobs[selectedMobileIndex] ? selectedMobileIndex : Object.keys(convertedBlobs)[0];
+  if (idx === undefined || !convertedBlobs[idx]) return null;
+
+  const { blob, name } = convertedBlobs[idx];
+  return { blob, fileName: name, mimeType: blob.type };
+};
 
 function clearAll() {
   files = [];
