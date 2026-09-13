@@ -113,6 +113,40 @@
     @media(max-width:1100px) { .portfolio-grid { grid-template-columns:repeat(2,1fr); } .portfolio-item-large { grid-column: span 1; } }
     @media(max-width:900px) { .container { padding:0 30px; } .padded { padding:80px 0; } }
     @media(max-width:600px) { .container { padding:0 20px; } .padded { padding:60px 0; } }
+
+    /* ── REELS SECTION ── */
+    .reels-track-wrap { overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; scroll-behavior:smooth; padding-bottom:10px; }
+    .reels-track-wrap::-webkit-scrollbar { display:none; }
+    .reels-track { display:flex; gap:18px; width:max-content; }
+    .reel-card { flex:0 0 200px; cursor:pointer; position:relative; border-radius:12px; overflow:hidden; background:var(--surface); border:1px solid var(--border); transition:border-color 0.3s,transform 0.3s; }
+    .reel-card:hover { border-color:var(--gold); transform:translateY(-4px); }
+    .reel-embed { width:100%; aspect-ratio:9/16; overflow:hidden; position:relative; }
+    .reel-embed iframe { width:100%; height:100%; border:none; pointer-events:none; }
+    .reel-card:hover .reel-embed iframe { pointer-events:auto; }
+    .reel-label { padding:12px 14px; display:flex; align-items:center; gap:10px; }
+    .reel-num { font-family:var(--font-mono); font-size:0.6rem; color:var(--gold); letter-spacing:0.1em; }
+    .reel-title { font-size:0.75rem; color:var(--white-dim); letter-spacing:0.04em; }
+    .reels-arrow { width:40px; height:40px; border:1px solid var(--border); background:transparent; color:var(--white); font-size:1rem; cursor:pointer; transition:border-color 0.3s,color 0.3s,background 0.3s; font-family:var(--font-sans); flex-shrink:0; }
+    .reels-arrow:hover { border-color:var(--gold); color:var(--gold); background:rgba(200,169,110,0.08); }
+
+    /* ── REELS LIGHTBOX ── */
+    .reels-lightbox { position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.92); display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px); opacity:0; transition:opacity 0.35s; }
+    .reels-lightbox.active { display:flex; opacity:1; }
+    .reels-lb-close { position:absolute; top:24px; right:28px; background:none; border:none; color:var(--white); font-size:2rem; cursor:pointer; z-index:10; transition:color 0.3s; line-height:1; }
+    .reels-lb-close:hover { color:var(--gold); }
+    .reels-lb-video { width:100%; max-width:400px; aspect-ratio:9/16; position:relative; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+    .reels-lb-video iframe { width:100%; height:100%; border:none; }
+    .reels-lb-prev, .reels-lb-next { position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.5); color:var(--white); font-size:1.4rem; cursor:pointer; z-index:10; transition:background 0.3s,border-color 0.3s; display:flex; align-items:center; justify-content:center; }
+    .reels-lb-prev:hover, .reels-lb-next:hover { background:rgba(200,169,110,0.2); border-color:var(--gold); }
+    .reels-lb-prev { left:20px; } .reels-lb-next { right:20px; }
+    .reels-lb-counter { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.7rem; color:var(--white-dim); letter-spacing:0.15em; }
+
+    @media(max-width:600px) {
+      .reel-card { flex:0 0 150px; }
+      .reels-lb-video { max-width:85vw; }
+      .reels-lb-prev, .reels-lb-next { width:38px; height:38px; font-size:1.1rem; }
+      .reels-lb-prev { left:10px; } .reels-lb-next { right:10px; }
+    }
   </style>
 </head>
 <body>
@@ -171,6 +205,57 @@
         </div>
       </div>
     </section>
+
+    <!-- REELS SECTION -->
+    <section id="reels" class="padded" style="background:var(--bg2);">
+      <div class="container">
+        <div class="section-header reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
+          <div>
+            <div class="section-index">Reels</div>
+            <h2 class="section-title">Watch Our <em>Reels</em></h2>
+            <p style="color:var(--white-dim);font-size:0.82rem;letter-spacing:0.08em;margin-top:10px;max-width:420px;">Quick glimpses of our creative work — tap any reel to watch.</p>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="reels-arrow reels-prev" onclick="reelsScroll(-1)">‹</button>
+            <button class="reels-arrow reels-next" onclick="reelsScroll(1)">›</button>
+          </div>
+        </div>
+        <div class="reels-track-wrap reveal">
+          <div class="reels-track" id="reelsTrack">
+            <div class="reel-card" onclick="openReel(0)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/Nv1JvPcn8GA" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">01</span><span class="reel-title">WCM V1</span></div></div>
+            <div class="reel-card" onclick="openReel(1)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/UFLUX6hG_2E" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">02</span><span class="reel-title">WCM V2</span></div></div>
+            <div class="reel-card" onclick="openReel(2)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/HaHmgYxiI0s" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">03</span><span class="reel-title">WCM V3</span></div></div>
+            <div class="reel-card" onclick="openReel(3)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/Y9JY5qdrqeE" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">04</span><span class="reel-title">WCM V4</span></div></div>
+            <div class="reel-card" onclick="openReel(4)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/NNfQzk3Y1hI" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">05</span><span class="reel-title">WCM V5</span></div></div>
+            <div class="reel-card" onclick="openReel(5)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/2kC2ghxADAU" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">06</span><span class="reel-title">WCM V6</span></div></div>
+            <div class="reel-card" onclick="openReel(6)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/FBqh_DFR1rM" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">07</span><span class="reel-title">WCM V7</span></div></div>
+            <div class="reel-card" onclick="openReel(7)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/40lHiblClQc" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">08</span><span class="reel-title">WCM V8</span></div></div>
+            <div class="reel-card" onclick="openReel(8)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/7qE96pKg448" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">09</span><span class="reel-title">WCM V9</span></div></div>
+            <div class="reel-card" onclick="openReel(9)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/srENE-bOvwQ" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">10</span><span class="reel-title">WCM V10</span></div></div>
+            <div class="reel-card" onclick="openReel(10)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/3llvlCsm2qw" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">11</span><span class="reel-title">WCM V11</span></div></div>
+            <div class="reel-card" onclick="openReel(11)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/KJiElK37H8Q" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">12</span><span class="reel-title">WCM V12</span></div></div>
+            <div class="reel-card" onclick="openReel(12)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/bpJTGR1-t5A" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">13</span><span class="reel-title">WCM V13</span></div></div>
+            <div class="reel-card" onclick="openReel(13)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/jE_At5fRjEc" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">14</span><span class="reel-title">WCM V14</span></div></div>
+            <div class="reel-card" onclick="openReel(14)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/CoiWqiUYm_8" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">15</span><span class="reel-title">WCM V15</span></div></div>
+            <div class="reel-card" onclick="openReel(15)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/oDerXmLgFoM" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">16</span><span class="reel-title">WCM V16</span></div></div>
+            <div class="reel-card" onclick="openReel(16)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/29ua_Y6Gmos" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">17</span><span class="reel-title">WCM V17</span></div></div>
+            <div class="reel-card" onclick="openReel(17)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/3kcxGzljU3c" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">18</span><span class="reel-title">WCM V18</span></div></div>
+            <div class="reel-card" onclick="openReel(18)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/FlD78n86ajs" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">19</span><span class="reel-title">WCM V19</span></div></div>
+            <div class="reel-card" onclick="openReel(19)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/Pu_MYZDBbe8" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">20</span><span class="reel-title">WCM V20</span></div></div>
+            <div class="reel-card" onclick="openReel(20)"><div class="reel-embed"><iframe src="https://www.youtube.com/embed/ca9mir2YMtQ" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="reel-label"><span class="reel-num">21</span><span class="reel-title">Lutt Le Gaya Car Chase</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REELS LIGHTBOX -->
+    <div class="reels-lightbox" id="reelsLightbox">
+      <button class="reels-lb-close" onclick="closeReel()">&times;</button>
+      <button class="reels-lb-prev" onclick="reelNav(-1)">‹</button>
+      <button class="reels-lb-next" onclick="reelNav(1)">›</button>
+      <div class="reels-lb-video"><iframe id="reelIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+      <div class="reels-lb-counter"><span id="reelCurrent">1</span> / <span id="reelTotal">21</span></div>
+    </div>
 
     <!-- TESTIMONIALS -->
     <section id="testimonials" class="padded" style="background: var(--bg2);">
@@ -276,6 +361,52 @@
       track.style.transform = 'translateX(-' + (testimSlideIndex * cardWidth) + 'px)';
       document.querySelectorAll('.testim-dot').forEach((d, i) => d.classList.toggle('active', i === testimSlideIndex));
     }
+
+    /* ── REELS ── */
+    const reelIds = [
+      'Nv1JvPcn8GA','UFLUX6hG_2E',
+      'HaHmgYxiI0s','Y9JY5qdrqeE',
+      'NNfQzk3Y1hI','2kC2ghxADAU',
+      'FBqh_DFR1rM','40lHiblClQc',
+      '7qE96pKg448','srENE-bOvwQ',
+      '3llvlCsm2qw','KJiElK37H8Q',
+      'bpJTGR1-t5A','jE_At5fRjEc',
+      'CoiWqiUYm_8','oDerXmLgFoM',
+      '29ua_Y6Gmos','3kcxGzljU3c',
+      'FlD78n86ajs','Pu_MYZDBbe8',
+      'ca9mir2YMtQ'
+    ];
+    let currentReel = 0;
+    const lb = document.getElementById('reelsLightbox');
+    const reelIframe = document.getElementById('reelIframe');
+    function openReel(i) {
+      currentReel = i;
+      reelIframe.src = 'https://www.youtube.com/embed/' + reelIds[i] + '?autoplay=1';
+      document.getElementById('reelCurrent').textContent = i + 1;
+      lb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeReel() {
+      lb.classList.remove('active');
+      reelIframe.src = '';
+      document.body.style.overflow = '';
+    }
+    function reelNav(dir) {
+      currentReel = (currentReel + dir + reelIds.length) % reelIds.length;
+      reelIframe.src = 'https://www.youtube.com/embed/' + reelIds[currentReel] + '?autoplay=1';
+      document.getElementById('reelCurrent').textContent = currentReel + 1;
+    }
+    function reelsScroll(dir) {
+      const t = document.getElementById('reelsTrack').parentElement;
+      t.scrollBy({ left: dir * 440, behavior: 'smooth' });
+    }
+    lb.addEventListener('click', e => { if (e.target === lb) closeReel(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('active')) return;
+      if (e.key === 'Escape') closeReel();
+      if (e.key === 'ArrowRight') reelNav(1);
+      if (e.key === 'ArrowLeft') reelNav(-1);
+    });
   </script>
 
 </body>
