@@ -48,11 +48,11 @@ function renderNav(user) {
       <li><a href="/shop/">Shop</a></li>
       <li><a href="/about/">About</a></li>
       <li><a href="/blog/">Blog</a></li>
-      <li><a href="/#contact">Contact</a></li>
+      <li><a href="/contact/">Contact</a></li>
     </ul>
 
     <div class="nav-right">
-      <a href="#contact" class="nav-cta">Start a Project</a>
+      <a href="/contact/" class="nav-cta">Start a Project</a>
 
       ${user ? `
         <div id="wm-avatar-wrap" style="position:relative;">
@@ -168,7 +168,7 @@ function initMobileMenu() {
       <a href="/shop/" onclick="closeMobile()">Shop</a>
       <a href="/about/" onclick="closeMobile()">About</a>
       <a href="/blog/" onclick="closeMobile()">Blog</a>
-      <a href="/#contact" onclick="closeMobile()">Contact</a>
+      <a href="/contact/" onclick="closeMobile()">Contact</a>
     `
     document.body.appendChild(menu)
   }

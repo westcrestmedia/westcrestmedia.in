@@ -23,7 +23,7 @@
       <a href="https://westcrestmedia.in/services/">Services</a>
       <a href="https://westcrestmedia.in/portfolio/">Portfolio</a>
       <a href="https://westcrestmedia.in/shop/">Shop</a>
-      <a href="https://westcrestmedia.in/#contact">Contact</a>
+      <a href="https://westcrestmedia.in/contact/">Contact</a>
     </div>
   `;
   const target = document.getElementById('site-footer');

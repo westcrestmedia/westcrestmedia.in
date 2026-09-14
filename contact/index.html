@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | Westcrest Media</title>
+  <meta name="description" content="Get in touch with Westcrest Media for video editing, motion graphics, and creative projects. We'll respond within 24 hours." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://westcrestmedia.in/contact/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://westcrestmedia.in/contact/" />
+  <meta property="og:title" content="Contact — Westcrest Media" />
+  <meta property="og:description" content="Get in touch with Westcrest Media for video editing, motion graphics, and creative projects." />
+  <meta property="og:image" content="https://westcrestmedia.in/images/og-image.jpg" />
+  <meta property="og:site_name" content="Westcrest Media" />
+  <meta name="theme-color" content="#C9A84C" />
+  <link rel="icon" type="image/svg+xml" href="/images/w_logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/nav-landing.css" />
+  <link rel="stylesheet" href="/assets/css/landing-footer.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #111118; --bg2: #16161e; --bg3: #1c1c26; --surface: #1e1e28;
+      --border: rgba(255,255,255,0.10);
+      --gold: #c8a96e; --gold2: #e8c98e; --gold-dim: rgba(200,169,110,0.15);
+      --white: #f5f0e8; --white-dim: rgba(245,240,232,0.55); --white-faint: rgba(245,240,232,0.12);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-sans: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: var(--font-sans); overflow-x: hidden; }
+    body::before { content:''; position:fixed; inset:0; z-index:1; pointer-events:none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.025; }
+    ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:2px; }
+    .container { max-width:1260px; margin:0 auto; padding:0 60px; }
+    .padded { padding:120px 0; }
+    .section-header { margin-bottom:80px; }
+    .section-index { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.3em; color:var(--gold); text-transform:uppercase; margin-bottom:12px; }
+    .section-title { font-family:var(--font-display); font-size:clamp(2.8rem,5vw,5rem); font-weight:300; line-height:1.05; color:var(--white); }
+    .section-title em { font-style:italic; color:var(--gold); }
+    .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.8s ease,transform 0.8s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* CONTACT */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: start; }
+    .contact-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label { font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--white-dim); }
+    .form-input, .form-select, .form-textarea {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--white); font-family: var(--font-sans);
+      font-size: 0.82rem; padding: 14px 18px;
+      outline: none; transition: border-color 0.3s;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+    .form-select option { background: var(--bg3); }
+    .form-textarea { resize: vertical; min-height: 140px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .contact-info { padding-top: 12px; }
+    .contact-info-title {
+      font-family: var(--font-display); font-size: 2.4rem;
+      font-weight: 300; margin-bottom: 24px; line-height: 1.2;
+    }
+    .contact-info-title em { font-style: italic; color: var(--gold); }
+    .contact-info-desc { font-size: 0.82rem; line-height: 1.9; color: var(--white-dim); margin-bottom: 48px; }
+    .contact-details { display: flex; flex-direction: column; gap: 24px; }
+    .contact-detail-item { display: flex; gap: 20px; align-items: flex-start; }
+    .contact-detail-icon {
+      width: 40px; height: 40px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0; color: var(--gold);
+    }
+    .contact-detail-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .contact-detail-value { font-size: 0.82rem; color: var(--white-dim); }
+    .btn-primary { display:inline-block; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; background:var(--gold); color:#0a0a12; padding:16px 36px; text-decoration:none; font-family:var(--font-sans); font-weight:600; transition:background 0.3s,transform 0.2s; }
+    .btn-primary:hover { background:var(--gold2); transform:translateY(-2px); }
+
+    @media(max-width:900px) {
+      .container { padding:0 30px; }
+      .padded { padding:80px 0; }
+      .contact-grid { grid-template-columns: 1fr; gap: 60px; }
+    }
+    @media(max-width:600px) {
+      .container { padding:0 20px; }
+      .padded { padding:60px 0; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar"></nav>
+  <script type="module" src="/assets/js/header-landing.js"></script>
+
+  <main>
+    <section class="padded" style="background:var(--bg2);">
+      <div class="container">
+        <div class="section-header reveal" style="text-align:center;">
+          <div class="section-index">Contact</div>
+          <h2 class="section-title">Let's Create <em>Together</em></h2>
+          <p style="color:var(--white-dim);font-size:0.85rem;letter-spacing:0.08em;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto;">Ready to bring your vision to life? Tell us about your project and we'll get back to you within 24 hours.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="padded">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info reveal">
+            <h2 class="contact-info-title">Let's Create<br /><em>Something Great</em></h2>
+            <p class="contact-info-desc">Ready to bring your vision to life? Tell us about your project and we'll get back to you within 24 hours with a custom proposal.</p>
+            <div class="contact-details">
+              <div class="contact-detail-item">
+                <div class="contact-detail-icon">&#9993;</div>
+                <div>
+                  <div class="contact-detail-label">Email</div>
+                  <div class="contact-detail-value">westcrestmedia@gmail.com</div>
+                </div>
+              </div>
+              <div class="contact-detail-item">
+                <div class="contact-detail-icon">&#9742;</div>
+                <div>
+                  <div class="contact-detail-label">WhatsApp</div>
+                  <div class="contact-detail-value">+91 93234 55707</div>
+                </div>
+              </div>
+              <div class="contact-detail-item">
+                <div class="contact-detail-icon">&#9201;</div>
+                <div>
+                  <div class="contact-detail-label">Response Time</div>
+                  <div class="contact-detail-value">Within 24 Hours</div>
+                </div>
+              </div>
+            </div>
+            <a href="https://wa.me/919323455707?text=Hi%20Westcrest%20Media!%20I%27d%20like%20to%20discuss%20a%20project." target="_blank"
+               style="display:inline-flex; align-items:center; gap:12px; margin-top:36px;
+                      padding:14px 28px; border:1px solid var(--gold); color:var(--gold);
+                      text-decoration:none; font-size:0.72rem; letter-spacing:0.18em;
+                      text-transform:uppercase; transition:all 0.3s; background:transparent;"
+               onmouseover="this.style.background='var(--gold)'; this.style.color='#0a0a12';"
+               onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
+              Chat on WhatsApp
+            </a>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <div id="form-success" style="display:none; text-align:center; padding:48px 24px;">
+              <div style="margin-bottom:20px;"><img src="/images/w_logo.svg" alt="Westcrest Media" width="80" height="80" style="height:80px; width:auto; object-fit:contain;"/></div>
+              <h3 style="font-family:var(--font-display); font-size:1.6rem; color:var(--gold); margin-bottom:16px; letter-spacing:0.05em;">Message Received!</h3>
+              <p style="color:var(--white-dim); font-size:0.85rem; line-height:1.8; margin-bottom:8px;">Thank you for reaching out. We'll get back to you shortly.</p>
+              <p style="color:var(--white-dim); font-size:0.85rem; line-height:1.8; margin-bottom:32px;">For a faster response, feel free to message us on WhatsApp.</p>
+              <a href="https://wa.me/919323455707?text=Hi%20Westcrest%20Media!%20I%27d%20like%20to%20discuss%20a%20project." target="_blank"
+                 style="display:inline-flex; align-items:center; gap:10px; padding:12px 28px; border:1px solid var(--gold); color:var(--gold); text-decoration:none; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; transition:all 0.3s;"
+                 onmouseover="this.style.background='var(--gold)'; this.style.color='#0a0a12';"
+                 onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
+                WhatsApp Us
+              </a>
+            </div>
+            <form id="contact-form-el" class="contact-form" onsubmit="handleSubmit(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="cf-fname">First Name</label>
+                  <input id="cf-fname" class="form-input" type="text" placeholder="Your name" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="cf-lname">Last Name</label>
+                  <input id="cf-lname" class="form-input" type="text" placeholder="Last name" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-email">Email Address</label>
+                <input id="cf-email" class="form-input" type="email" placeholder="your@email.com" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-service">Service Required</label>
+                <select id="cf-service" class="form-select">
+                  <option value="">Select a service...</option>
+                  <option>Video Editing</option>
+                  <option>Motion Graphics</option>
+                  <option>Color Grading</option>
+                  <option>After Effects VFX</option>
+                  <option>Sound Design</option>
+                  <option>Brand Video Package</option>
+                  <option>Plugin / Product Purchase</option>
+                  <option>Custom Bundle</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-message">Project Details</label>
+                <textarea id="cf-message" class="form-textarea" placeholder="Tell us about your project — timeline, budget, goals, references..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary" style="border:none; cursor:pointer; width:100%; text-align:center;">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="landing-footer"></div>
+  <script src="/assets/js/landing-footer.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init('rEv_loX3LvmEPHPGn');
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const fname = document.getElementById('cf-fname').value;
+      const lname = document.getElementById('cf-lname').value;
+      const email = document.getElementById('cf-email').value;
+      const service = document.getElementById('cf-service').value;
+      const message = document.getElementById('cf-message').value;
+
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      emailjs.send('service_b1l1hlb', 'template_ullrqsm', {
+        from_name: fname + ' ' + lname,
+        from_email: email,
+        title: service || 'Not specified',
+        message: message,
+        email: email
+      }).then(() => {
+        document.getElementById('contact-form-el').style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      }).catch(() => {
+        btn.textContent = 'Failed. Try Again.';
+        btn.style.background = '#5a2a2a';
+        setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; btn.disabled = false; }, 3000);
+      });
+    }
+  </script>
+
+</body>
+</html>
