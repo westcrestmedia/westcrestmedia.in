@@ -114,11 +114,18 @@
     @media(max-width:900px) { .container { padding:0 30px; } .padded { padding:80px 0; } }
     @media(max-width:600px) { .container { padding:0 20px; } .padded { padding:60px 0; } }
 
+    /* ── SHOWREEL BANNER ── */
+    .showreel-banner { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; cursor:pointer; background:var(--surface); border:1px solid var(--border); border-radius:12px; transition:border-color 0.3s,transform 0.3s; }
+    .showreel-banner:hover { border-color:var(--gold); transform:translateY(-4px); }
+    .showreel-thumb { width:100%; height:100%; }
+    .showreel-thumb img { width:100%; height:100%; object-fit:cover; opacity:0.85; transition:opacity 0.4s,transform 0.6s; }
+    .showreel-banner:hover .showreel-thumb img { opacity:1; transform:scale(1.04); }
+
     /* ── REELS SECTION ── */
     .reels-track-wrap { overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; scroll-behavior:smooth; padding-bottom:10px; }
     .reels-track-wrap::-webkit-scrollbar { display:none; }
     .reels-track { display:flex; gap:18px; width:max-content; }
-    .reel-card { flex:0 0 200px; cursor:pointer; position:relative; border-radius:12px; overflow:hidden; background:var(--surface); border:1px solid var(--border); transition:border-color 0.3s,transform 0.3s; }
+    .reel-card { flex:0 0 368px; cursor:pointer; position:relative; border-radius:12px; overflow:hidden; background:var(--surface); border:1px solid var(--border); transition:border-color 0.3s,transform 0.3s; }
     .reel-card:hover { border-color:var(--gold); transform:translateY(-4px); }
     .reel-embed { width:100%; aspect-ratio:9/16; overflow:hidden; position:relative; }
     .reel-embed iframe { width:100%; height:100%; border:none; pointer-events:none; }
@@ -142,10 +149,67 @@
     .reels-lb-counter { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.7rem; color:var(--white-dim); letter-spacing:0.15em; }
 
     @media(max-width:600px) {
-      .reel-card { flex:0 0 150px; }
+      .reel-card { flex:0 0 120px; }
       .reels-lb-video { max-width:85vw; }
       .reels-lb-prev, .reels-lb-next { width:38px; height:38px; font-size:1.1rem; }
       .reels-lb-prev { left:10px; } .reels-lb-next { right:10px; }
+    }
+
+    /* ── THUMBNAILS SECTION ── */
+    .thumbs-track-wrap { overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; scroll-behavior:smooth; padding-bottom:10px; }
+    .thumbs-track-wrap::-webkit-scrollbar { display:none; }
+    .thumbs-track { display:flex; gap:18px; width:max-content; }
+    .thumb-card { flex:0 0 360px; cursor:pointer; position:relative; border-radius:12px; overflow:hidden; background:var(--surface); border:1px solid var(--border); transition:border-color 0.3s,transform 0.3s; aspect-ratio:16/10; }
+    .thumb-card:hover { border-color:var(--gold); transform:translateY(-4px); }
+    .thumb-card img { width:100%; height:100%; object-fit:cover; transition:opacity 0.4s,transform 0.6s; opacity:0.85; }
+    .thumb-card:hover img { opacity:1; transform:scale(1.04); }
+    .thumb-card-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(10,10,18,0.97) 0%, rgba(10,10,18,0.3) 50%, transparent 100%); display:flex; flex-direction:column; justify-content:flex-end; padding:20px; opacity:0; transition:opacity 0.4s; }
+    .thumb-card:hover .thumb-card-overlay { opacity:1; }
+    .thumb-card-cat { font-size:0.55rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+    .thumb-card-name { font-family:var(--font-display); font-size:1.1rem; font-weight:300; }
+    .thumbs-arrow { width:40px; height:40px; border:1px solid var(--border); background:transparent; color:var(--white); font-size:1rem; cursor:pointer; transition:border-color 0.3s,color 0.3s,background 0.3s; font-family:var(--font-sans); flex-shrink:0; }
+    .thumbs-arrow:hover { border-color:var(--gold); color:var(--gold); background:rgba(200,169,110,0.08); }
+
+    @media(max-width:600px) {
+      .thumb-card { flex:0 0 280px; }
+    }
+
+    /* ── MOTION GRAPHICS SECTION ── */
+    .mg-track-wrap { overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; scroll-behavior:smooth; padding-bottom:10px; }
+    .mg-track-wrap::-webkit-scrollbar { display:none; }
+    .mg-track { display:flex; gap:18px; width:max-content; }
+    .mg-card { flex:0 0 561px; cursor:pointer; position:relative; border-radius:12px; overflow:hidden; background:var(--surface); border:1px solid var(--border); transition:border-color 0.3s,transform 0.3s; }
+    .mg-card:hover { border-color:var(--gold); transform:translateY(-4px); }
+    .mg-embed { width:100%; aspect-ratio:16/9; overflow:hidden; position:relative; }
+    .mg-embed iframe { width:100%; height:100%; border:none; pointer-events:none; }
+    .mg-card:hover .mg-embed iframe { pointer-events:auto; }
+    .mg-label { padding:12px 14px; display:flex; align-items:center; gap:10px; }
+    .mg-num { font-family:var(--font-mono); font-size:0.6rem; color:var(--gold); letter-spacing:0.1em; }
+    .mg-title { font-size:0.75rem; color:var(--white-dim); letter-spacing:0.04em; }
+    .mg-arrow { width:40px; height:40px; border:1px solid var(--border); background:transparent; color:var(--white); font-size:1rem; cursor:pointer; transition:border-color 0.3s,color 0.3s,background 0.3s; font-family:var(--font-sans); flex-shrink:0; }
+    .mg-arrow:hover { border-color:var(--gold); color:var(--gold); background:rgba(200,169,110,0.08); }
+    .mg-card-vert { flex:0 0 368px; }
+    .mg-card-vert .mg-embed { aspect-ratio:9/16; }
+    .mg-vert-track { gap:18px; }
+
+    /* ── MOTION GRAPHICS LIGHTBOX ── */
+    .mg-lightbox { position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.92); display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px); opacity:0; transition:opacity 0.35s; }
+    .mg-lightbox.active { display:flex; opacity:1; }
+    .mg-lb-close { position:absolute; top:24px; right:28px; background:none; border:none; color:var(--white); font-size:2rem; cursor:pointer; z-index:10; transition:color 0.3s; line-height:1; }
+    .mg-lb-close:hover { color:var(--gold); }
+    .mg-lb-video { width:100%; max-width:800px; aspect-ratio:16/9; position:relative; border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+    .mg-lb-video iframe { width:100%; height:100%; border:none; }
+    .mg-lb-prev, .mg-lb-next { position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.5); color:var(--white); font-size:1.4rem; cursor:pointer; z-index:10; transition:background 0.3s,border-color 0.3s; display:flex; align-items:center; justify-content:center; }
+    .mg-lb-prev:hover, .mg-lb-next:hover { background:rgba(200,169,110,0.2); border-color:var(--gold); }
+    .mg-lb-prev { left:20px; } .mg-lb-next { right:20px; }
+    .mg-lb-counter { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.7rem; color:var(--white-dim); letter-spacing:0.15em; }
+
+    @media(max-width:600px) {
+      .mg-card { flex:0 0 180px; }
+      .mg-card-vert { flex:0 0 120px; }
+      .mg-lb-video { max-width:92vw; }
+      .mg-lb-prev, .mg-lb-next { width:38px; height:38px; font-size:1.1rem; }
+      .mg-lb-prev { left:10px; } .mg-lb-next { right:10px; }
     }
   </style>
 </head>
@@ -171,36 +235,25 @@
       </div>
     </section>
 
-    <!-- PORTFOLIO GRID -->
+    <!-- SHOWREEL BANNER -->
     <section id="portfolio" class="padded">
       <div class="container">
-        <div class="portfolio-grid reveal" id="pf-all">
-          <div class="portfolio-item portfolio-item-large" style="cursor:pointer;" onclick="openVideo('kz-hahwJG1E')">
-            <div style="position:relative;width:100%;height:100%;background:#0a0a0a;">
-              <img src="https://img.youtube.com/vi/kz-hahwJG1E/maxresdefault.jpg" alt="Showreel" style="width:100%;height:100%;object-fit:cover;opacity:0.85;transition:opacity 0.4s,transform 0.6s;" onmouseover="this.style.opacity='1';this.style.transform='scale(1.04)'" onmouseout="this.style.opacity='0.85';this.style.transform='scale(1)'"/>
-            </div>
-            <div class="portfolio-overlay">
-              <div class="portfolio-cat">Showreel 2025</div>
-              <div class="portfolio-name">Westcrest Media — Official Showcase</div>
-            </div>
-            <div class="portfolio-play"><svg width="22" height="26" viewBox="0 0 16 18"><path d="M0 0L16 9L0 18V0Z"/></svg></div>
+        <div class="section-header reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:30px;">
+          <div>
+            <div class="section-index">Showreel</div>
+            <h2 class="section-title">Westcrest Media <em>Showreel</em></h2>
           </div>
-          <div class="portfolio-item" style="background:var(--surface);display:flex;align-items:center;justify-content:center;aspect-ratio:unset;min-height:320px;">
-            <div style="text-align:center;color:var(--white-dim);">
-              <img src="/images/w_logo.svg" alt="W" width="48" height="48" style="height:48px;width:auto;object-fit:contain;opacity:0.15;margin-bottom:12px;"/>
-              <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;opacity:0.4;">Coming Soon</div>
-            </div>
+        </div>
+        <div class="showreel-banner reveal" onclick="openVideo('kz-hahwJG1E')">
+          <div class="showreel-thumb">
+            <img src="https://img.youtube.com/vi/kz-hahwJG1E/maxresdefault.jpg" alt="Westcrest Media Showreel" />
           </div>
-          <div class="portfolio-item portfolio-carousel-box" style="aspect-ratio:unset;min-height:320px;">
-            <div class="carousel-track">
-              <div class="carousel-slide active"><img src="images/portfolio4.webp" alt="Orenzo Brand Video Editing" style="width:100%;height:100%;object-fit:cover;"/><div class="portfolio-overlay"><div class="portfolio-cat">Brand Video</div><div class="portfolio-name">Orenzo — Product Showcase</div></div></div>
-              <div class="carousel-slide"><img src="images/portfolio1.webp" alt="Chamber of Legends" style="width:100%;height:100%;object-fit:cover;"/><div class="portfolio-overlay"><div class="portfolio-cat">Video Editing</div><div class="portfolio-name">Chamber of Legends</div></div></div>
-              <div class="carousel-slide"><img src="images/portfolio2.webp" alt="Thumbnail Design" style="width:100%;height:100%;object-fit:cover;"/><div class="portfolio-overlay"><div class="portfolio-cat">Thumbnail Design</div><div class="portfolio-name">Chamber of Legends — Thumbnail</div></div></div>
-              <div class="carousel-slide"><img src="images/portfolio3.webp" alt="Motion Graphics" style="width:100%;height:100%;object-fit:cover;"/><div class="portfolio-overlay"><div class="portfolio-cat">Motion Graphics</div><div class="portfolio-name">Legends — Cinematic Title</div></div></div>
-            </div>
-            <div class="carousel-dots-auto"></div>
-            <button class="carousel-arrow carousel-prev" aria-label="Previous slide">‹</button>
-            <button class="carousel-arrow carousel-next" aria-label="Next slide">›</button>
+          <div class="showreel-overlay">
+            <div class="portfolio-cat">Showreel 2026</div>
+            <div class="portfolio-name">Westcrest Media — Official Showcase</div>
+          </div>
+          <div class="portfolio-play">
+            <svg width="22" height="26" viewBox="0 0 16 18"><path d="M0 0L16 9L0 18V0Z"/></svg>
           </div>
         </div>
       </div>
@@ -256,6 +309,110 @@
       <div class="reels-lb-video"><iframe id="reelIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
       <div class="reels-lb-counter"><span id="reelCurrent">1</span> / <span id="reelTotal">21</span></div>
     </div>
+
+    <!-- MOTION GRAPHICS SECTION -->
+    <section id="motion-graphics" class="padded">
+      <div class="container">
+        <div class="section-header reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
+          <div>
+            <div class="section-index">Motion Graphics</div>
+            <h2 class="section-title">Our <em>Motion</em> Work</h2>
+            <p style="color:var(--white-dim);font-size:0.82rem;letter-spacing:0.08em;margin-top:10px;max-width:420px;">Visual storytelling through animation — tap any video to watch.</p>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="mg-arrow" onclick="mgScroll(-1,'mgTrack')">‹</button>
+            <button class="mg-arrow" onclick="mgScroll(1,'mgTrack')">›</button>
+          </div>
+        </div>
+        <div class="mg-track-wrap reveal">
+          <div class="mg-track" id="mgTrack">
+            <div class="mg-card" onclick="openMG(0)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/3QWvOcTvn_k" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">01</span><span class="mg-title">Motion Graphics 01</span></div></div>
+            <div class="mg-card" onclick="openMG(1)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/UsxYiKuXcFo" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">02</span><span class="mg-title">Motion Graphics 02</span></div></div>
+            <div class="mg-card" onclick="openMG(2)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/GnqCTD6Gx9U" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">03</span><span class="mg-title">Motion Graphics 03</span></div></div>
+            <div class="mg-card" onclick="openMG(3)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/hwoF_1N8E-U" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">04</span><span class="mg-title">Motion Graphics 04</span></div></div>
+            <div class="mg-card" onclick="openMG(4)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/tzOXrCcIF5E" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">05</span><span class="mg-title">Motion Graphics 05</span></div></div>
+            <div class="mg-card" onclick="openMG(5)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/czLFCf8T86U" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">06</span><span class="mg-title">Motion Graphics 06</span></div></div>
+            <div class="mg-card" onclick="openMG(6)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/eI31Kto6BRY" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">07</span><span class="mg-title">Motion Graphics 07</span></div></div>
+          </div>
+        </div>
+
+        <div class="section-header reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-top:60px;">
+          <div>
+            <div class="section-index">Shorts</div>
+            <h2 class="section-title" style="font-size:clamp(2rem,4vw,3.5rem);">Vertical <em>Edits</em></h2>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="mg-arrow" onclick="mgScroll(-1,'mgVertTrack')">‹</button>
+            <button class="mg-arrow" onclick="mgScroll(1,'mgVertTrack')">›</button>
+          </div>
+        </div>
+        <div class="mg-track-wrap reveal">
+          <div class="mg-track mg-vert-track" id="mgVertTrack">
+            <div class="mg-card mg-card-vert" onclick="openMG(7)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/0RskNYZI7VY" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">08</span><span class="mg-title">Motion Graphics 08</span></div></div>
+            <div class="mg-card mg-card-vert" onclick="openMG(8)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/IgwZk64fALg" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">09</span><span class="mg-title">Motion Graphics 09</span></div></div>
+            <div class="mg-card mg-card-vert" onclick="openMG(9)"><div class="mg-embed"><iframe src="https://www.youtube.com/embed/WTMWhKYozqU" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe></div><div class="mg-label"><span class="mg-num">10</span><span class="mg-title">Motion Graphics 10</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOTION GRAPHICS LIGHTBOX -->
+    <div class="mg-lightbox" id="mgLightbox">
+      <button class="mg-lb-close" onclick="closeMG()">&times;</button>
+      <button class="mg-lb-prev" onclick="mgNav(-1)">‹</button>
+      <button class="mg-lb-next" onclick="mgNav(1)">›</button>
+      <div class="mg-lb-video"><iframe id="mgIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+      <div class="mg-lb-counter"><span id="mgCurrent">1</span> / <span id="mgTotal">10</span></div>
+    </div>
+
+    <!-- THUMBNAILS SECTION -->
+    <section id="thumbnails" class="padded" style="background:var(--bg2);">
+      <div class="container">
+        <div class="section-header reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;">
+          <div>
+            <div class="section-index">Thumbnails</div>
+            <h2 class="section-title">Thumbnail <em>Designs</em></h2>
+            <p style="color:var(--white-dim);font-size:0.82rem;letter-spacing:0.08em;margin-top:10px;max-width:420px;">Eye-catching thumbnails that drive clicks — tap to view.</p>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="thumbs-arrow" onclick="thumbsScroll(-1)">‹</button>
+            <button class="thumbs-arrow" onclick="thumbsScroll(1)">›</button>
+          </div>
+        </div>
+        <div class="thumbs-track-wrap reveal">
+          <div class="thumbs-track" id="thumbsTrack">
+            <div class="thumb-card">
+              <img src="/images/portfolio4.webp" alt="Orenzo Brand Thumbnail" />
+              <div class="thumb-card-overlay">
+                <div class="thumb-card-cat">Brand Video</div>
+                <div class="thumb-card-name">Orenzo — Product Showcase</div>
+              </div>
+            </div>
+            <div class="thumb-card">
+              <img src="/images/portfolio1.webp" alt="Chamber of Legends Thumbnail" />
+              <div class="thumb-card-overlay">
+                <div class="thumb-card-cat">Video Editing</div>
+                <div class="thumb-card-name">Chamber of Legends</div>
+              </div>
+            </div>
+            <div class="thumb-card">
+              <img src="/images/portfolio2.webp" alt="Chamber of Legends Thumbnail Design" />
+              <div class="thumb-card-overlay">
+                <div class="thumb-card-cat">Thumbnail Design</div>
+                <div class="thumb-card-name">Chamber of Legends — Thumbnail</div>
+              </div>
+            </div>
+            <div class="thumb-card">
+              <img src="/images/portfolio3.webp" alt="Legends Motion Graphics Thumbnail" />
+              <div class="thumb-card-overlay">
+                <div class="thumb-card-cat">Motion Graphics</div>
+                <div class="thumb-card-name">Legends — Cinematic Title</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- TESTIMONIALS -->
     <section id="testimonials" class="padded" style="background: var(--bg2);">
@@ -362,6 +519,14 @@
       document.querySelectorAll('.testim-dot').forEach((d, i) => d.classList.toggle('active', i === testimSlideIndex));
     }
 
+    /* ── THUMBNAILS ── */
+    function thumbsScroll(dir) {
+      const t = document.getElementById('thumbsTrack');
+      const card = t.children[0];
+      const gap = 18;
+      t.parentElement.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: 'smooth' });
+    }
+
     /* ── REELS ── */
     const reelIds = [
       'Nv1JvPcn8GA','UFLUX6hG_2E',
@@ -397,8 +562,10 @@
       document.getElementById('reelCurrent').textContent = currentReel + 1;
     }
     function reelsScroll(dir) {
-      const t = document.getElementById('reelsTrack').parentElement;
-      t.scrollBy({ left: dir * 440, behavior: 'smooth' });
+      const t = document.getElementById('reelsTrack');
+      const card = t.children[0];
+      const gap = 18;
+      t.parentElement.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: 'smooth' });
     }
     lb.addEventListener('click', e => { if (e.target === lb) closeReel(); });
     document.addEventListener('keydown', e => {
@@ -406,6 +573,48 @@
       if (e.key === 'Escape') closeReel();
       if (e.key === 'ArrowRight') reelNav(1);
       if (e.key === 'ArrowLeft') reelNav(-1);
+    });
+
+    /* ── MOTION GRAPHICS ── */
+    const mgIds = [
+      '3QWvOcTvn_k','UsxYiKuXcFo',
+      'GnqCTD6Gx9U','hwoF_1N8E-U',
+      'tzOXrCcIF5E','czLFCf8T86U',
+      'eI31Kto6BRY','0RskNYZI7VY',
+      'IgwZk64fALg','WTMWhKYozqU'
+    ];
+    let currentMG = 0;
+    const mgLb = document.getElementById('mgLightbox');
+    const mgIframe = document.getElementById('mgIframe');
+    function openMG(i) {
+      currentMG = i;
+      mgIframe.src = 'https://www.youtube.com/embed/' + mgIds[i] + '?autoplay=1';
+      document.getElementById('mgCurrent').textContent = i + 1;
+      mgLb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMG() {
+      mgLb.classList.remove('active');
+      mgIframe.src = '';
+      document.body.style.overflow = '';
+    }
+    function mgNav(dir) {
+      currentMG = (currentMG + dir + mgIds.length) % mgIds.length;
+      mgIframe.src = 'https://www.youtube.com/embed/' + mgIds[currentMG] + '?autoplay=1';
+      document.getElementById('mgCurrent').textContent = currentMG + 1;
+    }
+    function mgScroll(dir, trackId) {
+      const t = document.getElementById(trackId);
+      const card = t.children[0];
+      const gap = 18;
+      t.parentElement.scrollBy({ left: dir * (card.offsetWidth + gap), behavior: 'smooth' });
+    }
+    mgLb.addEventListener('click', e => { if (e.target === mgLb) closeMG(); });
+    document.addEventListener('keydown', e => {
+      if (!mgLb.classList.contains('active')) return;
+      if (e.key === 'Escape') closeMG();
+      if (e.key === 'ArrowRight') mgNav(1);
+      if (e.key === 'ArrowLeft') mgNav(-1);
     });
   </script>
 

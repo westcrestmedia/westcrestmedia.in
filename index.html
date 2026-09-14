@@ -265,12 +265,12 @@
     .tool-card-cta::after { content: '→'; }
 
     /* ─── PORTFOLIO MINI ─── */
-    .portfolio-mini-strip {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      margin-top: 48px;
-    }
+.portfolio-mini-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 48px;
+}
     @media(max-width: 768px) {
       .portfolio-mini-strip { grid-template-columns: 1fr; }
     }
@@ -1234,12 +1234,12 @@
           <div class="section-index" style="display:none">02 — Portfolio</div>
           <h2 class="section-title">Featured <em>Work</em></h2>
         </div>
-        <a href="#contact" class="portfolio-mini-view-all">Commission a Project </a>
+        <a href="/portfolio/" class="portfolio-mini-view-all">View All Work →</a>
       </div>
 
       <div class="portfolio-mini-strip reveal" id="pf-all">
-        <!-- Row 1: Showreel full-width BADA -->
-        <div class="portfolio-item" style="grid-column: span 3; cursor:pointer;" onclick="openVideo('kz-hahwJG1E')">
+        <!-- Showreel full-width -->
+        <div class="portfolio-item" style="grid-column: span 2; cursor:pointer;" onclick="openVideo('kz-hahwJG1E')">
           <div style="position:relative; width:100%; height:100%; background:#0a0a0a;">
             <img src="https://img.youtube.com/vi/kz-hahwJG1E/maxresdefault.jpg" alt="Showreel"
                  style="width:100%; height:100%; object-fit:cover; opacity:0.85; transition:opacity 0.4s, transform 0.6s;"
@@ -1254,15 +1254,8 @@
             <svg width="22" height="26" viewBox="0 0 16 18"><path d="M0 0L16 9L0 18V0Z"/></svg>
           </div>
         </div>
-        <!-- Row 2: Coming Soon (Motion) -->
-        <div class="portfolio-item" style="background:var(--surface); display:flex; align-items:center; justify-content:center; aspect-ratio:unset; min-height:320px;">
-          <div style="text-align:center; color:var(--white-dim);">
-            <img src="images/w_logo.svg" alt="W" width="48" height="48" style="height:48px; width:auto; object-fit:contain; opacity:0.15; margin-bottom:12px;"/>
-            <div style="font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.4;">Coming Soon</div>
-          </div>
-        </div>
-        <!-- Row 2: Brand 4-photo carousel -->
-        <div class="portfolio-item portfolio-carousel-box" style="aspect-ratio:unset; min-height:320px;">
+        <!-- Thumbnail carousel full-width -->
+        <div class="portfolio-item portfolio-carousel-box" style="grid-column: span 2; aspect-ratio:16/8;">
           <div class="carousel-track">
             <div class="carousel-slide active">
               <img src="images/portfolio4.webp" alt="Orenzo Brand Video Editing Westcrest Media"/>
