@@ -67,6 +67,15 @@
   --radius:6px;
   --mono:'DM Mono',monospace;
   --display:'Syne',sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f5f5f7;--bg2:#eaeaef;--bg3:#dfdfd8;--bg4:#d0d0c8;--bg5:#c8c8c0;
+  --border:rgba(0,0,0,0.10);--border2:rgba(160,120,48,0.25);
+  --text:#1a1a2e;--text2:rgba(26,26,46,0.55);--text3:rgba(26,26,46,0.28);
+  --accent:#a07830;--accent2:#c8a96e;--accent3:#a07830;
+  --gold:#a07830;--gold2:#c8a96e;--gold-dim:rgba(160,120,48,0.10);
+}
+[data-theme="light"] body { background: var(--bg); color: var(--text); }
   --body:'Syne',sans-serif;
 }
 
@@ -678,6 +687,7 @@ input[type=file]{display:none}
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a LUT?","acceptedAnswer":{"@type":"Answer","text":"A LUT (Look-Up Table) is a colour grading preset that maps the colours in your image to a new set of colours. They are widely used in film, photography, and video production to achieve consistent cinematic looks."}},{"@type":"Question","name":"Can I use my own .cube LUT file?","acceptedAnswer":{"@type":"Answer","text":"Yes! Click the + .CUBE FILE button in the header or drag and drop a .cube file onto the tool. Your custom LUT will be applied instantly and you can also export it back as a .cube."}},{"@type":"Question","name":"Does this work with DaVinci Resolve?","acceptedAnswer":{"@type":"Answer","text":"Yes. The exported .cube files are standard 33x33x33 3D LUTs, fully compatible with DaVinci Resolve, Adobe Premiere Pro, Final Cut Pro, and most other professional editing software."}},{"@type":"Question","name":"Is my image uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely in your browser using the HTML5 Canvas API. Your image never leaves your device with no server uploads and no data stored."}}]}
 </script>
+<link rel="stylesheet" href="/assets/css/global.css">
 <link rel="stylesheet" href="/assets/css/nav.css">
 </head>
 <body>
@@ -1079,14 +1089,7 @@ input[type=file]{display:none}
   <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:#c8a96e;text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
 </section>
 
-<footer style="border-top:1px solid rgba(200,169,110,0.15);padding:0 2rem;height:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-  <p style="font-size:12px;color:#6a6258;margin:0">© 2026 Westcrest Media</p>
-  <div style="display:flex;gap:1.5rem;">
-    <a href="https://westcrestmedia.in/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Home</a>
-    <a href="https://westcrestmedia.in/#tools" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">All Tools</a>
-    <a href="https://westcrestmedia.in/contact/" style="color:#6a6258;text-decoration:none;font-size:12px;" onmouseover="this.style.color='#c8a96e'" onmouseout="this.style.color='#6a6258'">Contact</a>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
 <script>
 // ─── STATE ──────────────────────────────────────────────
@@ -1896,5 +1899,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
+<script src="/assets/js/footer.js"></script>
+<script src="/assets/js/theme-toggle.js"></script>
 </body>
 </html>

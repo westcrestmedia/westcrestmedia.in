@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/global.css" />
   <link rel="stylesheet" href="/assets/css/nav-landing.css" />
   <link rel="stylesheet" href="/assets/css/landing-footer.css" />
   <style>
@@ -41,12 +42,16 @@
       --font-sans: 'Syne', sans-serif;
       --font-mono: 'DM Mono', monospace;
     }
+    [data-theme="light"] {
+      --bg: #f5f5f7; --bg2: #eaeaef; --bg3: #dfdfd8; --surface: #ffffff;
+      --border: rgba(0,0,0,0.10);
+      --gold: #a07830; --gold2: #c8a96e; --gold-dim: rgba(160,120,48,0.10);
+      --white: #1a1a2e; --white-dim: rgba(26,26,46,0.60); --white-faint: rgba(26,26,46,0.08);
+    }
+    [data-theme="light"] body { background: var(--bg); color: var(--white); }
     html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--white); font-family: var(--font-sans); overflow-x: hidden; cursor: none; }
+    body { background: var(--bg); color: var(--white); font-family: var(--font-sans); overflow-x: hidden; }
     body::before { content:''; position:fixed; inset:0; z-index:1; pointer-events:none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.025; }
-    #cursor { position:fixed; top:0; left:0; z-index:9999; pointer-events:none; mix-blend-mode:difference; }
-    #cursor-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); position:absolute; transform:translate(-50%,-50%); transition:transform 0.1s,width 0.2s,height 0.2s; }
-    #cursor-ring { width:36px; height:36px; border-radius:50%; border:1px solid rgba(200,169,110,0.5); position:absolute; transform:translate(-50%,-50%); transition:transform 0.18s cubic-bezier(.25,.46,.45,.94),width 0.3s,height 0.3s,border-color 0.3s; }
     ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--gold); border-radius:2px; }
     .container { max-width:1260px; margin:0 auto; padding:0 60px; }
     .padded { padding:120px 0; }
@@ -161,9 +166,6 @@
   </style>
 </head>
 <body>
-
-  <!-- CURSOR -->
-  <div id="cursor"><div id="cursor-dot"></div><div id="cursor-ring"></div></div>
 
   <!-- HEADER (landing header + working mobile menu) -->
   <nav id="navbar"></nav>
@@ -334,13 +336,6 @@
   <script src="/assets/js/landing-footer.js"></script>
 
   <script>
-    const cursor = document.getElementById('cursor');
-    const dot = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mx=0,my=0,rx=0,ry=0;
-    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-    (function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
-    document.querySelectorAll('a,button').forEach(el => { el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-hover')); el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-hover')); });
     const revealEls = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.12 });
     revealEls.forEach(el => observer.observe(el));

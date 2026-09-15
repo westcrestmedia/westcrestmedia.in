@@ -128,10 +128,11 @@ nav {
   padding: 14px 60px;
   display: flex; align-items: center; justify-content: space-between;
   background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
-  transition: padding 0.4s;
+  transition: padding 0.4s, background 0.4s;
 }
 .nav-right { display: flex; align-items: center; gap: 12px; }
 nav.scrolled { padding: 10px 60px; background: rgba(8,8,8,0.97); border-bottom: 1px solid var(--border); }
+
 .nav-logo {
   font-family: var(--font-display); font-size: 1.4rem;
   letter-spacing: 0.25em; font-weight: 300;
@@ -285,4 +286,117 @@ nav.scrolled { padding: 10px 60px; background: rgba(8,8,8,0.97); border-bottom: 
   .hamburger { display: flex; }
   .nav-signin { font-size: 0.6rem; padding: 8px 14px; letter-spacing: 0.1em; }
   .nav-logo img { height: 48px !important; }
+}
+
+
+/* ═══════════════════════════════════════════
+   LIGHT MODE — ALL overrides at the end so
+   they win by source order + specificity.
+   ═══════════════════════════════════════════ */
+
+/* ── NAV ── */
+[data-theme="light"] nav {
+  background: linear-gradient(to bottom, rgba(245,245,247,0.96) 0%, rgba(245,245,247,0.80) 100%);
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+[data-theme="light"] nav.scrolled {
+  background: rgba(245,245,247,0.97);
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+
+/* ── NAV LOGO ── */
+[data-theme="light"] .nav-logo { color: #1a1a2e; }
+[data-theme="light"] .nav-logo img { mix-blend-mode: normal; filter: none; }
+
+/* ── NAV LINKS ── */
+[data-theme="light"] .nav-links a { color: rgba(26,26,46,0.70); }
+[data-theme="light"] .nav-links a:hover { color: #1a1a2e; }
+[data-theme="light"] .nav-links a::after { background: #a07830; }
+
+/* ── NAV BUTTONS ── */
+[data-theme="light"] .nav-signin {
+  color: #a07830;
+  border-color: rgba(160,120,48,0.40);
+  background: rgba(160,120,48,0.06);
+}
+[data-theme="light"] .nav-signin:hover {
+  background: rgba(160,120,48,0.12);
+  border-color: #a07830;
+}
+[data-theme="light"] .nav-cta {
+  color: #ffffff;
+  background: #a07830;
+  border-color: #a07830;
+}
+[data-theme="light"] .nav-cta:hover { background: #c8a96e; }
+
+/* ── HAMBURGER ── */
+[data-theme="light"] .hamburger span { background: #1a1a2e; }
+
+/* ── TOOLS DROPDOWN PANEL ── */
+[data-theme="light"] .dropdown-menu {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.10);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+[data-theme="light"] .dropdown-label {
+  color: #a07830;
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .dropdown-menu a {
+  color: #555 !important;
+}
+[data-theme="light"] .dropdown-menu a:hover {
+  background: rgba(160,120,48,0.08) !important;
+  color: #a07830 !important;
+}
+
+/* ── NAV DROPDOWN (hover panel) ── */
+[data-theme="light"] .nav-dropdown .dropdown-menu {
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(20px);
+  border-color: rgba(0,0,0,0.10);
+}
+[data-theme="light"] .nav-dropdown .dropdown-menu a {
+  color: #555 !important;
+}
+[data-theme="light"] .nav-dropdown .dropdown-menu a:hover {
+  background: rgba(160,120,48,0.08) !important;
+  color: #a07830 !important;
+}
+
+/* ── USER DROPDOWN ── */
+[data-theme="light"] .wm-user-dropdown {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.10);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+[data-theme="light"] .wm-user-dropdown-header {
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .wm-user-dropdown-name { color: #1a1a2e; }
+[data-theme="light"] .wm-user-dropdown-email { color: #888; }
+[data-theme="light"] .wm-user-dropdown-divider { background: rgba(0,0,0,0.08); }
+[data-theme="light"] .wm-dd-link { color: #666; }
+[data-theme="light"] .wm-dd-link:hover { color: #a07830; }
+[data-theme="light"] .wm-dd-link.signout { color: #999; }
+
+/* ── MOBILE MENU ── */
+[data-theme="light"] .mobile-menu {
+  background: rgba(245,245,247,0.98);
+}
+[data-theme="light"] .mobile-menu a { color: #1a1a2e; }
+[data-theme="light"] .mobile-menu a:hover { color: #a07830; }
+[data-theme="light"] .mobile-close-btn {
+  border-color: rgba(0,0,0,0.10);
+  color: #1a1a2e;
+}
+
+/* ── DIVIDERS ── */
+[data-theme="light"] .dropdown-divider { background: rgba(0,0,0,0.08); }
+[data-theme="light"] .drop-icon-sm { color: inherit; }
+
+/* ── RESPONSIVE LIGHT ── */
+@media (max-width: 900px) {
+  [data-theme="light"] nav.scrolled { background: rgba(245,245,247,0.98); }
 }

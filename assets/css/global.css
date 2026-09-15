@@ -24,8 +24,8 @@
 
   /* UI */
   --border:    rgba(255, 255, 255, 0.09);
-  --radius:    12px;
-  --radius-sm: 8px;
+  --radius:    0;
+  --radius-sm: 0;
   --nav:       66px;
 
   /* Extra status colours */
@@ -39,11 +39,59 @@
   --red-dim:   rgba(255, 85, 85, 0.10);
 }
 
+/* ── LIGHT MODE ── */
+[data-theme="light"] {
+  --dark:   #f5f5f7;
+  --dark-2: #eaeaef;
+  --dark-3: #dfdfd8;
+  --dark-4: #d0d0c8;
+  --text:       #1a1a2e;
+  --text-muted: rgba(26, 26, 46, 0.55);
+  --border:    rgba(0, 0, 0, 0.10);
+  --gold-dim:    rgba(201, 168, 76, 0.10);
+  --gold-border: rgba(201, 168, 76, 0.30);
+}
+
+[data-theme="light"] body {
+  background: var(--dark);
+  color: var(--text);
+}
+
+/* Override hardcoded #6a6258 in tool page footers */
+[data-theme="light"] .site-footer p,
+[data-theme="light"] .site-footer .footer-links a {
+  color: #555 !important;
+}
+[data-theme="light"] .site-footer .footer-links a:hover {
+  color: var(--gold) !important;
+}
+
+/* Override inline-styled footer links (aspect-ratio, color-palette, etc.) */
+[data-theme="light"] footer p[style*="color:#6a6258"],
+[data-theme="light"] footer a[style*="color:#6a6258"] {
+  color: #555 !important;
+}
+[data-theme="light"] footer a[style*="color:#6a6258"]:hover {
+  color: var(--gold) !important;
+}
+
+/* Override inline-styled theme toggle button */
+[data-theme="light"] .theme-toggle-btn {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.10);
+  color: #555;
+}
+[data-theme="light"] .theme-toggle-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 /* ── RESET ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 0 !important;
 }
 
 html {

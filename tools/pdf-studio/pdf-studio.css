@@ -13,6 +13,13 @@
   --blue:#5b9bd5;--blue-dim:rgba(91,155,213,0.12);
   --nav:66px;--sidebar:330px;--r:10px;--rs:6px;
 }
+[data-theme="light"]{
+  --gold:#a07830;--gold2:#c8a96e;--gold-dim:rgba(160,120,48,0.10);--gold-border:rgba(160,120,48,0.25);
+  --dark:#f5f5f7;--dark2:#eaeaef;--dark3:#dfdfd8;--dark4:#d0d0c8;
+  --text:#1a1a2e;--muted:rgba(26,26,46,0.55);--faint:rgba(26,26,46,0.08);
+}
+[data-theme="light"] body { background: var(--dark); color: var(--text); }
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;}
 

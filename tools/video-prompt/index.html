@@ -76,6 +76,13 @@
   --danger:   #e05555;
   --success:  #4caf80;
 }
+[data-theme="light"] {
+  --bg: #f5f5f7; --surface: #eaeaef; --surface2: #dfdfd8;
+  --border: rgba(0,0,0,0.10); --border2: rgba(160,120,48,0.25);
+  --gold: #a07830; --gold2: #c8a96e; --gold-dim: rgba(160,120,48,0.10);
+  --text: #1a1a2e; --muted: rgba(26,26,46,0.55);
+}
+[data-theme="light"] body { background: var(--bg); color: var(--text); }
 
 /* ─── RESET ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -452,6 +459,7 @@ select:focus { border-color: var(--gold); }
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which video AI platforms are supported?","acceptedAnswer":{"@type":"Answer","text":"OpenAI Sora, Runway Gen-3, Pika Labs, Kling AI, Luma Dream Machine, and Stable Video Diffusion. Each gets platform-specific syntax and phrasing optimised for that tool."}},{"@type":"Question","name":"What is a negative prompt for video?","acceptedAnswer":{"@type":"Answer","text":"It tells the AI what to avoid such as camera shake, blurry footage, unrealistic motion, or unwanted visual elements. Toggle it on to include one automatically."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes, 100% free. No account needed, no usage limits, no watermarks. Describe your scene and generate instantly."}},{"@type":"Question","name":"What do camera specs and director references add?","acceptedAnswer":{"@type":"Answer","text":"Camera specs add technical lens and movement details that push AI tools toward cinematic quality. Director references help anchor the visual language to a recognisable filmmaking style."}}]}
 </script>
+<link rel="stylesheet" href="/assets/css/global.css">
 <link rel="stylesheet" href="/assets/css/nav.css">
 </head>
 <body>
@@ -714,15 +722,7 @@ select:focus { border-color: var(--gold); }
   <a href="https://westcrestmedia.in/#tools" style="font-size:12px;color:var(--gold);text-decoration:none;letter-spacing:.08em;font-weight:600;">View All Tools →</a>
 </section>
 
-<!-- FOOTER -->
-<footer class="site-footer">
-  <p>© 2026 Westcrest Media</p>
-  <div class="footer-links">
-    <a href="https://westcrestmedia.in/">Home</a>
-    <a href="https://westcrestmedia.in/#tools">All Tools</a>
-    <a href="https://westcrestmedia.in/contact/">Contact</a>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
 <script>
   let numVariations = 1;
@@ -940,5 +940,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
+<script src="/assets/js/footer.js"></script>
+<script src="/assets/js/theme-toggle.js"></script>
 </body>
 </html>

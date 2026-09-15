@@ -24,6 +24,13 @@
   --ir-r: 12px;
   --ir-rs: 8px;
 }
+[data-theme="light"] {
+  --ir-gold: #a07830; --ir-gold2: #c8a96e; --ir-gold-dim: rgba(160,120,48,0.10); --ir-gold-border: rgba(160,120,48,0.25);
+  --ir-dark: #f5f5f7; --ir-dark2: #eaeaef; --ir-dark3: #dfdfd8; --ir-dark4: #d0d0c8;
+  --ir-text: #1a1a2e; --ir-muted: rgba(26,26,46,0.55); --ir-faint: rgba(26,26,46,0.08);
+}
+[data-theme="light"] body { background: var(--ir-dark); color: var(--ir-text); }
+}
 
 /* ── HERO ── */
 .ir-hero {

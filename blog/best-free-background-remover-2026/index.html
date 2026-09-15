@@ -134,6 +134,16 @@
       --font-mono: 'DM Mono', monospace;
       --content-width: 960px;
     }
+    [data-theme="light"] {
+      --gold: #a07830; --gold-light: #c8a96e; --gold2: #c8a96e;
+      --gold-border: rgba(160,120,48,0.25); --gold-dim: rgba(160,120,48,0.10);
+      --dark: #f5f5f7; --dark-2: #eaeaef; --dark-3: #dfdfd8;
+      --bg: #f5f5f7; --bg2: #eaeaef;
+      --text: #1a1a2e; --text-muted: #888;
+      --white: #1a1a2e; --white-dim: rgba(26,26,46,0.60);
+      --border: rgba(0,0,0,0.10);
+    }
+    [data-theme="light"] body { background: var(--bg); color: var(--text); }
 
     body {
       background: var(--dark);
