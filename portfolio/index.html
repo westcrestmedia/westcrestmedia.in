@@ -73,7 +73,7 @@
     .portfolio-item:hover .portfolio-overlay { opacity:1; transform:translateY(0); }
     .portfolio-cat { font-size:0.55rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
     .portfolio-name { font-family:var(--font-display); font-size:1.4rem; font-weight:300; }
-    .portfolio-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80px; height:80px; border-radius:50%; background:rgba(200,169,110,0.15); border:2px solid rgba(200,169,110,0.8); display:flex; align-items:center; justify-content:center; opacity:1; transition:opacity 0.4s,transform 0.4s,background 0.3s; backdrop-filter:blur(4px); }
+    .portfolio-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80px; height:80px; border-radius:50% !important; background:rgba(200,169,110,0.15); border:2px solid rgba(200,169,110,0.8); display:flex; align-items:center; justify-content:center; opacity:1; transition:opacity 0.4s,transform 0.4s,background 0.3s; backdrop-filter:blur(4px); }
     .portfolio-play svg { fill:var(--gold); margin-left:6px; width:22px; height:26px; }
     .portfolio-item:hover .portfolio-play { transform:translate(-50%,-50%) scale(1.15); background:rgba(200,169,110,0.3); border-color:var(--gold); }
     .portfolio-item-large { grid-column: span 2; }
@@ -88,7 +88,7 @@
     .carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; background:rgba(0,0,0,0.5); border:1px solid rgba(200,169,110,0.4); color:var(--gold); font-size:0.9rem; cursor:pointer; z-index:10; transition:background 0.3s; }
     .carousel-arrow:hover { background:rgba(200,169,110,0.2); }
     .carousel-prev { left:12px; } .carousel-next { right:12px; }
-    .testimonials-slider { overflow:hidden; cursor:grab; user-select:none; width:100%; }
+    .testimonials-slider { overflow:hidden; cursor:grab; user-select:none; width:100%; touch-action:pan-y; }
     .testimonials-slider:active { cursor:grabbing; }
     .testimonials-track { display:flex; gap:24px; transition:transform 2.4s cubic-bezier(0.16,1,0.3,1); will-change:transform; }
     .testimonial-card { background:var(--surface); border:1px solid var(--border); padding:44px; flex-shrink:0; width:calc((100% - 48px) / 3); position:relative; overflow:hidden; transition:border-color 0.3s; }
@@ -154,7 +154,10 @@
     .reels-lb-counter { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.7rem; color:var(--white-dim); letter-spacing:0.15em; }
 
     @media(max-width:600px) {
-      .reel-card { flex:0 0 120px; }
+      .reels-track-wrap { scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+      .reels-track { width:100%; }
+      .reel-card { flex:0 0 calc((100% - 18px) / 2); scroll-snap-align:start; scroll-snap-stop:always; }
+      .reel-embed iframe { pointer-events:none; }
       .reels-lb-video { max-width:85vw; }
       .reels-lb-prev, .reels-lb-next { width:38px; height:38px; font-size:1.1rem; }
       .reels-lb-prev { left:10px; } .reels-lb-next { right:10px; }
@@ -174,9 +177,13 @@
     .thumb-card-name { font-family:var(--font-display); font-size:1.1rem; font-weight:300; }
     .thumbs-arrow { width:40px; height:40px; border:1px solid var(--border); background:transparent; color:var(--white); font-size:1rem; cursor:pointer; transition:border-color 0.3s,color 0.3s,background 0.3s; font-family:var(--font-sans); flex-shrink:0; }
     .thumbs-arrow:hover { border-color:var(--gold); color:var(--gold); background:rgba(200,169,110,0.08); }
+    .thumb-card-vert { flex:0 0 260px; aspect-ratio:9/16; }
 
     @media(max-width:600px) {
-      .thumb-card { flex:0 0 280px; }
+      .thumbs-track-wrap { scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+      .thumbs-track { width:100%; }
+      .thumb-card { flex:0 0 100%; scroll-snap-align:start; scroll-snap-stop:always; }
+      .thumb-card-vert { flex:0 0 calc((100% - 18px) / 2); }
     }
 
     /* ── MOTION GRAPHICS SECTION ── */
@@ -210,8 +217,11 @@
     .mg-lb-counter { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.7rem; color:var(--white-dim); letter-spacing:0.15em; }
 
     @media(max-width:600px) {
-      .mg-card { flex:0 0 180px; }
-      .mg-card-vert { flex:0 0 120px; }
+      .mg-track-wrap { scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+      .mg-track { width:100%; }
+      .mg-card { flex:0 0 100%; scroll-snap-align:start; scroll-snap-stop:always; }
+      .mg-card-vert { flex:0 0 calc((100% - 18px) / 2); }
+      .mg-embed iframe { pointer-events:none; }
       .mg-lb-video { max-width:92vw; }
       .mg-lb-prev, .mg-lb-next { width:38px; height:38px; font-size:1.1rem; }
       .mg-lb-prev { left:10px; } .mg-lb-next { right:10px; }
@@ -463,11 +473,7 @@
             </div>
           </div>
         </div>
-        <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;" class="reveal">
-          <button class="testim-dot active" onclick="testimGoTo(0)"></button>
-          <button class="testim-dot" onclick="testimGoTo(1)"></button>
-          <button class="testim-dot" onclick="testimGoTo(2)"></button>
-        </div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;" class="reveal testim-dots"></div>
       </div>
     </section>
 
@@ -495,24 +501,86 @@
     const revealEls = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.12 });
     revealEls.forEach(el => observer.observe(el));
+
+    /* ── TOUCH SLIDE GUARD — swipe on a card must not open the lightbox ── */
+    let dragGuardUntil = 0, touchX = 0, touchY = 0;
+    document.addEventListener('touchstart', e => {
+      dragGuardUntil = 0;
+      touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - touchX) > 10 || Math.abs(t.clientY - touchY) > 10) dragGuardUntil = Date.now() + 700;
+    }, { passive: true });
+    function dragSwiped() { return Date.now() < dragGuardUntil; }
     function openVideo(id) { window.open('https://www.youtube.com/watch?v=' + id, '_blank'); }
     let testimSlideIndex = 0;
-    function testimSlide(dir) {
-      const track = document.getElementById('testimTrack');
-      const cards = track.children;
-      const cardWidth = cards[0].offsetWidth + 24;
-      testimSlideIndex = Math.max(0, Math.min(cards.length - 3, testimSlideIndex + dir));
-      track.style.transform = 'translateX(-' + (testimSlideIndex * cardWidth) + 'px)';
+    const testimTrack = document.getElementById('testimTrack');
+    const testimSlider = document.getElementById('testimSlider');
+    function testimStep() {
+      const card = testimTrack.children[0];
+      return card ? card.offsetWidth + 24 : 0;
+    }
+    function testimVisible() {
+      const step = testimStep();
+      if (!step) return 1;
+      return Math.max(1, Math.round((testimSlider.clientWidth + 24) / step));
+    }
+    function testimMaxIndex() {
+      return Math.max(0, testimTrack.children.length - testimVisible());
+    }
+    function testimBuildDots() {
+      const wrap = document.querySelector('.testim-dots');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      for (let i = 0; i <= testimMaxIndex(); i++) {
+        const b = document.createElement('button');
+        b.className = 'testim-dot' + (i === testimSlideIndex ? ' active' : '');
+        b.setAttribute('aria-label', 'Review ' + (i + 1));
+        b.onclick = () => testimGoTo(i);
+        wrap.appendChild(b);
+      }
+    }
+    function setTestim(idx) {
+      testimSlideIndex = Math.max(0, Math.min(testimMaxIndex(), idx));
+      testimTrack.style.transform = 'translateX(-' + (testimSlideIndex * testimStep()) + 'px)';
       document.querySelectorAll('.testim-dot').forEach((d, i) => d.classList.toggle('active', i === testimSlideIndex));
     }
-    function testimGoTo(idx) {
-      const track = document.getElementById('testimTrack');
-      const cards = track.children;
-      const cardWidth = cards[0].offsetWidth + 24;
-      testimSlideIndex = idx;
-      track.style.transform = 'translateX(-' + (testimSlideIndex * cardWidth) + 'px)';
-      document.querySelectorAll('.testim-dot').forEach((d, i) => d.classList.toggle('active', i === testimSlideIndex));
-    }
+    function testimSlide(dir) { setTestim(testimSlideIndex + dir); }
+    function testimGoTo(idx) { setTestim(idx); }
+    testimBuildDots();
+    window.addEventListener('resize', () => { testimBuildDots(); setTestim(testimSlideIndex); });
+
+    /* ── TESTIMONIALS DRAG / SWIPE (mouse + touch) ── */
+    (function () {
+      let dragging = false, startX = 0, diff = 0;
+      const basePos = () => testimSlideIndex * testimStep();
+      function dragStart(x) {
+        dragging = true; startX = x; diff = 0;
+        testimTrack.style.transition = 'none';
+      }
+      function dragMove(x) {
+        if (!dragging) return;
+        diff = x - startX;
+        testimTrack.style.transform = 'translateX(' + (-basePos() + diff) + 'px)';
+      }
+      function dragEnd() {
+        if (!dragging) return;
+        dragging = false;
+        testimTrack.style.transition = '';
+        if (diff < -60) setTestim(testimSlideIndex + 1);
+        else if (diff > 60) setTestim(testimSlideIndex - 1);
+        else setTestim(testimSlideIndex);
+      }
+      testimSlider.addEventListener('mousedown', e => { e.preventDefault(); dragStart(e.clientX); });
+      window.addEventListener('mousemove', e => { if (dragging) dragMove(e.clientX); });
+      window.addEventListener('mouseup', dragEnd);
+      testimSlider.addEventListener('touchstart', e => { if (e.touches.length === 1) dragStart(e.touches[0].clientX); }, { passive: true });
+      testimSlider.addEventListener('touchmove', e => { if (dragging) dragMove(e.touches[0].clientX); }, { passive: true });
+      testimSlider.addEventListener('touchend', dragEnd);
+      testimSlider.addEventListener('touchcancel', dragEnd);
+    })();
 
     /* ── THUMBNAILS ── */
     function thumbsScroll(dir) {
@@ -540,6 +608,7 @@
     const lb = document.getElementById('reelsLightbox');
     const reelIframe = document.getElementById('reelIframe');
     function openReel(i) {
+      if (dragSwiped()) return;
       currentReel = i;
       reelIframe.src = 'https://www.youtube.com/embed/' + reelIds[i] + '?autoplay=1';
       document.getElementById('reelCurrent').textContent = i + 1;
@@ -582,6 +651,7 @@
     const mgLb = document.getElementById('mgLightbox');
     const mgIframe = document.getElementById('mgIframe');
     function openMG(i) {
+      if (dragSwiped()) return;
       currentMG = i;
       mgIframe.src = 'https://www.youtube.com/embed/' + mgIds[i] + '?autoplay=1';
       document.getElementById('mgCurrent').textContent = i + 1;
